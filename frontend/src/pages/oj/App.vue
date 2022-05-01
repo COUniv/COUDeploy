@@ -5,6 +5,7 @@
         <NavBar v-show="$route.name !== 'start-login' && $route.name !== 'problem-details'"></NavBar>
       </div>
       <div class="content-app">
+        <SessionExpire v-if="isIdle && $route.name !== 'start-login'"/>
         <transition name="fadeInUp" mode="out-in">
           <router-view></router-view>
         </transition>
@@ -29,11 +30,12 @@
 <script>
   import { mapActions, mapState } from 'vuex'
   import NavBar from '@oj/components/NavBar.vue'
-
+  import SessionExpire from '@oj/components/SessionExpire.vue'
   export default {
     name: 'app',
     components: {
-      NavBar
+      NavBar,
+      SessionExpire
     },
     data () {
       return {
@@ -53,7 +55,10 @@
       ...mapActions(['getWebsiteConfig', 'changeDomTitle'])
     },
     computed: {
-      ...mapState(['website'])
+      ...mapState(['website']),
+      isIdle () {
+        return this.$store.state.idleVue.isIdle
+      }
     },
     watch: {
       'website' () {

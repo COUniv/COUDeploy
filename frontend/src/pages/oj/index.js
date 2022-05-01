@@ -32,6 +32,15 @@ import 'echarts/lib/component/tooltip'
 import 'echarts/lib/component/toolbox'
 import 'echarts/lib/component/markPoint'
 
+// auto logout
+import IdleVue from 'idle-vue-3'
+const eventsHub = new Vue()
+Vue.use(IdleVue, {
+  eventEmitter: eventsHub,
+  store,
+  idleTime: 3000, // 3 seconds
+  startAtIdle: false
+})
 // register global utility filters.
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
