@@ -111,8 +111,8 @@ _java_lang_config = {
     "compile": {
         "src_name": "Main.java",
         "exe_name": "Main",
-        "max_cpu_time": 12000,
-        "max_real_time": 50000,
+        "max_cpu_time": 5000,
+        "max_real_time": 10000,
         "max_memory": -1,
         "compile_command": "/usr/bin/javac {src_path} -d {exe_dir} -encoding UTF8"
     },

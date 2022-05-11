@@ -39,13 +39,13 @@ services:
       - ./data/judge_server/run:/judger
     environment:
       - SERVICE_URL=http://judge-server:8080
-      - BACKEND_URL=http://cou-coding-platform-dev:8000/api/judge_server_heartbeat/
+      - BACKEND_URL=http://oj-backend:8000/api/judge_server_heartbeat/
       - TOKEN=CHANGE_THIS
       # - judger_debug=1
   
-  cou-coding-platform-dev:
-    image: kdonggyun97/cou-coding-platform-dev
-    container_name: cou-coding-platform-dev
+  oj-backend:
+    image: registry.cn-hangzhou.aliyuncs.com/onlinejudge/oj_backend
+    container_name: oj-backend
     restart: always
     depends_on:
       - oj-redis
@@ -53,14 +53,14 @@ services:
       - judge-server
     volumes:
       - ./data/backend:/data
-      # - ./data/backend/dist:/app/dist # 개발시 주석 해제 (./data/backend/dist 를 볼륨으로 잡는다.)
+      - ./frontend/dist:/app/dist
     environment:
       - POSTGRES_DB=onlinejudge
       - POSTGRES_USER=onlinejudge
       - POSTGRES_PASSWORD=onlinejudge
       - JUDGE_SERVER_TOKEN=CHANGE_THIS
       # - FORCE_HTTPS=1
-      # - STATIC_CDN_HOST=cdn.oj.com
+      - STATIC_CDN_HOST=/
     ports:
       - "0.0.0.0:80:8000"
       - "0.0.0.0:443:1443"

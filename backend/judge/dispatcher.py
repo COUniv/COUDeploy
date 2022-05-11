@@ -29,24 +29,7 @@ def process_pending_task():
         if tmp_data:
             data = json.loads(tmp_data.decode("utf-8"))
             judge_task.send(**data)
-# isCPU : true = cpu time, false = memory limit
-def languageOptioin(lang, limit, isCPU):
-    if isCPU == True:
-        if lang == "C++" or lang == "C":
-            return limit
-        if lang == "Golang":
-            return limit + 1000
-        if lang == "Python2" or lang == "Python3":
-            return limit * 2
-        if lang == "Java" or lang == "JavaScript":
-            return limit * 3 + 2000
-    else:
-        if lang == "C++" or lang == "C" or lang == "Golang":
-            return limit
-        if lang == "Python3" or lang == "Python2":
-            return limit + (128 * 1024 * 1024)
-        if lang == "Java" or lang == "JavaScript":
-            return limit * 2 + (256 * 1024 * 1024)
+
 
 class ChooseJudgeServer:
     def __init__(self):
@@ -138,8 +121,6 @@ class JudgeDispatcher(DispatcherBase):
                 return
             self.submission.statistic_info["score"] = score
 
-
-
     def judge(self):
         language = self.submission.language
         sub_config = list(filter(lambda item: language == item["name"], SysOptions.languages))[0]
@@ -159,8 +140,8 @@ class JudgeDispatcher(DispatcherBase):
         data = {
             "language_config": sub_config["config"],
             "src": code,
-            "max_cpu_time": languageOptioin(language, self.problem.time_limit, True),
-            "max_memory": languageOptioin(language, 1024 * 1024 * self.problem.memory_limit, False),
+            "max_cpu_time": self.problem.time_limit,
+            "max_memory": 1024 * 1024 * self.problem.memory_limit,
             "test_case_id": self.problem.test_case_id,
             "output": False,
             "spj_version": self.problem.spj_version,
@@ -226,7 +207,7 @@ class JudgeDispatcher(DispatcherBase):
             else:
                 self.update_problem_status()
 
-        # 이 시점에서 판단은 끝났고 태스크 큐에 남아있는 태스크를 처리해 보라.
+        # 이 시점에서 판단은 끝났고 태스크 큐에 남아있는 태스크를 처리해 보면 됨.
         process_pending_task()
 
     def update_problem_status_rejudge(self):

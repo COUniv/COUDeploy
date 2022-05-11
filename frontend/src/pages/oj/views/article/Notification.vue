@@ -20,7 +20,7 @@
   import api from '@oj/api'
 
   export default {
-    name: 'notificationList',
+    name: 'Notification',
     data () {
       return {
         columns: [ // 열 속성 - 추후 추가 예정

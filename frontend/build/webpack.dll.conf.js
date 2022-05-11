@@ -28,13 +28,13 @@ let oldDlls = glob.sync('vendor.dll.*.js', globOptions);
 console.log("cleaning old dll..")
 oldDlls.forEach(f => {
     fs.unlinkSync(f,function(err){
-      if(err) {
-          return console.log("Delete error: " + err);
-      }
-      else{
-          console.log("file deleted successfully");
-      }
-  })
+        if(err) {
+            return console.log("Delete error: " + err);
+        }
+        else{
+            console.log("file deleted successfully");
+        }
+    })
 })
 console.log("building ..")
 

@@ -31,16 +31,11 @@ import 'echarts/lib/component/legend'
 import 'echarts/lib/component/tooltip'
 import 'echarts/lib/component/toolbox'
 import 'echarts/lib/component/markPoint'
-
+import Element from 'element-ui'
+// import 'element-ui/lib/theme-chalk/index.css'
 // auto logout
 import IdleVue from 'idle-vue-3'
-const eventsHub = new Vue()
-Vue.use(IdleVue, {
-  eventEmitter: eventsHub,
-  store,
-  idleTime: 3000, // 3 seconds
-  startAtIdle: false
-})
+
 // register global utility filters.
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
@@ -58,12 +53,21 @@ Vue.use(VueAnalytics, {
   id: GOOGLE_ANALYTICS_ID,
   router
 })
+const eventsHub = new Vue()
+Vue.use(IdleVue, {
+  eventEmitter: eventsHub,
+  store,
+  idleTime: 3000, // 3 seconds
+  startAtIdle: false
+})
 
 Vue.component('ECharts', ECharts)
 Vue.component(VerticalMenu.name, VerticalMenu)
 Vue.component(VerticalMenuItem.name, VerticalMenuItem)
 Vue.component(Panel.name, Panel)
-
+Vue.use(Element, {
+  i18n: (key, value) => i18n.t(key, value)
+})
 // 글로벌 메시지 알림 등록
 Vue.prototype.$Message.config({
   duration: 2

@@ -18,17 +18,17 @@ import Save from './components/btn/Save.vue'
 import Cancel from './components/btn/Cancel.vue'
 import './style.less'
 
-// import iView from 'iview'
-// import 'iview/dist/styles/iview.css'
+import iView from 'iview'
+import 'iview/dist/styles/iview.css'
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
-// Vue.use(iView, {
-//   i18n: (key, value) => i18n.t(key, value)
-// })
+Vue.use(iView, {
+  i18n: (key, value) => i18n.t(key, value)
+})
 
 Vue.use(VueAnalytics, {
   id: GOOGLE_ANALYTICS_ID,

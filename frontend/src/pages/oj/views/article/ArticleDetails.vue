@@ -43,7 +43,7 @@
             <!-- 게시글 삭제 버튼(작성자만 보임) -->
             <Button v-if="is_writer" icon="ios-undo" @click="deleteArticle">Delete</Button>
             <!-- 좋아요 버튼 -->
-            <Button type="ios-heart-outline" @click="like">좋아요</Button>
+            <Button icon="ios-heart-outline" @click="like">좋아요</Button>
           </div>
         </div>
       </div>
@@ -74,7 +74,7 @@
             </div>
             <div style="padding-top:15px; clear:both;">
               <!-- 댓글 수정 입력 폼 - 댓글 수정 버튼 클릭 시 보임 -->
-              <Input v-show="comment.modify" type="text" @input="comment.content" :placeholder="Comment"></Input>
+              <Input v-show="comment.modify" type="text" v-model="comment.content" :placeholder="Comment"></Input>
               <Button v-show="comment.modify" type="primary" @click="modifyComment(comment)" class="btn">Modify</Button>
             </div>
           </Card>
@@ -83,7 +83,7 @@
 
       <!-- 댓글 입력 -->
       <div style="margin-top:30px">
-        <Input type="text" @input="formComment.content" :placeholder="Comment"></Input>
+        <Input type="text" v-model="formComment.content" :placeholder="Comment"></Input>
         <Button style="margin-top:15px; float:right;" type="primary" @click="commentSubmit" class="btn">Submit</Button>
       </div>
       <!-- float 겹침 방지 (삭제하지마세요) -->
@@ -97,7 +97,7 @@
   import time from '@/utils/time'
 
   export default {
-    name: 'Article',
+    name: 'ArticleDetails',
     data () {
       return {
         is_writer: false, // 현재 보는 게시글의 작성자 여부

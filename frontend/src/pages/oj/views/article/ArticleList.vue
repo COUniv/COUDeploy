@@ -131,7 +131,7 @@
   import utils from '@/utils/utils'
 
   export default {
-    name: 'articleList',
+    name: 'ArticleList',
     components: {
       Pagination
     },

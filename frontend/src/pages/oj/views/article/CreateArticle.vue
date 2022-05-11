@@ -1,5 +1,5 @@
 <template>
-  <div class="article">
+  <div>
     <div class="main_contents">
       <el-form ref="form" :model="formArticle" :rules="rules" label-position="top" label-width="70px">
         <div class="selectform">
@@ -40,7 +40,7 @@
         </div>
 
         <div class="title_form">
-            <el-form-item prop="title" label="Title" required>
+            <el-form-item prop="title" required>
               <!-- 게시글 제목 입력 - formArticle.title -->
               <Input type="text" v-model="formArticle.title" placeholder="제목" size="large"></Input>
             </el-form-item>
@@ -48,7 +48,7 @@
         
         <!-- 게시글 내용 입력 - formArticle.content -->
         <div class="contents_form">
-            <el-form-item prop="content" label="Content" required>
+            <el-form-item prop="content" required>
               <Simditor v-model="formArticle.content"></Simditor>
             </el-form-item>
         </div>
@@ -67,7 +67,7 @@
   import api from '@oj/api'
 
   export default {
-    name: 'Article',
+    name: 'CreateArticle',
     components: {
       Simditor // 게시글 내용 입력 폼
     },

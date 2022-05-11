@@ -1,5 +1,3 @@
-# !data/backend/dist/**
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -61,8 +59,7 @@ build.txt
 tmp/
 custom_settings.py
 *.zip
-!dist.zip
-data/
+
 data/log/*
 !data/log/.gitkeep
 data/test_case/*
@@ -80,3 +77,5 @@ http_locations.conf
 https_locations.conf
 
 venv/
+#test docker-compose
+docker-compose.yml
