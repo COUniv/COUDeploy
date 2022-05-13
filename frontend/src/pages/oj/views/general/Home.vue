@@ -351,8 +351,8 @@
   }
 
   .rankings_title{
-    font-size: 14px;
-    padding: 5px 15px;
+    font-size: 20px;
+    padding: 1px 15px;
     background: rgb(235, 235, 235);
   }
 
@@ -367,4 +367,10 @@
   .announcement-animate-enter-active {
     animation: fadeIn 1s;
   }
+
+.ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab{
+  font-size: 20px;
+  height: 35px;
+  padding-top: 0px;
+}
 </style>
