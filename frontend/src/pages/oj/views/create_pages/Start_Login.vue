@@ -4,61 +4,71 @@
       <NavBar></NavBar>
     </div> -->
     <div class="image">
-        <div>Image</div>
+        <!-- <div>Image</div> -->
+        <img src="../../../../assets/main03.jpg" class="image"/>
     </div>
-    <div class="form">
-      <Form ref="formLogin" :model="formLogin" :rules="ruleLogin">
-        <!-- 로그인 박스 title-->
-        <div class="login_title">회원 로그인</div>
-                
-        <div class = "login_edge">
-        <!-- 로그인 username textbox -->
-          <FormItem prop="username">
-            <Input class ="login_input" type="text" v-model="formLogin.username" :placeholder="아이디" size="large" @on-enter="handleLogin">
-              <Icon type="ios-person-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-          <!-- 로그인 password textbox -->
-          <FormItem prop="password">
-            <Input class ="login_input" type="password" v-model="formLogin.password" :placeholder="비밀번호" size="large" @on-enter="handleLogin">
-              <Icon type="ios-lock-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-          <!-- 로그인 상태 체크박스 -->
-          <!-- <FormItem prop="login_status">
-            <Checkbox class="login_check"  v-model="formLogin.LoginStaus" >로그인 상태 유지하기</Checkbox>
-          </FormItem> -->
+    <!-- <div class="contents" style="height:70vh;"> -->
+      <div class="form">
+        <Form ref="formLogin" :model="formLogin" :rules="ruleLogin">
+          <!-- 로그인 박스 title-->
+          <div class="login_title">회원 로그인</div>
+                  
+          <div class = "login_edge">
+          <!-- 로그인 username textbox -->
+            <FormItem prop="username">
+              <Input class ="login_input" type="text" v-model="formLogin.username" :placeholder="아이디" size="large" @on-enter="handleLogin">
+                <Icon type="ios-person-outline" slot="prepend"></Icon>
+              </Input>
+            </FormItem>
+            <!-- 로그인 password textbox -->
+            <FormItem prop="password">
+              <Input class ="login_input" type="password" v-model="formLogin.password" :placeholder="비밀번호" size="large" @on-enter="handleLogin">
+                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+              </Input>
+            </FormItem>
+            <!-- 로그인 상태 체크박스 -->
+            <!-- <FormItem prop="login_status">
+              <Checkbox class="login_check"  v-model="formLogin.LoginStaus" >로그인 상태 유지하기</Checkbox>
+            </FormItem> -->
 
-          <FormItem>
-            <div class="login_btn">
-              <Button 
-                type="primary"
-                @click="handleLogin"
-                class="btn" long
-                :loading="btnLoginLoading">
-                {{$t('m.UserLogin')}}
-              </Button>
+            <FormItem>
+              <div class="login_btn">
+                <Button 
+                  type="primary"
+                  @click="handleLogin"
+                  class="btn" long
+                  :loading="btnLoginLoading">
+                  {{$t('m.UserLogin')}}
+                </Button>
+              </div>
+            </FormItem>
+            <div class = "login_foot">
+              <a v-if="website.allow_register" @click.stop="handleBtnClick('register')">{{$t('m.No_Account')}}</a>
+              <a @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
             </div>
-          </FormItem>
-          <div class = "login_foot">
-            <a v-if="website.allow_register" @click.stop="handleBtnClick('register')">{{$t('m.No_Account')}}</a>
-            <a @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
           </div>
-        </div>
-      </Form>
-      <!-- </div>
-        <div class="last"> -->
-      <!-- <Button
-          type="primary"
-          @click="handleLogin"
-          class="btn" long
-          :loading="btnLoginLoading">
-          {{$t('m.UserLogin')}}
-          </Button>
-          <a v-if="website.allow_register" @click.stop="handleBtnClick('register')">{{$t('m.No_Account')}}</a>
-          <a @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>
-        </div> -->
-    </div>
+        </Form>
+        
+        <!-- </div>
+          <div class="last"> -->
+        <!-- <Button
+            type="primary"
+            @click="handleLogin"
+            class="btn" long
+            :loading="btnLoginLoading">
+            {{$t('m.UserLogin')}}
+            </Button>
+            <a v-if="website.allow_register" @click.stop="handleBtnClick('register')">{{$t('m.No_Account')}}</a>
+            <a @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>
+          </div> -->
+      </div>
+      <!-- <div class="footer" >
+        <p v-html="website.website_footer"></p>
+        <p>Powered by <a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge</a>
+          <span v-if="version">&nbsp; Version: {{ version }}</span>
+        </p>
+      </div> -->
+    <!-- </div>     -->
   </div>
   
 </template>
@@ -229,8 +239,8 @@ export default {
   .start_login {
     margin: -80px -50px -190px -50px;
     // margin-top: 160px;
-    min-height: 725px;
-    height: calc(~"100vh - 80px");
+    // min-height: 725px;
+    // height: calc(~"100vh - 80px");
     // min-height: 100%;
     position: relative;
     // padding-bottom: 80px;
@@ -260,7 +270,12 @@ export default {
   left: -20px;
   top: 0px;
   width: 100%;
-  height: 28.125vw;  // ultra-wide screen size (32:9)
+  // height : 56.25vw;
+  // height: 56.25vw;
+  height: 60vh;
+  
+  // height: 77.78vh;
+  // height: 28.125vw;  // ultra-wide screen size (32:9)
   // height: 500px;
   background-color: rgb(39, 39, 39);
   color: white;
@@ -275,10 +290,12 @@ export default {
   // margin-top: 500px;
   background-color: rgb(230, 230, 230);
   // margin-bottom: -15px;
-  margin: 25px 0 10px 35%;
+  // margin: 25px 0 50px 35%;
+  margin: 3vh 0 3vh 35%;
   top: 500px;
   left: 35%;
   width: 30%;
+  // height: 33vh;
   // padding: 0 0 0 10px;
   // text-align: left;
   .btn {
@@ -288,6 +305,10 @@ export default {
     }
   }
 }
+
+// Form{
+//   margin: 25px 0 10px 35%;
+// }
 
 
 
@@ -375,5 +396,16 @@ export default {
 // .login_foot{
   // margin: 5px 0 5px 0;
 // }
+
+.footer {
+    background-color: rgb(41, 41, 41);
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 10vh;
+    text-align: center;
+    font-size: small;
+  }
 
 </style>
