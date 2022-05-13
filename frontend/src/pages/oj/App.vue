@@ -18,7 +18,7 @@
       </div>
       <BackTop></BackTop>
     </div>
-    <div class="footer" v-show="$route.name !== 'problem-details'">
+    <div class="footer" v-show="$route.name !== 'start-login' && $route.name !== 'problem-details'">
       <p v-html="website.website_footer"></p>
       <p>Powered by <a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge</a>
         <span v-if="version">&nbsp; Version: {{ version }}</span>
@@ -90,7 +90,7 @@
   .content_container {
     // screen height - navigation bar height - footer height - contanier bottom margin
     min-height: calc(~"100vh - 80px - 80px - 20px");
-    margin: 0 50px 20px 50px;
+    margin: 0 50px 50px 50px;
     padding-bottom: 80px;
   }
   @media screen and (max-width: 1200px) {
@@ -133,6 +133,7 @@
   .fadeInUp-enter-active {
     animation: fadeInUp .8s;
   }
+
 
 
 </style>
