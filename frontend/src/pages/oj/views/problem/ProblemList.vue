@@ -8,7 +8,8 @@
           <li>
             <Dropdown @on-click="filterByDifficulty">
               <span>{{query.difficulty === '' ? this.$i18n.t('m.Difficulty') : this.$i18n.t('m.' + query.difficulty)}}
-                <Icon type="arrow-down-b"></Icon>
+                <!-- <Icon type="arrow-down-b"></Icon> -->
+                <Icon type="md-arrow-dropdown" />
               </span>
               <Dropdown-menu slot="list">
                 <Dropdown-item name="">{{$t('m.All')}}</Dropdown-item>
@@ -91,7 +92,8 @@
           {
             title: '문제 번호',
             key: '_id',
-            width: 80,
+            align: 'center',
+            width: 100,
             render: (h, params) => {
               return h('Button', {
                 props: {
@@ -111,7 +113,8 @@
           },
           {
             title: this.$i18n.t('m.Title'),
-            width: 400,
+            width: 600,
+            align: 'center',
             render: (h, params) => {
               return h('Button', {
                 props: {
@@ -134,6 +137,7 @@
           },
           {
             title: this.$i18n.t('m.Level'),
+            align: 'center',
             render: (h, params) => {
               let t = params.row.difficulty
               let color = 'blue'
@@ -148,10 +152,12 @@
           },
           {
             title: '제출',
+            align: 'center',
             key: 'submission_number'
           },
           {
             title: '정답 비율',
+            align: 'center',
             render: (h, params) => {
               return h('span', this.getACRate(params.row.accepted_number, params.row.submission_number))
             }
