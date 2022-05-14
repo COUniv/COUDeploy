@@ -138,6 +138,7 @@
           {
             title: this.$i18n.t('m.Level'),
             align: 'center',
+            width: 100,
             render: (h, params) => {
               let t = params.row.difficulty
               let color = 'blue'
@@ -152,11 +153,13 @@
           },
           {
             title: '제출',
+            width: 100,
             align: 'center',
             key: 'submission_number'
           },
           {
             title: '정답 비율',
+            width: 100,
             align: 'center',
             render: (h, params) => {
               return h('span', this.getACRate(params.row.accepted_number, params.row.submission_number))
