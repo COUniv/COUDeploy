@@ -41,11 +41,11 @@ services:
       - SERVICE_URL=http://judge-server:8080
       - BACKEND_URL=http://oj-backend:8000/api/judge_server_heartbeat/
       - TOKEN=CHANGE_THIS
-      # - judger_debug=1
+      - judger_debug=1
   
   oj-backend:
-    image: registry.cn-hangzhou.aliyuncs.com/onlinejudge/oj_backend
-    container_name: oj-backend
+    image: kdonggyun97/cou-coding-platform-dev
+    container_name: cou-coding-platform-dev
     restart: always
     depends_on:
       - oj-redis
@@ -53,7 +53,7 @@ services:
       - judge-server
     volumes:
       - ./data/backend:/data
-      - ./frontend/dist:/app/dist
+      # - ./frontend/dist:/app/dist # 개발시 주석 해제
     environment:
       - POSTGRES_DB=onlinejudge
       - POSTGRES_USER=onlinejudge

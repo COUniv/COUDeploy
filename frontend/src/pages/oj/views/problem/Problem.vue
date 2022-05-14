@@ -109,7 +109,7 @@
             <!-- 제출 버튼 -->
             <VerticalMenu style="margin-bottom: 20px;">
               <!-- <VerticalMenu-item :route="{name: 'contest-problem-list', params: {contestID: contestID}}"> -->
-                <Button type="primary" long=ture size="large" @click="goSubmitView">제출하기</Button>
+                <Button type="primary" size="large" @click="goSubmitView" long>제출하기</Button>
               <!-- </VerticalMenu-item> -->
             </VerticalMenu>
 

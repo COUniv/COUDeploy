@@ -51,7 +51,7 @@
       <div style="padding-top:15px; clear:both;"></div>
       <hr>
       <!-- 댓글 목록 -->
-      <div v-for="comment in comments" :key="comment" style="padding-top:20px">
+      <div v-for="(comment,index) in comments" :key="index" style="padding-top:20px">
 
           <Card>
             <!-- 사용자 정보영역 -->
