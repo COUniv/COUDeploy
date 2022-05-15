@@ -437,13 +437,16 @@
             this.problem._id = 1000
           } else {
             this.problemList = res.data.data.results
+            // Array.from(this.problemList).forEach(element => {
+            //   console.log(element)
+            // })
             if (this.mode === 'edit') {
-              this.problem._id = this.problemList[0].id
+              this.problem._id = this.problemList[0]._id
             } else if (this.problemList.length === 0 || this.problemList[0].id === undefined || !this.problemList[0].id) {
               console.log('has no problem list')
               this.problem._id = 1000
             } else {
-              this.problem._id = this.problemList[0].id + 1
+              this.problem._id = this.problemList[0]._id + 1
             }
           }
         }).catch(() => {
