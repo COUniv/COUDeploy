@@ -40,4 +40,5 @@ assignees: ''
 <!-- end of the list -->
 
 **ETC**
+---
 기타 사항
