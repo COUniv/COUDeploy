@@ -17,8 +17,13 @@
               </div>
             </div>
             <div @click="handleTypeChange('2')">
-              <div class="community_menu_list_last" v-bind:style="[this.formFilter.boardtype === '2' ?{'background' : 'rgb(110, 110, 110)', 'color' : 'rgb(255, 255, 255)'}:{}]">
+              <div class="community_menu_list" v-bind:style="[this.formFilter.boardtype === '2' ?{'background' : 'rgb(110, 110, 110)', 'color' : 'rgb(255, 255, 255)'}:{}]">
                 질문 게시판
+              </div>
+            </div>
+            <div @click="handleTypeChange('3')">
+              <div class="community_menu_list_last" v-bind:style="[this.formFilter.boardtype === '2' ?{'background' : 'rgb(110, 110, 110)', 'color' : 'rgb(255, 255, 255)'}:{}]">
+                요청 게시판
               </div>
             </div>
           </div>

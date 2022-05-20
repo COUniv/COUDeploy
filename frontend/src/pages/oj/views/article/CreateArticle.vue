@@ -18,6 +18,7 @@
             <Dropdown-menu slot="list">
               <Dropdown-item name="1">자유</Dropdown-item>
               <Dropdown-item name="2">질문</Dropdown-item>
+              <Dropdown-item name="2">요청</Dropdown-item>
             </Dropdown-menu>
           </Dropdown>
         </div> -->
