@@ -8,7 +8,8 @@
             <li>
               <Dropdown @on-click="handleResultChange">
                 <span>{{status}}
-                  <Icon type="arrow-down-b"></Icon>
+                  <!-- <Icon type="arrow-down-b"></Icon> -->
+                  <Icon type="md-arrow-dropdown" />
                 </span>
                 <Dropdown-menu slot="list">
                   <Dropdown-item name="">{{$t('m.All')}}</Dropdown-item>

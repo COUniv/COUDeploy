@@ -33,7 +33,7 @@
               <!-- 질문 게시판의 경우 언어 카테고리 -->
               <li v-if="formFilter.boardtype === '2'" class="submenu_list" style="width=200px">
                 <Dropdown @on-click="handleLanguageChange">
-                  <span><div style="padding-right:3px; display: inline-flex;">언어</div><div style="display: inline-flex;"><Icon type="arrow-down-b"></Icon></div></span>
+                  <span><div style="padding-right:3px; display: inline-flex;">언어</div><div style="display: inline-flex;"><Icon type="md-arrow-dropdown" /></div></span>
                   <Dropdown-menu slot="list">
                     <Dropdown-item name="Java">Java</Dropdown-item>
                     <Dropdown-item name="C">C</Dropdown-item>
@@ -46,7 +46,7 @@
               <!-- 게시판 정렬 선택 -->
               <li class="submenu_list" style="width=200px">
                 <Dropdown @on-click="handleSortChange">
-                  <span><div style="padding-right:3px; display: inline-flex;">정렬</div><div style="display: inline-flex;"><Icon type="arrow-down-b"></Icon></div></span>
+                  <span><div style="padding-right:3px; display: inline-flex;">정렬</div><div style="display: inline-flex;"><Icon type="md-arrow-dropdown" /></div></span>
                   <Dropdown-menu slot="list">
                     <Dropdown-item name="0">최신순</Dropdown-item>
                     <Dropdown-item name="1">좋아요순</Dropdown-item>

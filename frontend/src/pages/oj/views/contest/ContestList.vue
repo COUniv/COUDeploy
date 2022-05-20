@@ -8,7 +8,9 @@
           <li>
             <Dropdown @on-click="onRuleChange">
               <span>{{query.rule_type === '' ? this.$i18n.t('m.Rule') : this.$i18n.t('m.' + query.rule_type)}}
-                <Icon type="arrow-down-b"></Icon>
+                <!-- <Icon type="arrow-down-b"></Icon> -->
+                <!-- <Icon type="ios-arrow-down" /> -->
+                <Icon type="md-arrow-dropdown" />
               </span>
               <Dropdown-menu slot="list">
                 <Dropdown-item name="">{{$t('m.All')}}</Dropdown-item>
@@ -20,7 +22,8 @@
           <li>
             <Dropdown @on-click="onStatusChange">
               <span>{{query.status === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[query.status].name.replace(/ /g,"_"))}}
-                <Icon type="arrow-down-b"></Icon>
+                <!-- <Icon type="arrow-down-b"></Icon> -->
+                <Icon type="md-arrow-dropdown" />
               </span>
               <Dropdown-menu slot="list">
                 <Dropdown-item name="">모든 대회</Dropdown-item>

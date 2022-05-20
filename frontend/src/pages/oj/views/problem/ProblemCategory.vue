@@ -1,6 +1,8 @@
 <template>
   <div class="category">
     <div style="margin-top: 80px;">
+      <div style="font-size:32px;">문제 카테고리</div>
+      <hr style="color: gray;">
       <div class="item_box">
         <div class="item" v-for="category in problemCategoryList" :key="category" @click="goProblemList(category.id)">
           <h3>{{ category.title }}</h3>
@@ -57,7 +59,7 @@
   }
   .category{
     width:100%;
-    margin: 50px;
+    /* margin: 50px; */
   }
 
   /* .item_title{
@@ -69,7 +71,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    margin-top: 120px;
+    margin-top: 20px;
   }
 
   .item{

@@ -30,13 +30,19 @@
     <div class="img_container" style="width: 100%;">
         <Carousel autoplay height:400px v-model="value1" loop arrow="hover" @on-change="handleChange">
             <CarouselItem>
-                <div class="demo-carousel">1</div>
+                <div class="demo-carousel">
+                  <img src="../../../../assets/main03.jpg" />
+                </div>
             </CarouselItem>
             <CarouselItem>
-                <div class="demo-carousel">2</div>
+                <div class="demo-carousel">
+                  <img src="../../../../assets/main01.jpg" />
+                </div>
             </CarouselItem>
             <CarouselItem>
-                <div class="demo-carousel">3</div>
+                <div class="demo-carousel">
+                  3
+                </div>
             </CarouselItem>
             <CarouselItem>
                 <div class="demo-carousel">4</div>
@@ -260,8 +266,10 @@
   }
 
   .demo-carousel{
-    height: 456px;
-    line-height: 456px;
+    // height: 456px;
+    height: 60vh;
+    line-height: 60vh;
+    // line-height: 456px;
     text-align: center;
     justify-content: center;
     color: #fff;
@@ -351,8 +359,8 @@
   }
 
   .rankings_title{
-    font-size: 14px;
-    padding: 5px 15px;
+    font-size: 20px;
+    padding: 1px 15px;
     background: rgb(235, 235, 235);
   }
 
@@ -367,4 +375,10 @@
   .announcement-animate-enter-active {
     animation: fadeIn 1s;
   }
+
+.ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab{
+  font-size: 20px;
+  height: 35px;
+  padding-top: 0px;
+}
 </style>
