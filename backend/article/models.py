@@ -9,6 +9,7 @@ class BoardType(object):
     """
     FREE_BOARD = "FREE"
     QUESTION_BOARD = "QUESTION"
+    REQUEST_BOARD = "REQUEST"
 
 
 class Article(models.Model):

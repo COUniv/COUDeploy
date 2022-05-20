@@ -22,6 +22,8 @@ class ArticleListAPI(APIView):
             articles = Article.objects.filter(boardtype = BoardType.FREE_BOARD)
         elif (boardtype == "2"): # 2 = 질문 게시판인 경우
             articles = Article.objects.filter(boardtype = BoardType.QUESTION_BOARD)
+        elif (boardtype == "3"): # 3 = 요청 게시판인 경우
+            articles = Article.objects.filter(boardtype = BoardType.REQUEST_BOARD)
         else: # 전체
             articles = Article.objects.all()
 
@@ -71,7 +73,8 @@ class ArticleCreateAPI(APIView):
             boardtype = BoardType.QUESTION_BOARD
             problemtype = data["problemtype"]
             problemid = data["problemid"]
-        
+        elif (boardtype == "3"): # 요청 게시판인 경우
+            boardtype = BoardType.REQUEST_BOARD
         else: # 선택을 안한 경우
             return self.error("Board Type is not selected")
             
