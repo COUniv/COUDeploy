@@ -446,7 +446,7 @@
               console.log('has no problem list')
               this.problem._id = 1000
             } else {
-              this.problem._id = this.problemList[0]._id + 1
+              this.problem._id = parseInt(this.problemList[0]._id) + 1
             }
           }
         }).catch(() => {
