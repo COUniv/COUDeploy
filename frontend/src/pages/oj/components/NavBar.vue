@@ -43,7 +43,7 @@
           <MenuItem name="/article-list?boardtype=0">전체 게시판</MenuItem>
           <MenuItem name="/article-list?boardtype=1">자유 게시판</MenuItem>
           <MenuItem name="/article-list?boardtype=2">질문 게시판</MenuItem>
-          <MenuItem name="/article-list?boardtype=2">요청 게시판</MenuItem>
+          <MenuItem name="/article-list?boardtype=3">요청 게시판</MenuItem>
       </Submenu>
 
 

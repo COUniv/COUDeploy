@@ -251,7 +251,7 @@
     },
     methods: {
       init () {
-        let contentCount = 3 // 이후 컨텐츠(게시판)이 추가 될 경우 이를 늘릴 것
+        let contentCount = 4 // 이후 컨텐츠(게시판)이 추가 될 경우 이를 늘릴 것
         // 쿼리로 필터 설정
         let query = this.$route.query
         this.formFilter.myself = query.myself === '1'
