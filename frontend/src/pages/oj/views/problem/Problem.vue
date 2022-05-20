@@ -158,18 +158,21 @@
                   <p>{{problem.time_limit}}MS</p></li>
                 <li>
                   <p>{{$t('m.Memory_Limit')}}</p>
-                  <p>{{problem.memory_limit}}MB</p></li>
-                <li>
+                  <p>{{problem.memory_limit}}MB</p>
+                </li>
+                <!-- <li> -->
                 <li>
                   <p>{{$t('m.IOMode')}}</p>
                   <p>{{problem.io_mode.io_mode}}</p>
                 </li>
                 <li>
                   <p>{{$t('m.Created')}}</p>
-                  <p>{{problem.created_by.username}}</p></li>
+                  <p>{{problem.created_by.username}}</p>
+                </li>
                 <li v-if="problem.difficulty">
                   <p>{{$t('m.Level')}}</p>
-                  <p>{{$t('m.' + problem.difficulty)}}</p></li>
+                  <p>{{$t('m.' + problem.difficulty)}}</p>
+                </li>
                 <li v-if="problem.total_score">
                   <p>{{$t('m.Score')}}</p>
                   <p>{{problem.total_score}}</p>
@@ -213,6 +216,13 @@
       <template v-else>
         <div class="demo-split">
           <div class="ss_header">
+            <!-- <div class="undo-btn"> -->
+              <!-- <Button icon="ios-undo" @click="undoSubmitView">{{$t('m.Back')}}</Button> -->
+              <!-- <icon="ios-undo" @click="undoSubmitView">{{$t('m.Back')}}</icon> -->
+            <div style="float: left">
+              <Icon type="md-arrow-back" size="24" @click="undoSubmitView" />
+            </div>  
+            <!-- </div> -->
             <div class="logo" style="color:white" >Online Judge Platform</div>
             <div style="float: right">
               <div class="btn">
@@ -273,9 +283,9 @@
                 </Tabs>
               </div>
               <div slot="right" class="right-split-pane">
-                <div class="undo-btn">
+                <!-- <div class="undo-btn">
                   <Button icon="ios-undo" @click="undoSubmitView">{{$t('m.Back')}}</Button>
-                </div>
+                </div> -->
                 <div style="clear:both;"></div>
                 <!-- Right Padding -->
                 <div class="problem_input">
@@ -904,7 +914,8 @@
 
   @media screen and (max-width: 1200px) {
     .demo-split{
-      margin: -160px -50px -200px -50px;
+      margin: -90px -50px -120px -50px;
+      // margin: -160px -50px -200px -50px;
       padding-bottom: -80px;
     }
   }
@@ -993,4 +1004,5 @@
     float: right;
     margin: 10px 25px 10px 0;
   }
+  
 </style>
