@@ -130,3 +130,11 @@
 
 <style lang="less" scoped>
 </style>
+<style>
+[class ~= simditor-body] img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+}
+</style>
