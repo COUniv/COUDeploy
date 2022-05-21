@@ -52,9 +52,9 @@
 
 >추가
 > 문제 상세정보
-- [] 문제 navbar 추가하기
-- [] 문제 footer 추가하기
-- [] 위의 두개 안되면 navbar, footer 추가안하고 뒤로가기 버튼 만들기
+- [ ] 문제 navbar 추가하기
+- [ ] 문제 footer 추가하기
+- [ ] 위의 두개 안되면 navbar, footer 추가안하고 뒤로가기 버튼 만들기
 
 **kdgyun / whdrjs2626**
 
