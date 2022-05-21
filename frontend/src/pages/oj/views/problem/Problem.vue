@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div>
+    <!-- 페이지 전환 에니메이션을 위한 grouping container -->
+    <transition-group name="problem-animate" mode="in-out">
       <template v-if="!submitmode">
-        <div class="flex-container">
+        <div class="flex-container" key="no-solve-page">
           <div id="problem-main">
             <!--problem main-->
             <Panel :padding="40" shadow>
@@ -214,23 +215,17 @@
         </div>
       </template>
       <template v-else>
-        <div class="demo-split">
+        <div class="demo-split" key="solve-page">
           <div class="ss_header">
-            <!-- <div class="undo-btn"> -->
-              <!-- <Button icon="ios-undo" @click="undoSubmitView">{{$t('m.Back')}}</Button> -->
-              <!-- <icon="ios-undo" @click="undoSubmitView">{{$t('m.Back')}}</icon> -->
-            <div style="float: left">
-              <Icon type="md-arrow-back" size="24" @click="undoSubmitView" />
+            <div id="undo-icon">
+              <!-- <Icon type="md-arrow-back" size="24" @click="undoSubmitView" /> -->
+              <Icon type="ios-undo" size="24" @click="undoSubmitView" />
             </div>  
-            <!-- </div> -->
             <div class="logo" style="color:white" >Online Judge Platform</div>
             <div style="float: right">
               <div class="btn">
                 <Button type="text" size="large" style="z-index: '1' " @click="help_btn"><p style="color:white">도움말</p></Button>
               </div>
-              <!-- <div class="btn">
-                <Button type="text" size="large" style="z-index: '2'" @click="compile_opt"><p style="color:white">컴파일 옵션</p></Button>
-              </div> -->
             </div>  
           </div>
 
@@ -374,8 +369,9 @@
           </div>
         </div>
       </template>
-    </div>
+    </transition-group>
   </div>
+
 </template>
 
 
@@ -862,18 +858,28 @@
     color: white;
     position: relative;
     left: 0px;
-    top: 0;
+    top: 0px;
     width: 100%;
-    height: 62px;
-    line-height: 62px;
-  }
-  .logo{
-    float: left;
-    color: white;
-    font-size: 20px;
-    padding: 0 5px;
+    height: 60px;
+    line-height: 60px;
+
+    #undo-icon {
+      float: left;
+      width: 40px;
+      text-align: center;
+      line-height: 60px;
+    }
+    .logo{
+      float: left;
+      color: white;
+      font-size: 20px;
     /* padding: 0; */
+    }
+    div {
+      line-height: 60px;
+    }
   }
+
 
   .btn{
     float: left;
@@ -914,7 +920,7 @@
 
   @media screen and (max-width: 1200px) {
     .demo-split{
-      margin: -90px -50px -120px -50px;
+      margin: -80px -50px -120px -50px;
       // margin: -160px -50px -200px -50px;
       padding-bottom: -80px;
     }
@@ -1003,6 +1009,10 @@
   .undo-btn {
     float: right;
     margin: 10px 25px 10px 0;
+  }
+
+  .problem-animate-enter-active {
+    animation: fadeIn 1s;
   }
   
 </style>
