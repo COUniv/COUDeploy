@@ -23,7 +23,7 @@
         
         <el-table-column
           prop="title"
-          label="제목">
+          label="파일 명">
           <template slot-scope="{row}">
             <span v-show="!row.isEditing">{{row.name}}</span>
             <el-input v-show="row.isEditing" v-model="row.name">
@@ -37,9 +37,9 @@
           label="수정"
           width="250">
           <div slot-scope="scope">
-            <icon-btn name="Edit" icon="edit" @click.native="openTagDialog(scope.row.id)"></icon-btn>
-            <icon-btn icon="trash" name="Delete Category"
-                      @click.native="deleteProblemTag(scope.row.id)"></icon-btn>
+            <icon-btn name="Edit" icon="edit" @click.native="openImageDialog(scope.row.id)"></icon-btn>
+            <icon-btn icon="trash" name="이미지 삭제"
+                      @click.native="deleteImage(scope.row.id)"></icon-btn>
           </div>
         </el-table-column>
       </el-table>
@@ -63,6 +63,55 @@
       <el-form :model="tag" label-width="120px" label-position="left">
         <el-row :gutter="20">
           <el-col :span="12">
+            <Upload type="drag"
+                        class="container_img"
+                        accept=".jpg,.jpeg,.png,.bmp,.gif"
+                        action=""
+                        :before-upload="handleSelectFile">
+                  <div style="padding: 30px 0">
+                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                    <p>마우스로 파일을 끌어오거나 클릭하세요</p>
+                  </div>
+                </Upload>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <div class="flex-container">
+                <div class="cropper-main inline">
+                  <vueCropper
+                    ref="cropper"
+                    autoCrop
+                    fixed
+                    :autoCropWidth="200"
+                    :autoCropHeight="200"
+                    :img="avatarOption.imgSrc"
+                    :outputSize="avatarOption.size"
+                    :outputType="avatarOption.outputType"
+                    :info="true"
+                    @realTime="realTime">
+                  </vueCropper>
+                </div>
+                <ButtonGroup vertical class="cropper-btn">
+                  <Button @click="rotate('left')">
+                    <Icon type="md-return-right" size="20"></Icon>
+                  </Button>
+                  <Button @click="rotate('right')">
+                    <Icon type="md-return-left" size="20"></Icon>
+                  </Button>
+                  <Button @click="reselect">
+                    <Icon type="md-refresh" size="20"></Icon>
+                  </Button>
+                  <Button @click="finishCrop">
+                    <Icon type="md-checkmark-circle-outline" size="20">
+                  </Button>
+                </ButtonGroup>
+                <div class="cropper-preview" :style="previewStyle">
+                  <div :style=" preview.div">
+                    <img :src="avatarOption.imgSrc" :style="preview.img">
+                  </div>
+                </div>
+              </div>
           </el-col>
         </el-row>
       </el-form>
@@ -78,11 +127,22 @@
   import api from '../../api.js'
   import utils from '@/utils/utils'
   import {mapGetters} from 'vuex'
+  import {types} from '@/store'
   export default {
     name: 'ImageList',
     data () {
       return {
-        showImageDialog: false
+        showImageDialog: false,
+        loadingSaveBtn: false,
+        loadingUploadBtn: false,
+        uploadModalVisible: false,
+        preview: {},
+        uploadImgSrc: '',
+        avatarOption: {
+          imgSrc: '',
+          size: 0.8,
+          outputType: 'png'
+        }
       }
     },
     mounted () {
@@ -99,8 +159,104 @@
       currentChange (page) {
         this.currentPage = page
       },
-      openTagDialog (tagId) {
+      openImageDialog () {
         this.showImageDialog = true
+      },
+      saveImage () {
+        console.log('save')
+      },
+      deleteImage (id) {
+        console.log('delete')
+      },
+      checkFileType (file) {
+        if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(file.name)) {
+          this.$Notice.warning({
+            title: 'File type not support',
+            desc: 'The format of ' + file.name + ' is incorrect ，please choose image only.'
+          })
+          return false
+        }
+        return true
+      },
+      checkFileSize (file) {
+        // max size is 2MB
+        if (file.size > 2 * 1024 * 1024) {
+          this.$Notice.warning({
+            title: 'Exceed max size limit',
+            desc: 'File ' + file.name + ' is too big, you can upload a image up to 2MB in size'
+          })
+          return false
+        }
+        return true
+      },
+      handleSelectFile (file) {
+        let isOk = this.checkFileType(file) && this.checkFileSize(file)
+        if (!isOk) {
+          return false
+        }
+        let reader = new window.FileReader()
+        reader.onload = (e) => {
+          this.avatarOption.imgSrc = e.target.result
+        }
+        reader.readAsDataURL(file)
+        return false
+      },
+      realTime (data) {
+        this.preview = data
+      },
+      rotate (direction) {
+        if (direction === 'left') {
+          this.$refs.cropper.rotateLeft()
+        } else {
+          this.$refs.cropper.rotateRight()
+        }
+      },
+      reselect () {
+        this.$Modal.confirm({
+          content: '변경사항을 취소하시겠습니까?',
+          onOk: () => {
+            this.avatarOption.imgSrc = ''
+          }
+        })
+      },
+      finishCrop () {
+        this.$refs.cropper.getCropData(data => {
+          this.uploadImgSrc = data
+          this.uploadModalVisible = true
+        })
+      },
+      uploadAvatar () {
+        this.$refs.cropper.getCropBlob(blob => {
+          let form = new window.FormData()
+          let file = new window.File([blob], 'avatar.' + this.avatarOption.outputType)
+          form.append('image', file)
+          this.loadingUploadBtn = true
+          this.$http({
+            method: 'post',
+            url: 'upload_avatar',
+            data: form,
+            headers: {'content-type': 'multipart/form-data'}
+          }).then(res => {
+            this.loadingUploadBtn = false
+            this.$success('새 프로필 업로드에 성공하였습니다')
+            this.uploadModalVisible = false
+            this.avatarOption.imgSrc = ''
+            this.$store.dispatch('getProfile')
+          }, () => {
+            this.loadingUploadBtn = false
+          })
+        })
+      },
+      updateProfile () {
+        this.loadingSaveBtn = true
+        let updateData = utils.filterEmptyValue(Object.assign({}, this.formProfile))
+        api.updateProfile(updateData).then(res => {
+          this.$success('Success')
+          this.$store.commit(types.CHANGE_PROFILE, {profile: res.data.data})
+          this.loadingSaveBtn = false
+        }, _ => {
+          this.loadingSaveBtn = false
+        })
       }
     },
     watch: {
