@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 // intro 구성요소 view\
 import { Announcement, Conf, Contest, ContestList, Home, JudgeServer, Login,
   Problem, ProblemList, User, PruneTestCase, Dashboard, ProblemImportOrExport,
-  ProblemCategoryList, ProblemCategory, ProblemTagList } from './views'
+  ProblemCategoryList, ProblemCategory, ProblemTagList, ImageList } from './views'
 Vue.use(VueRouter)
 
 export default new VueRouter({
@@ -20,6 +20,11 @@ export default new VueRouter({
       path: '/',
       component: Home,
       children: [
+        {
+          path: '/images',
+          name: 'image_list',
+          component: ImageList
+        },
         {
           path: '/problem/tags',
           name: 'problem-tags',

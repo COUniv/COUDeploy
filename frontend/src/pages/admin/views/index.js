@@ -14,9 +14,10 @@ import ProblemImportOrExport from './problem/ImportAndExport.vue'
 import ProblemCategoryList from './problem/ProblemCategoryList.vue'
 import ProblemCategory from './problem/ProblemCategory.vue'
 import ProblemTagList from './problem/ProblemTagList.vue'
+import ImageList from './image_setting/ImageList.vue'
 
 export {
   Announcement, User, Conf, JudgeServer, Problem, ProblemList, Contest,
   ContestList, Login, Home, PruneTestCase, Dashboard, ProblemImportOrExport,
-  ProblemCategoryList, ProblemCategory, ProblemTagList
+  ProblemCategoryList, ProblemCategory, ProblemTagList, ImageList
 }
