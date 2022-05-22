@@ -31,11 +31,11 @@
         api.getProblemCategoryList().then(res => {
           this.problemCategoryList = res.data.data
           console.log(this.problemCategoryList)
-          this.problemCategoryList.forEach(element => {
-            api.getProblemPercent(element.id).then(res => {
-              element.percent = res.data.data
-            })
-          })
+          // this.problemCategoryList.forEach(element => {
+          //   api.getProblemPercent(element.id).then(res => {
+          //     element.percent = res.data.data
+          //   })
+          // })
         })
       },
       goProblemList (id) {
@@ -51,13 +51,6 @@
           name: 'problem-list',
           query: utils.filterEmptyValue(query)
         })
-      },
-      getPercent (id) {
-        let percent
-        api.getProblemPercent(id).then(res => {
-          percent = res.data.data
-        })
-        return percent
       }
     }
   }
