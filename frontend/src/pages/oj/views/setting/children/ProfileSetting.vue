@@ -57,7 +57,7 @@
               </div>
             </template>
             <Modal v-model="uploadModalVisible"
-                  title="프로필 업러드">
+                  title="프로필 업로드">
               <div class="upload-modal">
                 <p class="notice">프로필 사진이 다음과 같이 보여지게 됩니다</p>
                 <img :src="uploadImgSrc"/>
