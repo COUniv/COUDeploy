@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from pip import main
 from backend.account.decorators import login_required
 from utils.api import APIView
 from models import Image
@@ -49,6 +50,12 @@ class ImageUploadAPI(APIView):
             else:
                 image.is_main_page = False              
         
+        if ((main == "true") or (login == "true")):
+            if Image.objects.filter(is_main_page = True).count() > 6:
+                return self.error("Main page image full")
+            if Image.objects.filter(is_login_page = True).count() > 6:
+                return self.error("Login page image full")
+
         image.save()
 
         return self.success()
@@ -73,7 +80,14 @@ class ImageModifyAPI(APIView):
                 if (main == "true"):
                     image.is_main_page = True
                 else:
-                    image.is_main_page = False 
+                    image.is_main_page = False
+            
+            if ((main == "true") or (login == "true")):
+                if Image.objects.filter(is_main_page = True).count() > 6:
+                    return self.error("Main page image full")
+                if Image.objects.filter(is_login_page = True).count() > 6:
+                    return self.error("Login page image full")
+
             image.save()
             return self.success()
         else:
@@ -88,4 +102,14 @@ class ImageDeleteAPI(APIView):
             return self.success()
         else:
             return self.error("Wrong Image")
-        
+
+class MainImageListAPI(APIView):
+    def get(self, request):
+        main_images = Image.objects.filter(is_main_page = True)
+        return self.success(ImageListSerializer(main_images, many=True).data)
+
+class LoginImageListAPI(APIView):
+    def get(self, request):
+        login_images = Image.objects.filter(is_login_page = True)
+        return self.success(ImageListSerializer(login_images, many=True).data)
+
