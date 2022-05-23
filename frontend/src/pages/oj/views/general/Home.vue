@@ -53,46 +53,32 @@
     <div class="main_container">
       <div class="lsit_container" style="display: block">
         <div class="left_announcement" style="float:left">
-          <!-- <Tabs value="name1">
-            <TabPane label="공지사항" name="name1" style="padding: 0 30px 10px 30px">
-              <p class="announcement_title" style="padding: 17px 10px 3px 10px;">공지사항</p>
-              <p class="announcement_title" style="padding: 17px 10px 3px 10px;">공지사항</p>
-              <p class="announcement_title" style="padding: 17px 10px 3px 10px;">공지사항</p>
-              <p class="announcement_title" style="padding: 17px 10px 3px 10px;">공지사항</p>
-              <p class="announcement_title" style="padding: 17px 10px 3px 10px;">공지사항</p>
-            </TabPane>
-            <TabPane label="대회일정" name="name2" style="padding: 0 30px 10px 30px">
-              <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-              <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-              <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-              <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-              <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-            </TabPane>
-          </Tabs> -->
           <!-- <Row :gutter="32"> -->
             <!-- <Col span="12" class="demo-tabs-style1" style="background: #ebebeb;"> -->
               <Tabs value="name1" type="card" :animated="false">
                 <div v-if="!announcements.length" key="no-announcement">
-                  <TabPane label="공지사항" name="name1" style="padding: 0 30px 10px 30px">
+                  <TabPane :index=0 label="공지사항" name="name1" style="padding: 0 30px 10px 30px">
                     <p class="announcement_title" style="padding: 17px 10px 3px 10px;">{{$t('m.No_Announcements')}}</p>
                   </TabPane>
                 </div>
                 <div v-else>
-                  <TabPane label="공지사항" name="name1" style="padding: 0 30px 10px 30px">
+                  <TabPane :index=1 label="공지사항" name="name1" style="padding: 0 30px 10px 30px">
                     <p v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)"  style="padding: 17px 10px 3px 10px;">
                       <a>
-                        {{announcement.title}}
+                        ▶︎ {{announcement.title}}
                       </a>
                     </p>
                   </TabPane>
                 </div>
-                <TabPane label="대회일정" name="name2" style="padding: 0 30px 10px 30px">
-                  <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-                  <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-                  <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-                  <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-                  <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-                </TabPane>
+                <div>
+                  <TabPane :index=1 label="대회일정" name="name2" style="padding: 0 30px 10px 30px">
+                    <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
+                    <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
+                    <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
+                    <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
+                    <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
+                  </TabPane>
+                </div>
               </Tabs>
             <!-- </Col> -->
           <!-- </Row> -->
@@ -102,7 +88,14 @@
           <div style="padding: 0 30px 0 30px">
             <div class="rankings_user" style="padding: 33px 10px 0 10px;" v-for="(data, index) in dataRank" :key="data.user.username" @click="goUser(data.user)">
               <span>{{index + 1}} 등 : </span>
-              <a style="margin-left: 15px">
+              <a v-if="index == 0" class="first">
+                {{data.user.username}}
+              </a>
+              <a v-else-if="index == 1" class="second">
+                {{data.user.username}}
+              </a>
+              <a v-else-if="index == 2" class="third"></a>
+              <a v-else class="defa">
                 {{data.user.username}}
               </a>
             </div>
@@ -149,6 +142,8 @@
     },
     data () {
       return {
+        tabfirstidx: 0,
+        tabsecidx: 1,
         limit: 5,
         total: 5,
         btnLoading: false,
@@ -327,7 +322,7 @@
 
   .announcement_title, .contest_title{
     font-size: 18px;
-    border-bottom: 1px solid rgb(95, 95, 95);
+    // border-bottom: 1px solid rgb(95, 95, 95);
     overflow: hidden;
     text-overflow: ellipsis;
     // word-wrap: break-word;
@@ -345,6 +340,7 @@
       }
     }
   }
+
   
   .right_rankings{
     display: inline-block;
@@ -368,6 +364,35 @@
     padding: 25px 10px 3px 10px;
     font-size: 16px;
     background: white;
+
+    .first {
+      color: purple;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
+    .second {
+      color: red;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
+    .third {
+      color: orange;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
+    .defa {
+      color: #495060;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
   }
   .content-container {
     padding: 0 20px 20px 20px;
