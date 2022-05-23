@@ -59,32 +59,33 @@
       </div>
     </Panel>
 
-    <el-dialog title="이미지 추가" :visible.sync="showImageDialog" :close-on-click-modal="false">
+    <el-dialog width="80%" title="이미지 추가" :visible.sync="showImageDialog" :close-on-click-modal="false">
       <el-form :model="tag" label-width="120px" label-position="left">
         <el-row :gutter="20">
           <el-col :span="12">
-            <Upload type="drag"
-                        class="container_img"
-                        accept=".jpg,.jpeg,.png,.bmp,.gif"
-                        action=""
-                        :before-upload="handleSelectFile">
-                  <div style="padding: 30px 0">
-                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                    <p>마우스로 파일을 끌어오거나 클릭하세요</p>
-                  </div>
-                </Upload>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <div class="flex-container">
+            <div class="mypage_img">
+              <div class="container_img" v-if="!avatarOption.imgSrc">
+              <Upload type="drag"
+                      class="container_img"
+                      accept=".jpg,.jpeg,.png,.bmp,.gif"
+                      action=""
+                      :before-upload="handleSelectFile">
+                <div style="padding: 30px 0">
+                  <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                  <p>마우스로 파일을 끌어오거나 클릭하세요</p>
+                </div>
+              </Upload>
+            </div>
+        
+            <div v-else>
+              <div class="flex-container">
                 <div class="cropper-main inline">
                   <vueCropper
                     ref="cropper"
                     autoCrop
                     fixed
-                    :autoCropWidth="200"
-                    :autoCropHeight="200"
+                    :autoCropWidth="900"
+                    :autoCropHeight="400"
                     :img="avatarOption.imgSrc"
                     :outputSize="avatarOption.size"
                     :outputType="avatarOption.outputType"
@@ -112,6 +113,18 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <Modal v-model="uploadModalVisible"
+                  title="프로필 업로드">
+              <div class="upload-modal">
+                <p class="notice">프로필 사진이 다음과 같이 보여지게 됩니다</p>
+                <img :src="uploadImgSrc"/>
+              </div>
+              <div slot="footer">
+                <Button @click="uploadAvatar" :loading="loadingUploadBtn">업로드</Button>
+              </div>
+            </Modal>
+            </div>
           </el-col>
         </el-row>
       </el-form>
@@ -128,8 +141,12 @@
   import utils from '@/utils/utils'
   import {mapGetters} from 'vuex'
   import {types} from '@/store'
+  import {VueCropper} from 'vue-cropper'
   export default {
     name: 'ImageList',
+    components: {
+      VueCropper
+    },
     data () {
       return {
         showImageDialog: false,
@@ -272,4 +289,55 @@
 </script>
 
 <style scoped lang="less">
+  .copper-img {
+    width: 100%;
+    height: 500px;
+  }
+  .upload-modal {
+    .notice {
+      font-size: 16px;
+      display: inline-block;
+      vertical-align: top;
+      padding: 10px;
+      padding-right: 15px;
+    }
+    img {
+      box-shadow: 0 0 1px 0;
+      border-radius: 50%;
+    }
+  }
+ .mypage_img{
+    // display: inline-block;
+    // vertical-align: top;
+    margin: 1% 0 0 5%;
+    width: 100%;
+
+  }
+
+  .container_img{
+    width: 100%;
+    height: auto;
+  }
+
+  .flex-container {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+    .cropper-main {
+      flex: none;
+      .copper-img;
+    }
+    .cropper-btn {
+      flex: none;
+      vertical-align: top;
+    }
+    .cropper-preview {
+      flex: none;
+      /*margin: 10px;*/
+      margin-left: 20px;
+      box-shadow: 0 0 1px 0;
+      .copper-img;
+    }
+  }
+
 </style>
