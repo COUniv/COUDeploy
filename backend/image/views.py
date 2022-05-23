@@ -53,7 +53,7 @@ class ImageUploadAPI(APIView):
             return self.error("Unsupported file format")
         
         name = name + suffix
-        with open(os.path.join(settings.AVATAR_UPLOAD_DIR, name), "wb") as img:
+        with open(os.path.join(settings.AVATAR_UPLOAD_DIR, name), "wb") as img: # DIR 변경 필요
             for chunk in image_file:
                 img.write(chunk)
 

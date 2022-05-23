@@ -63,8 +63,15 @@
       <el-form :model="tag" label-width="120px" label-position="left">
         <el-row :gutter="20">
           <el-col :span="12">
+            <el-form-item label="이미지명" required>
+              <el-input v-model="imageInfo.name"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
             <div class="mypage_img">
-              <div class="container_img" v-if="!avatarOption.imgSrc">
+              <div class="container_img" v-if="!imageOption.imgSrc">
               <Upload type="drag"
                       class="container_img"
                       accept=".jpg,.jpeg,.png,.bmp,.gif"
@@ -86,9 +93,9 @@
                     fixed
                     :autoCropWidth="900"
                     :autoCropHeight="400"
-                    :img="avatarOption.imgSrc"
-                    :outputSize="avatarOption.size"
-                    :outputType="avatarOption.outputType"
+                    :img="imageOption.imgSrc"
+                    :outputSize="imageOption.size"
+                    :outputType="imageOption.outputType"
                     :info="true"
                     @realTime="realTime">
                   </vueCropper>
@@ -109,7 +116,7 @@
                 </ButtonGroup>
                 <div class="cropper-preview" :style="previewStyle">
                   <div :style=" preview.div">
-                    <img :src="avatarOption.imgSrc" :style="preview.img">
+                    <img :src="imageOption.imgSrc" :style="preview.img">
                   </div>
                 </div>
               </div>
@@ -121,7 +128,7 @@
                 <img :src="uploadImgSrc"/>
               </div>
               <div slot="footer">
-                <Button @click="uploadAvatar" :loading="loadingUploadBtn">업로드</Button>
+                <Button @click="uploadImage" :loading="loadingUploadBtn">업로드</Button>
               </div>
             </Modal>
             </div>
@@ -155,10 +162,15 @@
         uploadModalVisible: false,
         preview: {},
         uploadImgSrc: '',
-        avatarOption: {
+        imageOption: {
           imgSrc: '',
           size: 0.8,
           outputType: 'png'
+        },
+        imageInfo: {
+          name: '',
+          login: false,
+          main: false
         }
       }
     },
@@ -178,9 +190,6 @@
       },
       openImageDialog () {
         this.showImageDialog = true
-      },
-      saveImage () {
-        console.log('save')
       },
       deleteImage (id) {
         console.log('delete')
@@ -213,7 +222,7 @@
         }
         let reader = new window.FileReader()
         reader.onload = (e) => {
-          this.avatarOption.imgSrc = e.target.result
+          this.imageOption.imgSrc = e.target.result
         }
         reader.readAsDataURL(file)
         return false
@@ -232,7 +241,7 @@
         this.$Modal.confirm({
           content: '변경사항을 취소하시겠습니까?',
           onOk: () => {
-            this.avatarOption.imgSrc = ''
+            this.imageOption.imgSrc = ''
           }
         })
       },
@@ -242,22 +251,25 @@
           this.uploadModalVisible = true
         })
       },
-      uploadAvatar () {
+      uploadImage () {
         this.$refs.cropper.getCropBlob(blob => {
           let form = new window.FormData()
-          let file = new window.File([blob], 'avatar.' + this.avatarOption.outputType)
+          let file = new window.File([blob], 'image.' + this.imageOption.outputType)
           form.append('image', file)
+          form.append('name', this.imageInfo.name)
+          form.append('login', this.imageInfo.login)
+          form.append('main', this.imageInfo.main)
           this.loadingUploadBtn = true
           this.$http({
             method: 'post',
-            url: 'upload_avatar',
+            url: 'upload_image_file',
             data: form,
             headers: {'content-type': 'multipart/form-data'}
           }).then(res => {
             this.loadingUploadBtn = false
             this.$success('새 프로필 업로드에 성공하였습니다')
             this.uploadModalVisible = false
-            this.avatarOption.imgSrc = ''
+            this.imageOption.imgSrc = ''
             this.$store.dispatch('getProfile')
           }, () => {
             this.loadingUploadBtn = false
