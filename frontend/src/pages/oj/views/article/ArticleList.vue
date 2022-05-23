@@ -17,8 +17,13 @@
               </div>
             </div>
             <div @click="handleTypeChange('2')">
-              <div class="community_menu_list_last" v-bind:style="[this.formFilter.boardtype === '2' ?{'background' : 'rgb(110, 110, 110)', 'color' : 'rgb(255, 255, 255)'}:{}]">
+              <div class="community_menu_list" v-bind:style="[this.formFilter.boardtype === '2' ?{'background' : 'rgb(110, 110, 110)', 'color' : 'rgb(255, 255, 255)'}:{}]">
                 질문 게시판
+              </div>
+            </div>
+            <div @click="handleTypeChange('3')">
+              <div class="community_menu_list_last" v-bind:style="[this.formFilter.boardtype === '3' ?{'background' : 'rgb(110, 110, 110)', 'color' : 'rgb(255, 255, 255)'}:{}]">
+                요청 게시판
               </div>
             </div>
           </div>
@@ -246,7 +251,7 @@
     },
     methods: {
       init () {
-        let contentCount = 3 // 이후 컨텐츠(게시판)이 추가 될 경우 이를 늘릴 것
+        let contentCount = 4 // 이후 컨텐츠(게시판)이 추가 될 경우 이를 늘릴 것
         // 쿼리로 필터 설정
         let query = this.$route.query
         this.formFilter.myself = query.myself === '1'
@@ -271,6 +276,9 @@
             break
           case '2' :
             this.mainTitle = '질문 게시판'
+            break
+          case '3' :
+            this.mainTitle = '요청 게시판'
             break
           default :
             this.mainTitle = '전체 게시판'

@@ -18,6 +18,7 @@
             <Dropdown-menu slot="list">
               <Dropdown-item name="1">자유</Dropdown-item>
               <Dropdown-item name="2">질문</Dropdown-item>
+              <Dropdown-item name="3">요청</Dropdown-item>
             </Dropdown-menu>
           </Dropdown>
         </div> -->
@@ -81,6 +82,10 @@
           {
             value: '2',
             label: '질문 게시판'
+          },
+          {
+            value: '3',
+            label: '요청 게시판'
           }
         ],
         problemtypeList: [ // 질문 가능한 언어 리스트

@@ -74,7 +74,7 @@
 > 게시판   
 
 - [ ] 요청 게시판 추가
-- [ ] 사진 업로드 시 overflow resizing 
+- [x] 사진 업로드 시 overflow resizing (kdgyun)
 
 > 프로필   
 

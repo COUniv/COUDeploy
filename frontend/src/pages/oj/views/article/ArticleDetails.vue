@@ -156,6 +156,7 @@
       },
       commentSubmit () { // 댓글 작성
         this.formComment.articleid = this.articleID
+        console.log(this.formComment.content)
         api.createComment(this.formComment).then(res => {
           this.$success('create success')
           this.$router.go()

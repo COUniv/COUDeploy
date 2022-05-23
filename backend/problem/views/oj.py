@@ -6,10 +6,31 @@ from ..models import ProblemTag, Problem, ProblemRuleType, ProblemCategory
 from ..serializers import ProblemSerializer, TagSerializer, ProblemSafeSerializer, ProblemCategorySerializer
 from contest.models import ContestRuleType
 
+class CategoryProblemPercentAPI(APIView):
+    def get(self, request):
+        id = request.GET.get("category_id")
+        category = ProblemCategory.objects.get(id=id)
+        problem_id_list = category.problems
+        problems = Problem.objects.filter(id__in=problem_id_list)
+        total = problems.count()
+        no_accepted = problems.filter(accepted_number = 0).count()
+        return self.success(int((total - no_accepted) / total * 100))
+
+
 class CategoryListAPI(APIView):
     def get(self, request):
         categories = ProblemCategory.objects.all()
-        return self.success(ProblemCategorySerializer(categories, many=True).data)
+        categories_data = ProblemCategorySerializer(categories, many=True).data
+
+        idx = 0
+        for category in categories:
+            problem_id_list = category.problems
+            problems = Problem.objects.filter(id__in=problem_id_list)
+            total = problems.count()
+            no_accepted = problems.filter(accepted_number = 0).count()
+            categories_data[idx]['percent'] = int((total - no_accepted) / total * 100)
+            idx = idx + 1        
+        return self.success(categories_data)
 
 
 class ProblemTagAPI(APIView):

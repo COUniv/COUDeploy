@@ -7,7 +7,7 @@
         <div class="item" v-for="category in problemCategoryList" :key="category" @click="goProblemList(category.id)">
           <h3>{{ category.title }}</h3>
           <div v-katex v-html="category.description"></div>
-          <div class="progress"><Progress :percent="25" /></div>
+          <div class="progress"><Progress :percent="category.percent" /></div>
         </div>
       </div>
     </div>
@@ -31,6 +31,11 @@
         api.getProblemCategoryList().then(res => {
           this.problemCategoryList = res.data.data
           console.log(this.problemCategoryList)
+          // this.problemCategoryList.forEach(element => {
+          //   api.getProblemPercent(element.id).then(res => {
+          //     element.percent = res.data.data
+          //   })
+          // })
         })
       },
       goProblemList (id) {
