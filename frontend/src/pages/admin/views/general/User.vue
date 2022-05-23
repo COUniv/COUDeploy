@@ -173,8 +173,8 @@
       </el-form>
     </Panel>
     <!--对话框-->
-    <el-dialog :title="$t('m.User_Info')" :visible.sync="showUserDialog" :close-on-click-modal="false">
-      <el-form :model="user" label-width="140px" style="min-width:140px" label-position="left">
+    <el-dialog :title="$t('m.User_Info')" class="dialogView" :visible.sync="showUserDialog" :close-on-click-modal="false">
+      <el-form :model="user" label-width="140px" label-position="left">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item :label="$t('m.User_Username')" required>
@@ -434,6 +434,13 @@
     p {
       margin: 0;
       text-align: left;
+    }
+  }
+</style>
+<style lang="less">
+  .dialogView {
+    .el-dialog {
+      min-width: 600px;
     }
   }
 </style>
