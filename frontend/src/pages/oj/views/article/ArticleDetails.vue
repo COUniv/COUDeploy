@@ -1,5 +1,6 @@
 <template>
   <div class="articles-container">
+    
     <Panel shadow :padding="30">
       <!-- 게시글 제목 -->
       <div slot="title" style="font-size: 1.5em;">
@@ -10,11 +11,18 @@
       <div slot="extra">
 
         <!-- 게시글 수정 버튼(작성자만 보임) -->
-        <Button v-if="is_writer" icon="ios-undo" @click="goModify">Modify</Button>
+        <Button v-if="is_writer" icon="ios-create" @click="goModify">Modify</Button>
 
         <!-- 게시글 삭제 버튼(작성자만 보임) -->
-        <Button v-if="is_writer" icon="ios-undo" @click="deleteArticle">Delete</Button>
-        
+        <Button v-if="is_writer" icon="md-trash" @click="deletemodal=true">Delete</Button>
+        <Modal
+          v-model="deletemodal"
+          title="경고"
+          @on-ok="ok"
+          @on-cancel="cancel">
+          <p>게시물을 삭제합니다.</p>
+        </Modal>
+
         <!-- 뒤로가기 버튼 -->
         <Button icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button>
       </div>
@@ -38,10 +46,6 @@
       <div style="margin-top:30px; padding-bottom:30px">
         <div style="float:right; clear:both;">
           <div slot="extra">
-            <!-- 게시글 수정 버튼(작성자만 보임) -->
-            <Button v-if="is_writer" icon="ios-undo" @click="goModify">Modify</Button>
-            <!-- 게시글 삭제 버튼(작성자만 보임) -->
-            <Button v-if="is_writer" icon="ios-undo" @click="deleteArticle">Delete</Button>
             <!-- 좋아요 버튼 -->
             <Button icon="ios-heart-outline" @click="like">좋아요</Button>
           </div>
@@ -100,6 +104,7 @@
     name: 'ArticleDetails',
     data () {
       return {
+        deletemodal: false,
         is_writer: false, // 현재 보는 게시글의 작성자 여부
         article: { // 게시글 내용 출력용 data
           title: '',
@@ -120,6 +125,11 @@
       this.init()
     },
     methods: {
+      ok () {
+        this.deleteArticle()
+      },
+      cancel () {
+      },
       convertUTC () {
         this.comments.forEach(element => {
           element.create_time = time.utcToLocal(element.create_time, 'YYYY-MM-DD HH:mm:ss')
@@ -150,7 +160,7 @@
       },
       deleteArticle () { // 게시글 삭제
         api.deleteArticle(this.articleID).then(res => { // 게시글 ID를 전송해 해당 게시글을 삭제함
-          this.$success('delete success')
+          this.$Message.error('삭제되었습니다.')
           this.$router.push({name: 'article-list'})
         })
       },
