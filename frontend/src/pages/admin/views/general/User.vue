@@ -174,7 +174,7 @@
     </Panel>
     <!--对话框-->
     <el-dialog :title="$t('m.User_Info')" :visible.sync="showUserDialog" :close-on-click-modal="false">
-      <el-form :model="user" label-width="120px" label-position="left">
+      <el-form :model="user" label-width="140px" style="min-width:140px" label-position="left">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item :label="$t('m.User_Username')" required>
@@ -193,7 +193,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('m.User_New_Password')">
-              <el-input v-model="user.password"></el-input>
+              <el-input v-model="user.password" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
