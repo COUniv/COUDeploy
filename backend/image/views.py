@@ -1,9 +1,13 @@
+import os
 from django.shortcuts import render
 from pip import main
 from backend.account.decorators import login_required
+from backend.account.serializers import ImageUploadForm
 from utils.api import APIView
 from models import Image
 from serializers import ImageListSerializer, ImageSerializer
+
+from django.conf import settings
 
 class ImageAPI(APIView):
     def get(self, request):
@@ -23,11 +27,35 @@ class ImageListAPI(APIView):
 
 class ImageUploadAPI(APIView):
     @login_required
-    def get(self, request):
-        data = request.data
-        path = data["path"]
-        login = data["login"]
-        main = data["main"]
+    def post(self, request):
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            image_file = form.cleaned_data["image"]
+            name = form.cleaned_data["name"]
+            login = form.cleaned_data["login"]
+            main = form.cleaned_data["main"]
+        else:
+            return self.error("Invalid file content")
+
+
+        if ((main == "true") or (login == "true")):
+            if Image.objects.filter(is_main_page = True).count() > 6:
+                return self.error("Main page image full")
+            if Image.objects.filter(is_login_page = True).count() > 6:
+                return self.error("Login page image full")
+
+
+        if image_file.size > 2 * 1024 * 1024:
+            return self.error("Picture is too large")
+        
+        suffix = os.path.splitext(image_file.name)[-1].lower()
+        if suffix not in [".gif", ".jpg", ".jpeg", ".bmp", ".png"]:
+            return self.error("Unsupported file format")
+        
+        name = name + suffix
+        with open(os.path.join(settings.AVATAR_UPLOAD_DIR, name), "wb") as img:
+            for chunk in image_file:
+                img.write(chunk)
 
         if Image.objects.exists():
             latest_id = Image.objects.order_by('id')[0].id + 1
@@ -35,7 +63,7 @@ class ImageUploadAPI(APIView):
             latest_id = 1 
 
         image = Image.objects.create(id = latest_id,
-                                     path = path)
+                                     name = name)
         
         if (login == "true"):
             image.is_login_page = True
@@ -50,11 +78,7 @@ class ImageUploadAPI(APIView):
             else:
                 image.is_main_page = False              
         
-        if ((main == "true") or (login == "true")):
-            if Image.objects.filter(is_main_page = True).count() > 6:
-                return self.error("Main page image full")
-            if Image.objects.filter(is_login_page = True).count() > 6:
-                return self.error("Login page image full")
+
 
         image.save()
 

@@ -130,7 +130,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <cancel @click.native="showImageDialog = false">취소</cancel>
-        <save @click.native="saveImage()"></save>
+        <save @click.native="uploadImage()"></save>
       </span>
     </el-dialog>
   </div>
