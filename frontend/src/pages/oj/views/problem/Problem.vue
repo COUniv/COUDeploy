@@ -1,9 +1,15 @@
 <template>
   <div>
+    <div class="blockingdrag" v-if="!submitmode">
+      <NavBar></NavBar>
+    </div>
     <!-- 페이지 전환 에니메이션을 위한 grouping container -->
     <transition-group name="problem-animate" mode="in-out">
       <template v-if="!submitmode">
         <div class="flex-container" key="no-solve-page">
+          <!-- <div class="blockingdrag">
+            <NavBar></NavBar>
+          </div> -->
           <div id="problem-main">
             <!--problem main-->
             <Panel :padding="40" shadow>
@@ -191,7 +197,12 @@
                 </li>
               </ul>
             </Card>
-
+            <div class="footer">
+              <p v-html="website.website_footer"></p>
+              <p>Poweredaaa by <a href="https://github.com/OnlineJudgePlatformDev">COU</a>
+                <span v-if="version">&nbsp; Version: {{ version }}</span>
+              </p>
+            </div>
             <!-- <Card id="pieChart" :padding="0" v-if="!this.contestID || OIContestRealTimePermission">
               <div slot="title">
                 <Icon type="ios-analytics"></Icon>
@@ -381,6 +392,7 @@
   import {types} from '../../../../store'
   import SubmitCodeMirror from '@oj/components/SubmitCodeMirror.vue'
   import CodeMirror from '@oj/components/CodeMirror.vue'
+  import NavBar from '@oj/components/NavBar.vue'
   import storage from '@/utils/storage'
   import {FormMixin} from '@oj/components/mixins'
   import utils from '@/utils/utils'
@@ -394,12 +406,14 @@
   export default {
     name: 'Problem',
     components: {
+      NavBar,
       CodeMirror,
       SubmitCodeMirror
     },
     mixins: [FormMixin],
     data () {
       return {
+        version: process.env.VERSION,
         // submit 화면 여부
         submitmode: false,
 
@@ -461,9 +475,10 @@
     mounted () {
       this.$store.commit(types.CHANGE_CONTEST_ITEM_VISIBLE, {menu: false})
       this.init()
+      this.getWebsiteConfig()
     },
     methods: {
-      ...mapActions(['changeDomTitle']),
+      ...mapActions(['changeDomTitle', 'getWebsiteConfig']),
       help_btn () {
         this.$Notice.open({
           title: 'Notification title',
@@ -682,7 +697,7 @@
       }
     },
     computed: {
-      ...mapGetters(['problemSubmitDisabled', 'contestRuleType', 'OIContestRealTimePermission', 'contestStatus']),
+      ...mapGetters(['problemSubmitDisabled', 'contestRuleType', 'OIContestRealTimePermission', 'contestStatus', 'website']),
       contest () {
         return this.$store.state.contest.contest
       },
@@ -718,6 +733,9 @@
     watch: {
       '$route' () {
         this.init()
+      },
+      'website' () {
+        this.changeDomTitle()
       }
     }
   }
@@ -879,7 +897,20 @@
       line-height: 60px;
     }
   }
+  .footer {
+    background-color: rgb(41, 41, 41);
+    position: absolute;
 
+    // 포지션 강제 fixing
+    margin-left: -50px;
+    margin-bottom: -130px;
+    left: 0px;
+    bottom: 0;
+    width: 100vw; // 강제로 넓히기
+    height: 80px;
+    text-align: center;
+    font-size: small;
+  }
 
   .btn{
     float: left;
@@ -994,7 +1025,12 @@
   .captcha-containers {
     display: inline-block;
   }
-
+  .blockingdrag {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none
+  }
   .captcha-codes {
     width: auto;
     height: 70vh;
