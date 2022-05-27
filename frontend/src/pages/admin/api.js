@@ -132,7 +132,7 @@ export default {
       data
     })
   },
-  // 获取用户列表
+  // 전체 사용자 목록 가져오기
   getUserList (offset, limit, keyword) {
     let params = {paging: true, offset, limit}
     if (keyword) {
@@ -142,7 +142,7 @@ export default {
       params: params
     })
   },
-  // 获取单个用户信息
+  // 특정 사용자 정보 가져오기
   getUser (id) {
     return ajax('admin/user', 'get', {
       params: {
@@ -150,7 +150,7 @@ export default {
       }
     })
   },
-  // 编辑用户
+  // 사용자 수정
   editUser (data) {
     return ajax('admin/user', 'put', {
       data
