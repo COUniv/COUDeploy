@@ -18,10 +18,10 @@
                 <p class="title">{{$t('m.Description')}}</p>
                 <p class="content" v-html=problem.description></p>
                 <!-- {{$t('m.music')}} -->
-                <p class="title">{{$t('m.Input')}} <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></p>
+                <p class="title">입력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></p>
                 <p class="content" v-html=problem.input_description></p>
 
-                <p class="title">{{$t('m.Output')}} <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
+                <p class="title">출력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
                 <p class="content" v-html=problem.output_description></p>
 
                 <div v-for="(sample, index) of problem.samples" :key="index">
@@ -35,11 +35,11 @@
                           <Icon type="clipboard"></Icon>
                         </a>
                       </p>
-                      <pre>{{sample.input}}</pre>
+                      <pre class="input-for-pre">{{sample.input}}</pre>
                     </div>
                     <div class="sample-output">
                       <p class="title">{{$t('m.Sample_Output')}} {{index + 1}}</p>
-                      <pre>{{sample.output}}</pre>
+                      <pre class="input-for-pre">{{sample.output}}</pre>
                     </div>
                   </div>
                 </div>
@@ -59,7 +59,7 @@
               </div>
             </Panel>
             <!--problem main end-->
-            <Card :padding="20" id="submit-code" dis-hover>
+            <!-- <Card :padding="20" id="submit-code" dis-hover>
               <CodeMirror :value.sync="code"
                           :languages="problem.languages"
                           :language="language"
@@ -108,7 +108,7 @@
                   </Button>
                 </Col>
               </Row>
-            </Card>
+            </Card> -->
           </div>
 
           <div id="right-column">
@@ -158,7 +158,7 @@
                 <span class="card-title">{{$t('m.Information')}}</span>
               </div>
               <ul>
-                <li><p>ID</p>
+                <li><p>문제 번호</p>
                   <p>{{problem._id}}</p></li>
                 <li>
                   <p>{{$t('m.Time_Limit')}}</p>
@@ -251,14 +251,14 @@
                       <div id="problem-content" class="markdown-body" v-katex>
                         <p class="title">{{$t('m.Description')}}</p>
                         <p class="content" v-html=problem.description></p>
-                        <p class="title">{{$t('m.Input')}} <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></p>
+                        <p class="title">입력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></p>
                         <p class="content" v-html=problem.input_description></p>
 
-                        <p class="title">{{$t('m.Output')}} <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
+                        <p class="title">출력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
                         <p class="content" v-html=problem.output_description></p>
 
                         <div v-for="(sample, index) of problem.samples" :key="index">
-                          <div class="flex-container sample">
+                          <div class="flex-container sample split-sapple">
                             <div class="sample-input">
                               <p class="title">{{$t('m.Sample_Input')}} {{index + 1}}
                                 <a class="copy"
@@ -268,11 +268,11 @@
                                   <Icon type="clipboard"></Icon>
                                 </a>
                               </p>
-                              <pre>{{sample.input}}</pre>
+                              <pre class="input-for-pre">{{sample.input}}</pre>
                             </div>
                             <div class="sample-output">
                               <p class="title">{{$t('m.Sample_Output')}} {{index + 1}}</p>
-                              <pre>{{sample.output}}</pre>
+                              <pre class="input-for-pre">{{sample.output}}</pre>
                             </div>
                           </div>
                         </div>
@@ -747,6 +747,8 @@
   }
 
   .flex-container {
+    // flex-flow: row wrap;
+    // -ms-flex-flow: row wrap;
     #problem-main {
       flex: auto;
       margin-right: 18px;
@@ -759,6 +761,7 @@
 
   #problem-content {
     margin-top: -50px;
+    margin-left: 10px;
     .title {
       font-size: 17px;
       font-weight: 400;
@@ -776,7 +779,8 @@
     .sample {
       align-items: stretch;
       &-input, &-output {
-        width: 50%;
+        min-width: 200px;
+        width: 45%;
         flex: 1 1 auto;
         display: flex;
         flex-direction: column;
@@ -790,7 +794,11 @@
       }
     }
   }
-
+  .split-sapple {
+    justify-content: flex-start;
+    flex-flow: row wrap;
+    -ms-flex-flow: row wrap;
+  }
   #submit-code {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -865,6 +873,12 @@
     padding: 0 20px 0 20px;
   }
 
+  .input-for-pre {
+    min-width: 90px;
+    overflow: scroll;
+    text-overflow: ellipsis;
+
+  }
 
   .demo-split {
     height: 87vh;

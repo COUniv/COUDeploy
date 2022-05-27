@@ -9,7 +9,7 @@
           </Option>
         </Select>
 
-        <Tooltip :content="this.$i18n.t('m.Reset_to_default_code_definition')" placement="top" style="margin-left: 10px">
+        <Tooltip :content="this.$i18n.t('m.Reset_to_default_code_definition')" placement="bottom" style="margin-left: 10px">
           <Button icon="md-refresh" @click="onResetClick"></Button>
         </Tooltip>
 <!-- 
