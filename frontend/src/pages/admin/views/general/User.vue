@@ -236,7 +236,7 @@
           <el-col :span="12">
             <el-form-item label="Email Verification">
               <el-switch
-                >
+                v-model="user.is_email_verify">
               </el-switch>
             </el-form-item>
           </el-col>
@@ -266,25 +266,25 @@
     name: 'User',
     data () {
       return {
-        // 一页显示的用户数
+        // 한 페이지에 표시되는 사용자 수
         pageSize: 10,
-        // 用户总数
+        // 총 사용자 수
         total: 0,
-        // 用户列表
+        // 사용자목록
         userList: [],
         uploadUsers: [],
         uploadUsersPage: [],
         uploadUsersCurrentPage: 1,
         uploadUsersPageSize: 15,
-        // 搜索关键字
+        // 키워드 검색
         keyword: '',
-        // 是否显示用户对话框
+        // 사용자 대화 상자를 표시할지 여부
         showUserDialog: false,
-        // 当前用户model
+        // 현재 사용자 model
         user: {},
         loadingTable: false,
         loadingGenerate: false,
-        // 当前页码
+        // 현재 페이지 번호
         currentPage: 0,
         selectedUsers: [],
         formGenerateUser: {
@@ -300,22 +300,22 @@
       this.getUserList(1)
     },
     methods: {
-      // 切换页码回调
+      // 토글 페이지 번호 콜백
       currentChange (page) {
         this.currentPage = page
         this.getUserList(page)
       },
-      // 提交修改用户的信息
+      // 사용자 정보를 수정하기 위한 메서드
       saveUser () {
         api.editUser(this.user).then(res => {
-          // 更新列表
+          // 업데이트 목록
           this.getUserList(this.currentPage)
         }).then(() => {
           this.showUserDialog = false
         }).catch(() => {
         })
       },
-      // 打开用户对话框
+      // 사용자 대화 상자 열기
       openUserDialog (id) {
         this.showUserDialog = true
         api.getUser(id).then(res => {
@@ -324,7 +324,7 @@
           this.user.real_tfa = this.user.two_factor_auth
         })
       },
-      // 获取用户列表
+      // 사용자 목록 가져오기
       getUserList (page) {
         this.loadingTable = true
         api.getUserList((page - 1) * this.pageSize, this.pageSize, this.keyword).then(res => {
