@@ -78,7 +78,7 @@
             </div>
             <div style="padding-top:15px; clear:both;">
               <!-- 댓글 수정 입력 폼 - 댓글 수정 버튼 클릭 시 보임 -->
-              <Input v-show="comment.modify" type="text" v-model="comment.content" :placeholder="Comment"></Input>
+              <Input v-show="comment.modify" type="text" v-model="tempComment" :placeholder="Comment"></Input>
               <Button v-show="comment.modify" type="primary" @click="modifyComment(comment)" class="btn">Modify</Button>
             </div>
           </Card>
@@ -118,7 +118,8 @@
         comments: [], // 댓글 목록
         articleID: '', // 게시글 ID
         username: '', // 게시글 작성자 명
-        problemid: ''
+        problemid: '',
+        tempComment: ''
       }
     },
     mounted () {
@@ -179,6 +180,7 @@
         })
       },
       modifyForm (comment) { // 댓글 수정 버튼 클릭 이벤트 리스너 - 댓글 수정 폼 출력
+        this.tempComment = comment.content
         if (comment.modify) { // 댓글의 modify값 = 댓글 수정 폼 출력을 위한 변수, true - 보임 / false - 안보임
           this.$set(comment, 'modify', false) // 수정 폼이 보이는 상태에서 버튼 클릭 시 폼을 숨김
         } else {
@@ -192,7 +194,7 @@
       },
       modifyComment (comment) { // 댓글 수정 제출 버튼 클릭 이벤트 리스너
         // let data = {id: comment.id, content: this.modifyContent}
-        let data = {id: comment.id, content: comment.content} // 댓글 ID, 새로 작성한 content 데이터 전송
+        let data = {id: comment.id, content: this.tempComment} // 댓글 ID, 새로 작성한 content 데이터 전송
         api.modifyComment(data).then(res => {
           this.$success('modify success')
           this.$router.go()
