@@ -113,7 +113,7 @@
           },
           {
             title: this.$i18n.t('m.Title'),
-            width: 600,
+            width: 400,
             align: 'center',
             render: (h, params) => {
               return h('Button', {
