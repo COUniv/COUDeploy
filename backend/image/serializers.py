@@ -3,7 +3,7 @@ from .models import Image
 from django import forms
 
 
-class ImageListSerializer(serializers.ModelSericalizer):
+class ImageListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = "__all__"

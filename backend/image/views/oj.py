@@ -1,11 +1,11 @@
 import os
 from django.shortcuts import render
 from pip import main
-from backend.account.decorators import login_required
-from backend.account.serializers import ImageUploadForm
+from account.decorators import login_required
+from account.serializers import ImageUploadForm
 from utils.api import APIView
-from models import Image
-from serializers import ImageListSerializer, ImageSerializer
+from ..models import Image
+from ..serializers import ImageListSerializer, ImageSerializer
 
 from django.conf import settings
 
