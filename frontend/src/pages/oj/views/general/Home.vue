@@ -167,7 +167,6 @@
       getContestList (page = 1) {
         api.getContestList(0, this.limit, this.query).then((res) => {
           this.contests = res.data.data.results
-          console.log(this.contests)
         })
       },
       getRankData (page = 1) {
@@ -206,7 +205,6 @@
         this.announcement = ''
       },
       goContest () {
-        console.log(this.contest_idx)
         this.$router.push({
           name: 'contest-details',
           params: {contestID: this.contests[this.contest_idx].id}
