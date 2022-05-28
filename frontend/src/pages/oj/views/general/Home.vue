@@ -1,32 +1,6 @@
 <template>
   <div v-if="listVisible" class="home_container">
-  <!-- <Row type="flex" justify="space-around">
-    <Col :span="22"> -->
-    <!-- <panel shadow v-if="contests.length" class="contest">
-      <div slot="title">
-        <Button type="text"  class="contest-title" @click="goContest">{{contests[index].title}}</Button>
-      </div>
-      <Carousel v-model="index" trigger="hover" autoplay :autoplay-speed="6000" class="contest">
-        <CarouselItem v-for="(contest, index) of contests" :key="index">
-          <div class="contest-content">
-            <div class="contest-content-tags">
-              <Button type="info" shape="circle" size="small" icon="calendar">
-                {{contest.start_time | localtime('YYYY-M-D HH:mm') }}
-              </Button>
-              <Button type="success" shape="circle" size="small" icon="android-time">
-                {{getDuration(contest.start_time, contest.end_time)}}
-              </Button>
-              <Button type="warning" shape="circle" size="small" icon="trophy">
-                {{contest.rule_type}}
-              </Button>
-            </div>
-            <div class="contest-content-description">
-              <blockquote v-html="contest.description"></blockquote>
-            </div>
-          </div>
-        </CarouselItem>
-      </Carousel>
-    </panel> -->
+
     <div class="img_container" style="width: 100%;">
         <Carousel autoplay height:400px v-model="value1" loop arrow="hover" @on-change="handleChange">
             <CarouselItem>
@@ -53,46 +27,50 @@
     <div class="main_container">
       <div class="lsit_container" style="display: block">
         <div class="left_announcement" style="float:left">
-          <!-- <Tabs value="name1">
-            <TabPane label="공지사항" name="name1" style="padding: 0 30px 10px 30px">
-              <p class="announcement_title" style="padding: 17px 10px 3px 10px;">공지사항</p>
-              <p class="announcement_title" style="padding: 17px 10px 3px 10px;">공지사항</p>
-              <p class="announcement_title" style="padding: 17px 10px 3px 10px;">공지사항</p>
-              <p class="announcement_title" style="padding: 17px 10px 3px 10px;">공지사항</p>
-              <p class="announcement_title" style="padding: 17px 10px 3px 10px;">공지사항</p>
-            </TabPane>
-            <TabPane label="대회일정" name="name2" style="padding: 0 30px 10px 30px">
-              <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-              <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-              <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-              <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-              <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-            </TabPane>
-          </Tabs> -->
           <!-- <Row :gutter="32"> -->
             <!-- <Col span="12" class="demo-tabs-style1" style="background: #ebebeb;"> -->
               <Tabs value="name1" type="card" :animated="false">
                 <div v-if="!announcements.length" key="no-announcement">
-                  <TabPane label="공지사항" name="name1" style="padding: 0 30px 10px 30px">
-                    <p class="announcement_title" style="padding: 17px 10px 3px 10px;">{{$t('m.No_Announcements')}}</p>
+                  <TabPane :index=0 label="공지사항" name="name1" class="tabpan_padding">
+                    <p class="announcement_title">{{$t('m.No_Announcements')}}</p>
                   </TabPane>
                 </div>
                 <div v-else>
-                  <TabPane label="공지사항" name="name1" style="padding: 0 30px 10px 30px">
-                    <p v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)"  style="padding: 17px 10px 3px 10px;">
+                  <TabPane :index=1 label="공지사항" name="name1" class="tabpan_padding">
+                    <p v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)">
                       <a>
-                        {{announcement.title}}
+                        ▶︎ {{announcement.title}}
                       </a>
                     </p>
                   </TabPane>
                 </div>
-                <TabPane label="대회일정" name="name2" style="padding: 0 30px 10px 30px">
-                  <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-                  <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-                  <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-                  <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-                  <p class="contest_title" style="padding: 17px 10px 3px 10px;">대회일정</p>
-                </TabPane>
+                <div>
+                  <TabPane v-model="contest_idx" :index=1 label="대회일정" name="name2" class="tabpan_padding-s">
+                    <Dropdown @on-click="onStatusChange" :transfer="true" class="contest-status-list">
+                      <span>{{contest_stat === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[contest_stat].name.replace(/ /g,"_"))}}
+                        <!-- <Icon type="arrow-down-b"></Icon> -->
+                        <Icon type="md-arrow-dropdown" />
+                      </span>
+                      <Dropdown-menu slot="list">
+                        <Dropdown-item name="">모든 대회</Dropdown-item>
+                        <Dropdown-item name="0">진행 중인 대회</Dropdown-item>
+                        <Dropdown-item name="1">개최 예정인 대회</Dropdown-item>
+                      </Dropdown-menu>
+                    </Dropdown>
+
+                    <div class="contest_title" v-for="(contest, contest_idx) in contests" :key="contest_idx" @click="goContest">
+                      <div v-if="contest.status == '1'">
+                        <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
+                        <div class="color-yellow"> {{contest.title}} </div>
+                      </div>
+                      <div v-else-if="contest.status == '0'">
+                        <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
+                        <div class="color-green"> {{contest.title}} </div>
+                      </div>
+                      <div style="clear:both;"></div>
+                    </div>
+                  </TabPane>
+                </div>
               </Tabs>
             <!-- </Col> -->
           <!-- </Row> -->
@@ -100,9 +78,16 @@
         <div class="right_rankings" style="float:right">
           <div class="rankings_title">사용자 순위</div>
           <div style="padding: 0 30px 0 30px">
-            <div class="rankings_user" style="padding: 33px 10px 0 10px;" v-for="(data, index) in dataRank" :key="data.user.username" @click="goUser(data.user)">
+            <div class="rankings_user" v-for="(data, index) in dataRank" :key="data.user.username" @click="goUser(data.user)">
               <span>{{index + 1}} 등 : </span>
-              <a style="margin-left: 15px">
+              <a v-if="index == 0" class="first">
+                {{data.user.username}}
+              </a>
+              <a v-else-if="index == 1" class="second">
+                {{data.user.username}}
+              </a>
+              <a v-else-if="index == 2" class="third"></a>
+              <a v-else class="defa">
                 {{data.user.username}}
               </a>
             </div>
@@ -139,7 +124,7 @@
   import ProblemCategory from '../problem/ProblemCategory.vue'
   import api from '@oj/api'
   import time from '@/utils/time'
-  import { CONTEST_STATUS, RULE_TYPE } from '@/utils/constants'
+  import { CONTEST_STATUS_REVERSE, CONTEST_STATUS, RULE_TYPE } from '@/utils/constants'
   import { mapGetters } from 'vuex'
   export default {
     name: 'home',
@@ -149,28 +134,41 @@
     },
     data () {
       return {
+        tabfirstidx: 0,
+        tabsecidx: 1,
         limit: 5,
         total: 5,
         btnLoading: false,
         listVisible: true,
         announcements: [],
         announcement: '',
-        contests: [],
-        index: 0,
+        contest_idx: 0,
         value1: 0,
-        dataRank: []
+        dataRank: [],
+        contests: [],
+        contest_stat: '',
+        query: {
+          status: '',
+          keyword: '',
+          rule_type: ''
+        },
+        CONTEST_STATUS_REVERSE: CONTEST_STATUS_REVERSE
       }
     },
     mounted () {
-      let params = {status: CONTEST_STATUS.NOT_START}
-      api.getContestList(0, 5, params).then(res => {
-        this.contests = res.data.data.results
-      })
+      this.query.status = ''
+      this.query.rule_type = ''
+      this.query.keyword = ''
       this.getAnnouncementList()
       this.getRankData(1)
+      this.getContestList()
     },
     methods: {
-
+      getContestList (page = 1) {
+        api.getContestList(0, this.limit, this.query).then((res) => {
+          this.contests = res.data.data.results
+        })
+      },
       getRankData (page = 1) {
         let offset = (page - 1) * this.limit
         api.getUserRank(offset, this.limit, RULE_TYPE.ACM).then(res => {
@@ -209,8 +207,13 @@
       goContest () {
         this.$router.push({
           name: 'contest-details',
-          params: {contestID: this.contests[this.index].id}
+          params: {contestID: this.contests[this.contest_idx].id}
         })
+      },
+      onStatusChange (status) {
+        this.query.status = status
+        this.contest_stat = status
+        this.getContestList()
       },
       handleChange (old, newval) {
         // console.log(old, newval)
@@ -289,6 +292,39 @@
       }
     }
   }
+  .color-green {
+    color: rgba(2, 148, 2, 0.722);
+    transition: all 0.1s ease-in-out;
+    height: 34px;
+    line-height: 34px;
+    float: left;
+    padding-left: 10px;
+    width: calc(95% - 90px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+      cursor: pointer;
+      font-weight: 700;
+      color: rgba(2, 137, 2, 0.722);
+    }
+  }
+
+  .color-yellow {
+    color: rgba(208, 170, 2, 0.922);
+    transition:all 0.1s ease-in-out;
+    height: 34px;
+    line-height: 34px;
+    float: left;
+    padding-left: 10px;
+    width: calc(95% - 90px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+      cursor: pointer;
+      font-weight: 700;
+      color: rgba(231, 189, 4, 0.922);
+    }
+  }
 
   .announcement {
     margin-top: 20px;
@@ -326,8 +362,9 @@
   }
 
   .announcement_title, .contest_title{
+    padding: 17px 10px 3px 10px;
     font-size: 18px;
-    border-bottom: 1px solid rgb(95, 95, 95);
+    // border-bottom: 1px solid rgb(95, 95, 95);
     overflow: hidden;
     text-overflow: ellipsis;
     // word-wrap: break-word;
@@ -345,7 +382,12 @@
       }
     }
   }
-  
+  .tabpan_padding {
+    padding: 0 30px 10px 30px;
+  }
+  .tabpan_padding-s {
+    padding: 0 30px 10px 10px;
+  }
   .right_rankings{
     display: inline-block;
     vertical-align: top;
@@ -365,9 +407,38 @@
   }
 
   .rankings_user{
-    padding: 25px 10px 3px 10px;
+    padding: 33px 10px 0 10px;
     font-size: 16px;
     background: white;
+
+    .first {
+      color: purple;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
+    .second {
+      color: red;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
+    .third {
+      color: orange;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
+    .defa {
+      color: #495060;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
   }
   .content-container {
     padding: 0 20px 20px 20px;
@@ -376,9 +447,19 @@
     animation: fadeIn 1s;
   }
 
-.ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab{
-  font-size: 20px;
-  height: 35px;
-  padding-top: 0px;
-}
+  .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab{
+    font-size: 20px;
+    height: 35px;
+    padding-top: 0px;
+  }
+</style>
+
+<style lang="less">
+  .contest-status-list {
+    position:relative;
+    float:right;
+    * {
+      z-index: 1000;
+    }
+  }
 </style>

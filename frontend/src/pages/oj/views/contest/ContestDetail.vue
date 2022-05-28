@@ -109,6 +109,9 @@
           {
             title: this.$i18n.t('m.ContestType'),
             render: (h, params) => {
+              if (params.row.contest_type === undefined) {
+                return h('span', this.$i18n.t('m.' + params.row.contest_type))
+              }
               return h('span', this.$i18n.t('m.' + params.row.contest_type.replace(' ', '_')))
             }
           },

@@ -4,7 +4,7 @@
       <div style="font-size:32px;">문제 카테고리</div>
       <hr style="color: gray;">
       <div class="item_box">
-        <div class="item" v-for="category in problemCategoryList" :key="category" @click="goProblemList(category.id)">
+        <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id)">
           <h3>{{ category.title }}</h3>
           <div v-katex v-html="category.description"></div>
           <div class="progress"><Progress :percent="category.percent" /></div>
