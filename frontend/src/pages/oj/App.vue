@@ -20,7 +20,7 @@
     </div>
     <div class="footer" v-show="$route.name !== 'start-login' && $route.name !== 'problem-details'">
       <p v-html="website.website_footer"></p>
-      <p>Poweredaaa by <a href="https://github.com/OnlineJudgePlatformDev">COU</a>
+      <p>Powered by <a href="https://github.com/OnlineJudgePlatformDev">COU</a>
         <span v-if="version">&nbsp; Version: {{ version }}</span>
       </p>
     </div>
