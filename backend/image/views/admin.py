@@ -2,7 +2,7 @@ import os
 from django.shortcuts import render
 from pip import main
 from account.decorators import login_required
-from account.serializers import ImageUploadForm
+from ..serializers import ImageUploadForm
 from utils.api import APIView
 from ..models import Image
 from ..serializers import ImageListSerializer, ImageSerializer
@@ -34,7 +34,7 @@ class ImageUploadAPI(APIView):
             login = form.cleaned_data["login"]
             main = form.cleaned_data["main"]
         else:
-            return self.error("Invalid file content")
+            return self.error("Invalid file content!")
 
 
         if ((main == "true") or (login == "true")):

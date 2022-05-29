@@ -256,9 +256,6 @@
           let form = new window.FormData()
           let file = new window.File([blob], 'image.' + this.imageOption.outputType)
           form.append('image', file)
-          form.append('name', this.imageInfo.name)
-          form.append('login', this.imageInfo.login)
-          form.append('main', this.imageInfo.main)
           this.loadingUploadBtn = true
           api.uploadImageFile(form).then(res => {
             this.loadingUploadBtn = false
