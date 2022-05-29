@@ -164,8 +164,13 @@
       },
       addProblem () {
         let title = this.problemInput
-        console.log(title)
-        if (title) {
+        let flag = true
+        for (let problem of this.problemList) {
+          if (problem.title === title) {
+            flag = false
+          }
+        }
+        if (title && flag) {
           api.addProblem(title).then(res => {
             this.problemList.push(res.data.data)
             this.problemCategory.problems.push(res.data.data.id)
