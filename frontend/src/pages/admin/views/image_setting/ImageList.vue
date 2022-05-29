@@ -260,14 +260,9 @@
           form.append('login', this.imageInfo.login)
           form.append('main', this.imageInfo.main)
           this.loadingUploadBtn = true
-          this.$http({
-            method: 'post',
-            url: 'upload_image_file',
-            data: form,
-            headers: {'content-type': 'multipart/form-data'}
-          }).then(res => {
+          api.uploadImageFile(form).then(res => {
             this.loadingUploadBtn = false
-            this.$success('새 프로필 업로드에 성공하였습니다')
+            this.$success('새 이미지 업로드에 성공하였습니다')
             this.uploadModalVisible = false
             this.imageOption.imgSrc = ''
             this.$store.dispatch('getProfile')

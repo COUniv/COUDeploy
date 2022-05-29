@@ -9,6 +9,11 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  uploadImageFile (form) {
+    return ajax('admin/upload_image_file', 'post', {
+      form
+    })
+  },
   deleteProblemTag (id) {
     return ajax('admin/problem/tag/delete', 'get', {
       params: {

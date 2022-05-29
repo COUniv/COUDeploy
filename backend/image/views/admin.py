@@ -26,7 +26,6 @@ class ImageListAPI(APIView):
         return self.success(data)
 
 class ImageUploadAPI(APIView):
-    @login_required
     def post(self, request):
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
