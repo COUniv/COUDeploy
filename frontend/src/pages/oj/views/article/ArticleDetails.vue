@@ -73,12 +73,21 @@
 
             <div style="padding-top:15px; margin: 0 15px 0 15px; clear:both;">{{ comment.content }}</div>
             <div style="float:right; padding-top:15px; ">
-              <Button v-if="comment.is_comment_writer" icon="ios-undo" @click="modifyForm(comment)">modify</Button>
+              <Button v-if="comment.is_comment_writer" icon="ios-undo" @click="onModalComment(comment)">modify</Button>
               <Button v-if="comment.is_comment_writer" icon="ios-undo" @click="deleteComment(comment)">delete</Button>
             </div>
+            <Modal v-model="commandmodal"
+              title="댓글 수정"
+              @on-ok="modifyCommentOk"
+              @on-cancel="cancel" :mask-closable="false" :fullscreen="fullscrean" z-index="999">
+              <div class="fullscreen-btn">
+                <Button @click="isFullScreen">{{ fullscrean_btn_text }}</Button>
+              </div>
+              <Input type="textarea" :row="6" :v-model="tempComment"></Input>
+            </Modal>
             <div style="padding-top:15px; clear:both;">
               <!-- 댓글 수정 입력 폼 - 댓글 수정 버튼 클릭 시 보임 -->
-              <Input v-show="comment.modify" type="text" v-model="tempComment" :placeholder="Comment"></Input>
+              <Input v-show="comment.modify" type="textarea" :v-on="tempComment" :placeholder="Comment" ></Input>
               <Button v-show="comment.modify" type="primary" @click="modifyComment(comment)" class="btn">Modify</Button>
             </div>
           </Card>
@@ -104,6 +113,9 @@
     name: 'ArticleDetails',
     data () {
       return {
+        fullscrean_btn_text: '전체 화면',
+        fullscrean: false,
+        commandmodal: false,
         deletemodal: false,
         is_writer: false, // 현재 보는 게시글의 작성자 여부
         article: { // 게시글 내용 출력용 data
@@ -126,10 +138,29 @@
       this.init()
     },
     methods: {
+      onModalComment (comment) {
+        this.tempComment = comment.content
+        this.commandmodal = true
+      },
+      isFullScreen () {
+        if (this.fullscrean) {
+          this.cancel()
+        } else {
+          this.fullscrean = true
+          this.fullscrean_btn_text = '전체 화면 종료'
+        }
+      },
+      modifyCommentOk () {
+        this.modifyComment(this.tempComment)
+        this.$Message.info('수정이 완료되었습니다.')
+        this.tempComment = ''
+      },
       ok () {
         this.deleteArticle()
       },
       cancel () {
+        this.fullscrean_btn_text = '전체 화면'
+        this.fullscrean = false
       },
       convertUTC () {
         this.comments.forEach(element => {
@@ -279,7 +310,10 @@
       color:cornflowerblue
     }
   }
-
+  .fullscreen-btn {
+    float: right;
+    margin-bottom: 20px;
+  }
   .linkdiv {
     float: left;
     font-size:1.3em;
