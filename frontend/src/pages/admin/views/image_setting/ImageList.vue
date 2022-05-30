@@ -121,7 +121,7 @@
                 </div>
               </div>
             </div>
-            <Modal v-model="uploadModalVisible"
+            <!-- <Modal v-model="uploadModalVisible"
                   title="프로필 업로드">
               <div class="upload-modal">
                 <p class="notice">프로필 사진이 다음과 같이 보여지게 됩니다</p>
@@ -130,7 +130,7 @@
               <div slot="footer">
                 <Button @click="uploadImage" :loading="loadingUploadBtn">업로드</Button>
               </div>
-            </Modal>
+            </Modal> -->
             </div>
           </el-col>
         </el-row>
@@ -138,6 +138,7 @@
       <span slot="footer" class="dialog-footer">
         <cancel @click.native="showImageDialog = false">취소</cancel>
         <save @click.native="uploadImage()"></save>
+        <Button @click="uploadImage" :loading="loadingUploadBtn">업로드</Button>
       </span>
     </el-dialog>
   </div>
@@ -176,9 +177,6 @@
     },
     mounted () {
       this.routeName = this.$route.name
-    },
-    computed: {
-      ...mapGetters(['isSuperAdmin'])
     },
     methods: {
       handleDblclick (row) {
@@ -255,6 +253,10 @@
         this.$refs.cropper.getCropBlob(blob => {
           let form = new window.FormData()
           let file = new window.File([blob], 'image.' + this.imageOption.outputType)
+          console.log('form')
+          console.log(form)
+          console.log('file')
+          console.log(file)
           form.append('image', file)
           this.loadingUploadBtn = true
           api.uploadImageFile(form).then(res => {
@@ -280,13 +282,16 @@
         })
       }
     },
-    watch: {
-      '$route' (newVal, oldVal) {
-        this.routeName = newVal.name
-        this.getProblemCategoryList(this.currentPage)
-      },
-      'keyword' () {
-        this.getProblemCategoryList(this.currentPage)
+    computed: {
+      ...mapGetters(['isSuperAdmin']),
+      ...mapGetters(['website', 'modalStatus', 'user']),
+
+      previewStyle () {
+        return {
+          'width': this.preview.w + 'px',
+          'height': this.preview.h + 'px',
+          'overflow': 'hidden'
+        }
       }
     }
   }

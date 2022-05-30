@@ -15,7 +15,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
 class ImageUploadForm(forms.Form):
     image = forms.FileField()
-    name = forms.CharField()
-    login = forms.BooleanField()
-    main = forms.BooleanField()
+    # name = forms.CharField()
+    # login = forms.BooleanField()
+    # main = forms.BooleanField()
     
