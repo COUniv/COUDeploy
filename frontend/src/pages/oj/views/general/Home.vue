@@ -37,11 +37,16 @@
                 </div>
                 <div v-else>
                   <TabPane :index=1 label="공지사항" name="name1" class="tabpan_padding">
-                    <p v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)">
-                      <a>
-                        ▶︎ {{announcement.title}}
-                      </a>
-                    </p>
+                    <div v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)">
+                      <div class="announcement-title-box">
+                        <a>
+                          ▶︎ {{announcement.title}}
+                        </a>
+                      </div>
+                      <div class="announcement-time"> {{announcement.create_time | localtime('YY/M/D') }} </div>
+                      <div style="clear:both;"></div>
+                    </div>
+                    <div style="clear:both;"></div>
                   </TabPane>
                 </div>
                 <div>
@@ -62,10 +67,14 @@
                       <div v-if="contest.status == '1'">
                         <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
                         <div class="color-yellow"> {{contest.title}} </div>
+                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}} ~ {{contest.end_time | localtime('YY/M/D')}} </div>
+                        <div style="clear:both"></div>
                       </div>
                       <div v-else-if="contest.status == '0'">
                         <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
                         <div class="color-green"> {{contest.title}} </div>
+                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}} ~ {{contest.end_time | localtime('YY/M/D')}} </div>
+                        <div style="clear:both"></div>
                       </div>
                       <div style="clear:both;"></div>
                     </div>
@@ -292,14 +301,31 @@
       }
     }
   }
+  .announcement-title-box {
+    float: left;
+    height: 34px;
+    line-height: 34px;
+    font-size: 1rem;
+    width: calc(95% - 45px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .announcement-time {
+    float: right;
+    height: 34px;
+    line-height: 34px;
+    font-size: 10px;
+  }
+
   .color-green {
     color: rgba(2, 148, 2, 0.722);
+    font-size: 1rem;
     transition: all 0.1s ease-in-out;
     height: 34px;
     line-height: 34px;
     float: left;
     padding-left: 10px;
-    width: calc(95% - 90px);
+    width: calc(95% - 170px); // default size - left button size(90px) - times(80px)
     overflow: hidden;
     text-overflow: ellipsis;
     &:hover {
@@ -311,12 +337,13 @@
 
   .color-yellow {
     color: rgba(208, 170, 2, 0.922);
+    font-size: 1rem;
     transition:all 0.1s ease-in-out;
     height: 34px;
     line-height: 34px;
     float: left;
     padding-left: 10px;
-    width: calc(95% - 90px);
+    width: calc(95% - 170px); // default size - left button size(90px) - times(80px)
     overflow: hidden;
     text-overflow: ellipsis;
     &:hover {
@@ -364,13 +391,8 @@
   .announcement_title, .contest_title{
     padding: 17px 10px 3px 10px;
     font-size: 18px;
-    // border-bottom: 1px solid rgb(95, 95, 95);
     overflow: hidden;
     text-overflow: ellipsis;
-    // word-wrap: break-word;
-    // display: -webkit-box;
-    // -webkit-line-clamp: 1;
-    // -webkit-box-orient: vertical;
     height: 2.8em;
     line-height: 1.7em;
     width: 100%;
@@ -383,15 +405,14 @@
     }
   }
   .tabpan_padding {
-    padding: 0 30px 10px 30px;
+    padding: 0px 10px 10px 10px;
   }
   .tabpan_padding-s {
-    padding: 0 30px 10px 10px;
+    padding: 0px 10px 10px 10px;
   }
   .right_rankings{
     display: inline-block;
     vertical-align: top;
-    // padding: 0px 20px 20px 20px;
     border: 1px solid rgb(226, 226, 226);
     border-radius: 5px;
     width: 34.5%;
@@ -461,5 +482,14 @@
     * {
       z-index: 1000;
     }
+  }
+
+  .contest-time {
+    height: 34px;
+    line-height: 34px;
+    font-size: 10px;
+    float: right;
+    pointer-events: none;
+    z-index: 997;
   }
 </style>
