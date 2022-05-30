@@ -11,16 +11,17 @@
       <div slot="extra">
 
         <!-- 게시글 수정 버튼(작성자만 보임) -->
-        <Button v-if="is_writer" icon="ios-create" @click="goModify">Modify</Button>
+        <Button v-if="is_writer" icon="ios-create" @click="goModify">수정</Button>
 
         <!-- 게시글 삭제 버튼(작성자만 보임) -->
-        <Button v-if="is_writer" icon="md-trash" @click="deletemodal=true">Delete</Button>
-        <Modal
-          v-model="deletemodal"
-          title="경고"
-          @on-ok="ok"
-          @on-cancel="cancel">
-          <p>게시물을 삭제합니다.</p>
+        <Button v-if="is_writer" icon="md-trash" @click="deletemodal=true">삭제</Button>
+        <Modal v-model="deletemodal">
+          <p slot="header" style="color:red">경고</p>
+          <p style="font-size:14px">게시물을 삭제합니다.</p>
+          <div slot="footer" class="slotWrapper">
+            <Button @click="articleDeleteModalClosed">취소</Button>
+            <Button type="primary" @click="ok">확인</Button>
+          </div>
         </Modal>
 
         <!-- 뒤로가기 버튼 -->
@@ -53,9 +54,9 @@
       </div>
       <!-- 구분선 -->
       <div style="padding-top:15px; clear:both;"></div>
-      <hr>
+      <hr class="hr-style">
       <!-- 댓글 목록 -->
-      <div v-for="(comment,index) in comments" :key="index" style="padding-top:20px">
+      <div v-for="comment in comments" :key="comment.id" style="padding-top:20px">
 
           <Card>
             <!-- 사용자 정보영역 -->
@@ -64,31 +65,56 @@
                 <div class="linkdiv" @click="goCommentUesr(comment.username)">
                   <b>{{ comment.username }}</b>
                 </div>
-                <div style="float:right;">
+                <div style="float:right; line-height: 27.3px;">
                   {{ comment.create_time }}
                 </div>
               </div>
             </Card>
 
 
-            <div style="padding-top:15px; margin: 0 15px 0 15px; clear:both;">{{ comment.content }}</div>
+            <pre v-katex v-html="comment.content" style="padding-top:15px; margin: 0 15px 0 15px;"></pre>
             <div style="float:right; padding-top:15px; ">
-              <Button v-if="comment.is_comment_writer" icon="ios-undo" @click="modifyForm(comment)">modify</Button>
-              <Button v-if="comment.is_comment_writer" icon="ios-undo" @click="deleteComment(comment)">delete</Button>
+              <!-- 수정 버튼 -->
+              <Button v-if="comment.is_comment_writer" icon="ios-create" @click="onModalComment(comment)">수정</Button>
+              <!-- 삭제 버튼 -->
+              <Button v-if="comment.is_comment_writer" icon="md-trash"  @click="onDeleteModalComment(comment)">삭제</Button>
             </div>
-            <div style="padding-top:15px; clear:both;">
-              <!-- 댓글 수정 입력 폼 - 댓글 수정 버튼 클릭 시 보임 -->
-              <Input v-show="comment.modify" type="text" v-model="tempComment" :placeholder="Comment"></Input>
-              <Button v-show="comment.modify" type="primary" @click="modifyComment(comment)" class="btn">Modify</Button>
-            </div>
+            <Modal v-model="deletemodalcomment">
+              <p slot="header" style="color:red">경고</p>
+              <p style="font-size:14px">댓글을 삭제하시겠습니까?</p>
+              <div slot="footer" class="slotWrapper">
+                <Button @click="commentDeleteModalClosed">취소</Button>
+                <Button type="primary" @click="commentDeleteOk(deleteComment_id)">확인</Button>
+              </div>
+            </Modal>
+
+            <!-- 댓글 수정 modal창 -->
+            <Modal v-model="commandmodal"
+              :mask-closable="false" :fullscreen="fullscreen" :z-index="999">
+              <p slot="header" style="color:#f60; text-align:center">
+                <span>댓글 수정</span>
+              </p>
+              <div>
+                <div class="fullscreen-btn">
+                  <Button @click="isFullScreen">{{ fullscreen_btn_text }}</Button>
+                </div>
+                <Input type="textarea" :rows="8" v-model="tempComment.content"></Input>
+              </div>
+              <div slot="footer" class="slotWrapper">
+                <Button @click="modalClosed">취소</Button>
+                <Button type="primary" @click="modifyCommentOk(tempComment)">확인</Button>
+              </div>
+
+            </Modal>
+            <div style="padding-top:15px; clear:both;"></div>
           </Card>
 
       </div>
 
       <!-- 댓글 입력 -->
       <div style="margin-top:30px">
-        <Input type="text" v-model="formComment.content" :placeholder="Comment"></Input>
-        <Button style="margin-top:15px; float:right;" type="primary" @click="commentSubmit" class="btn">Submit</Button>
+        <Input type="textarea" v-model="formComment.content" :autosize="{minRows: 2, maxRows: 6}" placeholder="댓글 입력" class="comment_submit_input"></Input>
+        <Button class="comment_submit_btn" type="text" icon="ios-paper-plane" @click="commentSubmit"></Button>
       </div>
       <!-- float 겹침 방지 (삭제하지마세요) -->
       <div style="clear:both;"></div>
@@ -104,7 +130,11 @@
     name: 'ArticleDetails',
     data () {
       return {
-        deletemodal: false,
+        fullscreen_btn_text: '전체 화면',
+        fullscreen: false,  // 전체화면 여부
+        commandmodal: false,  // 댓글 수정창 modal
+        deletemodalcomment: false,  // 댓글 삭제 경고창 modal
+        deletemodal: false, // 게시글 삭제 경고창 modal
         is_writer: false, // 현재 보는 게시글의 작성자 여부
         article: { // 게시글 내용 출력용 data
           title: '',
@@ -119,17 +149,61 @@
         articleID: '', // 게시글 ID
         username: '', // 게시글 작성자 명
         problemid: '',
-        tempComment: ''
+        deleteComment_id: null, // 댓글 삭제를 위한 임시 value
+        tempComment: {  // 댓글 수정을 위한 임시 value
+          id: null,
+          content: ''
+        }
       }
     },
     mounted () {
       this.init()
     },
     methods: {
-      ok () {
+      articleDeleteModalClosed () {
+        this.deletemodal = false
+      },
+      commentDeleteModalClosed () {
+        this.deletemodalcomment = false
+      },
+      modalClosed () {
+        this.commandmodal = false
+        this.cancel()
+      },
+      onModalComment (comment) {
+        this.tempComment.id = comment.id
+        this.tempComment.content = comment.content
+        this.commandmodal = true
+      },
+      onDeleteModalComment (comment) {
+        this.deleteComment_id = comment.id
+        this.deletemodalcomment = true
+      },
+      isFullScreen () {
+        if (this.fullscreen) {
+          this.cancel()
+        } else {
+          this.fullscreen = true
+          this.fullscreen_btn_text = '전체 화면 종료'
+        }
+      },
+      modifyCommentOk (comment) {
+        this.modifyComment(comment)
+        this.tempComment.id = null
+        this.tempComment.content = '' // 수정 완료후 tempComment를 clear
+        this.refreshComment()
+        this.modalClosed()
+      },
+      ok () { // 게시글 삭제 button ok call
         this.deleteArticle()
       },
       cancel () {
+        this.fullscreen_btn_text = '전체 화면'
+        this.fullscreen = false
+      },
+      commentDeleteOk (comment) { // 댓글 삭제 button ok call
+        this.deleteComment(comment)
+        this.deletemodalcomment = false
       },
       convertUTC () {
         this.comments.forEach(element => {
@@ -153,6 +227,23 @@
         }, () => {
         })
       },
+      refreshComment () {
+        api.getArticle(this.articleID).then(res => {
+          let article = res.data.data
+          this.article.title = article.title
+          this.article.content = article.content
+          this.article.create_time = time.utcToLocal(article.create_time, 'YYYY-MM-DD HH:mm:ss')
+          this.is_writer = article.is_writer
+          this.username = article.username
+          this.comments = article.comments
+          this.formComment.articleid = ''
+          this.formComment.content = ''
+          this.convertUTC()
+          if (article.boardtype === 'QUESTION') {
+            this.problemid = article.problemid
+          }
+        })
+      },
       goBack () { // 뒤로 가기 - 게시글 목록으로 이동
         this.$router.push({name: 'article-list'})
       },
@@ -169,15 +260,16 @@
         this.formComment.articleid = this.articleID
         console.log(this.formComment.content)
         api.createComment(this.formComment).then(res => {
-          this.$success('create success')
-          this.$router.go()
+          this.$success('생성 완료')
+          this.refreshComment()
         })
       },
-      deleteComment (comment) { // 댓글 삭제
-        api.deleteComment(comment.id).then(res => { // 댓글 ID를 전송해 해당 댓글을 삭제함
-          this.$success('delete success')
-          this.$router.go()
+      deleteComment (commentId) { // 댓글 삭제
+        api.deleteComment(commentId).then(res => { // 댓글 ID를 전송해 해당 댓글을 삭제함
+          this.$success('삭제되었습니다.')
+          this.refreshComment()
         })
+        this.deleteComment_id = null
       },
       modifyForm (comment) { // 댓글 수정 버튼 클릭 이벤트 리스너 - 댓글 수정 폼 출력
         this.tempComment = comment.content
@@ -194,10 +286,11 @@
       },
       modifyComment (comment) { // 댓글 수정 제출 버튼 클릭 이벤트 리스너
         // let data = {id: comment.id, content: this.modifyContent}
-        let data = {id: comment.id, content: this.tempComment} // 댓글 ID, 새로 작성한 content 데이터 전송
+        let data = {id: comment.id, content: comment.content} // 댓글 ID, 새로 작성한 content 데이터 전송
         api.modifyComment(data).then(res => {
-          this.$success('modify success')
-          this.$router.go()
+          this.$info('수정이 완료되었습니다.')
+        }, () => {
+          this.$error('Error')
         })
       },
       goUser () {
@@ -279,7 +372,10 @@
       color:cornflowerblue
     }
   }
-
+  .fullscreen-btn {
+    float: right;
+    margin-bottom: 20px;
+  }
   .linkdiv {
     float: left;
     font-size:1.3em;
@@ -300,5 +396,44 @@
   .article-animate-enter-active {
     animation: fadeIn 1s;
   }
+  .hr-style {
+    border: 1px solid #e8eaec;
+  }
+</style>
 
+<style lang="less">
+  .slotWrapper {
+    padding-top: 15px;
+    border-top: 1px solid #e8eaec;
+  }
+  .comment_submit_input textarea {
+    padding-right: 45px;
+    resize: none;
+  }
+  .comment_submit_btn {
+    float: right;
+    position: absolute;
+    right: 35px;
+    bottom: 35px;
+    margin: 0;
+    border: none;
+    &:focus {
+      outline: none !important;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+    * > &:focus {
+      outline: none !important;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+    * > &:hover {
+      color: #2d8cf0;
+      background-color: #00000000;
+      border-color: #00000000;
+    }
+    * {
+      border: none;
+    }
+  }
 </style>
