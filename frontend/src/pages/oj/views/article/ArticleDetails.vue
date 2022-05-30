@@ -118,7 +118,8 @@
         comments: [], // 댓글 목록
         articleID: '', // 게시글 ID
         username: '', // 게시글 작성자 명
-        problemid: ''
+        problemid: '',
+        is_liked: false
       }
     },
     mounted () {
@@ -145,6 +146,7 @@
           this.is_writer = article.is_writer
           this.username = article.username
           this.comments = article.comments
+          this.is_liked = article.is_liked
           this.convertUTC()
           if (article.boardtype === 'QUESTION') {
             this.problemid = article.problemid
