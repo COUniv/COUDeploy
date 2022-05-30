@@ -154,6 +154,8 @@ class ProblemCategoryAPI(APIView):
         problems = data["problems"]
         if ProblemCategory.objects.filter(title=title).exists():
             return self.error("Category's title already exists")
+        if len(problems) != len(set(problems)):
+            return self.error("카테고리 내 문제가 중복되었습니다.")
         ProblemCategory.objects.create(title=title,
                                        description=description,
                                        problems = problems)
