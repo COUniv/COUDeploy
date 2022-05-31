@@ -72,7 +72,7 @@
             </Card>
 
 
-            <pre v-katex v-html="comment.content" style="padding-top:15px; margin: 0 15px 0 15px;"></pre>
+            <pre v-katex v-html="comment.content" style="padding-top:15px; margin: 0 15px 0 15px; white-space: pre-wrap; overflow: auto; word-break:break-all"></pre>
             <div style="float:right; padding-top:15px; ">
               <!-- 수정 버튼 -->
               <Button v-if="comment.is_comment_writer" icon="ios-create" @click="onModalComment(comment)">수정</Button>
@@ -409,13 +409,16 @@
   .comment_submit_input textarea {
     padding-right: 45px;
     resize: none;
+    
   }
   .comment_submit_btn {
     float: right;
     position: absolute;
+    font-size: 1.2rem;
     right: 35px;
     bottom: 35px;
     margin: 0;
+    color: #2d8cf0;
     border: none;
     &:focus {
       outline: none !important;
@@ -428,7 +431,7 @@
       box-shadow: none;
     }
     * > &:hover {
-      color: #2d8cf0;
+      color: #8ab8e9;
       background-color: #00000000;
       border-color: #00000000;
     }
