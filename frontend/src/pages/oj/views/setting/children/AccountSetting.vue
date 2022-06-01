@@ -5,13 +5,13 @@
         <p class="section-title">{{$t('m.ChangePassword')}}</p>
         <Form class="setting-content" ref="formPassword" :model="formPassword" :rules="rulePassword">
           <FormItem label="Old Password" prop="old_password">
-            <Input v-model="formPassword.old_password" type="password"/>
+            <Input v-model="formPassword.old_password" type="password"></Input>
           </FormItem>
           <FormItem label="New Password" prop="new_password">
-            <Input v-model="formPassword.new_password" type="password"/>
+            <Input v-model="formPassword.new_password" type="password"></Input>
           </FormItem>
           <FormItem label="Confirm New Password" prop="again_password">
-            <Input v-model="formPassword.again_password" type="password"/>
+            <Input v-model="formPassword.again_password" type="password"></Input>
           </FormItem>
           <FormItem v-if="visible.tfaRequired" label="Two Factor Auth" prop="tfa_code">
             <Input v-model="formPassword.tfa_code"/>
@@ -29,16 +29,16 @@
         <p class="section-title">{{$t('m.ChangeEmail')}}</p>
         <Form class="setting-content" ref="formEmail" :model="formEmail" :rules="ruleEmail">
           <FormItem label="Current Password" prop="password">
-            <Input v-model="formEmail.password" type="password"/>
+            <Input v-model="formEmail.password" type="password"></Input>
           </FormItem>
           <FormItem label="Old Email">
-            <Input v-model="formEmail.old_email" disabled/>
+            <Input type="text" v-model="formEmail.old_email" disabled></Input>
           </FormItem>
           <FormItem label="New Email" prop="new_email">
-            <Input v-model="formEmail.new_email"/>
+            <Input type="text" v-model="formEmail.new_email"></Input>
           </FormItem>
           <FormItem v-if="visible.tfaRequired" label="Two Factor Auth" prop="tfa_code">
-            <Input v-model="formEmail.tfa_code"/>
+            <Input type="text" v-model="formEmail.tfa_code"></Input>
           </FormItem>
           <Button type="primary" @click="changeEmail">{{$t('m.ChangeEmail')}}</Button>
         </Form>
@@ -50,16 +50,16 @@
         <p class="section-title">{{$t('m.Delete_Account')}}</p>
         <Form class="setting-content" ref="formDelete" :model="formDelete" :rules="ruleDelete">
           <FormItem label="Current Username" prop="username">
-            <Input v-model="formDelete.username" type="username"/>
+            <Input v-model="formDelete.username" type="text"></Input>
           </FormItem>
           <FormItem label="Current Password" prop="password">
-            <Input v-model="formDelete.password" type="password"/>
+            <Input v-model="formDelete.password" type="password"></Input>
           </FormItem>
 
           <FormItem label="Captcha" prop="captcha" style="margin-bottom:30px">
             <div class="oj-captcha">
               <div class="oj-captcha-code">
-                <Input v-model="formDelete.captcha" size="large" @on-enter="deleteAccount"></Input>
+                <Input type="text" v-model="formDelete.captcha" size="large" @on-enter="deleteAccount"></Input>
               </div>
               <div class="oj-captcha-img">
                 <Tooltip content="Click to refresh" placement="top">
@@ -69,7 +69,7 @@
             </div>
           </FormItem>
           <FormItem v-if="visible.tfaRequired" label="Two Factor Auth" prop="tfa_code">
-            <Input v-model="formDelete.tfa_code"/>
+            <Input type="text" v-model="formDelete.tfa_code"/>
           </FormItem>
           <FormItem v-if="visible.accountDelete">
             <Alert type="success">You will logout after 5 seconds..</Alert>
