@@ -71,6 +71,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <div class="mypage_img">
+              <!-- <v-file-input v-model="files" multiiple name="files"></v-file-input> -->
               <div class="container_img" v-if="!imageOption.imgSrc">
               <Upload type="drag"
                       class="container_img"
@@ -138,7 +139,6 @@
       <span slot="footer" class="dialog-footer">
         <cancel @click.native="showImageDialog = false">취소</cancel>
         <save @click.native="uploadImage()"></save>
-        <Button @click="uploadImage" :loading="loadingUploadBtn">업로드</Button>
       </span>
     </el-dialog>
   </div>
@@ -150,6 +150,8 @@
   import {mapGetters} from 'vuex'
   import {types} from '@/store'
   import {VueCropper} from 'vue-cropper'
+  import axios from 'axios'
+
   export default {
     name: 'ImageList',
     components: {
@@ -253,21 +255,35 @@
         this.$refs.cropper.getCropBlob(blob => {
           let form = new window.FormData()
           let file = new window.File([blob], 'image.' + this.imageOption.outputType)
+          form.append('image', file)
+          form.append('name', this.name)
+          form.append('main', this.main)
+          form.append('login', this.login)
           console.log('form')
           console.log(form)
           console.log('file')
           console.log(file)
-          form.append('image', file)
           this.loadingUploadBtn = true
-          api.uploadImageFile(form).then(res => {
-            this.loadingUploadBtn = false
-            this.$success('새 이미지 업로드에 성공하였습니다')
-            this.uploadModalVisible = false
-            this.imageOption.imgSrc = ''
-            this.$store.dispatch('getProfile')
-          }, () => {
-            this.loadingUploadBtn = false
+          let config = {
+            headers: {
+              'Content-Type': 'multipart/form-data' // Content-Type을 변경해야 파일이 전송됨
+            }
+          }
+          axios.post(
+            'admin/upload_image_file',
+            form, config)
+          .then((res) => {
+            console.log(res) // 필요한 것 넣어서 쓰면됨
           })
+          // api.uploadImageFile(file).then(res => {
+          //   this.loadingUploadBtn = false
+          //   this.$success('새 이미지 업로드에 성공하였습니다')
+          //   this.uploadModalVisible = false
+          //   this.imageOption.imgSrc = ''
+          //   this.$store.dispatch('getProfile')
+          // }, () => {
+          //   this.loadingUploadBtn = false
+          // })
         })
       },
       updateProfile () {
