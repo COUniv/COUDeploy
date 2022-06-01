@@ -46,9 +46,10 @@
 
       <div style="margin-top:30px; padding-bottom:30px">
         <div style="float:right; clear:both;">
-          <div slot="extra">
+          <div slot="extra" :v-model="is_liked">
             <!-- 좋아요 버튼 -->
-            <Button icon="ios-heart-outline" @click="like">좋아요</Button>
+            <Button v-if="!is_liked" icon="ios-heart-outline" @click="like" class="like_button">좋아요</Button>
+            <Button v-else icon="ios-heart" @click="like" class="like_button">좋아요</Button>
           </div>
         </div>
       </div>
@@ -260,7 +261,6 @@
       },
       commentSubmit () { // 댓글 작성
         this.formComment.articleid = this.articleID
-        console.log(this.formComment.content)
         api.createComment(this.formComment).then(res => {
           this.$success('생성 완료')
           this.refreshComment()
@@ -270,8 +270,10 @@
         api.deleteComment(commentId).then(res => { // 댓글 ID를 전송해 해당 댓글을 삭제함
           this.$success('삭제되었습니다.')
           this.refreshComment()
+          this.deleteComment_id = null
+        }, () => {
+          this.deleteComment_id = null
         })
-        this.deleteComment_id = null
       },
       modifyForm (comment) { // 댓글 수정 버튼 클릭 이벤트 리스너 - 댓글 수정 폼 출력
         this.tempComment = comment.content
@@ -284,6 +286,7 @@
       like () { // 좋아요
         api.likeArticle(this.articleID).then(res => { // 게시글 ID를 전송
           this.$success(res.data.data)
+          this.init()
         })
       },
       modifyComment (comment) { // 댓글 수정 제출 버튼 클릭 이벤트 리스너
@@ -439,6 +442,18 @@
     }
     * {
       border: none;
+    }
+  }
+  .like_button {
+    &:focus {
+      outline: none !important;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+    * > &:focus {
+      outline: none !important;
+      -webkit-box-shadow: none;
+      box-shadow: none;
     }
   }
 </style>
