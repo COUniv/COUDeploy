@@ -111,6 +111,11 @@ class ArticleAPI(APIView):
             # 현재 접속한 유저가 해당 게시글의 작성자 여부
             article_data["is_writer"] = (request.user.username == article.username)
             
+            if article.like.filter(id = request.user.id).exists(): # 현재 접속한 유저가 해당 게시글의 좋아요를 이미 한 경우
+                article_data["is_liked"] = True
+            else:
+                article_data["is_liked"] = False
+
             try: # 해당 ID를 가진 게시글에 달린 댓글 데이터
                 comments = Comment.objects.filter(articleid=article_id).order_by('id') # 댓글을 가져옴
                 for comment in comments:

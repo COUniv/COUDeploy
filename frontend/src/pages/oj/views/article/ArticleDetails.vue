@@ -153,7 +153,8 @@
         tempComment: {  // 댓글 수정을 위한 임시 value
           id: null,
           content: ''
-        }
+        },
+        is_liked: false
       }
     },
     mounted () {
@@ -220,6 +221,7 @@
           this.is_writer = article.is_writer
           this.username = article.username
           this.comments = article.comments
+          this.is_liked = article.is_liked
           this.convertUTC()
           if (article.boardtype === 'QUESTION') {
             this.problemid = article.problemid
