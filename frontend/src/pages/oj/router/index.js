@@ -34,7 +34,6 @@ router.beforeEach(async(to, from, next) => {
         path: '/login'
       })
     } else if (to.matched.some(record => record.meta.isEmailVerify)) {
-      console.log(store)
       if (!store.getters['isVerifiedEmail'] && !store.getters['isAdminRole'] && !(from.path === '/logout')) {
         Vue.prototype.$error('Please verifying email')
         // store.commit(types.CHANGE_MODAL_STATUS, {mode: 'login', visible: true})

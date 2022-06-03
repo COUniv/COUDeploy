@@ -230,18 +230,8 @@
                     on: { // 확인 클릭 시 알림이 발생한 곳으로 이동
                       click: () => {
                         api.checkNotification(params.row.id).then(res => {
-                          console.log('asd')
                           window.open(params.row.url)
                         })
-                        console.log(params.row)
-                        // try {
-                        //   api.checkNotification(params.row.id).then(res => { // 알림 확인 (error남)
-                        //     console.log(params.row)
-                        //     window.open(params.row.url)
-                        //   })
-                        // } catch (e) {
-                        //   console.log(e)
-                        // }
                       }
                     }
                   }, params.row.notificationtype),
@@ -266,7 +256,6 @@
                     },
                     on: {
                       click: () => {
-                        console.log(params)
                         this.delete = true
                         this.close(params.row.id)
                         this.vGetNotifications()
@@ -300,7 +289,7 @@
           this.notification_checked = false
         }
         if (route && route.indexOf('admin') < 0) {
-          this.$router.push(route)
+          this.$router.push(route).catch(() => {}) // exception catch
         } else {
           window.open('/admin/')
         }
@@ -330,7 +319,6 @@
           } else {
             this.init_notification_count = li.length
           }
-          console.log(this.init_notification_count)
         })
       },
       changeNoti () {
@@ -345,10 +333,9 @@
       },
       close (notificationid) {
         if (this.delete) {
-          console.log('delete')
           api.deleteNotification(notificationid).then(res => { // 알림 고유 ID를 전송해 알림 삭제
+            this.getOnlyNotificationsListLength()
           })
-          this.getOnlyNotificationsListLength()
         }
       },
       goAllNotificationList () {
