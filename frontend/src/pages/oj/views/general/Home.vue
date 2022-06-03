@@ -86,17 +86,24 @@
         </div>
         <div class="right_rankings" style="float:right">
           <div class="rankings_title">사용자 순위</div>
-          <div style="padding: 0 30px 0 30px">
+          <div style="padding: 30px">
             <div class="rankings_user" v-for="(data, index) in dataRank" :key="data.user.username" @click="goUser(data.user)">
-              <span>{{index + 1}} 등 : </span>
+              <span v-if="index > 2">{{index + 1}} 등 : </span>
               <a v-if="index == 0" class="first">
+                <img class="rankings-img" src="../../../../assets/rank1.png"/>
                 {{data.user.username}}
               </a>
               <a v-else-if="index == 1" class="second">
+                <img class="rankings-img" src="../../../../assets/rank2.png"/>
                 {{data.user.username}}
               </a>
-              <a v-else-if="index == 2" class="third"></a>
+              <a v-else-if="index == 2" class="third">
+                <img class="rankings-img" src="../../../../assets/rank3.png"/>
+                {{data.user.username}}
+              </a>
               <a v-else class="defa">
+                <img v-if="index == 3" class="rankings-img" src="../../../../assets/rank4.png"/>
+                <img v-if="index == 4" class="rankings-img" src="../../../../assets/rank5.png"/>
                 {{data.user.username}}
               </a>
             </div>
@@ -427,40 +434,7 @@
     background: rgb(235, 235, 235);
   }
 
-  .rankings_user{
-    padding: 33px 10px 0 10px;
-    font-size: 16px;
-    background: white;
 
-    .first {
-      color: purple;
-      margin-left: 15px;
-      &:hover {
-        color: #2d8cf0;
-      }
-    }
-    .second {
-      color: red;
-      margin-left: 15px;
-      &:hover {
-        color: #2d8cf0;
-      }
-    }
-    .third {
-      color: orange;
-      margin-left: 15px;
-      &:hover {
-        color: #2d8cf0;
-      }
-    }
-    .defa {
-      color: #495060;
-      margin-left: 15px;
-      &:hover {
-        color: #2d8cf0;
-      }
-    }
-  }
   .content-container {
     padding: 0 20px 20px 20px;
   }
@@ -473,9 +447,15 @@
     height: 35px;
     padding-top: 0px;
   }
+
 </style>
 
 <style lang="less">
+
+  .rankings-img {
+    width: 35px;
+    height: 35px;
+  }
   .contest-status-list {
     position:relative;
     float:right;
@@ -491,5 +471,61 @@
     float: right;
     pointer-events: none;
     z-index: 997;
+  }
+
+  .rankings_user{
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 16px;
+    background: white;
+    height: 42px;
+    line-height: 42px;
+
+    a {
+      display: inline-block;
+      height: 42px;
+      line-height: 42px;
+      img {
+        display: block;
+        float: left;
+        margin-right: 15px;
+      }
+    }
+    .first {
+      height: 42px;
+      line-height: 42px;
+      color: #800080;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
+    .second {
+      height: 42px;
+      line-height: 42px;
+      color: red;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
+    .third {
+      height: 42px;
+      line-height: 42px;
+      color: orange;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
+    .defa {
+      height: 42px;
+      line-height: 42px;
+      color: #495060;
+      margin-left: 15px;
+      &:hover {
+        color: #2d8cf0;
+      }
+    }
   }
 </style>
