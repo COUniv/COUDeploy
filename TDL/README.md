@@ -86,6 +86,7 @@
 
 - [x] 요청 게시판 추가 (whdrjs2626)
 - [x] 사진 업로드 시 overflow resizing (kdgyun)
+- [x] 좋아요 기능 수정 (whdrjs2626, kdgyun)
 
 > 프로필   
 
