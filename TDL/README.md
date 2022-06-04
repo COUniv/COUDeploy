@@ -57,6 +57,7 @@
 - [x] 문제 footer 추가하기 (kdgyun)
 - [x] 위의 두개 안되면 navbar, footer 추가안하고 뒤로가기 버튼 만들기 (kdgyun)
 
+- [ ] submit 화면 도움말 기능 컨텐츠 추가 필요
 - [ ] 컨테스트 아이콘 변경 고
 - [ ] text overflow 를 점검하고 ellipsis 적용하기
 - [x] 게시글 댓글 아이콘 수정 (kdgyun)
