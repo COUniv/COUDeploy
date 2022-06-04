@@ -7,22 +7,20 @@
     <transition-group name="problem-animate" mode="in-out">
       <template v-if="!submitmode">
         <div class="flex-container" key="no-solve-page">
-          <!-- <div class="blockingdrag">
-            <NavBar></NavBar>
-          </div> -->
+
           <div id="problem-main">
             <!--problem main-->
             <Panel :padding="40" shadow>
               <div slot="title">{{problem.title}}</div>
               <div id="problem-content" class="markdown-body" v-katex>
                 <p class="title">{{$t('m.Description')}}</p>
-                <p class="content" v-html=problem.description></p>
+                <p class="content" v-html="problem.description"></p>
                 <!-- {{$t('m.music')}} -->
                 <p class="title">입력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></p>
-                <p class="content" v-html=problem.input_description></p>
+                <p class="content" v-html="problem.input_description"></p>
 
                 <p class="title">출력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
-                <p class="content" v-html=problem.output_description></p>
+                <p class="content" v-html="problem.output_description"></p>
 
                 <div v-for="(sample, index) of problem.samples" :key="index">
                   <div class="flex-container sample">
@@ -47,7 +45,7 @@
                 <div v-if="problem.hint">
                   <p class="title">{{$t('m.Hint')}}</p>
                   <Card dis-hover>
-                    <div class="content" v-html=problem.hint></div>
+                    <div class="content" v-html="problem.hint"></div>
                   </Card>
                 </div>
 
@@ -58,57 +56,6 @@
 
               </div>
             </Panel>
-            <!--problem main end-->
-            <!-- <Card :padding="20" id="submit-code" dis-hover>
-              <CodeMirror :value.sync="code"
-                          :languages="problem.languages"
-                          :language="language"
-                          :theme="theme"
-                          @resetCode="onResetToTemplate"
-                          @changeTheme="onChangeTheme"
-                          @changeLang="onChangeLang"></CodeMirror>
-              <Row type="flex" justify="space-between">
-                <Col :span="10">
-                  <div class="status" v-if="statusVisible">
-                    <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
-                      <span>{{$t('m.Status')}}</span>
-                      <Tag type="dot" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
-                        {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
-                      </Tag>
-                    </template>
-                    <template v-else-if="this.contestID && !OIContestRealTimePermission">
-                      <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
-                    </template>
-                  </div>
-                  <div v-else-if="problem.my_status === 0">
-                    <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
-                  </div>
-                  <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists">
-                    <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
-                  </div>
-                  <div v-if="contestEnded">
-                    <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
-                  </div>
-                </Col>
-
-                <Col :span="12">
-                  <template v-if="captchaRequired">
-                    <div class="captcha-container">
-                      <Tooltip v-if="captchaRequired" content="Click to refresh" placement="top">
-                        <img :src="captchaSrc" @click="getCaptchaSrc"/>
-                      </Tooltip>
-                      <Input v-model="captchaCode" class="captcha-code"/>
-                    </div>
-                  </template>
-                  <Button type="warning" icon="edit" :loading="submitting" @click="submitCode"
-                          :disabled="problemSubmitDisabled || submitted"
-                          class="fl-right">
-                    <span v-if="submitting">{{$t('m.Submitting')}}</span>
-                    <span v-else>{{$t('m.Submit')}}</span>
-                  </Button>
-                </Col>
-              </Row>
-            </Card> -->
           </div>
 
           <div id="right-column">
@@ -203,26 +150,7 @@
                 <span v-if="version">&nbsp; Version: {{ version }}</span>
               </p>
             </div>
-            <!-- <Card id="pieChart" :padding="0" v-if="!this.contestID || OIContestRealTimePermission">
-              <div slot="title">
-                <Icon type="ios-analytics"></Icon>
-                <span class="card-title">{{$t('m.Statistic')}}</span>
-                <Button size="small" id="detail" @click="graphVisible = !graphVisible">Details</Button>
-              </div>
-              <div class="echarts">
-                <ECharts :options="pie"></ECharts>
-              </div>
-            </Card>
           </div>
-
-          <Modal v-model="graphVisible">
-            <div id="pieChart-detail">
-              <ECharts :options="largePie" :initOptions="largePieInitOpts"></ECharts>
-            </div>
-            <div slot="footer">
-              <Button @click="graphVisible=false">{{$t('m.Close')}}</Button>
-            </div>
-          </Modal> -->
         </div>
       </template>
       <template v-else>
@@ -232,143 +160,116 @@
               <!-- <Icon type="md-arrow-back" size="24" @click="undoSubmitView" /> -->
               <Icon type="ios-undo" size="24" @click="undoSubmitView" />
             </div>  
-            <div class="logo" style="color:white" >Online Judge Platform</div>
+            <div class="logo" style="color:white" @click="goHome">Online Judge Platform</div>
             <div style="float: right">
-              <div class="btn">
-                <Button type="text" size="large" style="z-index: '1' " @click="help_btn"><p style="color:white">도움말</p></Button>
+              <div class="help-btn">
+                <Button type="text" size="large" style="z-index: '1' " @click="help_btn">도움말</Button>
               </div>
             </div>  
           </div>
 
-          <!-- <div style="height: 80vh"> -->
-          
-            <Split v-model="split3" v-bind:min="min1" v-bind:max="max1" style="overflow: hidden!important;">
-              <div slot="left" class="left-split-pane" >
-
-                <Tabs value="name1" type="card" :animated="false">
-                  <TabPane :label="problem.title" name="name1" >   <!-- style="padding: 0 30px 10px 30px" -->
-                    <div class="problem_contents">
-                      <div id="problem-content" class="markdown-body" v-katex>
-                        <p class="title">{{$t('m.Description')}}</p>
-                        <p class="content" v-html=problem.description></p>
-                        <p class="title">입력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></p>
-                        <p class="content" v-html=problem.input_description></p>
-
-                        <p class="title">출력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
-                        <p class="content" v-html=problem.output_description></p>
-
-                        <div v-for="(sample, index) of problem.samples" :key="index">
-                          <div class="flex-container sample split-sapple">
-                            <div class="sample-input">
-                              <p class="title">{{$t('m.Sample_Input')}} {{index + 1}}
-                                <a class="copy"
-                                    v-clipboard:copy="sample.input"
-                                    v-clipboard:success="onCopy"
-                                    v-clipboard:error="onCopyError">
-                                  <Icon type="clipboard"></Icon>
-                                </a>
-                              </p>
-                              <pre class="input-for-pre">{{sample.input}}</pre>
-                            </div>
-                            <div class="sample-output">
-                              <p class="title">{{$t('m.Sample_Output')}} {{index + 1}}</p>
-                              <pre class="input-for-pre">{{sample.output}}</pre>
-                            </div>
+          <Split v-model="split3" v-bind:min="min1" v-bind:max="max1" style="overflow: hidden!important;">
+            <div slot="left" class="left-split-pane" >
+              <Tabs value="name1" type="card" :animated="false">
+                <TabPane :label="problem.title" name="name1" >   <!-- style="padding: 0 30px 10px 30px" -->
+                  <div class="problem_contents">
+                    <div id="problem-content" class="markdown-body" v-katex>
+                      <p class="title">{{$t('m.Description')}}</p>
+                      <p class="content" v-html="problem.description"></p>
+                      <p class="title">입력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></p>
+                      <p class="content" v-html="problem.input_description"></p>
+                      <p class="title">출력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
+                      <p class="content" v-html="problem.output_description"></p>
+                      <div v-for="(sample, index) of problem.samples" :key="index">
+                        <div class="flex-container sample split-sapple">
+                          <div class="sample-input">
+                            <p class="title">{{$t('m.Sample_Input')}} {{index + 1}}
+                              <a class="copy"
+                                  v-clipboard:copy="sample.input"
+                                  v-clipboard:success="onCopy"
+                                  v-clipboard:error="onCopyError">
+                                <Icon type="clipboard"></Icon>
+                              </a>
+                            </p>
+                            <pre class="input-for-pre">{{sample.input}}</pre>
                           </div>
-                        </div>
-
-                        <div v-if="problem.hint">
-                          <p class="title">{{$t('m.Hint')}}</p>
-                          <Card dis-hover>
-                            <div class="content" v-html=problem.hint></div>
-                          </Card>
+                          <div class="sample-output">
+                            <p class="title">{{$t('m.Sample_Output')}} {{index + 1}}</p>
+                            <pre class="input-for-pre">{{sample.output}}</pre>
+                          </div>
                         </div>
                       </div>
+                      <div v-if="problem.hint">
+                        <p class="title">{{$t('m.Hint')}}</p>
+                        <Card dis-hover>
+                          <div class="content" v-html="problem.hint"></div>
+                        </Card>
+                      </div>
                     </div>
-                  </TabPane>
-                </Tabs>
-              </div>
-              <div slot="right" class="right-split-pane">
-                <!-- <div class="undo-btn">
-                  <Button icon="ios-undo" @click="undoSubmitView">{{$t('m.Back')}}</Button>
-                </div> -->
-                <div style="clear:both;"></div>
-                <!-- Right Padding -->
-                <div class="problem_input">
-                  <!-- <Problem></Problem> -->
-                  <Card :padding="20" id="submit-codes" style="margin: 0;" dis-hover>
-                    <!-- height는 SubmitCodeMirror랑 같게 할 것 -->
-                    <SubmitCodeMirror :value.sync="code"
-                                :languages="problem.languages"
-                                :language="language"
-                                :theme="theme"
-                                @resetCode="onResetToTemplate"
-                                @changeTheme="onChangeTheme"
-                                @changeLang="onChangeLang"></SubmitCodeMirror>
-                    <Row type="flex" justify="space-between">
-                      <Col :span="10">
-                        <div class="status" v-if="statusVisible">
-                          <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
-                            <span>{{$t('m.Status')}}</span>
-                            <Tag type="dot" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
-                              {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
-                            </Tag>
-                          </template>
-                          <template v-else-if="this.contestID && !OIContestRealTimePermission">
-                            <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
-                          </template>
-                        </div>
-                        <div v-else-if="problem.my_status === 0">
-                          <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
-                        </div>
-                        <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists">
-                          <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
-                        </div>
-                        <div v-if="contestEnded">
-                          <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
-                        </div>
-                      </Col>
-
-                      <Col :span="12">
-                        <template v-if="captchaRequired">
-                          <div class="captcha-containers">
-                            <Tooltip v-if="captchaRequired" content="Click to refresh" placement="top">
-                              <img :src="captchaSrc" @click="getCaptchaSrc"/>
-                            </Tooltip>
-                            <Input v-model="captchaCode" class="captcha-codes"/>
-                          </div>
+                  </div>
+                </TabPane>
+              </Tabs>
+            </div>
+            <div slot="right" class="right-split-pane">
+              <div style="clear:both;"></div>
+              <!-- Right Padding -->
+              <div class="problem_input">
+                <!-- <Problem></Problem> -->
+                <Card :padding="20" id="submit-codes" style="margin: 0;" dis-hover>
+                  <!-- height는 SubmitCodeMirror랑 같게 할 것 -->
+                  <SubmitCodeMirror :value.sync="code"
+                              :languages="problem.languages"
+                              :language="language"
+                              :theme="theme"
+                              @resetCode="onResetToTemplate"
+                              @changeTheme="onChangeTheme"
+                              @changeLang="onChangeLang"></SubmitCodeMirror>
+                  <Row type="flex" justify="space-between">
+                    <Col :span="10">
+                      <div class="status" v-if="statusVisible">
+                        <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
+                          <span>{{$t('m.Status')}}</span>
+                          <Tag type="dot" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
+                            {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
+                          </Tag>
                         </template>
-      <!--                   
-                        <Button type="warning" icon="edit" :loading="submitting" @click="submitCode"
-                                :disabled="problemSubmitDisabled || submitted"
-                                class="fl-right">
-                          <span v-if="submitting">{{$t('m.Submitting')}}</span>
-                          <span v-else>{{$t('m.Submit')}}</span>
-                        </Button> -->
-
-                      </Col>
-                    </Row>
-                  </Card>
-                </div>
+                        <template v-else-if="this.contestID && !OIContestRealTimePermission">
+                          <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
+                        </template>
+                      </div>
+                      <div v-else-if="problem.my_status === 0">
+                        <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
+                      </div>
+                      <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists">
+                        <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
+                      </div>
+                      <div v-if="contestEnded">
+                        <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
+                      </div>
+                    </Col>
+                    <Col :span="12">
+                      <template v-if="captchaRequired">
+                        <div class="captcha-containers">
+                          <Tooltip v-if="captchaRequired" content="Click to refresh" placement="top">
+                            <img :src="captchaSrc" @click="getCaptchaSrc"/>
+                          </Tooltip>
+                          <Input v-model="captchaCode" class="captcha-codes"/>
+                        </div>
+                      </template>
+                    </Col>
+                  </Row>
+                </Card>
               </div>
-            </Split>
+            </div>
+          </Split>
           <!-- </div> -->
           <div class="ss_footer">
-          <!-- <Menu mode="horizontal" :theme="theme1" active-name="1" class="solve_submit_navbar"> -->
             <div class="footer_title" style="color:white" >2022년 3월 코딩 테스트</div>
             <div style="float: right">
               <div class="footer_btn" style="color:white">
-                <!-- <Select v-model="model1" size="large" style="width:80px">
-                  <Option style="z-index: '1'" v-for="item in open_data" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                </Select> -->
                 <Button type="primary" size="large" style="z-index: '1' " :class="[isActive ? 'green' : 'red']" @click="toggle">{{isActive ? '공개' : '비공개'}}</Button>
               </div>
-              <!-- <div class="footer_btn" style="color:white">
-                <Button type="primary" size="large" style="z-index: '2'" >초기화</Button>
-              </div>
-              <div class="footer_btn" style="color:white">
-                <Button type="primary" size="large" style="z-index: '3'" >코드 실행</Button>
-              </div> -->
+
               <div class="footer_btn" style="color:white">
                 <Button type="primary" size="large" style="z-index: '4'" :loading="submitting" @click="submitCode"
                         :disabled="problemSubmitDisabled || submitted">
@@ -686,14 +587,13 @@
         this.$error('Failed to copy code')
       },
       goSubmitView () {
-        // this.$router.push({
-        //   name: 'solve-submit',
-        //   query: utils.filterEmptyValue(this.$route.query)
-        // })
         this.submitmode = true
       },
       undoSubmitView () {
         this.submitmode = false
+      },
+      goHome () {
+        this.$router.push('/').catch(() => {})
       }
     },
     computed: {
@@ -747,8 +647,6 @@
   }
 
   .flex-container {
-    // flex-flow: row wrap;
-    // -ms-flex-flow: row wrap;
     #problem-main {
       flex: auto;
       margin-right: 18px;
@@ -841,21 +739,6 @@
     }
   }
 
-  .fl-right {
-    float: right;
-  }
-
-  #pieChart {
-    .echarts {
-      height: 250px;
-      width: 210px;
-    }
-    #detail {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-    }
-  }
 
   #pieChart-detail {
     margin-top: 20px;
@@ -900,12 +783,23 @@
       width: 40px;
       text-align: center;
       line-height: 60px;
+      * {
+        transition: all 0.1s ease-in-out;
+      }
+      &:hover {
+        cursor: pointer;
+        * {
+          color: #3091f2;
+        }
+      }
     }
     .logo{
       float: left;
       color: white;
       font-size: 20px;
-    /* padding: 0; */
+      &:hover {
+        cursor: pointer;
+      }
     }
     div {
       line-height: 60px;
@@ -924,13 +818,6 @@
     height: 80px;
     text-align: center;
     font-size: small;
-  }
-
-  .btn{
-    float: left;
-    color: white;
-    font-size: 16px;
-    padding: 0 10px;
   }
 
   .solve_submit_footer{
@@ -1064,5 +951,21 @@
   .problem-animate-enter-active {
     animation: fadeIn 1s;
   }
-  
+</style>
+<style lang="less">
+  .help-btn{
+    float: left;
+    color: white;
+    font-size: 16px;
+    padding: 0 10px;
+    * {
+      color: white;
+      transition: all 0.1s ease-in-out;
+    }
+
+    &:hover * {
+      background-color: #ffffff00;
+      color: #2d8cf0;
+    }
+  }
 </style>

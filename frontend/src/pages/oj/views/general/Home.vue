@@ -67,13 +67,17 @@
                       <div v-if="contest.status == '1'">
                         <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
                         <div class="color-yellow"> {{contest.title}} </div>
-                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}} ~ {{contest.end_time | localtime('YY/M/D')}} </div>
+                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}}
+                          <!-- ~ {{contest.end_time | localtime('YY/M/D')}}  -->
+                        </div>
                         <div style="clear:both"></div>
                       </div>
                       <div v-else-if="contest.status == '0'">
                         <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
                         <div class="color-green"> {{contest.title}} </div>
-                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}} ~ {{contest.end_time | localtime('YY/M/D')}} </div>
+                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}}
+                          <!-- ~ {{contest.end_time | localtime('YY/M/D')}}  -->
+                        </div>
                         <div style="clear:both"></div>
                       </div>
                       <div style="clear:both;"></div>
@@ -88,7 +92,7 @@
           <div class="rankings_title">사용자 순위</div>
           <div style="padding: 30px">
             <div class="rankings_user" v-for="(data, index) in dataRank" :key="data.user.username" @click="goUser(data.user)">
-              <span v-if="index > 2">{{index + 1}} 등 : </span>
+              <!-- <span v-if="index > 2">{{index + 1}} 등 : </span> -->
               <a v-if="index == 0" class="first">
                 <img class="rankings-img" src="../../../../assets/rank1.png"/>
                 {{data.user.username}}
@@ -455,6 +459,7 @@
   .rankings-img {
     width: 35px;
     height: 35px;
+    margin-top: 3px;
   }
   .contest-status-list {
     position:relative;
@@ -480,6 +485,7 @@
     background: white;
     height: 42px;
     line-height: 42px;
+    width: 100%;
 
     a {
       display: inline-block;
