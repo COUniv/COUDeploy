@@ -32,11 +32,11 @@
             </li>
 
             <li>
-              <Button type="info" icon="refresh" @click="getSubmissions">{{$t('m.Refresh')}}</Button>
+              <Button type="info" icon="md-refresh" @click="getSubmissions">{{$t('m.Refresh')}}</Button>
             </li>
           </ul>
         </div>
-        <Table stripe :disabled-hover="true" :columns="columns" :data="submissions" :loading="loadingTable" size="small"></Table>
+        <Table stripe :disabled-hover="true" :columns="columns" :data="submissions" :key="renderKey" :loading="loadingTable" size="small"></Table>
         <Pagination :total="total" :page-size="limit" @on-change="changeRoute" :current.sync="page"></Pagination>
       </Panel>
     </div>
@@ -58,6 +58,7 @@
     },
     data () {
       return {
+        renderKey: 0,
         formFilter: {
           myself: false,
           result: '',
@@ -98,7 +99,8 @@
             render: (h, params) => {
               return h('Tag', {
                 props: {
-                  color: JUDGE_STATUS[params.row.result].color
+                  color: JUDGE_STATUS[params.row.result].color,
+                  key: params.row.result
                 }
               }, this.$i18n.t('m.' + JUDGE_STATUS[params.row.result].name.replace(/ /g, '_')))
             }
@@ -233,6 +235,9 @@
           this.loadingTable = false
         })
       },
+      forceRender () {
+        this.renderKey += 1
+      },
       // 改变route， 通过监听route变化请求数据，这样可以产生route history， 用户返回时就会保存之前的状态
       changeRoute () {
         let query = utils.filterEmptyValue(this.buildQuery())
@@ -284,10 +289,9 @@
       },
       handleRejudge (id, index) {
         this.submissions[index].loading = true
-        api.submissionRejudge(id).then(res => {
+        api.submissionRejudge(id).then(async () => {
           this.submissions[index].loading = false
           this.$success('Succeeded')
-          this.getSubmissions()
         }, () => {
           this.submissions[index].loading = false
         })

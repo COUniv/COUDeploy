@@ -491,9 +491,9 @@
         })
       },
       checkSubmissionStatus () {
-        // 使用setTimeout避免一些问题
+        // 일부 문제를 방지하려면 setTimeout을 사용하십시오.
         if (this.refreshStatus) {
-          // 如果之前的提交状态检查还没有停止,则停止,否则将会失去timeout的引用造成无限请求
+          // 이전 제출 상태 확인이 중지되지 않은 경우 중지하십시오. 그렇지 않으면 시간 초과에 대한 참조가 손실되고 무한 요청이 발생합니다.
           clearTimeout(this.refreshStatus)
         }
         const checkStatus = () => {
@@ -564,7 +564,7 @@
               title: '',
               content: '<h3>' + this.$i18n.t('m.You_have_submission_in_this_problem_sure_to_cover_it') + '<h3>',
               onOk: () => {
-                // 暂时解决对话框与后面提示对话框冲突的问题(否则一闪而过）
+                // 대화 상자와 다음 프롬프트 대화 상자 간의 충돌을 일시적으로 해결합니다(그렇지 않으면 깜박임).
                 setTimeout(() => {
                   submitFunc(data, false)
                 }, 1000)
