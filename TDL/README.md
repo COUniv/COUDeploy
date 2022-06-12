@@ -23,12 +23,13 @@
 > 메인화면   
 
 - [x] 이미지 적용시켜보기
-- [x] 이미지 size 반응형으로 확인해보기
+- [x] 이미지 size 반응형으로 확인해보기  ( 이미지 안찌그러짐 )
 - [x] 이미지 size 변경하기 (60vh로 변경)
 - [x] 전체 화면 반응형으로 확인해보기 (0619jua) 
 - [x] 공지사항, 대회일정 style 변경(font-size등)  (0619jua) 
 - [x] 사용자 순위 style 변경(공지사항, 대회일정 style에 따라서 같게 수정) (0619jua) 
 - [x] CARD 반응형 size 변경 및 수정하기 (0619jua) 
+- [ ] 이미지 크기 화면에 맞춰서 수정하기
 
 > 문제 설명(Problem)   
 
@@ -42,19 +43,21 @@
 > solve_submit   
 
 - [x] footer 없애기   
-- [x] footer 반응형 조절하기
+- [x] 뒤로가기 버튼 수정하기
+- [세모] footer 반응형 조절하기
 - [x] navbar, footer 특정 화면에서만 출력하기
 
-> 문제 리스트   
+> 문제 리스트  
 
 - [x] 문제 번호 overflow 되는 부분 수정하기 (0619jua) 
 - [x] 문제 table style 변경(center) (0619jua) 
 
 >추가
-> 문제 상세정보
-- [ ] 문제 navbar 추가하기
-- [ ] 문제 footer 추가하기
+> 문제 상세정보 -> 고민하기~
+- [x] 문제 navbar 추가하기
+- [x] 문제 footer 추가하기
 - [ ] 위의 두개 안되면 navbar, footer 추가안하고 뒤로가기 버튼 만들기
+- [x] 코드 작성란 제거하기
 
 **kdgyun / whdrjs2626**
 
