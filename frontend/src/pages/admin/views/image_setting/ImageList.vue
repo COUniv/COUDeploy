@@ -264,26 +264,26 @@
           console.log('file')
           console.log(file)
           this.loadingUploadBtn = true
-          let config = {
-            headers: {
-              'Content-Type': 'multipart/form-data' // Content-Type을 변경해야 파일이 전송됨
-            }
-          }
-          axios.post(
-            'admin/upload_image_file',
-            form, config)
-          .then((res) => {
-            console.log(res) // 필요한 것 넣어서 쓰면됨
-          })
-          // api.uploadImageFile(file).then(res => {
-          //   this.loadingUploadBtn = false
-          //   this.$success('새 이미지 업로드에 성공하였습니다')
-          //   this.uploadModalVisible = false
-          //   this.imageOption.imgSrc = ''
-          //   this.$store.dispatch('getProfile')
-          // }, () => {
-          //   this.loadingUploadBtn = false
+          // let config = {
+          //   headers: {
+          //     'Content-Type': 'multipart/form-data' // Content-Type을 변경해야 파일이 전송됨
+          //   }
+          // }
+          // axios.post(
+          //   'admin/upload_image_file',
+          //   form, config)
+          // .then((res) => {
+          //   console.log(res) // 필요한 것 넣어서 쓰면됨
           // })
+          api.uploadImageFile(file).then(res => {
+            this.loadingUploadBtn = false
+            this.$success('새 이미지 업로드에 성공하였습니다')
+            this.uploadModalVisible = false
+            this.imageOption.imgSrc = ''
+            this.$store.dispatch('getProfile')
+          }, () => {
+            this.loadingUploadBtn = false
+          })
         })
       },
       updateProfile () {
