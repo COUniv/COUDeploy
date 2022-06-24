@@ -1,197 +1,67 @@
-### FRONTEND 개발환경 세팅 하기    
----
-   
-node.js와 vue cli가 설치되어 있어야 합니다.   
-node.js는 최대한 최신 버전 (nodeJs 16.13 LTS 추천) 만약 16버전 미만일 경우 환경 설정 중 오류가 없도록 재설치를 권장합니다.   
 
-<br />   
-
-[ >> nodeJs 설치 링크 << ](https://nodejs.org/ko/download/releases/)   
-
-
-<br />   
-
-<br />   
-
-
-<b>[vue가 설치되어 있지 않은 경우]</b>   
-
-``` ruby 
-#open terminal or powershell   
-npm install -g @vue/cli
-npm install -g @vue/cli-service
-```
-
-<br />   
-
-
-<br />   
-
-
-#### 환경 세팅 (with yarn)
-
-
-<br />   
-
-
-```ruby   
-# cd COUDeploy/frontend
-
-# !주의!
-# Windows에서는 export 대신 set 명령어를 사용할 것
-
-# Warnning은 일단 무시한다. 
-# 모듈 업그레이드(업데이트) 잘못하면 build 과정에서 Error 남
-> npm install
-
-# package upgrade를 하지 않는이상 초기 딱 한 번만 실행해도 됨.
-> export NODE_ENV=development 
-
-> npm run build:dll 
-
-# Your-backend의 경우 로컬호스트에서 테스트를 할려면 localhost로
-# ex) export TARGET=http://localhost
-> export TARGET=http://Your-backend
-```   
-
-<br />   
-
-
-#### 빌드하기
-```ruby   
-# cd COUDeploy/frontend
-> npm run build 
-
-```   
-
-build를 하면 frontend 디렉토리 안에 dist라는 폴더가 생성 될 것입니다.
-
-   
-<br />   
-
-
-#### frontend 볼륨 마운트   
-
-<br />   
-
-위 과정만으로는 아직 docker에 반영된 것은 아닙니다.
-docker 컨테이너가 아닌 로컬 시스템의 frontend 의 빌드 폴더(dist)를 바인드하기 위해서는 <b>docker-compose.yml</b> 파일을 부분적으로 수정해야합니다.
-
-```
-  ...
-
-  oj-backend:
-    image: kdonggyun97/cou-coding-platform-dev
-    container_name: cou-coding-platform-dev
-    restart: always
-    depends_on:
-      - oj-redis
-      - oj-postgres
-      - judge-server
-    volumes:
-      - ./data/backend:/data
-      # - ./frontend/dist:/app/dist
-    environment:
-      - POSTGRES_DB=onlinejudge
-      - POSTGRES_USER=onlinejudge
-      - POSTGRES_PASSWORD=onlinejudge
-      - JUDGE_SERVER_TOKEN=CHANGE_THIS
-      # - FORCE_HTTPS=1
-      - STATIC_CDN_HOST=/
-    ports:
-      - "0.0.0.0:80:8000"
-      - "0.0.0.0:443:1443"
-
-```
-
-여기서 <b> - ./frontend/dist:/app/dist </b> 주석을 해제해줍니다.
-
-그 다음 다음과 같이 명령어를 입력합니다.
-
-
-```ruby
-# cd COUDeploy
-> docker-compose up -d
-```
-
-<br />   
-
-
-위 과정이 끝나고 http://localhost 에 접속하여 페이지를 새로고침 할 경우 반영이 되는 것을 확인 하실 수 있습니다.
-
-
-<br />
-<br />
-<br />
-
-----
-
-
-
-
-
-## Frontend Hierarchy   
-프론트엔드 계층    
+## Installation 
+사전에 Docker가 설치되어있어야 합니다.   
 
 ```shell
- #front/src/pages/admin/views
- └── contest 
-     │── Contet.vue
-     └── ContestList.vue
- └── general
-     │── Announcement.vue
-     │── Conf.vue
-     │── Dashboard.vue
-     │── JudgeServer.vue
-     │── Login.vue
-     │── PruneTestCase.vue
-     └── User.vue
- └── problem
-     │── AddPublicProblem.vue
-     │── ImportAndExport.vue
-     │── Problem.vue 
-     └── ProblemList.vue
- 
- 
- #frontend/src/pages/oj/views
- └── contest 
-     │── ContestDetail.vue    #(/contest/:contestID/) : 해당 ID 대회 문제 
-     │── ContestList.vue      #(/contest) : 대회 문제 리스트
-     └── children
-         │── ACMContestRank.vue 
-         │── ACMHelper.vue
-         │── ContestProblemList.vue
-         │── ContestRank.vue
-         └── OIContestRank.vue
- └── general
-     │── 404.vue
-     │──  Anncouncement.vue
-     └── Home.vue
- └── help
-     │── About.vue      #(/about) : 페이지 설명
-     └── FAQ.vue        #(/faq) : Frequently Asked Questions
- └── problem
-     │── Problem.vue       #(/problem/:problemID ) : 문제 정보 
-     └── ProblemList.vue   #(/problem) : 문제 리스트
- └── rank
-     │── ACMRank.vue       #(/acm-rank) : ACM Ranklist 페이지
-     └── OIRank.vue        #(/oi-rank) : OI Ranklist 페이지
- └── setting
-     └── children : setting 바뀌는 components (default-setting, profile-setting, account-setting, security-setting)
-         │── AccountSetting.vue
-         │── ProfileSetting.vue
-         └── SecuritySetting.vue 
-     └── Settings.vue      #(/setting) : 설정 페이지
- └── submission
-     │── SubmissionDetails.vue      #(status/:id/) : 해당id문제 제출 상태 페이지
-     └── SubmissionList.vue         #(/status) : 모든 문제의 제출 상태 페이지
- └── user
-     │── ApplyResetPassword.vue     #(/apply-reset-password) : 비밀번호 찾기 페이지
-     │── Login.vue                  #로그인 페이지
-     │── Logout.vue                 #(/logout) : 로그아웃 페이지
-     │── Register.vue               #회원가입
-     │── ResetPassword.vue          #(/reset-password/:token) : 비밀번호 재설정
-     └── UserHome.vue               #(/user-home) : 사용자 계정 정보
- ```  
- 
+> git clone https://github.com/OnlineJudgePlatformDev/CodingPlatformDev.git
+> cd CodingPlatformDev
+> docker-compose up -d
+```   
+
 <br />   
+
+이후 ```docker ps -a``` 를 실행하게 되면 다음과 깉이 4개의 컨테이너가 구동되고 있는 것을 확인 할 수 있음   
+
+<p align="center"><img src="../img/dockerpsa.png" /></p>   
+
+
+실행 후 [http://localhost](http://localhost) 접속하면 끝.   
+   
+<br />   
+
+> #### :no_entry_sign: Issue   
+
+Chrome 기준 특정 버전 이상부터는 크롬 정책으로 인해 ```http://localhost``` 접속시 강제로 ```https://localhost ```로 리다이렉트되는 경우가 있음. (이 외에 다른 브라우저에서도 안 될 수 있음.)
+이를 해결하기 위해서는 원칙상 SSL 인증서를 갱신하는게 올바르나, 개발도중 로컬에서 매번 인증서를 갱신하기에는 무리가 있으므로, 임시로 리다이렉트를 하지 않도록 설정하는 방식으로 진행한다.   
+
+
+<br />   
+
+```chrome://flags/#allow-insecure-localhost``` 로 접속 후 ```Allow invalid certificates for resources loaded from localhost. ``` 항목을 <b>Enabled</b> 로 변경   
+
+<br />   
+
+<br />   
+<br />   
+
+
+## Project Hierarchy   
+프로젝트 기본 계층    
+
+```ruby   
+
+ CodingPlatformDev
+ │── back
+ └── front
+ ```  
+
+<br />   
+
+> <b>바로가기</b>   
+
+[backend](/Wiki/back)    
+[frontend](/Wiki/front)   
+[docker](/Wiki/dockerwiki)   
+
+<br />   
+<br />   
+
+### Development Guide
+
+<br />   
+
+front 모듈은 기본 언어가 영어로 설정되어있다. 만약 한국어로 바꾸고자 한다면 다음과 같이 변경하면 된다.   
+```front/src/i18n/index.js 파일의 locale 값을 en-US -> ko 로 변경```   
+
+<br />
+<p align="center"><img src=../img/set_lang.png width="50%" height="50%"/></p> 
