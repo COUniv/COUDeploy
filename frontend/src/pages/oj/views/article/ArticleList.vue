@@ -108,6 +108,7 @@
                       {{ type.label }}
                     </Option>
                   </Select>
+                </li>
 
                 <li class="submenu_list">
                   <!-- 게시글 검색 내용 입력 - search -->
