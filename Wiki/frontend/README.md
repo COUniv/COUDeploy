@@ -28,7 +28,7 @@ npm install -g @vue/cli-service
 <br />   
 
 
-#### 환경 세팅 (with yarn)
+#### 환경 세팅 (with npm)
 
 
 <br />   
