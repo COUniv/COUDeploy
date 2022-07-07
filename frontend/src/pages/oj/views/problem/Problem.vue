@@ -225,6 +225,7 @@
                               @changeTheme="onChangeTheme"
                               @changeLang="onChangeLang"></SubmitCodeMirror>
                   <Row type="flex" justify="space-between">
+                    <!-- 제출 상태 icon -->
                     <Col :span="10">
                       <div class="status" v-if="statusVisible">
                         <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
@@ -267,7 +268,7 @@
             <div class="footer_title" style="color:white" >2022년 3월 코딩 테스트</div>
             <div style="float: right">
               <div class="footer_btn" style="color:white">
-                <Button type="primary" size="large" style="z-index: '1' " :class="[isActive ? 'green' : 'red']" @click="toggle">{{isActive ? '공개' : '비공개'}}</Button>
+                <Button type="primary" size="large" style="z-index: '1' " :type="[isActive ? 'info' : 'error']" @click="toggle">{{isActive ? '공개' : '비공개'}}</Button>
               </div>
 
               <div class="footer_btn" style="color:white">
@@ -301,7 +302,7 @@
   import api from '@oj/api'
   import {pie, largePie} from './chartData'
 
-  // 只显示这些状态的图形占用
+  // 이 상태의 그래픽 점유만 표시
   const filtedStatus = ['-1', '-2', '0', '1', '2', '3', '4', '8']
 
   export default {
@@ -412,7 +413,7 @@
           problem.languages = problem.languages.sort()
           this.problem = problem
           this.changePie(problem)
-          // 在beforeRouteEnter中修改了, 说明本地有code，无需加载template
+          // 로컬에 코드가 있고 템플릿을 로드할 필요가 없음을 나타내는 beforeRouteEnter에서 수정됨
           if (this.code !== '') {
             return
           }
@@ -428,7 +429,7 @@
         })
       },
       changePie (problemData) {
-        // 只显示特定的一些状态
+        // 특정 상태일때만 표시
         for (let k in problemData.statistic_info) {
           if (filtedStatus.indexOf(k) === -1) {
             delete problemData.statistic_info[k]
@@ -440,19 +441,19 @@
           {name: 'AC', value: acNum}
         ]
         this.pie.series[0].data = data
-        // 只把大图的AC selected下，这里需要做一下deepcopy
+        // 큰 그림의 AC만 선택합니다. 여기서 딥카피를 수행해야 합니다.
         let data2 = JSON.parse(JSON.stringify(data))
         data2[1].selected = true
         this.largePie.series[1].data = data2
 
-        // 根据结果设置legend,没有提交过的legend不显示
+        // 결과에 따라 범례를 설정합니다. 제출되지 않은 범례는 표시되지 않습니다.
         let legend = Object.keys(problemData.statistic_info).map(ele => JUDGE_STATUS[ele].short)
         if (legend.length === 0) {
           legend.push('AC', 'WA')
         }
         this.largePie.legend.data = legend
 
-        // 把ac的数据提取出来放在最后
+        // ac 데이터를 추출하고 마지막에 넣습니다.
         let acCount = problemData.statistic_info['0']
         delete problemData.statistic_info['0']
 
@@ -536,7 +537,8 @@
           this.statusVisible = true
           api.submitCode(data).then(res => {
             this.submissionId = res.data.data && res.data.data.submission_id
-            // 定时检查状态
+            this.updateShareSubmission(this.submissionId, this.isActive)
+            // 실시간 상태확인
             this.submitting = false
             this.submissionExists = true
             if (!detailsVisible) {
@@ -579,6 +581,13 @@
         } else {
           submitFunc(data, true)
         }
+      },
+      updateShareSubmission (submissionId, shared) {
+        let data = {id: submissionId, shared: shared}
+        api.updateSubmission(data).then(res => {
+        }, () => {
+          this.$error(this.$i18n.t('m.Error'))
+        })
       },
       onCopy (event) {
         this.$success('Code copied')

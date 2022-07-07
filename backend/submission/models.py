@@ -35,7 +35,7 @@ class Submission(models.Model):
     info = JSONField(default=dict)
     language = models.TextField()
     shared = models.BooleanField(default=False)
-    # 存储该提交所用时间和内存值，方便提交列表显示
+    # 커밋 목록을 쉽게 표시할 수 있도록 커밋에 사용된 시간 및 메모리 값을 저장합니다.
     # {time_cost: "", memory_cost: "", err_info: "", score: 0}
     statistic_info = JSONField(default=dict)
     ip = models.TextField(null=True)
