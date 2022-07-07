@@ -267,15 +267,24 @@
           <div class="ss_footer">
             <div class="footer_title" style="color:white" >2022년 3월 코딩 테스트</div>
             <div style="float: right">
-              <div class="footer_btn" style="color:white">
-                <Button type="primary" size="large" style="z-index: '1' " :type="[isActive ? 'info' : 'error']" @click="toggle">{{isActive ? '공개' : '비공개'}}</Button>
+              <div v-if="!isAfterSubmit" class="footer_btn" style="color:white">
+                <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" :loading="submitted" @click="toggle(false)">공개</Button>
+                <Button v-else type="error" size="large" style="z-index: '1'" :loading="submitted" @click="toggle(true)">비공개</Button>
               </div>
-
+              <div v-else="isAfterSubmit" class="footer_btn" style="color:white">
+                <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" disabled>공개로 제출 됨</Button>
+                <Button v-else type="error" size="large" style="z-index: '1'" disabled>비공개로 제출 됨</Button>
+              </div>
               <div class="footer_btn" style="color:white">
-                <Button type="primary" size="large" style="z-index: '4'" :loading="submitting" @click="submitCode"
-                        :disabled="problemSubmitDisabled || submitted">
-                  <span v-if="submitting">{{$t('m.Submitting')}}</span>
+                <!-- 제출 오남용을 방지하기 위해 제출 한 번으로 제한 -->
+                <Button v-if="!isAfterSubmit" type="primary" size="large" style="z-index: '4'" :loading="submitted" @click="submitCode"
+                        :disabled="problemSubmitDisabled">
+                  <span v-if="submitted">채점중</span>
                   <span v-else>{{$t('m.Submit')}}</span>
+                </Button>
+                <Button v-else type="primary" size="large" @click="goSubmissionList">
+                  채점 현황 보러가기
+                  <Icon type="ios-arrow-forward"></Icon>
                 </Button>
               </div>
             </div>
@@ -318,7 +327,7 @@
         version: process.env.VERSION,
         // submit 화면 여부
         submitmode: false,
-
+        isAfterSubmit: false,
         isActive: false,
         split3: 0.4,
         min1: '200px',
@@ -395,8 +404,8 @@
           duration: 0
         })
       },
-      toggle () {
-        this.isActive = !this.isActive
+      toggle (shared) {
+        this.isActive = shared
       },
       init () {
         this.$Loading.start()
@@ -504,6 +513,7 @@
             if (Object.keys(res.data.data.statistic_info).length !== 0) {
               this.submitting = false
               this.submitted = false
+              this.isAfterSubmit = true
               clearTimeout(this.refreshStatus)
               this.init()
             } else {
@@ -603,6 +613,13 @@
       },
       goHome () {
         this.$router.push('/').catch(() => {})
+      },
+      goSubmissionList () {
+        if (this.contestID) {
+          this.$router.push({name: 'contest-submission-list', query: {problemID: this.problemID}})
+        } else {
+          this.$router.push({name: 'submission-list', query: {problemID: this.problemID}})
+        }
       }
     },
     computed: {
