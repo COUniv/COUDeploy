@@ -47,9 +47,10 @@
           <li><b><span style="color:orangered">메모리 초과</span>를 받았을 경우</b>
             <p><span style="color:orangered">메모리 초과</span>는 말 그대로 문제에서 제한 된 메모리를 초과하여 할당 할 경우 받게 됩니다. 단, 컴파일러의 최적화에 의해 임의로 초과시키더라도 반드시 <span style="color:orangered">메모리 초과</span>가 나는 것은 아니며, <span style="color:orangered">런타임 에러</span> 등
             다른 에러 결과를 받을 수도 있습니다.
+            </p>
           </li>
           <li><b><span style="color:goldenrod">컴파일 에러</span>를 받았을 경우</b>
-            <p><span style="color:goldenrod">컴파일 에러</span>의 경우 컴파일에 실패한 메세지를 자신이 제출했던 결과를 클릭하면 볼 수 있습니다.
+            <p><span style="color:goldenrod">컴파일 에러</span>의 경우 컴파일에 실패한 메세지를 자신이 제출했던 결과를 클릭하면 볼 수 있습니다.</p>
            </li>
           <li><b><span style="color:red">런타임 에러</span>를 받았을 경우</b>
             <p><span style="color:red">런타임 에러</span>의 경우에는 별도의 원인을 알려주진 않습니다.</p>

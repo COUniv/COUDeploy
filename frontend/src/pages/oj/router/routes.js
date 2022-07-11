@@ -27,7 +27,7 @@ import StartLogin from '../views/preHome/Start_Login.vue'
 // import FreeBoard from '../views/board_pages/Free_Board.vue'
 // import RequestBoard from '../views/board_pages/Request_Board.vue'
 // import QuestionBoard from '../views/board_pages/Question_Board.vue'
-import SolveSubmit from '../views/solve_submit_pages/solve_submit.vue'
+import SolveSubmit from '../views/solve_submit_pages/SolveSubmit.vue'
 import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
 

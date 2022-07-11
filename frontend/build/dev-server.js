@@ -59,8 +59,8 @@ Object.keys(proxyTable).forEach(function (context) {
 // handle fallback for HTML5 history API
 const rewrites = {
   rewrites: [{
-    from: '/admin/', // 正则或者字符串
-    to: '/admin/index.html', // 字符串或者函数
+    from: '/admin/',
+    to: '/admin/index.html',
   }]
 }
 const historyMiddleware = require('connect-history-api-fallback')(rewrites);
