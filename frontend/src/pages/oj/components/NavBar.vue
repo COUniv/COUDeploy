@@ -155,7 +155,8 @@
           margin-top: -20;
           margin-top: -40px;
           padding-left: 0px;
-          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline" ghost>
+          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
+          <!-- to change to white -> add "ghost" -->
 
           </Button>
           <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
@@ -165,7 +166,8 @@
           margin-top: -20;
           margin-top: -40px;
           padding-left: 0px;
-          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline" ghost>
+          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
+          <!-- to change to white -> add "ghost" -->
 
           </Button>
           <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
