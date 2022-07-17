@@ -1,7 +1,7 @@
 <template>
   <div style="margin: 0px 0px 15px 0px;">
     <Row type="flex" justify="space-between" class="header">
-      <Col :span=12>
+      <Col :span="12">
       <div>
         <span>{{$t('m.Language')}}:</span>
         <Select :value="language" @on-change="onLangChange" class="adjust">
@@ -12,16 +12,9 @@
         <Tooltip :content="this.$i18n.t('m.Reset_to_default_code_definition')" placement="top" style="margin-left: 10px">
           <Button icon="md-refresh" @click="onResetClick"></Button>
         </Tooltip>
-<!-- 
-        <Tooltip :content="this.$i18n.t('m.Upload_file')" placement="top" style="margin-left: 10px">
-          <Button icon="ios-cloud-upload-outline" @click="onUploadFile"></Button>
-        </Tooltip> -->
-
-        <!-- <input type="file" id="file-uploader" style="display: none" @change="onUploadFileDone"> -->
-
       </div>
       </Col>
-      <Col :span=12>
+      <Col :span="12">
       <div class="fl-right">
         <span>{{$t('m.Theme')}}:</span>
         <Select :value="theme" @on-change="onThemeChange" class="adjust">
@@ -37,6 +30,8 @@
     </div>
   </div>
 </template>
+
+
 <script>
   import utils from '@/utils/utils'
   import { codemirror } from 'vue-codemirror-lite'
