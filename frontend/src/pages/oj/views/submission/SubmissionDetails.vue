@@ -17,7 +17,7 @@
       </Alert>
     </Col>
 
-    <!--后台返info就显示出来， 权限控制放后台 -->
+    <!-- 배경이 정보로 돌아오면 표시되고 권한 제어가 배경에 배치됩니다. -->
     <Col v-if="submission.info && !isCE" :span="20">
       <Table stripe :loading="loading" :disabled-hover="true" :columns="columns" :data="submission.info.data"></Table>
     </Col>

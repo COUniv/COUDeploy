@@ -1,5 +1,22 @@
 <h1>To do List</h1>
 
+v2.
+
+**Dobby / Hinatoy / kdgyun**   
+> 페이지 이름
+- [ ] 할 내용 
+- [x] 완료된 내용
+
+
+**KIMJiho / kdgyun**   
+> 페이지 이름
+- [ ] 할 내용 
+- [x] 완료된 내용
+
+
+----
+
+v1.
 <br />
 
 완료 된 경우 대괄호 사이에 x 문자 넣고 README 업데이트 할 것.   
@@ -41,7 +58,7 @@
 - [x] ALL 대회 -> 대회 리스트 변경
 - [x] 규칙, 체점현황 color style 적용하기
 
-> solve_submit   
+> SolveSubmit   
 
 - [x] footer 없애기   
 - [x] 뒤로가기 버튼 수정하기

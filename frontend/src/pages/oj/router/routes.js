@@ -23,11 +23,11 @@ import {
   AnnouncementList
 } from '../views'
 import Logout from '../views/user/Logout.vue'
-import StartLogin from '../views/create_pages/Start_Login.vue'
+import StartLogin from '../views/preHome/Start_Login.vue'
 // import FreeBoard from '../views/board_pages/Free_Board.vue'
 // import RequestBoard from '../views/board_pages/Request_Board.vue'
 // import QuestionBoard from '../views/board_pages/Question_Board.vue'
-import SolveSubmit from '../views/solve_submit_pages/solve_submit.vue'
+
 import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
 
@@ -38,23 +38,12 @@ export default [
     meta: {requiresAuth: true, isEmailVerify: true, title: 'notification-list'},
     component: Notification
   },
-  // {
-  //   name: 'StartLogin',
-  //   path: '/',
-  //   meta: {title: 'StartLogin'},
-  //   component: StartLogin
-  // },
+
   {
     name: 'start-login',
     path: '/login',
     meta: {title: 'StartLogin'},
     component: StartLogin
-  },
-  {
-    name: 'solve-submit',
-    path: '/solve-submit/:problemID',
-    meta: {requiresAuth: true, title: 'Solve Submit'},
-    component: SolveSubmit
   },
 
   // {
@@ -192,12 +181,6 @@ export default [
         name: 'contest-problem-details',
         path: 'problem/:problemID/',
         component: Problem
-      },
-      {
-        name: 'solve-submit',
-        path: '/solve-submit/:problemID/',
-        meta: {requiresAuth: true, title: 'Solve Submit'},
-        component: SolveSubmit
       },
       {
         name: 'contest-announcement-list',

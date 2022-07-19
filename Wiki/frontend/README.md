@@ -146,7 +146,7 @@ docker 컨테이너가 아닌 로컬 시스템의 frontend 의 빌드 폴더(dis
      │── Login.vue
      │── PruneTestCase.vue
      └── User.vue
- └── problem
+ │── problem
      │── AddPublicProblem.vue
      │── ImportAndExport.vue
      │── Problem.vue 
@@ -154,7 +154,12 @@ docker 컨테이너가 아닌 로컬 시스템의 frontend 의 빌드 폴더(dis
  
  
  #frontend/src/pages/oj/views
- └── contest 
+ │── article 
+     │── ArticleDetails.vue    # (/article/:articleID/) : 게시글 고유 ID에 대한 상세 글 페이지뷰 
+     │── ArticleList.vue      # (/article-list?query) : 게시글 리스트
+     │── CreateArticle.vue      # (/create-article) : 게시글 작성 페이지
+     └── Notification.vue      # (notification-list) : 알림 리스트 페이지
+ │── contest 
      │── ContestDetail.vue    #(/contest/:contestID/) : 해당 ID 대회 문제 
      │── ContestList.vue      #(/contest) : 대회 문제 리스트
      └── children
@@ -163,33 +168,39 @@ docker 컨테이너가 아닌 로컬 시스템의 frontend 의 빌드 폴더(dis
          │── ContestProblemList.vue
          │── ContestRank.vue
          └── OIContestRank.vue
- └── general
-     │── 404.vue
-     │──  Anncouncement.vue
-     └── Home.vue
- └── help
-     │── About.vue      #(/about) : 페이지 설명
-     └── FAQ.vue        #(/faq) : Frequently Asked Questions
- └── problem
-     │── Problem.vue       #(/problem/:problemID ) : 문제 정보 
-     └── ProblemList.vue   #(/problem) : 문제 리스트
- └── rank
+ │── general
+     │── 404.vue        # 잘못된 경로로 접근시 404 페이지
+     │── Anncouncement.vue  # 공지사항 페이지
+     │── AnncouncementList.vue  # 공지사항 리스트 페이지
+     └── Home.vue       # 홈
+ │── help
+     │── About.vue      # (/about) : 자주 묻는 질문 페이지 (현재 안씀; FAQ로 통합)
+     │── Languages.vue      # (/languages) : 언어별 도움말 페이지
+     └── FAQ.vue        # (/faq) : Frequently Asked Questions
+ │── preHome
+     └── Start_Login.vue        # 로그인 전 pre 페이지
+ │── problem
+     │── Problem.vue       # (/problem/:problemID) : 문제 상세 페이지
+     │── ProblemCategory.vue       # (/problem?query) : 카테고리에 묶인 문제 리스트
+     └── ProblemList.vue   # (/problem) : 문제 리스트
+ │── rank
      │── ACMRank.vue       #(/acm-rank) : ACM Ranklist 페이지
      └── OIRank.vue        #(/oi-rank) : OI Ranklist 페이지
  └── setting
-     └── children : setting 바뀌는 components (default-setting, profile-setting, account-setting, security-setting)
+     └── children # setting 사이드바 components (default-setting, profile-setting, account-setting, security-setting)
          │── AccountSetting.vue
          │── ProfileSetting.vue
          └── SecuritySetting.vue 
      └── Settings.vue      #(/setting) : 설정 페이지
- └── submission
+ │── submission
      │── SubmissionDetails.vue      #(status/:id/) : 해당id문제 제출 상태 페이지
      └── SubmissionList.vue         #(/status) : 모든 문제의 제출 상태 페이지
  └── user
      │── ApplyResetPassword.vue     #(/apply-reset-password) : 비밀번호 찾기 페이지
-     │── Login.vue                  #로그인 페이지
-     │── Logout.vue                 #(/logout) : 로그아웃 페이지
-     │── Register.vue               #회원가입
+     │── ApplyVerifyEmail.vue       # 이메일 인증 페이지
+     │── Login.vue                  # 로그인 함수 (페이지 뷰는 없음)
+     │── Logout.vue                 # 로그아웃 함수 (페이지 뷰는 없음)
+     │── Register.vue               # 회원가입
      │── ResetPassword.vue          #(/reset-password/:token) : 비밀번호 재설정
      └── UserHome.vue               #(/user-home) : 사용자 계정 정보
  ```  
