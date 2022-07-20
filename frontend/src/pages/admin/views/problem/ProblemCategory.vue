@@ -98,8 +98,8 @@
     data () {
       return {
         rules: {
-          title: {required: true, message: 'Title is required', trigger: 'blur'},
-          description: {required: true, message: 'Description is required', trigger: 'blur'}
+          title: {required: true, message: '제목을 입력해주세요', trigger: 'blur'},
+          description: {required: true, message: '설명란은 비울 수 없습니다.', trigger: 'blur'}
         },
         problemCategory: {
           id: '',
@@ -139,17 +139,21 @@
         }
       },
       submit () {
-        let data = Object.assign({}, this.problemCategory)
-        if (this.mode === 'modify') {
-          api.modifyProblemCategory(data).then(res => {
-            this.$success('success!!')
-            this.$router.push({name: 'problem-category-list'})
-          })
+        if (this.problemList.length === '' || this.problemList.length < 1 || this.problemList.length < '1') {
+          this.$error('최소 한 개 이상의 문제가 존재해야 합니다.')
         } else {
-          api.createProblemCategory(data).then(res => {
-            this.$success('success!!')
-            this.$router.push({name: 'problem-category-list'})
-          })
+          let data = Object.assign({}, this.problemCategory)
+          if (this.mode === 'modify') {
+            api.modifyProblemCategory(data).then(res => {
+              this.$success('success!!')
+              this.$router.push({name: 'problem-category-list'})
+            })
+          } else {
+            api.createProblemCategory(data).then(res => {
+              this.$success('success!!')
+              this.$router.push({name: 'problem-category-list'})
+            })
+          }
         }
       },
       problemquerySearch (queryString, cb) {
@@ -177,10 +181,12 @@
           })
         }
         this.problemInput = ''
+        this.problemCategory.problemListLength = this.problemList.length
       },
       deleteProblem (index) {
         this.problemList.splice(index, 1)
         this.problemCategory.problems.splice(index, 1)
+        this.problemCategory.problemListLength = this.problemList.length
       }
     }
   }
