@@ -386,8 +386,8 @@ class ProblemAPI(ProblemBase):
         keyword = request.GET.get("keyword", "").strip()
         if keyword:
             problems = problems.filter(Q(title__icontains=keyword) | Q(_id__icontains=keyword))
-        if not user.can_mgmt_all_problem():
-            problems = problems.filter(created_by=user)
+        # if not user.can_mgmt_all_problem():
+        #     problems = problems.filter(created_by=user)
         return self.success(self.paginate_data(request, problems, ProblemAdminSerializer))
 
     @problem_permission_required
