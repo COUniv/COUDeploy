@@ -30,7 +30,6 @@
       init () {
         api.getProblemCategoryList().then(res => {
           this.problemCategoryList = res.data.data
-          console.log(this.problemCategoryList)
           // this.problemCategoryList.forEach(element => {
           //   api.getProblemPercent(element.id).then(res => {
           //     element.percent = res.data.data
