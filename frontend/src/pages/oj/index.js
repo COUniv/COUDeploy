@@ -57,7 +57,7 @@ const eventsHub = new Vue()
 Vue.use(IdleVue, {
   eventEmitter: eventsHub,
   store,
-  idleTime: 3000, // 3 seconds
+  idleTime: 10000, // 10 seconds
   startAtIdle: false
 })
 

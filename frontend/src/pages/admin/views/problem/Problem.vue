@@ -353,6 +353,7 @@
           source: '',
           io_mode: {'io_mode': 'Standard IO', 'input': 'input.txt', 'output': 'output.txt'}
         }
+        this.getProblemList()
         let contestID = this.$route.params.contestId
         if (contestID) {
           this.problem.contest_id = this.reProblem.contest_id = contestID
@@ -388,7 +389,6 @@
           }
         }
       })
-      this.getProblemList()
     },
     watch: {
       '$route' () {
