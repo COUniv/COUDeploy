@@ -58,11 +58,22 @@
           prop="visible"
           label="Visible">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.visible"
-                       active-text=""
-                       inactive-text=""
-                       @change="updateProblem(scope.row)">
-            </el-switch>
+            <div v-if="scope.row.created_by.username === 'root' && !isSuperAdmin">
+              <el-switch
+                       v-model="scope.row.visible"
+                       disabled>
+              </el-switch>
+            </div>
+            <div v-else>
+              <el-switch 
+                         v-model="scope.row.visible"
+                         active-text=""
+                         inactive-text=""
+                         active-color="#13ce66"
+                         inactive-color="#ff4949"
+                         @change="updateProblem(scope.row)">
+              </el-switch>
+            </div>
           </template>
         </el-table-column>
         <el-table-column

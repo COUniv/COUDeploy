@@ -409,11 +409,11 @@ function ajax (url, method, options) {
       params,
       data
     }).then(res => {
-      // API正常返回(status=20x), 是否错误通过有无error判断
+      // API는 정상적으로(status=20x) 반환되며, 오류 유무로 오류를 판단
       if (res.data.error !== null) {
         Vue.prototype.$error(res.data.data)
         reject(res)
-        // 若后端返回为登录，则为session失效，应退出当前登录用户
+        // 백엔드가 로그인으로 반환되면 세션이 유효하지 않으며 현재 로그인한 사용자는 로그아웃해야 함
         if (res.data.data.startsWith('Please login')) {
           store.dispatch('changeModalStatus', {'mode': 'login', 'visible': true})
         }
@@ -424,7 +424,7 @@ function ajax (url, method, options) {
         // }
       }
     }, res => {
-      // API请求异常，一般为Server error 或 network error
+      // API 요청 예외, 일반적으로 서버 오류 또는 네트워크 오류
       reject(res)
       Vue.prototype.$error(res.data.data)
     })
