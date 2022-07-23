@@ -21,7 +21,7 @@ const state = {
 }
 
 const getters = {
-  // contest 是否加载完成
+  // contest 로딩 완료 여부
   contestLoaded: (state) => {
     return !!state.contest.status
   },
