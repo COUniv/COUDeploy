@@ -46,7 +46,7 @@
                     <Icon type="md-refresh" size="20"></Icon>
                   </Button>
                   <Button @click="finishCrop">
-                    <Icon type="md-checkmark-circle-outline" size="20">
+                    <Icon type="md-checkmark-circle-outline" size="20"></Icon>
                   </Button>
                 </ButtonGroup>
                 <div class="cropper-preview" :style="previewStyle">
