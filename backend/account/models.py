@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.conf import settings
 from django.db import models
 from utils.models import JSONField
-
+from django.contrib.postgres.fields import ArrayField  
 
 class AdminType(object):
     REGULAR_USER = "Regular User"
@@ -27,6 +27,7 @@ class User(AbstractBaseUser):
     username = models.TextField(unique=True)
     email = models.TextField(null=True)
     create_time = models.DateTimeField(auto_now_add=True, null=True)
+
     # One of UserType
     admin_type = models.TextField(default=AdminType.REGULAR_USER)
     problem_permission = models.TextField(default=ProblemPermission.NONE)
@@ -48,7 +49,9 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
-
+    
+    grass = ArrayField(models.DateTimeField(), blank=True, default=list)
+    
     objects = UserManager()
 
     def is_admin(self):
@@ -65,7 +68,10 @@ class User(AbstractBaseUser):
 
     def is_contest_admin(self, contest):
         return self.is_authenticated and (contest.created_by == self or self.admin_type == AdminType.SUPER_ADMIN)
-
+    
+    def add_grass(self, date):
+        self.grass.append(date)
+        
     class Meta:
         db_table = "user"
 

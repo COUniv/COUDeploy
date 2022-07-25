@@ -12,6 +12,7 @@ from django.utils.timezone import now
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from otpauth import OtpAuth
 
+from account.models import User
 from problem.models import Problem
 from utils.constants import ContestRuleType
 from options.options import SysOptions
@@ -25,7 +26,8 @@ from ..serializers import (ApplyResetPasswordSerializer, ResetPasswordSerializer
                            UserRegisterSerializer, UsernameOrEmailCheckSerializer,
                            RankInfoSerializer, UserChangeEmailSerializer, SSOSerializer)
 from ..serializers import (TwoFactorAuthCodeSerializer, UserProfileSerializer,
-                           EditUserProfileSerializer, ImageUploadForm, ApplyVerifyEmailSerializer, VerifyEmailSerializer)
+                           EditUserProfileSerializer, ImageUploadForm, ApplyVerifyEmailSerializer, VerifyEmailSerializer,
+                           UserGrassDataSerializer)
 from ..tasks import send_email_async
 
 # JG 02.15
@@ -125,6 +127,17 @@ class VerifyEmailAPI(APIView):
         user.is_email_verify = True
         user.save()
         return self.success("Succeeded")
+
+#temp
+class GrassAPI(APIView):
+    @login_required
+    def get(self, request):
+        #print(request.data)
+        data = request.Get.get("username",None)
+        if data is None:
+            return self.error("user data is None")
+        user = User.objects.get(username=data)
+        return self.success(UserGrassDataSerializer(user).data)
 
 class UserProfileAPI(APIView):
     @method_decorator(ensure_csrf_cookie)

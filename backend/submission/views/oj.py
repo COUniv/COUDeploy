@@ -1,6 +1,7 @@
 import ipaddress
 
 from account.decorators import login_required, check_contest_permission
+from account.models import User
 from contest.models import ContestStatus, ContestRuleType
 from judge.tasks import judge_task
 from options.options import SysOptions
@@ -77,7 +78,10 @@ class SubmissionAPI(APIView):
                                                code=data["code"],
                                                problem_id=problem.id,
                                                ip=request.session["ip"],
-                                               contest_id=data.get("contest_id"))
+                                               contest_id=data.get("contest_id"))#issue? >>> Where does 'contest_id' exist? 
+        user = User.objects.get(user_id=submission.id)
+        user.add_grass(submission.create_time)
+        user.save()
         # use this for debug
         # JudgeDispatcher(submission.id, problem.id).judge()
         judge_task.send(submission.id, problem.id)

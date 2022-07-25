@@ -4,7 +4,6 @@ from utils.api import serializers, UsernameSerializer
 
 from .models import AdminType, ProblemPermission, User, UserProfile
 
-
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
@@ -48,6 +47,11 @@ class ImportUserSeralizer(serializers.Serializer):
         child=serializers.ListField(child=serializers.CharField(max_length=64)))
 
 
+class UserGrassDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "grass"]
+    
 class UserAdminSerializer(serializers.ModelSerializer):
     real_name = serializers.SerializerMethodField()
 
