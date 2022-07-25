@@ -645,7 +645,7 @@
       }
     },
     beforeRouteLeave (to, from, next) {
-      // 防止切换组件后仍然不断请求
+      // 구성 요소 전환 후 지속적인 요청 방지
       clearInterval(this.refreshStatus)
 
       this.$store.commit(types.CHANGE_CONTEST_ITEM_VISIBLE, {menu: true})
