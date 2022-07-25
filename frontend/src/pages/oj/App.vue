@@ -18,7 +18,7 @@
       </div>
       <BackTop></BackTop>
     </div>
-    <div class="footer" v-show="$route.name !== 'start-login' && $route.name !== 'problem-details'">
+    <div class="footer" v-show="$route.name !== 'problem-details'">
       <p v-html="website.website_footer"></p>
       <p>Poweredaaa by <a href="https://github.com/OnlineJudgePlatformDev">COU</a>
         <span v-if="version">&nbsp; Version: {{ version }}</span>
@@ -91,7 +91,6 @@
     // screen height - navigation bar height - footer height - contanier bottom margin
     min-height: calc(~"100vh - 80px - 80px - 20px");
     margin: 0 50px 50px 50px;
-    padding-bottom: 80px;
   }
   @media screen and (max-width: 1200px) {
     .content-app {
@@ -107,7 +106,6 @@
       margin-top: 80px;
       min-height: 100%;
       position: relative;
-      padding-bottom: 90px;
     }
   }
   .blockingdrag {
