@@ -59,6 +59,7 @@ build.txt
 tmp/
 custom_settings.py
 *.zip
+!dist.zip
 
 data/log/*
 !data/log/.gitkeep
