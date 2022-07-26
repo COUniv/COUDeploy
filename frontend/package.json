@@ -1,7 +1,7 @@
 {
   "name": "cou",
   "version": "2.0.0",
-  "description": "onlinejudge front end",
+  "description": "onlinejudge front-end",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
