@@ -1,8 +1,7 @@
 {
-  "name": "onlinejudge",
+  "name": "cou",
   "version": "2.0.0",
   "description": "onlinejudge front end",
-  "author": "zemal <rawidn@163.com>",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
