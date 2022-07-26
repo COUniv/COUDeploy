@@ -1,41 +1,43 @@
 <template>
-  <div>
-    <div class="content_container">
-      <div class="blockingdrag">
-        <NavBar v-show="$route.name !== 'start-login' && $route.name !== 'problem-details'"></NavBar>
-      </div>
-      <div class="content-app">
-        <SessionExpire v-if="isIdle && $route.name !== 'start-login'"/>
-        <transition name="fadeInUp" mode="out-in">
-          <router-view></router-view>
-        </transition>
-        <!-- <div class="footer">
-          <p v-html="website.website_footer"></p>
-          <p>Powered by <a href="https://github.com/OnlineJudgePlatformDev">OnlineJudge</a>
-            <span v-if="version">&nbsp; Version: {{ version }}</span>
-          </p>
-        </div> -->
-      </div>
-      <BackTop></BackTop>
+  <div class="content_container">
+    <div class="blockingdrag">
+      <NavBar v-show="$route.name !== 'start-login' && $route.name !== 'problem-details'"></NavBar>
     </div>
-    <div class="footer" v-show="$route.name !== 'problem-details'">
-      <p v-html="website.website_footer"></p>
-      <p>Poweredaaa by <a href="https://github.com/OnlineJudgePlatformDev">COU</a>
-        <span v-if="version">&nbsp; Version: {{ version }}</span>
-      </p>
+    <div class="content-app">
+      <SessionExpire v-if="isIdle && $route.name !== 'start-login'"/>
+      <transition name="fadeInUp" mode="out-in">
+        <router-view></router-view>
+      </transition>
+      <!-- <div class="footer">
+        <p v-html="website.website_footer"></p>
+        <p>Powered by <a href="https://github.com/OnlineJudgePlatformDev">OnlineJudge</a>
+          <span v-if="version">&nbsp; Version: {{ version }}</span>
+        </p>
+      </div> -->
     </div>
+    <BackTop></BackTop>
+    <Footer v-show="$route.name !== 'problem-details'"></Footer>
   </div>
+  <!-- <div class="footer" c>
+    <p v-html="website.website_footer"></p>
+    <p>Poweredaaa by <a href="https://github.com/OnlineJudgePlatformDev">COU</a>
+      <span v-if="version">&nbsp; Version: {{ version }}</span>
+    </p>
+  </div> -->
 </template>
 
 <script>
   import { mapActions, mapState } from 'vuex'
   import NavBar from '@oj/components/NavBar.vue'
   import SessionExpire from '@oj/components/SessionExpire.vue'
+  import Footer from '@oj/components/Footer'
+
   export default {
     name: 'app',
     components: {
       NavBar,
-      SessionExpire
+      SessionExpire,
+      Footer
     },
     data () {
       return {
@@ -89,8 +91,14 @@
 
   .content_container {
     // screen height - navigation bar height - footer height - contanier bottom margin
-    min-height: calc(~"100vh - 80px - 80px - 20px");
-    margin: 0 50px 50px 50px;
+    // min-height: calc(~"100vh - 80px - 80px - 20px");
+    min-height: 100%;
+    position: relative;
+  }
+
+  .content-app {
+    margin-top: 100px;
+    padding-bottom: 200px;
   }
   @media screen and (max-width: 1200px) {
     .content-app {

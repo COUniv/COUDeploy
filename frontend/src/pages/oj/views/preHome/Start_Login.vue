@@ -51,6 +51,7 @@
           </div>
         </Form>
         
+        
         <!-- </div>
           <div class="last"> -->
         <!-- <Button
@@ -186,6 +187,13 @@ export default {
 
 <style scoped lang="less">
 @import '../../../../styles/common.less';
+
+.start_login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(~"100vh - 80px");
+}
 // .form {
 //   position: absolute;
 //   left: 50%;
@@ -231,7 +239,7 @@ export default {
   .start_login {
     margin: -80px -50px -190px -50px;
     // margin-top: 160px;
-    height: calc(~"100vh - 80px");
+    // height: calc(~"100vh - 80px");
     // min-height: 100%;
     position: relative;
     // padding-bottom: 80px;
@@ -255,13 +263,12 @@ export default {
     margin: -80px -50px -190px -50px;
     // padding-bottom: 96px;
     // margin-top: 80px;calc(28.125vw + 262.84px - 80px)
-    height: calc(~"100vh - 80px");
+    // height: 100vh;
+    // height: calc(~"100vh - 80px");
     // height: calc(~"28.125vw + 262.84px");
     // min-height: 100%;
-    position: relative;
+    // position: relative;
     // padding-bottom: 90px;
-    display: flex;
-    align-items: center;
   }
 }
 
@@ -288,19 +295,20 @@ export default {
   font-weight: bold;
 }
 .form {
+  display: inline-block;
+  background-color: @white;
   box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
   border-radius: @size-border-radius;
+  width: 30%;
+  max-width: 400px;
   overflow: auto;
   // position: fixed;
-  display: inline-block;
   // margin-top: 500px;
-  background-color: @white;
   // margin-bottom: -15px;
   // margin: 25px 0 50px 35%;
-  margin: 3vh 0 3vh 35%;
-  top: 500px;
-  left: 35%;
-  width: 30%;
+  // margin: 3vh 0 3vh 35%;
+  // top: 500px;
+  // left: 35%;
   // height: 33vh;
   // padding: 0 0 0 10px;
   // text-align: left;
