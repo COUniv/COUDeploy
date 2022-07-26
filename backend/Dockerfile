@@ -8,6 +8,7 @@ WORKDIR /app
 HEALTHCHECK --interval=5s --retries=3 CMD python3 /app/deploy/health_check.py
 
 RUN apk add --update --no-cache build-base nginx openssl libc-dev libffi-dev python3-dev gcc curl unzip supervisor jpeg-dev zlib-dev postgresql-dev freetype-dev && \
+    # pip install --upgrade pip && \
     pip install --no-cache-dir -r /app/deploy/requirements.txt && \
     apk del build-base --purge
 
