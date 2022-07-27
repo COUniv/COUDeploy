@@ -78,9 +78,9 @@ class SubmissionAPI(APIView):
                                                code=data["code"],
                                                problem_id=problem.id,
                                                ip=request.session["ip"],
-                                               contest_id=data.get("contest_id"))#issue? >>> Where does 'contest_id' exist? 
-        user = User.objects.get(user_id=submission.id)
-        user.add_grass(submission.create_time)
+                                               contest_id=data.get("contest_id"))
+        user = User.objects.get(id=submission.user_id)
+        user.grass.append(submission.create_time)
         user.save()
         # use this for debug
         # JudgeDispatcher(submission.id, problem.id).judge()

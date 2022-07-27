@@ -69,9 +69,6 @@ class User(AbstractBaseUser):
     def is_contest_admin(self, contest):
         return self.is_authenticated and (contest.created_by == self or self.admin_type == AdminType.SUPER_ADMIN)
     
-    def add_grass(self, date):
-        self.grass.append(date)
-        
     class Meta:
         db_table = "user"
 
