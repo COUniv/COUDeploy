@@ -53,6 +53,9 @@ Object.keys(proxyTable).forEach(function (context) {
   if (typeof options === 'string') {
     options = { target: options }
   }
+  if (options.target === undefined) {
+    options.target = 'http://localhost'
+  }
   app.use(proxyMiddleware(options.filter || context, options))
 })
 
