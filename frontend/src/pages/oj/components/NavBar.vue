@@ -155,7 +155,8 @@
           margin-top: -20;
           margin-top: -40px;
           padding-left: 0px;
-          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline" ghost>
+          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
+          <!-- to change to white -> add "ghost" -->
 
           </Button>
           <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
@@ -165,7 +166,8 @@
           margin-top: -20;
           margin-top: -40px;
           padding-left: 0px;
-          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline" ghost>
+          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
+          <!-- to change to white -> add "ghost" -->
 
           </Button>
           <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
@@ -380,7 +382,8 @@
     background-color: #fff;
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
     .oj-menu {
-      background: #404040;
+      //background: #404040;
+      background: #fff;
     }
     .logo {
       margin-left: 2%;
@@ -390,12 +393,15 @@
       line-height: 60px;
     }
     .logo > span > a, .bar_list{
-      color: white;
+      //color: white;
+      color: #404040;
     }
     .home_bar{
-        color: white;
+        //color: white;
+        color: #404040;
         font-size: 20px;
     }
+
     @media screen and (max-width : 900px) {
       .bar_list {
         visibility: hidden;
@@ -415,7 +421,8 @@
       margin-right: 50px;
       position: fixed;
       right: 10px;
-      color: white;
+      //color: white;
+      color: #404040;
       font-size: 18px;
       &-title {
         font-size: 20px;

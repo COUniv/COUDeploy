@@ -3,24 +3,26 @@
     <!-- <div class="nav">
       <NavBar></NavBar>
     </div> -->
-    <div class="image">
-        <!-- <div>Image</div> -->
+    <!-- <div class="image">
+        <div>Image</div>
         <img src="../../../../assets/main03.jpg" class="image"/>
-    </div>
+    </div> -->
     <!-- <div class="contents" style="height:70vh;"> -->
       <div class="form">
         <Form ref="formLogin" :model="formLogin" :rules="ruleLogin">
           <!-- 로그인 박스 title-->
-          <div class="login_title">회원 로그인</div>
+          <div class="login_title">COU</div>
                   
           <div class = "login_edge">
           <!-- 로그인 username textbox -->
+            <!-- <input type="text" v-model="formLogin.username" @on-enter="handleLogin" placeholder="아이디를 입력하세요"> -->
             <FormItem prop="username">
               <Input class ="login_input" type="text" v-model="formLogin.username" placeholder="아이디" size="large" @on-enter="handleLogin">
                 <Icon type="ios-person-outline" slot="prepend"></Icon>
               </Input>
             </FormItem>
             <!-- 로그인 password textbox -->
+            <!-- <input type="password" v-model="formLogin.password" @on-enter="handleLogin" placeholder="비밀번호를 입력하세요"/> -->
             <FormItem prop="password">
               <Input class ="login_input" type="password" v-model="formLogin.password" placeholder="비밀번호" size="large" @on-enter="handleLogin">
                 <Icon type="ios-lock-outline" slot="prepend"></Icon>
@@ -48,6 +50,7 @@
             </div>
           </div>
         </Form>
+        
         
         <!-- </div>
           <div class="last"> -->
@@ -183,6 +186,14 @@ export default {
 </script>
 
 <style scoped lang="less">
+@import '../../../../styles/common.less';
+
+.start_login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(~"100vh - 80px");
+}
 // .form {
 //   position: absolute;
 //   left: 50%;
@@ -228,7 +239,7 @@ export default {
   .start_login {
     margin: -80px -50px -190px -50px;
     // margin-top: 160px;
-    height: calc(~"100vh - 80px");
+    // height: calc(~"100vh - 80px");
     // min-height: 100%;
     position: relative;
     // padding-bottom: 80px;
@@ -252,10 +263,11 @@ export default {
     margin: -80px -50px -190px -50px;
     // padding-bottom: 96px;
     // margin-top: 80px;calc(28.125vw + 262.84px - 80px)
-    height: calc(~"100vh - 80px");
+    // height: 100vh;
+    // height: calc(~"100vh - 80px");
     // height: calc(~"28.125vw + 262.84px");
     // min-height: 100%;
-    position: relative;
+    // position: relative;
     // padding-bottom: 90px;
   }
 }
@@ -283,18 +295,20 @@ export default {
   font-weight: bold;
 }
 .form {
-  border-radius: 5px;
+  display: inline-block;
+  background-color: @white;
+  box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
+  border-radius: @size-border-radius;
+  width: 30%;
+  max-width: 400px;
   overflow: auto;
   // position: fixed;
-  display: inline-block;
   // margin-top: 500px;
-  background-color: rgb(230, 230, 230);
   // margin-bottom: -15px;
   // margin: 25px 0 50px 35%;
-  margin: 3vh 0 3vh 35%;
-  top: 500px;
-  left: 35%;
-  width: 30%;
+  // margin: 3vh 0 3vh 35%;
+  // top: 500px;
+  // left: 35%;
   // height: 33vh;
   // padding: 0 0 0 10px;
   // text-align: left;
@@ -333,19 +347,21 @@ export default {
 .login_title{
   width: 100%;
   height: 13%;
-  background: #8497B0;
+  margin: 20px 0;
+  background: @white;
   padding: 0px;
   text-align: center;
-  font-size: 24px;
-  font-weight: 500;
+  font-size: @font-large;
+  font-weight: @weight-bold;
   line-height: 50px;
-  color: white;
+  color: @purple;
 }
 
 /* 로그인 입력 박스 css */
 .login_edge{
   // margin-top: 10px;
   padding: 15px 15px 15px 15px;
+  background-color: @white;
 }
 
 
@@ -383,13 +399,13 @@ export default {
   // position: relative;
   // width: 580px;
   // height: 38px;
-  background: #8497B0;
-  border: solid 1px black;
-  border-radius: 7px;
+  background: @purple;
+  border: none;
+  border-radius: @size-border-radius;
   // margin-left : 10px;
   text-justify: center;
   color: white;
-  font-size: 18px;
+  font-size: @font-micro;
 }
 
 /* 로그인 회원가입하기 & 아이디/비밀번호 찾기 */
@@ -398,7 +414,7 @@ export default {
 // }
 
 .footer {
-    background-color: rgb(41, 41, 41);
+    background-color: @black;
     position: relative;
     left: 0;
     bottom: 0;
