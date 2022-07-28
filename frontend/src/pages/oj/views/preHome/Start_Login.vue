@@ -17,14 +17,14 @@
           <!-- 로그인 username textbox -->
             <!-- <input type="text" v-model="formLogin.username" @on-enter="handleLogin" placeholder="아이디를 입력하세요"> -->
             <FormItem prop="username">
-              <Input class ="login_input" type="text" v-model="formLogin.username" :placeholder="아이디" size="large" @on-enter="handleLogin">
+              <Input class ="login_input" type="text" v-model="formLogin.username" placeholder="아이디" size="large" @on-enter="handleLogin">
                 <Icon type="ios-person-outline" slot="prepend"></Icon>
               </Input>
             </FormItem>
             <!-- 로그인 password textbox -->
             <!-- <input type="password" v-model="formLogin.password" @on-enter="handleLogin" placeholder="비밀번호를 입력하세요"/> -->
             <FormItem prop="password">
-              <Input class ="login_input" type="password" v-model="formLogin.password" :placeholder="비밀번호" size="large" @on-enter="handleLogin">
+              <Input class ="login_input" type="password" v-model="formLogin.password" placeholder="비밀번호" size="large" @on-enter="handleLogin">
                 <Icon type="ios-lock-outline" slot="prepend"></Icon>
               </Input>
             </FormItem>
