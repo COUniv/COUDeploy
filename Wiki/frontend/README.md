@@ -49,11 +49,25 @@ npm install -g @vue/cli-service
 
 > npm run build:dll 
 
-# Your-backend의 경우 로컬호스트에서 테스트를 할려면 localhost로
+# Your-backend의 경우 로컬호스트 웹에서 테스트를 할려면 localhost로
 # ex) export TARGET=http://localhost
 > export TARGET=http://Your-backend
 ```   
 
+<br />   
+
+
+#### 실시간 반영 개발하기
+```ruby   
+# cd COUDeploy/frontend
+> npm run dev 
+
+```   
+
+위 명령어를 치면 webpack의 middleware(webpack-dev-middleware)가 실행되고, hot-reload로 실시간 반영이 됩니다 별도의 웹서버 구축 없이 프로세스가 실행됩니다. 해당 포트는 8080포트(http://localhost:8080)이며, 80포트와는 다른 경로입니다.
+
+만약 실행중인 8080포트로 연결 된 프로세스를 종료하고싶다면, 실행중인 터미널에서 ctrl + C 키를 눌러주시면 됩니다.
+   
 <br />   
 
 
@@ -64,17 +78,17 @@ npm install -g @vue/cli-service
 
 ```   
 
-build를 하면 frontend 디렉토리 안에 dist라는 폴더가 생성 될 것입니다.
+위에서 개발이 완료되면 실제 배포를 하기 위해서는 build를 해야합니다. build를 하면 frontend 디렉토리 안에 dist라는 폴더가 생성 될 것입니다.
 
    
 <br />   
 
 
-#### frontend 볼륨 마운트   
+#### frontend 볼륨 마운트(빌드한 파일을 적용시키고 싶을 때)   
 
 <br />   
 
-위 과정만으로는 아직 docker에 반영된 것은 아닙니다.
+위 과정만으로는 아직 빌드한 dist폴더가 docker에 반영된 것은 아닙니다.
 docker 컨테이너가 아닌 로컬 시스템의 frontend 의 빌드 폴더(dist)를 바인드하기 위해서는 <b>docker-compose.yml</b> 파일을 부분적으로 수정해야합니다.
 
 ```
@@ -117,7 +131,7 @@ docker 컨테이너가 아닌 로컬 시스템의 frontend 의 빌드 폴더(dis
 <br />   
 
 
-위 과정이 끝나고 http://localhost 에 접속하여 페이지를 새로고침 할 경우 반영이 되는 것을 확인 하실 수 있습니다.
+위 과정이 끝나고 http://localhost:80 에 접속하여 페이지를 새로고침 할 경우 빌드 된 dist폴더가 반영이 되는 것을 확인 하실 수 있습니다.
 
 
 <br />

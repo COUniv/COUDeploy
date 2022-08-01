@@ -104,15 +104,15 @@
                 <li class="submenu_list">
                   <!-- 게시글 검색 카테고리 선택 - searchtype 결정 -->
                   <Select v-model="formFilter.searchtype" style="width:100px">
-                    <Option v-for="type in searchTypeList" :value="type.value" :key="type.value">
-                      {{ type.label }}
+                    <Option v-for="item in searchTypeList" :value="item.value" :key="item.value">
+                      {{ item.label }}
                     </Option>
                   </Select>
                 </li>
 
                 <li class="submenu_list">
                   <!-- 게시글 검색 내용 입력 - search -->
-                  <Input v-model="formFilter.search" :placeholder="검색" style="width: 300px"></Input>
+                  <Input v-model="formFilter.search" placeholder="검색" style="width: 300px"></Input>
                 </li>
                 <li class="submenu_list">
                   <Button type="primary" icon="ios-search" @click="handleQueryChange">검색</Button>
@@ -189,7 +189,7 @@
                   },
                   on: { // 게시글 제목 클릭 시 해당 게시글 detail 뷰로 이동, 게시글 고유 ID 전송
                     click: () => {
-                      this.$router.push({name: 'article-details', params: {articleID: params.row.id}})
+                      this.$router.push({name: 'article-details', params: {articleID: params.row.id}}).catch(() => {})
                     }
                   }
                 }, params.row.title)
@@ -217,7 +217,7 @@
                       {
                         name: 'user-home',
                         query: {username: params.row.username}
-                      })
+                      }).catch(() => {})
                   }
                 }
               }, params.row.username)
@@ -316,7 +316,7 @@
         })
       },
       Create () { // 게시글 작성
-        this.$router.push({name: 'create-article'})
+        this.$router.push({name: 'create-article'}).catch(() => {})
       },
       changeRoute () { // 쿼리값을 변경 후 route 변경
         let query = utils.filterEmptyValue(this.buildQuery())
@@ -324,7 +324,7 @@
         this.$router.push({
           name: routeName,
           query: utils.filterEmptyValue(query)
-        })
+        }).catch(() => {})
       },
       handleTypeChange (boardtype) { // 게시판 타입 변경, 1 = 자유 / 2 = 질문
         // 중복 페이지 클릭 방지
@@ -371,7 +371,7 @@
     watch: {
       '$route' (newVal, oldVal) {
         if (newVal === '-1' || parseInt(newVal.query.boardtype) < 0) {
-          this.$router.push({path: '/404'})
+          this.$router.push({path: '/404'}).catch(() => {})
         }
         if (newVal !== oldVal) {
           this.init()

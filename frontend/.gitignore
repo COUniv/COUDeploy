@@ -1,4 +1,4 @@
-package-lock.json
+# package-lock.json
 
 # Logs
 logs
@@ -69,4 +69,3 @@ test.vue
 # build
 vendor-manifest.json
 vendor.dll*.js
-
