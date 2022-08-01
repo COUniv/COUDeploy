@@ -17,37 +17,49 @@
           <!-- 로그인 username textbox -->
             <!-- <input type="text" v-model="formLogin.username" @on-enter="handleLogin" placeholder="아이디를 입력하세요"> -->
             <FormItem prop="username">
-              <Input class ="login_input" type="text" v-model="formLogin.username" placeholder="아이디" size="large" @on-enter="handleLogin">
-                <Icon type="ios-person-outline" slot="prepend"></Icon>
+              <p class="form_title">아이디</p>
+              <Input class ="login_input" type="text" v-model="formLogin.username" placeholder="아이디를 입력해주세요" size="large" @on-enter="handleLogin">
+                <!-- <Icon type="ios-person-outline" slot="prepend"></Icon> -->
               </Input>
             </FormItem>
             <!-- 로그인 password textbox -->
             <!-- <input type="password" v-model="formLogin.password" @on-enter="handleLogin" placeholder="비밀번호를 입력하세요"/> -->
             <FormItem prop="password">
-              <Input class ="login_input" type="password" v-model="formLogin.password" placeholder="비밀번호" size="large" @on-enter="handleLogin">
-                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+              <p class="form_title">비밀번호</p>
+              <Input class ="login_input" type="password" v-model="formLogin.password" placeholder="비밀번호를 입력해주세요" size="large" @on-enter="handleLogin">
+                <!-- <Icon type="ios-lock-outline" slot="prepend"></Icon> -->
               </Input>
+              <div class = "login_foot">
+              <!-- <a class="register" v-if="website.allow_register" @click.stop="handleBtnClick('register')">{{$t('m.No_Account')}}</a> -->
+              <a class="foot_password" @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
+            </div>
             </FormItem>
             <!-- 로그인 상태 체크박스 -->
             <!-- <FormItem prop="login_status">
               <Checkbox class="login_check"  v-model="formLogin.LoginStaus" >로그인 상태 유지하기</Checkbox>
             </FormItem> -->
-
+            
             <FormItem>
               <div class="login_btn">
                 <Button 
                   type="primary"
                   @click="handleLogin"
-                  class="btn" long
+                  class="primary btn" long
                   :loading="btnLoginLoading">
                   {{$t('m.UserLogin')}}
                 </Button>
               </div>
+              <div class="register_btn">
+                <Button 
+                  type="disabled"
+                  v-if="website.allow_register"
+                  @click.stop="handleBtnClick('register')"
+                  class="second btn" long
+                  :loading="btnLoginLoading">
+                  {{$t('m.No_Account')}}
+                </Button>
+              </div>
             </FormItem>
-            <div class = "login_foot">
-              <a v-if="website.allow_register" @click.stop="handleBtnClick('register')">{{$t('m.No_Account')}}</a>
-              <a @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
-            </div>
           </div>
         </Form>
         
@@ -300,7 +312,7 @@ export default {
   box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
   border-radius: @size-border-radius;
   width: 30%;
-  max-width: 400px;
+  max-width: 500px;
   overflow: auto;
   // position: fixed;
   // margin-top: 500px;
@@ -347,7 +359,7 @@ export default {
 .login_title{
   width: 100%;
   height: 13%;
-  margin: 20px 0;
+  margin: 30px 0;
   background: @white;
   padding: 0px;
   text-align: center;
@@ -360,8 +372,13 @@ export default {
 /* 로그인 입력 박스 css */
 .login_edge{
   // margin-top: 10px;
-  padding: 15px 15px 15px 15px;
+  padding: 0px 60px 30px;
   background-color: @white;
+  .form_title {
+    font-size: @font-micro;
+    font-weight: bold;
+    color: @purple;
+  }
 }
 
 
@@ -389,29 +406,39 @@ export default {
   // font-size: 12px;
 }
 
-.login_btn{
+.register_btn{
   // background: aqua;
-  padding-top: 20px;
-  // margin-bottom: -15px;
+  margin-top: 20px;
 }
 
 .btn {
   // position: relative;
   // width: 580px;
   // height: 38px;
-  background: @purple;
   border: none;
   border-radius: @size-border-radius;
-  // margin-left : 10px;
   text-justify: center;
+  padding: 12px 0;
   color: white;
-  font-size: @font-micro;
+  font-size: @font-small;
+  font-weight: bold;
+  &.primary {
+    background: @purple;
+  }
+  &.second {
+    background: @light-gray;
+    color: @gray;
+  }
 }
 
 /* 로그인 회원가입하기 & 아이디/비밀번호 찾기 */
-// .login_foot{
+.login_foot{
+  .foot_password {
+    color: @gray;
+    font-weight: @weight-bold;
+  }
   // margin: 5px 0 5px 0;
-// }
+}
 
 .footer {
     background-color: @black;
