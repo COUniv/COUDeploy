@@ -4,7 +4,7 @@
     <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
       <!-- <div class="logo"> -->
         
-      <Menu-item class="home_bar" name="/" >Online Judge Platform</Menu-item>
+      <Menu-item class="home_bar" name="/" >COU</Menu-item>
         <!-- <span><a href="/">Online Judge Platform</a></span> -->
         
       <!-- </div> -->
@@ -144,35 +144,36 @@
           </Dropdown-menu>
         </Dropdown> -->
         <div style="right-div">
-        <Menu-item class="drop-menu" name="/setting/mypage">
-          {{ user.username }}
-        </Menu-item>
 
         <!-- 알림 출력 버튼 -->
-        <div class="alarm">
-        <Badge v-if="init_notification_count > 0" dot style="height: 40px;margin-right: 10px;margin-top: 10px;">
-          <Button type="text" style="
-          margin-top: -20;
-          margin-top: -40px;
-          padding-left: 0px;
-          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
-          <!-- to change to white -> add "ghost" -->
+          <div class="alarm">
+            <Badge v-if="init_notification_count > 0" dot style="height: 40px;margin-right: 10px;margin-top: 10px;">
+              <Button type="text" style="
+              margin-top: -20;
+              margin-top: -40px;
+              padding-left: 0px;
+              padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
+              <!-- to change to white -> add "ghost" -->
 
-          </Button>
-          <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
-        </Badge>
-        <Badge v-else style="height: 40px;margin-right: 10px;margin-top: 10px;">
-          <Button type="text" style="
-          margin-top: -20;
-          margin-top: -40px;
-          padding-left: 0px;
-          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
-          <!-- to change to white -> add "ghost" -->
+              </Button>
+              <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
+            </Badge>
+            <Badge v-else style="height: 40px;margin-right: 10px;margin-top: 10px;">
+              <Button type="text" style="
+              margin-top: -20;
+              margin-top: -40px;
+              padding-left: 0px;
+              padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
+              <!-- to change to white -> add "ghost" -->
 
-          </Button>
-          <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
-        </Badge>
-        </div>
+              </Button>
+              <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
+            </Badge>
+          </div>
+          <!--사용자 아이디 출력-->
+          <Menu-item class="drop-menu" name="/setting/mypage">
+            {{ user.username }}
+          </Menu-item>
         </div>
 
         <!-- <Button @click="changeNoti" type="primary">Open</Button> -->
@@ -371,6 +372,8 @@
 </script>
 
 <style lang="less" scoped>
+@import '../../../styles/common.less';
+
   #header {
     min-width: 300px;
     position: fixed;
@@ -393,13 +396,13 @@
       line-height: 60px;
     }
     .logo > span > a, .bar_list{
-      //color: white;
-      color: #404040;
+      color: @black;
+      font-weight: @weight-regular;
     }
     .home_bar{
-        //color: white;
-        color: #404040;
-        font-size: 20px;
+        color: @purple;
+        font-size: @font-medium;
+        font-weight: @weight-bold;
     }
 
     @media screen and (max-width : 900px) {
@@ -418,8 +421,8 @@
     .drop-menu {
       float: right;
       padding: 0 30px 0 30px;
-      margin-right: 50px;
-      position: fixed;
+      //margin-right: 50px;
+      //position: fixed;
       right: 10px;
       //color: white;
       color: #404040;
@@ -444,7 +447,7 @@
   }
   .alarm {
     float: right;
-    position: fixed;
+    //position: fixed;
     right: 0;
     height: 40px;
     padding-top: 10px;
