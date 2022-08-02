@@ -143,37 +143,32 @@
             <Dropdown-item divided name="/logout">{{$t('m.Logout')}}</Dropdown-item>
           </Dropdown-menu>
         </Dropdown> -->
-        <div style="right-div">
-
+        <div class="right_menu">
         <!-- 알림 출력 버튼 -->
           <div class="alarm">
-            <Badge v-if="init_notification_count > 0" dot style="height: 40px;margin-right: 10px;margin-top: 10px;">
-              <Button type="text" style="
-              margin-top: -20;
-              margin-top: -40px;
-              padding-left: 0px;
-              padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
-              <!-- to change to white -> add "ghost" -->
-
-              </Button>
-              <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
+            <Badge dot v-if="init_notification_count > 0" style="height: 40px;margin-right: 10px;margin-top: 10px;">
+              <Button type="text" class="bell" size="large" @click="changeNoti" icon="ios-notifications-outline"></Button>
             </Badge>
-            <Badge v-else style="height: 40px;margin-right: 10px;margin-top: 10px;">
-              <Button type="text" style="
-              margin-top: -20;
-              margin-top: -40px;
-              padding-left: 0px;
-              padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
-              <!-- to change to white -> add "ghost" -->
-
-              </Button>
-              <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
+            
+            <Badge v-else style="height: 40px; margin-right: 10px; margin-top: 10px;">
+              <Button type="text" class="bell" size="large" @click="changeNoti" icon="ios-notifications-outline"></Button>
             </Badge>
           </div>
-          <!--사용자 아이디 출력-->
-          <Menu-item class="drop-menu" name="/setting/mypage">
+            <!--사용자 아이디 출력-->
+          <div @click="viewModal" class="account_tab"> <!--/setting/mypage-->
             {{ user.username }}
-          </Menu-item>
+          </div>
+          <div v-if="visibleAccount" class="account_modal">
+            <div class="profile">
+              <div class="photo"></div>
+              <div class="name">{{ user.username }}</div>
+              <div class="email"></div>
+            </div>
+            <div class="mypage_btn">계정관리</div>
+            <hr/>
+            <div class="logout_btn">로그아웃</div>
+          </div>
+          
         </div>
 
         <!-- <Button @click="changeNoti" type="primary">Open</Button> -->
@@ -209,6 +204,7 @@
         showHeaderandborder: false,
         dishovering: true,
         visivleDraw: false,
+        visibleAccount: false,
         vNotifications: [],
         colums: [
           {
@@ -328,6 +324,9 @@
         this.vGetNotifications()
         this.visivleDraw = true
       },
+      viewModal () {
+        this.visibleAccount = !this.visibleAccount
+      },
       vGetNotifications () {
         api.getNotificationList().then(res => {
           this.vNotifications = res.data.data
@@ -386,6 +385,7 @@
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
     .oj-menu {
       //background: #404040;
+      position: relative;
       background: #fff;
     }
     .logo {
@@ -446,20 +446,48 @@
     }
   }
   .alarm {
-    float: right;
-    //position: fixed;
-    right: 0;
+    position: absolute;
+    top: 0;
     height: 40px;
-    padding-top: 10px;
+    line-height: 50%;
     margin-right: 20px;
+    .bell {
+      color: @purple;
+      font-size: 1.5em;
+    }
   }
-  .right-div {
+  .right_menu {
+    line-height: 50%;
+    overflow:hidden;
     float: right;
-    right: 0;
-    padding: 0 0 0 0;
-    position: fixed;
+    padding: 20px 30px;
+    // position: fixed;
     width: 160px;
     height: 60px;
+    margin-right: 20px;
+    .account_tab {
+      &:hover {
+        cursor: pointer;
+      }
+      position: absolute;
+      line-height: 50%;
+      vertical-align: middle;
+      top: 15px;
+      right: 20px;
+      color: @purple;
+      font-weight: @weight-bold;
+      padding: 10px 20px;
+      border: 3px solid @purple;
+      border-radius: @size-border-radius;
+    }
+    .account_modal {
+      position: absolute;
+      left: 0;
+      width: 350px;
+      height: 370px;
+      background-color: @white;
+      color: @black;
+    }
   }
 
 
