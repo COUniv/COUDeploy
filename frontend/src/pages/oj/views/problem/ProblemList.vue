@@ -1,6 +1,6 @@
 <template>
-  <Row type="flex" :gutter="18">
-    <Col :span=19>
+  <Row type="flex" :gutter="18" style="margin-left:50px; margin-right:50px">
+    <Col :span="19">
       <Panel shadow>
         <div slot="title">{{$t('m.Problem_List')}}</div>
         <div slot="extra">
