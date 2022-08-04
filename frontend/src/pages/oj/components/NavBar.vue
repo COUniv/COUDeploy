@@ -160,13 +160,16 @@
           </div>
           <div v-if="visibleAccount" class="account_modal">
             <div class="profile">
-              <div class="photo"></div>
+              
+              <div class="photo">
+                <Icon type="md-contact" size="120" color="#5030E5"/>
+              </div>
               <div class="name">{{ user.username }}</div>
-              <div class="email"></div>
+              <div class="email">root@gmail.com</div>
             </div>
             <div class="mypage_btn">계정관리</div>
             <hr/>
-            <div class="logout_btn">로그아웃</div>
+            <div class="logout_btn" @click="$router.push('/setting/mypage')">로그아웃</div>
           </div>
           
         </div>
@@ -386,7 +389,7 @@
     .oj-menu {
       //background: #404040;
       position: relative;
-      background: #fff;
+      background: @white;
     }
     .logo {
       margin-left: 2%;
@@ -482,11 +485,71 @@
     }
     .account_modal {
       position: absolute;
-      left: 0;
-      width: 350px;
-      height: 370px;
+      display:flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: @size-border-radius;
+      padding: 30px;
+      top: 60px;
+      right: 20px;
+      width: 300px;
+      min-width: 250px;
+      height: 340px;
+      min-height: 300px;
       background-color: @white;
       color: @black;
+      box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
+      .profile {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        height: 180px;
+        .name {
+          color: @purple;
+          font-size: @font-medium;
+          font-weight: @weight-semi-bold;
+        }
+        .email {
+          color: @gray;
+          font-size: @font-small;
+        }
+      }
+      .mypage_btn {
+        border: 2px solid @gray;
+        border-radius: 20px;
+        width: 40%;
+        padding: 15px;
+        margin-top: 20px;
+        color: @gray;
+        font-size: @font-micro;
+        font-weight: @weight-bold;
+        text-align: center;
+        &:hover {
+          cursor: pointer;
+          border: 2px solid @white;
+          background-color: @purple;
+          color: @white;
+        }
+      }
+      .logout_btn {
+        border: 2px solid @gray;
+        border-radius: @size-border-radius;
+        width: 80%;
+        margin-top: 30px;
+        padding: 20px;
+        color: @gray;
+        font-size: @font-small;
+        font-weight: @weight-bold;
+        text-align: center;
+        &:hover {
+          cursor: pointer;
+          border: 2px solid @white;
+          background-color: @purple;
+          color: @white;
+        }
+      }
     }
   }
 
