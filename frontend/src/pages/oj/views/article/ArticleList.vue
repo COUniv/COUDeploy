@@ -1,39 +1,66 @@
 <template>
   <div class="flex-container">
     <div id="main">
-      <div>
+      <!-- <div id="main-block">
+        <div id="first-line">
+          <div id="three-categories">
+
+          </div>
+          <div id="new-article">
+
+          </div>
+        </div>
+        <div id="second-line">
+          <div id="order-by">
+            // three order options
+          </div>
+          <div id="search-by">
+            // search line + option / language dropdown menu
+          </div>
+        </div>
+        <div class="entry">
+
+        </div>
+        <div id="pages">
+
+        </div>
+      </div>  -->
+        <!-- breakpoint -->
+
         <!-- front test -->
-        <div class="community" style="float:left">
-          <div class="community_menu_name">커뮤니티</div>
+        <div class="community">
+          <!--<div class="community_menu_name">커뮤니티</div>-->
           <div class="community_menu">
-            <div @click="handleTypeChange('0')">
-              <div class="community_menu_list" v-bind:style="[this.formFilter.boardtype === '' || this.formFilter.boardtype === '0' ?{'background' : 'rgb(110, 110, 110)', 'color' : 'rgb(255, 255, 255)'}:{}]" >
+            <div class="community_menu_element" @click="handleTypeChange('0')">
+              <div class="community_menu_list" v-bind:style="[this.formFilter.boardtype === '' || this.formFilter.boardtype === '0' ?{'color' : '#F5A547'}:{}]" >
                 전체 게시판
               </div>
             </div>
-            <div @click="handleTypeChange('1')">
-              <div class="community_menu_list" v-bind:style="[this.formFilter.boardtype === '1' ?{'background' : 'rgb(110, 110, 110)', 'color' : 'rgb(255, 255, 255)'}:{}]">
+            <div class="community_menu_element" @click="handleTypeChange('1')">
+              <div class="community_menu_list" v-bind:style="[this.formFilter.boardtype === '1' ?{'color' : '#F5A547'}:{}]">
                 자유 게시판
               </div>
             </div>
-            <div @click="handleTypeChange('2')">
-              <div class="community_menu_list" v-bind:style="[this.formFilter.boardtype === '2' ?{'background' : 'rgb(110, 110, 110)', 'color' : 'rgb(255, 255, 255)'}:{}]">
+            <div class="community_menu_element" @click="handleTypeChange('2')">
+              <div class="community_menu_list" v-bind:style="[this.formFilter.boardtype === '2' ?{'color' : '#F5A547'}:{}]">
                 질문 게시판
               </div>
             </div>
-            <div @click="handleTypeChange('3')">
-              <div class="community_menu_list_last" v-bind:style="[this.formFilter.boardtype === '3' ?{'background' : 'rgb(110, 110, 110)', 'color' : 'rgb(255, 255, 255)'}:{}]">
+            <div class="community_menu_element" @click="handleTypeChange('3')">
+              <div class="community_menu_list" v-bind:style="[this.formFilter.boardtype === '3' ?{'color' : '#F5A547'}:{}]">
                 요청 게시판
               </div>
             </div>
           </div>
+
+          <button type="button" id="add-new" @click="Create">+</button>
         </div>
-        <div class="community_free" style="float:right">
+        <div class="community_free">
           <!-- 게시판 상단 부분 -->
-          <div class="community_free_title" slot="title">{{mainTitle}}</div>
+          <!--<div class="community_free_title" slot="title">{{mainTitle}}</div>-->
 
           <div class="community_free_bar" slot="extra">
-            <ul class="filter">
+            <ul class="filter" style="display:none">
               
               <!-- 질문 게시판의 경우 언어 카테고리 -->
               <li v-if="formFilter.boardtype === '2'" class="submenu_list" style="width=200px">
@@ -47,9 +74,44 @@
                   </Dropdown-menu>
                 </Dropdown>
               </li>
+              </ul>
+              
+              <div id="order-by">
+                <!-- 게시판 정렬 선택 -->
+                <div class="community_free_bar_order_by" @click="handleSortChange('0')">
+                  <div class = "community_free_bar_order_element" v-bind:style="[this.sort === '' || this.sort == '0' ? {'color' : '#858585'}:{}]">최신순</div>
+                </div>
+                <div class="community_free_bar_order_by" @click="handleSortChange('1')">
+                  <div class = "community_free_bar_order_element" v-bind:style="[this.sort === '1' ? {'color' : '#858585'}:{}]">좋아요순</div>
+                </div>
+                <div class="community_free_bar_order_by" @click="handleSortChange('2')">
+                  <div class = community_free_bar_order_element v-bind:style="[this.sort === '2' ? {'color' : '#858585'}:{}]">댓글순</div>
+                </div>
+              </div>
 
+              <div style="position:relative; right:50px;">
+                <ul>
+                  <li class="submenu_list">
+                    <!-- 게시글 검색 카테고리 선택 - searchtype 결정 -->
+                    <Select v-model="formFilter.searchtype" style="width:73px">
+                      <Option v-for="item in searchTypeList" :value="item.value" :key="item.value">
+                        {{ item.label }}
+                      </Option>
+                    </Select>
+                  </li>
+
+                  <li class="submenu_list">
+                    <!-- 게시글 검색 내용 입력 - search -->
+                    <Input @on-search="handleQueryChange" v-model="formFilter.search" search placeholder="검색어를 입력하세요." style="width: 225px"></Input>
+                  </li>
+                  <!-- <li class="submenu_list">
+                    <Button type="primary" icon="ios-search" @click="handleQueryChange"></Button>
+                  </li> -->
+                </ul>
+              </div>
+              
               <!-- 게시판 정렬 선택 -->
-              <li class="submenu_list" style="width=200px">
+              <!-- <li class="submenu_list" style="width=200px">
                 <Dropdown @on-click="handleSortChange">
                   <span><div style="padding-right:3px; display: inline-flex;">정렬</div><div style="display: inline-flex;"><Icon type="md-arrow-dropdown" /></div></span>
                   <Dropdown-menu slot="list">
@@ -58,7 +120,7 @@
                     <Dropdown-item name="2">댓글순</Dropdown-item>
                   </Dropdown-menu>
                 </Dropdown>
-              </li>
+              </li> -->
 
               <!-- 게시판 타입 선택 -->
               <!-- <li class="submenu_list">
@@ -73,36 +135,62 @@
               </li> -->
 
               <!-- All - 전체 게시글 출력 / Mine - 자신이 작성한 게시글만 출력 -->
-              <li class="submenu_list">
+              <!-- <li class="submenu_list">
                 <i-switch size="large" v-model="formFilter.myself" @on-change="handleQueryChange">
                   <span slot="open">{{$t('m.Mine')}}</span>
                    <span slot="close">{{$t('m.All')}}</span>
                 </i-switch>
-              </li>
+              </li> -->
 
                 <!-- 게시글 작성 버튼 -->
-              <li class="submenu_list">
+              <!-- <li class="submenu_list">
                 <Button type="primary" @click="Create">Create Article</Button>
-              </li>
+              </li> -->
 
               <!-- 새로고침 버튼 -->
-              <li class="submenu_list">
+              <!-- <li class="submenu_list">
                 <Button type="info" icon="refresh" @click="getArticles">{{$t('m.Refresh')}}</Button>
-              </li>
-            </ul>
+              </li> -->
           </div>
-          <div>
-              <!-- 게시글 목록 -->
-            <Table stripe :disabled-hover="true" :columns="columns" :data="articles" :loading="loadingTable"></Table>
-          </div>
+          <!-- <div>
+              !-- 게시글 목록 --
+            <Table :show-header="false" :disabled-hover="true" :columns="columns" :data="articles" :loading="loadingTable"></Table>
+          </div> -->
+
+          <ul class="article-table">
+            <li v-for="(item) in articles">
+              <ul class="article-entry">
+                <div>
+                  <div>
+                    <li><a @click="toArticle(item)"> {{item.title}} </a></li>
+                  </div>
+                  <div>
+                    <li><a @click="toUser(item)"> {{item.username}} </a></li>
+                    <li> | {{ convertDate(item) }}</li>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <Icon type="md-heart" class="heart" size="20" color="#C4C4C4"/>
+                    <li>{{item.like_count}}</li>
+                  </div>
+                  <div>
+                    <Icon type="ios-chatboxes" class="comment" size="20" color="#c4C4C4" />
+                    <li>{{item.comment_count}}</li>
+                  </div>
+                </div>
+              </ul>
+              <hr>
+            </li>
+          </ul>
 
         <!-- 하단 -->
           <div style="display:flex; justify-content: center">
 
-            <div style="margin:auto auto; line-height:center">
+            <!-- <div style="margin:auto auto; line-height:center">
               <ul>
                 <li class="submenu_list">
-                  <!-- 게시글 검색 카테고리 선택 - searchtype 결정 -->
+                  !-- 게시글 검색 카테고리 선택 - searchtype 결정 --
                   <Select v-model="formFilter.searchtype" style="width:100px">
                     <Option v-for="item in searchTypeList" :value="item.value" :key="item.value">
                       {{ item.label }}
@@ -111,14 +199,14 @@
                 </li>
 
                 <li class="submenu_list">
-                  <!-- 게시글 검색 내용 입력 - search -->
+                  !-- 게시글 검색 내용 입력 - search --
                   <Input v-model="formFilter.search" placeholder="검색" style="width: 300px"></Input>
                 </li>
                 <li class="submenu_list">
                   <Button type="primary" icon="ios-search" @click="handleQueryChange">검색</Button>
                 </li>
               </ul>
-            </div>
+            </div>-->
             <div style="float:right">
               <Pagination :total="total" :page-size="limit" @on-change="changeRoute" :current.sync="page"></Pagination>
             </div>
@@ -127,7 +215,6 @@
         </div> <!-- float right div -->
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -135,7 +222,7 @@
   import time from '@/utils/time'
   import Pagination from '@/pages/oj/components/Pagination'
   import utils from '@/utils/utils'
-
+  
   export default {
     name: 'ArticleList',
     components: {
@@ -170,13 +257,13 @@
           searchtype: '' // 게시글 검색 시 검색할 카테고리 - 제목 = 0, 내용 = 1, 작성자명 = 2
         },
         columns: [ // 열 속성 - 추후 추가 예정
-          {
-            title: '번호',
-            align: 'center',
-            render: (h, params) => {
-              return h('span', params.row.id)
-            }
-          },
+          // {
+          //   title: '번호',
+          //   align: 'center',
+          //   render: (h, params) => {
+          //     return h('span', params.row.id)
+          //   }
+          // },
           {
             title: '제목',
             align: 'center',
@@ -184,8 +271,6 @@
               return h('a',
                 {
                   style: {
-                    'display': 'inline-block',
-                    'max-width': '150px'
                   },
                   on: { // 게시글 제목 클릭 시 해당 게시글 detail 뷰로 이동, 게시글 고유 ID 전송
                     click: () => {
@@ -199,7 +284,10 @@
             title: '작성일',
             align: 'center',
             render: (h, params) => {
-              return h('span', time.utcToLocal(params.row.create_time, 'YYYY-MM-DD HH:mm:ss'))
+              return h('div', {
+                style: {
+                }
+              }, time.utcToLocal(params.row.create_time, 'YYYY-MM-DD HH:mm:ss'))
             }
           },
           {
@@ -208,8 +296,6 @@
             render: (h, params) => {
               return h('a', {
                 style: {
-                  'display': 'inline-block',
-                  'max-width': '150px'
                 },
                 on: { // 작성자명 클릭 시 해당 작성자의 프로필로 이동
                   click: () => {
@@ -227,14 +313,20 @@
             title: '좋아요',
             align: 'center',
             render: (h, params) => {
-              return h('span', params.row.like_count)
+              return h('div', {
+                style: {
+                }
+              }, params.row.like_count)
             }
           },
           {
             title: '댓글',
             align: 'center',
             render: (h, params) => {
-              return h('span', params.row.comment_count)
+              return h('div', {
+                style: {
+                }
+              }, params.row.comment_count)
             }
           }
         ],
@@ -343,6 +435,10 @@
         this.changeRoute()
       },
       handleSortChange (sorttype) { // 게시글 정렬 변경
+        console.log(this.sort)
+        if (this.sort === sorttype) {
+          return
+        }
         this.sort = sorttype
         this.changeRoute()
       },
@@ -366,6 +462,19 @@
       handleLanguageChange (language) { // 질문 게시판의 경우 출력하고자하는 게시글의 언어 카테고리 설정
         this.language = language
         this.changeRoute()
+      },
+      toArticle (item) {
+        this.$router.push({name: 'article-details', params: {articleID: item.id}}).catch(() => {})
+      },
+      toUser (item) {
+        this.$router.push(
+          {
+            name: 'user-home',
+            query: {username: item.username}
+          }).catch(() => {})
+      },
+      convertDate (item) {
+        return time.utcToLocal(item.create_time, 'YYYY-MM-DD HH:mm')
       }
     },
     watch: {
@@ -382,101 +491,187 @@
 </script>
 
 <style scoped lang="less">
+  @import '../../../../styles/common.less';
   .flex-container {
     #main {
       margin: 0 5% 0 5%;
       padding-top: 15px;
+      background-color: @white;
+      width: 80%;
     }
   }
       .community {
-        display: inline-block;
-        vertical-align: top;
+        // display: inline-block;
+        // vertical-align: top;
         /* padding: 0 0 20px 0; */
-        width: 17%;
-        height: 15%;
-        padding: 0 10px 20px 0;
+        // width: 17%;
+        // height: 15%;
+        // padding: 0 10px 20px 0;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        position: relative;
         font-size: 16px;
         text-align: center;
     }
 
-    .community_menu_name {
-        display: block;
-        font-size: 24px;
-        color: #1f4e79;
-    }
-
     .community_menu {
-        display: block;
+        position: relative;
+        left: 50px;
+        display: flex;
         /* vertical-align: top; */
         /* width: 20%; */
         /* height: 20%; */
-        margin-top: 10px;
-        padding: 0 0 20px 0;
+        // margin-top: 10px;
+        // padding: 0 0 20px 0;
         font-size: 16px;
         /* text-align: center; */
         /* background-color: rgb(232, 238, 177);  */
-        border-radius: 5px;
-        border-top: 2px solid rgb(61, 61, 61);
-        
-        color: black;
+        // border-radius: 5px;
+        /* border-top: 2px solid rgb(61, 61, 61); */
+        line-height: 35px;
+        color: @gray;
     }
 
-    .community_menu_list_main{
-        padding: 10px 0;
-        color: rgb(255, 255, 255);
-        border-bottom: 1px solid rgb(107, 107, 107);
-        background: #1f4e79;
+    #order-by {
+      position: relative;
+      left: 50px;
+      display: flex;
+      font-size: 12px;
+      color: #C0C0C0;
     }
 
+    .community_menu_element {
+      padding: 0 25px 0 0;
+    }
     .community_menu_list {
-        padding: 10px 0;
         // color: black;
         transition: all 0.3s ease-in-out;
-        border-bottom: 1px solid rgb(90, 90, 90);
+        // border-bottom: 1px solid rgb(90, 90, 90);
     }
-
     .community_menu_list:hover {
         border-radius: 2px;
-        background-color: rgba(110, 182, 248, 0.925);
-        color: white;
+        // background-color: rgba(110, 182, 248, 0.925);
+        color: @dark-orange;
+    }
+    .community_free_bar_order_by {
+      padding: 0 15px 0 0;
     }
 
-    .community_menu_list_last {
-        padding: 10px 0;
-        // color: black;
-        transition: all 0.3s ease-in-out;
-        border-bottom: 2px solid rgb(61, 61, 61);
+    .community_free_bar_order_element {
+      transition: all 0.3s ease-in-out;
     }
 
-    .community_menu_list_last:hover {
-        border-radius: 2px;
-        background-color: rgba(110, 182, 248, 0.925);
-        color: white;
+    .community_free_bar_order_element:hover {
+      color: @gray;
     }
+
     .community_free {
-        display: inline-block;
-        vertical-align: top;
-        width: 80%;
-        height: 60%;
-        padding: 0 20px 0 20px;
+        //display: inline-block;
+        //vertical-align: top;
+        //width: 80%;
+        //height: 60%;
+        // padding: 0 20px 0 20px;
         /* background-color: rgb(136, 167, 138); */
     }
     .community_free_bar{
         display: flex;
-        justify-content: right;
-        margin: 20px 0 10px 0;
+        justify-content: space-between;
+        margin: 10px 0 0 0;
+        background-color: #F9F9F9;
+        padding: 10px 0px;
+        line-height: 40px;
     }
-    .community_free_title {
-        /* display: block; */
-        /* margin-top: -10px; */
-        padding: 0 0 10px 0;
-        border-bottom: 2px solid black;
-        font-size: 24px;
-        color: #1f4e79;
-        /* background-color: rgb(255, 234, 239); */
-    }
+    // .community_free_title {
+    //     /* display: block; */
+    //     /* margin-top: -10px; */
+    //     padding: 0 0 10px 0;
+    //     border-bottom: 2px solid black;
+    //     font-size: 24px;
+    //     color: #1f4e79;
+    //     /* background-color: rgb(255, 234, 239); */
+    // }
     .submenu_list {
       display: inline-block;
-      margin-right: 10px;
+      //margin-right: 10px;
     }
+
+    #add-new {
+      position: relative;
+      right: 50px;
+      padding: 0 10px;
+      height: 35px;
+      background-color: @white;
+      border: solid 1px @gray;
+      color: @gray;
+      font-size: @font-regular;
+      transition: all 0.3s ease-in-out;
+    }
+
+    #add-new:hover {
+      background-color: @light-orange;
+      color: @dark-orange;
+      border: solid 1px @dark-orange;
+    }
+
+    .article-table {
+      list-style: none;
+      hr {
+        border: 0;
+        border-top: 1px solid #C4C4C4;
+      }
+    }
+
+    .article-entry {
+      margin: 10px 50px;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      div:nth-of-type(1) {
+        a {
+          color: @black;
+        }
+        display: flex;
+        flex-direction: column;
+        div:nth-of-type(1) {
+          font-size: @font-regular;
+        }
+        div:nth-of-type(2) {
+          a, li {
+            color: @gray;
+          }
+          li:first-child {
+            margin-right: 4px;
+          }
+        }
+      }
+      div:nth-of-type(2) {
+        display: flex;
+        div:first-child {
+          li:first-of-type {
+            margin-right: 20px;
+            line-height: 50px;
+          }
+          display: flex;
+          flex-direction: row;
+        }
+
+        div:nth-of-type(2) {
+          li:first-of-type {
+            line-height: 50px;
+          }
+          display: flex;
+          flex-direction: row;
+        }
+      }
+    }
+
+    .heart, .comment {
+      margin-right: 10px;
+      margin-top: 15px;
+    }
+
+    
+
+    
 </style>
