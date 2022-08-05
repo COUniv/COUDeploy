@@ -50,6 +50,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
     
+    problem_sequence = grass = ArrayField(models.TextField(null=True), blank=True, default=list)
     grass = ArrayField(models.DateTimeField(), blank=True, default=list)
     
     objects = UserManager()

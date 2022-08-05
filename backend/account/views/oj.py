@@ -132,13 +132,16 @@ class VerifyEmailAPI(APIView):
 class GrassAPI(APIView):
     @login_required
     def get(self, request):
-        #print(request.data)
-        data = request.Get.get("username",None)
+        data = request.GET.get("username",None)
         if data is None:
-            return self.error("user data is None")
-        user = User.objects.get(username=data)
+            return self.error("invalid Query")
+        try:
+            user = User.objects.get(username=data)
+        except User.DoesNotExist:
+            return self.error("User does not exist")
         return self.success(UserGrassDataSerializer(user).data)
 
+    
 class UserProfileAPI(APIView):
     @method_decorator(ensure_csrf_cookie)
     def get(self, request, **kwargs):
@@ -268,6 +271,7 @@ class CheckTFARequiredAPI(APIView):
 class UserLoginAPI(APIView):
     @validate_serializer(UserLoginSerializer)
     def post(self, request):
+        print("login")
         """
         User login api
         """

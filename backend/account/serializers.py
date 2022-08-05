@@ -50,7 +50,7 @@ class ImportUserSeralizer(serializers.Serializer):
 class UserGrassDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "grass"]
+        fields = ["id", "username", "problem_sequence", "grass"]
     
 class UserAdminSerializer(serializers.ModelSerializer):
     real_name = serializers.SerializerMethodField()

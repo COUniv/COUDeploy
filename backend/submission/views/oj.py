@@ -79,9 +79,19 @@ class SubmissionAPI(APIView):
                                                problem_id=problem.id,
                                                ip=request.session["ip"],
                                                contest_id=data.get("contest_id"))
+        
         user = User.objects.get(id=submission.user_id)
-        user.grass.append(submission.create_time)
-        user.save()
+        try: #중복체크
+            if str(submission.problem_id) not in user.problem_sequence:
+                user.problem_sequence.append(submission.problem_id)
+                user.grass.append(submission.create_time)
+                user.save()
+        except Problem.DoesNotExist:
+            return self.error("invalid 'problem_id'")
+        
+        
+        
+        
         # use this for debug
         # JudgeDispatcher(submission.id, problem.id).judge()
         judge_task.send(submission.id, problem.id)
@@ -126,7 +136,7 @@ class SubmissionAPI(APIView):
             return self.error("Can not share submission now")
         submission.shared = request.data["shared"]
         submission.save(update_fields=["shared"])
-        return self.success()
+        return self.success('success')
 
 
 class SubmissionListAPI(APIView):
