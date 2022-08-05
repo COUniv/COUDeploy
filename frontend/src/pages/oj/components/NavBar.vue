@@ -114,21 +114,22 @@
         </Menu-item> -->
       <!-- </Submenu> -->
       <template v-if="!isAuthenticated">
-        <!-- <div class="btn-menu">
-          <Button type="ghost"
+        <div class="login_menu">
+          <Button type="text"
                   ref="loginBtn"
                   shape="circle"
-                  @click="handleBtnClick('login')">
-                  <p style="color:white">{{$t('m.Login')}}</p>
+                  @click="goLogin"
+                  style="height:60px; line-height:50%;">
+                  <p>{{$t('m.Login')}}</p>
           </Button>
-          <Button v-if="website.allow_register"
-                  type="ghost"
+          <!-- <Button v-if="website.allow_register"
+                  type="text"
                   shape="circle"
                   @click="handleBtnClick('register')"
                   style="margin-left: 5px;">
-                  <p style="color:white">{{$t('m.Register')}}</p>
-          </Button>
-        </div> -->
+                  <p>{{$t('m.Register')}}</p>
+          </Button> -->
+        </div>
       </template>
       <template v-else>
         <!-- <Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
@@ -183,7 +184,7 @@
       </template>
     </Menu>
     <Modal v-model="modalVisible" :width="400">
-      <div slot="header" class="modal-title">{{$t('m.Welcome_to')}} {{website.website_name_shortcut}}</div>
+      <div slot="header" class="modal-title">반갑습니다!</div>
       <component :is="modalStatus.mode" v-if="modalVisible"></component>
       <div slot="footer" style="display: none"></div>
     </Modal>
@@ -302,6 +303,9 @@
           mode: mode
         })
         this.handleRoute('login')
+      },
+      goLogin () {
+        this.$router.push({path: '/login'}).catch(() => {})
       },
       getOnlyNotificationsListLength () {
         // let li = []
@@ -458,6 +462,15 @@
       color: @purple;
       font-size: 1.5em;
     }
+  }
+  .login_menu {
+    overflow:hidden;
+    float: right;
+    padding: 0 30px;
+    // position: fixed;
+    width: 160px;
+    height: 60px;
+
   }
   .right_menu {
     line-height: 50%;
