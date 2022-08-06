@@ -7,6 +7,21 @@ v2.
 - [ ] 할 내용 
 - [x] 완료된 내용
 
+**Hinatoy**
+> 커뮤니티
+- [x] Overall view
+- [x] Create New Page
+- [ ] View Article Page
+- [x] Search bar (style change)
+- [x] Dropdown menus (style change)
+- [x] Buttons (style change)
+- [x] Pagination (style change)
+- [ ] 질문 게시판 -> sort by language dropdown (?) menu
+
+> 공지사항
+- [x] Change the format of the entries
+- [ ] Design the contest carousel
+
 **Dobby**
 > 네비게이션
 - [x] custom-color 색상 변경
