@@ -11,7 +11,7 @@
       <div class="form">
         <Form ref="formLogin" :model="formLogin" :rules="ruleLogin">
           <!-- 로그인 박스 title-->
-          <div class="login_title">COU</div>
+          <div class="login_title"><p @click="goRoute('/')">COU</p></div>
                   
           <div class = "login_edge">
           <!-- 로그인 username textbox -->
@@ -110,6 +110,7 @@ export default {
     }
 
     return {
+      lastURL: '',
       tfaRequired: false,
       btnLoginLoading: false,
       formLogin: {
@@ -158,15 +159,26 @@ export default {
           this.getProfile()
           this.$success(this.$i18n.t('m.Welcome_back'))
           setTimeout(() => {
-            this.goRoute('/')
+            this.afterlogin(this.lastURL)
           }, 500)
         }, _ => {
           this.btnLoginLoading = false
         })
       })
     },
+    afterlogin (route) {
+      if (route) {
+        this.$router.push({path: route.path})
+      } else {
+        this.$router.push({path: '/'})
+      }
+    },
     goRoute (route) {
-      this.$router.push({path: route})
+      if (route) {
+        this.$router.push({path: route})
+      } else {
+        this.$router.push({path: '/'})
+      }
     },
     goResetPassword () {
       this.changeModalStatus({visible: false})
@@ -179,6 +191,11 @@ export default {
         })
       }
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.lastURL = from
+    })
   },
   computed: {
     ...mapGetters(['website', 'modalStatus']),
@@ -367,6 +384,11 @@ export default {
   font-weight: @weight-bold;
   line-height: 50px;
   color: @purple;
+  p {
+    display:inline-block;
+    cursor: pointer;
+    margin: 0 auto;
+  }
 }
 
 /* 로그인 입력 박스 css */
