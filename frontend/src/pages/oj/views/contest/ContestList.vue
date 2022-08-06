@@ -1,6 +1,6 @@
 <template>
-  <Row type="flex">
-    <Col :span="24">
+  <Row type="flex" style="margin-left: 50px;margin-right: 50px;">
+    <Col span="24">
     <Panel id="contest-card" shadow>
       <div slot="title">{{query.rule_type === '' ? '' : query.rule_type}} {{$t('m.Contests')}}</div>
       <div slot="extra">
