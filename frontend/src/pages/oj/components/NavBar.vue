@@ -157,20 +157,20 @@
           </div>
             <!--사용자 아이디 출력-->
           <div @click="viewModal" class="account_tab"> <!--/setting/mypage-->
+            <Icon type="md-contact" size="30" color="#5030E5"/>
             {{ user.username }}
           </div>
           <div v-if="visibleAccount" class="account_modal">
             <div class="profile">
-              
               <div class="photo">
-                <Icon type="md-contact" size="120" color="#5030E5"/>
+                <Icon type="md-contact" size="100" color="#5030E5"/>
               </div>
               <div class="name">{{ user.username }}</div>
               <div class="email">root@gmail.com</div>
             </div>
-            <div class="mypage_btn">계정관리</div>
-            <hr/>
-            <div class="logout_btn" @click="$router.push('/setting/mypage')">로그아웃</div>
+            <div class="mypage_btn" @click="$router.push('/setting/mypage')">계정관리</div>
+            <div class="line"></div>
+            <div class="logout_btn" @click="$router.push('/logout')">로그아웃</div>
           </div>
           
         </div>
@@ -488,11 +488,11 @@
       position: absolute;
       line-height: 50%;
       vertical-align: middle;
-      top: 15px;
+      top: 8px;
       right: 20px;
       color: @purple;
-      font-weight: @weight-bold;
-      padding: 10px 20px;
+      font-weight: 600;
+      padding: 5px 7px 5px 5px;
       border: 3px solid @purple;
       border-radius: @size-border-radius;
     }
@@ -503,7 +503,7 @@
       justify-content: space-between;
       align-items: center;
       border-radius: @size-border-radius;
-      padding: 30px;
+      padding: 24px;
       top: 60px;
       right: 20px;
       width: 300px;
@@ -518,7 +518,7 @@
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        height: 180px;
+        height: 150px;
         .name {
           color: @purple;
           font-size: @font-medium;
@@ -527,14 +527,15 @@
         .email {
           color: @gray;
           font-size: @font-small;
+          margin-top: 10px;
         }
       }
       .mypage_btn {
         border: 2px solid @gray;
         border-radius: 20px;
         width: 40%;
-        padding: 15px;
-        margin-top: 20px;
+        padding: 12px;
+        margin: 10px 0;
         color: @gray;
         font-size: @font-micro;
         font-weight: @weight-bold;
@@ -546,12 +547,18 @@
           color: @white;
         }
       }
+
+      .line {
+        width: 100%;
+        height: 2px;
+        background-color: @light-gray;
+      }
       .logout_btn {
         border: 2px solid @gray;
         border-radius: @size-border-radius;
         width: 80%;
-        margin-top: 30px;
-        padding: 20px;
+        margin-top: 20px;
+        padding: 15px;
         color: @gray;
         font-size: @font-small;
         font-weight: @weight-bold;
