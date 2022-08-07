@@ -114,21 +114,22 @@
         </Menu-item> -->
       <!-- </Submenu> -->
       <template v-if="!isAuthenticated">
-        <!-- <div class="btn-menu">
-          <Button type="ghost"
+        <div class="login_menu">
+          <Button type="text"
                   ref="loginBtn"
                   shape="circle"
-                  @click="handleBtnClick('login')">
-                  <p style="color:white">{{$t('m.Login')}}</p>
+                  @click="goLogin"
+                  style="height:60px; line-height:50%;">
+                  <p>{{$t('m.Login')}}</p>
           </Button>
-          <Button v-if="website.allow_register"
-                  type="ghost"
+          <!-- <Button v-if="website.allow_register"
+                  type="text"
                   shape="circle"
                   @click="handleBtnClick('register')"
                   style="margin-left: 5px;">
-                  <p style="color:white">{{$t('m.Register')}}</p>
-          </Button>
-        </div> -->
+                  <p>{{$t('m.Register')}}</p>
+          </Button> -->
+        </div>
       </template>
       <template v-else>
         <!-- <Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
@@ -156,17 +157,20 @@
           </div>
             <!--사용자 아이디 출력-->
           <div @click="viewModal" class="account_tab"> <!--/setting/mypage-->
+            <Icon type="md-contact" size="30" color="#5030E5"/>
             {{ user.username }}
           </div>
           <div v-if="visibleAccount" class="account_modal">
             <div class="profile">
-              <div class="photo"></div>
+              <div class="photo">
+                <Icon type="md-contact" size="100" color="#5030E5"/>
+              </div>
               <div class="name">{{ user.username }}</div>
-              <div class="email"></div>
+              <div class="email">root@gmail.com</div>
             </div>
-            <div class="mypage_btn">계정관리</div>
-            <hr/>
-            <div class="logout_btn">로그아웃</div>
+            <div class="mypage_btn" @click="$router.push('/setting/mypage')">계정관리</div>
+            <div class="line"></div>
+            <div class="logout_btn" @click="$router.push('/logout')">로그아웃</div>
           </div>
           
         </div>
@@ -180,7 +184,7 @@
       </template>
     </Menu>
     <Modal v-model="modalVisible" :width="400">
-      <div slot="header" class="modal-title">{{$t('m.Welcome_to')}} {{website.website_name_shortcut}}</div>
+      <div slot="header" class="modal-title">반갑습니다!</div>
       <component :is="modalStatus.mode" v-if="modalVisible"></component>
       <div slot="footer" style="display: none"></div>
     </Modal>
@@ -300,6 +304,9 @@
         })
         this.handleRoute('login')
       },
+      goLogin () {
+        this.$router.push({path: '/login'}).catch(() => {})
+      },
       getOnlyNotificationsListLength () {
         // let li = []
         // api.getNotificationList().then(res => {
@@ -386,7 +393,7 @@
     .oj-menu {
       //background: #404040;
       position: relative;
-      background: #fff;
+      background: @white;
     }
     .logo {
       margin-left: 2%;
@@ -456,6 +463,15 @@
       font-size: 1.5em;
     }
   }
+  .login_menu {
+    overflow:hidden;
+    float: right;
+    padding: 0 30px;
+    // position: fixed;
+    width: 160px;
+    height: 60px;
+
+  }
   .right_menu {
     line-height: 50%;
     overflow:hidden;
@@ -472,21 +488,88 @@
       position: absolute;
       line-height: 50%;
       vertical-align: middle;
-      top: 15px;
+      top: 8px;
       right: 20px;
       color: @purple;
-      font-weight: @weight-bold;
-      padding: 10px 20px;
+      font-weight: 600;
+      padding: 5px 7px 5px 5px;
       border: 3px solid @purple;
       border-radius: @size-border-radius;
     }
     .account_modal {
       position: absolute;
-      left: 0;
-      width: 350px;
-      height: 370px;
+      display:flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: @size-border-radius;
+      padding: 24px;
+      top: 60px;
+      right: 20px;
+      width: 300px;
+      min-width: 250px;
+      height: 340px;
+      min-height: 300px;
       background-color: @white;
       color: @black;
+      box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
+      .profile {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        height: 150px;
+        .name {
+          color: @purple;
+          font-size: @font-medium;
+          font-weight: @weight-semi-bold;
+        }
+        .email {
+          color: @gray;
+          font-size: @font-small;
+          margin-top: 10px;
+        }
+      }
+      .mypage_btn {
+        border: 2px solid @gray;
+        border-radius: 20px;
+        width: 40%;
+        padding: 12px;
+        margin: 10px 0;
+        color: @gray;
+        font-size: @font-micro;
+        font-weight: @weight-bold;
+        text-align: center;
+        &:hover {
+          cursor: pointer;
+          border: 2px solid @white;
+          background-color: @purple;
+          color: @white;
+        }
+      }
+
+      .line {
+        width: 100%;
+        height: 2px;
+        background-color: @light-gray;
+      }
+      .logout_btn {
+        border: 2px solid @gray;
+        border-radius: @size-border-radius;
+        width: 80%;
+        margin-top: 20px;
+        padding: 15px;
+        color: @gray;
+        font-size: @font-small;
+        font-weight: @weight-bold;
+        text-align: center;
+        &:hover {
+          cursor: pointer;
+          border: 2px solid @white;
+          background-color: @purple;
+          color: @white;
+        }
+      }
     }
   }
 

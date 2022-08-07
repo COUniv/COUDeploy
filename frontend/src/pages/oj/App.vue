@@ -94,6 +94,7 @@
     // min-height: calc(~"100vh - 80px - 80px - 20px");
     min-height: 100%;
     position: relative;
+    overflow-x: hidden;
   }
 
   .content-app {
