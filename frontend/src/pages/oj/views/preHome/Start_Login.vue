@@ -50,14 +50,16 @@
                 </Button>
               </div>
               <div class="register_btn">
-                <Button 
+                <Button @click="$router.push('/join')" class="second btn" long
+                  :loading="btnLoginLoading">{{$t('m.No_Account')}} </Button>
+                <!-- <Button 
                   type="disabled"
                   v-if="website.allow_register"
                   @click.stop="handleBtnClick('register')"
                   class="second btn" long
                   :loading="btnLoginLoading">
                   {{$t('m.No_Account')}}
-                </Button>
+                </Button> -->
               </div>
             </FormItem>
           </div>
