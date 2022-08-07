@@ -1,9 +1,11 @@
 <template>
   <div class="articles-container">
     
-    <Panel shadow :padding="30">
+    <Panel shadow>
       <!-- 게시글 제목 -->
       <div slot="title" style="font-size: 1.5em;">
+        <!-- 뒤로가기 버튼 -->
+        <Button icon="md-arrow-back" size="large" @click="goBack" type="text"></Button>
         {{article.title}}
       </div>
       
@@ -11,27 +13,27 @@
       <div slot="extra">
 
         <!-- 게시글 수정 버튼(작성자만 보임) -->
-        <Button v-if="is_writer" icon="ios-create" @click="goModify">수정</Button>
+        <Button v-if="is_writer" type="primary" icon="md-create" @click="goModify"></Button>
 
         <!-- 게시글 삭제 버튼(작성자만 보임) -->
-        <Button v-if="is_writer" icon="md-trash" @click="deletemodal=true">삭제</Button>
+        <Button v-if="is_writer" type="primary" icon="md-trash" @click="deletemodal=true"></Button>
         <Modal v-model="deletemodal">
           <p slot="header" style="color:red">경고</p>
-          <p style="font-size:14px">게시물을 삭제합니다.</p>
+          <p>게시물을 삭제합니다.</p>
           <div slot="footer" class="slotWrapper">
             <Button @click="articleDeleteModalClosed">취소</Button>
             <Button type="primary" @click="ok">확인</Button>
           </div>
         </Modal>
-
-        <!-- 뒤로가기 버튼 -->
-        <Button icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button>
       </div>
 
       <!-- 작성자명 및 작성 시간-->
-      <div style="margin-bottom:50px">
-        <a style="display:inline-block" @click="goUser"><b>{{username}}</b></a>
-        <div style="display:inline-block; padding-left:30px">{{article.create_time}}</div>
+      <div class="user-date">
+        <div id="user-avatar"></div>
+        <div>
+          <a @click="goUser"><b>{{username}}</b></a>
+          <div id="user-time">{{article.create_time}}</div>
+        </div>
       </div>
       
       <!-- 질문 게시판의 경우 문제 링크 -->
@@ -40,41 +42,39 @@
       </div>
 
       <!-- 게시글 내용 -->
-      <div style="display:flex; margin-top:30px">
-        <div v-katex v-html="article.content" key="content" class="content-container markdown-body"></div>
+      <div>
+        <div v-katex v-html="article.content" key="content" class="content-container"></div>
       </div>
 
-      <div style="margin-top:30px; padding-bottom:30px">
-        <div style="float:right; clear:both;">
-          <div slot="extra" :v-model="is_liked">
+      <div style>
+        <div>
+          <div id="like-button" slot="extra" :v-model="is_liked">
             <!-- 좋아요 버튼 -->
-            <Button v-if="!is_liked" icon="ios-heart-outline" @click="like" class="like_button">좋아요</Button>
-            <Button v-else icon="ios-heart" @click="like" class="like_button">좋아요</Button>
+            <Button v-if="!is_liked" icon="ios-heart-outline" :border="false" @click="like" size="large" class="like_button" type="text">{{article.like_count}}</Button>
+            <Button v-else icon="ios-heart" :border="false" @click="like" size="large" class="like_button" type="text">{{article.like_count}}</Button>
           </div>
         </div>
       </div>
       <!-- 구분선 -->
-      <div style="padding-top:15px; clear:both;"></div>
+      <div></div>
       <hr class="hr-style">
       <!-- 댓글 목록 -->
-      <div v-for="comment in comments" :key="comment.id" style="padding-top:20px">
+      <div v-for="comment in comments" :key="comment.id">
 
           <Card>
             <!-- 사용자 정보영역 -->
-            <Card style="background:#eee;" dis-hover>
-              <div style="overflow: hidden;">
+              <div class="comment-user-time">
                 <div class="linkdiv" @click="goCommentUesr(comment.username)">
                   <b>{{ comment.username }}</b>
                 </div>
-                <div style="float:right; line-height: 27.3px;">
+                <div id="comment-time">
                   {{ comment.create_time }}
                 </div>
               </div>
-            </Card>
 
 
-            <pre v-katex v-html="comment.content" style="padding-top:15px; margin: 0 15px 0 15px; white-space: pre-wrap; overflow: auto; word-break:break-all"></pre>
-            <div style="float:right; padding-top:15px; ">
+            <pre v-katex v-html="comment.content" style="white-space: pre-wrap; overflow: auto; word-break:break-all"></pre>
+            <div>
               <!-- 수정 버튼 -->
               <Button v-if="comment.is_comment_writer" icon="ios-create" @click="onModalComment(comment)">수정</Button>
               <!-- 삭제 버튼 -->
@@ -105,15 +105,13 @@
                 <Button @click="modalClosed">취소</Button>
                 <Button type="primary" @click="modifyCommentOk(tempComment)">확인</Button>
               </div>
-
             </Modal>
-            <div style="padding-top:15px; clear:both;"></div>
           </Card>
 
       </div>
 
       <!-- 댓글 입력 -->
-      <div style="margin-top:30px">
+      <div class="comment-section">
         <Input type="textarea" v-model="formComment.content" :autosize="{minRows: 2, maxRows: 6}" placeholder="댓글 입력" class="comment_submit_input"></Input>
         <Button class="comment_submit_btn" type="text" icon="ios-paper-plane" @click="commentSubmit"></Button>
       </div>
@@ -140,7 +138,8 @@
         article: { // 게시글 내용 출력용 data
           title: '',
           content: '',
-          create_time: ''
+          create_time: '',
+          like_count: ''
         },
         formComment: {
           articleid: '',
@@ -209,7 +208,7 @@
       },
       convertUTC () {
         this.comments.forEach(element => {
-          element.create_time = time.utcToLocal(element.create_time, 'YYYY-MM-DD HH:mm:ss')
+          element.create_time = time.utcToLocal(element.create_time, 'YYYY-MM-DD HH:mm')
         })
       },
       init () {
@@ -218,11 +217,12 @@
           let article = res.data.data
           this.article.title = article.title
           this.article.content = article.content
-          this.article.create_time = time.utcToLocal(article.create_time, 'YYYY-MM-DD HH:mm:ss')
+          this.article.create_time = time.utcToLocal(article.create_time, 'YYYY-MM-DD HH:mm')
           this.is_writer = article.is_writer
           this.username = article.username
           this.comments = article.comments
           this.is_liked = article.is_liked
+          this.article.like_count = article.like_count
           this.convertUTC()
           if (article.boardtype === 'QUESTION') {
             this.problemid = article.problemid
@@ -327,76 +327,89 @@
 </script>
 
 <style scoped lang="less">
-  .flex-container {
-      margin: 0 5% 0 5%;
-      padding-top: 15px;
-  }
+@import '../../../../styles/common.less';
   .articles-container {
     margin: 0 5% 0 5%;
-    padding-top: 15px;
+    //padding-top: 15px;
     li {
-      padding-top: 15px;
+      //padding-top: 15px;
       list-style: none;
-      padding-bottom: 15px;
-      margin-left: 20px;
+      //padding-bottom: 15px;
+      //margin-left: 20px;
       font-size: 16px;
-      border-bottom: 1px solid rgba(187, 187, 187, 0.5);
+      //border-bottom: 1px solid rgba(187, 187, 187, 0.5);
       &:last-child {
         border-bottom: none;
       }
-      .flex-container {
-        .title {
-          flex: 1 1;
-          text-align: left;
-          padding-left: 10px;
-          a.entry {
-            color: #495060;
-            &:hover {
-              color: #2d8cf0;
-              border-bottom: 1px solid #2d8cf0;
-            }
-          }
-        }
-        .creator {
-          flex: none;
-          width: 200px;
-          text-align: center;
-        }
-        .date {
-          flex: none;
-          width: 200px;
-          text-align: center;
-        }
-      }
     }
     a {
-      font-size: 1.3em;
-      color: #3c4250;
-    }
-    a:hover {
-      color:cornflowerblue
+      color: @black;
+      //margin-right: 20px;
+      &:hover {
+        color: @purple;
+      }
     }
   }
+
+  .user-date {
+    display: flex;
+    margin: 5px 0px 5px 70px;
+    line-height: 30px;
+    div:nth-of-type(2) {
+      display:flex;
+      flex-direction: column;
+      line-height: 15px;
+    }
+  }
+
+  #user-avatar {
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    background-color: @purple;
+    margin-right: 10px;
+  }
+
+  #user-time {
+    font-size: 10px;
+  }
+
+  #like-button {
+    margin: 5px 0px 5px 55px;
+  }
+
   .fullscreen-btn {
     float: right;
-    margin-bottom: 20px;
+    //margin-bottom: 20px;
   }
+
+  .comment-user-time {
+    line-height: 20px;
+  }
+
   .linkdiv {
     float: left;
-    font-size:1.3em;
-    color: #3c4250;
+    //font-size:1.3em;
+    margin-right: 15px;
+    color: @black;
   }
+
+  #comment-time {
+    color: @gray;
+    font-size: 10px;
+  }
+
   .linkdiv:hover {
-    color:cornflowerblue
+    color:@purple;
   }
   .content-container {
-    padding: 0 20px 20px 20px;
+    margin: 15px 70px 5px 70px;
   }
 
   .no-article {
     text-align: center;
     font-size: 16px;
-  }changeLocale
+  }
 
   .article-animate-enter-active {
     animation: fadeIn 1s;
@@ -404,26 +417,29 @@
   .hr-style {
     border: 1px solid #e8eaec;
   }
-</style>
 
-<style lang="less">
   .slotWrapper {
-    padding-top: 15px;
+    //padding-top: 15px;
     border-top: 1px solid #e8eaec;
   }
+
   .comment_submit_input textarea {
-    padding-right: 45px;
+    //padding-right: 45px;
     resize: none;
     
   }
+  .comment-section {
+    margin-top: 20px;
+    padding: 0 65px;
+  }
   .comment_submit_btn {
+    margin: 10px;
+    margin-bottom: 15px;
     float: right;
-    position: absolute;
-    font-size: 1.2rem;
-    right: 35px;
-    bottom: 35px;
-    margin: 0;
-    color: #2d8cf0;
+    font-size: 1.3em;
+    position: relative;
+    left: 10px;
+    color: @purple;
     border: none;
     &:focus {
       outline: none !important;
@@ -436,9 +452,9 @@
       box-shadow: none;
     }
     * > &:hover {
-      color: #8ab8e9;
-      background-color: #00000000;
-      border-color: #00000000;
+      color: @light-purple;
+      background-color: @black;
+      border-color: @black;
     }
     * {
       border: none;
@@ -456,4 +472,5 @@
       box-shadow: none;
     }
   }
+
 </style>
