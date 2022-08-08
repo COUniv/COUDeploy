@@ -374,7 +374,11 @@
         papa.parse(file, {
           complete: (results) => {
             let data = results.data.filter(user => {
-              return user[0] && user[1] && user[2] && user[3]
+              if (user[2]) {
+                return user[0] && user[1] && user[2] && user[3]
+              } else {
+                return user[0] && user[1] && `""` && user[3]
+              }
             })
             let delta = results.data.length - data.length
             if (delta > 0) {
