@@ -31,7 +31,7 @@
             <li v-for="(tab, index) in tabs" :key="index" class="tab-item" :class="{ active: currentTab===index }">
               <a href="#" @click="currentTab = index">{{tab}}</a>
             </li>
-            <div class="plus"><Icon type="md-add" size="30" color="#858585"/></div>
+            <div class="plus" @click="addPage"><Icon type="md-add" size="30" color="#858585"/></div>
           </ul>
           
           <div class="tab-content">
@@ -292,6 +292,13 @@
       },
       handleChange (old, newval) {
         // console.log(old, newval)
+      },
+      addPage () {
+        if (this.currentTab === 0) {
+          this.$router.push('/announcement-list')
+        } else if (this.currentTab === 1) {
+          this.$router.push('/contest')
+        }
       }
     },
     computed: {
