@@ -2,15 +2,15 @@
   <div v-if="listVisible" class="home_container">
 
     <div class="img_container" style="width: 100%;">
-        <Carousel autoplay height:400px v-model="value1" loop arrow="hover" @on-change="handleChange">
+        <Carousel autoplay height=600px v-model="value1" loop arrow="hover" @on-change="handleChange">
             <CarouselItem>
                 <div class="demo-carousel">
-                  <img src="../../../../assets/main03.jpg" />
+                  <img src="../../../../assets/main01.png" />
                 </div>
             </CarouselItem>
             <CarouselItem>
                 <div class="demo-carousel">
-                  <img src="../../../../assets/main01.jpg" />
+                  <img src="../../../../assets/main01.png" />
                 </div>
             </CarouselItem>
             <CarouselItem>
@@ -297,7 +297,11 @@
     justify-content: center;
     color: #fff;
     font-size: 20px;
-    background: #506b9e;
+    background: #000000;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .contest {
