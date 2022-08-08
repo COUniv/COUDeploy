@@ -28,9 +28,19 @@ class UserAdminAPI(APIView):
 
         user_list = []
         for user_data in data:
-            if len(user_data) != 4 or len(user_data[0]) > 32:
-                return self.error(f"Error occurred while processing data '{user_data}'")
-            user_list.append(User(username=user_data[0], password=make_password(user_data[1]), email=user_data[2]))
+            if len(user_data[0]) < 1:
+                return self.error('닉네임이 빈 데이터가 존재합니다.')
+            if len(user_data[1]) < 1:
+                return self.error('비밀번호가 빈 데이터가 존재합니다.')
+            if len(user_data[3]) < 1:
+                return self.error('이름이 빈 데이터가 존재합니다.')
+            if len(user_data[0]) > 32:
+                return self.error(f"'{user_data}' 처리 중 문제가 발생하였습니다.")
+            # 이메일을 별도로 설정하지 않은 경우
+            if len(user_data[2]) < 1:
+                user_list.append(User(username=user_data[0], password=make_password(user_data[1])))  
+            else:
+                user_list.append(User(username=user_data[0], password=make_password(user_data[1]), email=user_data[2]))
 
         try:
             with transaction.atomic():
