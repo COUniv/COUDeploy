@@ -31,16 +31,29 @@
             <li v-for="(tab, index) in tabs" :key="index" class="tab-item" :class="{ active: currentTab===index }">
               <a href="#" @click="currentTab = index">{{tab}}</a>
             </li>
+            <Dropdown v-show="currentTab == 1" @on-click="onStatusChange" :transfer="true" class="contest-status-list">
+                <span>{{contest_stat === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[contest_stat].name.replace(/ /g,"_"))}}
+                </span>
+                <Icon type="ios-arrow-down" />
+                <Dropdown-menu slot="list" >
+                  <Dropdown-item name="">모든 대회</Dropdown-item>
+                  <Dropdown-item name="0">진행 중인 대회</Dropdown-item>
+                  <Dropdown-item name="1">개최 예정인 대회</Dropdown-item>
+                </Dropdown-menu>
+              </Dropdown>
             <div class="plus" @click="addPage"><Icon type="md-add" size="30" color="#858585"/></div>
           </ul>
           
           <div class="tab-content">
             <!-- 공지사항 탭-->
             <div v-show="currentTab == 0">
-              <div v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)">
+              <div v-if="!announcements.length" class="no_announcement">
+                공지사항이 없습니다
+              </div>
+              <div v-else v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)">
                 <div class="announcement-title-box">
                   <a>
-                    ▶︎ {{announcement.title}}
+                    {{announcement.title}}
                   </a>
                 </div>
                 <div class="announcement-time"> {{announcement.create_time | localtime('YYYY.MM.DD') }} </div>
@@ -50,28 +63,21 @@
             </div>
             <!-- 대회일정 탭-->
             <div v-show="currentTab == 1">
-              <Dropdown @on-click="onStatusChange" :transfer="true" class="contest-status-list">
-                <span>{{contest_stat === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[contest_stat].name.replace(/ /g,"_"))}}
-                </span>
-                <Dropdown-menu slot="list">
-                  <Dropdown-item name="">모든 대회</Dropdown-item>
-                  <Dropdown-item name="0">진행 중인 대회</Dropdown-item>
-                  <Dropdown-item name="1">개최 예정인 대회</Dropdown-item>
-                </Dropdown-menu>
-              </Dropdown>
-
+              <div v-if="!contests.length" class="no_contest">
+                대회일정이 없습니다
+              </div>
               <div class="contest_title" v-for="(contest, contest_idx) in contests" :key="contest_idx" @click="goContest">
                 <div v-if="contest.status == '1'">
                   <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
                   <div class="color-yellow"> {{contest.title}} </div>
-                  <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}}
+                  <div class="contest-time"> {{contest.start_time | localtime('YYYY.MM.DD')}}
                   </div>
                   <div style="clear:both"></div>
                 </div>
                 <div v-else-if="contest.status == '0'">
                   <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
                   <div class="color-green"> {{contest.title}} </div>
-                  <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}}
+                  <div class="contest-time"> {{contest.start_time | localtime('YYYY.MM.DD')}}
                   </div>
                   <div style="clear:both"></div>
                 </div>
@@ -458,7 +464,7 @@
   .left_announcement{
     display: inline-block;
     vertical-align: top;
-    min-width: 570px;
+    min-width: 580px;
     width: 60%;
     height: 450px;
     padding: 20px;
@@ -502,10 +508,16 @@
 
   .tab-content {
     min-width: 510px;
+    .no_announcement, .no_contest {
+      text-align: center;
+      padding: 120px 0;
+      font-size: 20px;
+      color: @gray;
+    }
   }
 
   .announcement_title, .contest_title{
-    padding: 8px 10px;
+    padding: 8px 14px;
     margin-bottom: 10px;
     border: 1px solid @light-gray;
     border-radius: 5px;
@@ -562,26 +574,35 @@
 
 </style>
 
-<style lang="less">
+<style lang="less" scoped>
+@import '../../../../styles/common.less';
 
   .rankings-img {
     width: 35px;
     height: 35px;
     margin-top: 3px;
   }
+
   .contest-status-list {
-    position:relative;
-    float:right;
+    cursor: pointer;
+    position: absolute;
+    right: 64px;
+    top: 16px;
+    font-size: 14px;
+    &:hover {
+      color: @dark-orange;
+    }
     * {
       z-index: 1000;
     }
   }
 
   .contest-time {
+    float: right;
     height: 34px;
     line-height: 34px;
-    font-size: 10px;
-    float: right;
+    font-size: 14px;
+    color: @gray;
     pointer-events: none;
     z-index: 997;
   }
