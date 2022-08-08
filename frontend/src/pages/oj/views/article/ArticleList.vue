@@ -148,7 +148,7 @@
                     <li>{{item.like_count}}</li>
                   </div>
                   <div>
-                    <Icon type="ios-chatboxes" class="comment" size="20" color="#c4C4C4" />
+                    <Icon type="md-text" class="comment" size="20" color="#c4C4C4" />
                     <li>{{item.comment_count}}</li>
                   </div>
                 </div>

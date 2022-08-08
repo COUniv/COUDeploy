@@ -158,7 +158,7 @@
             <!--사용자 아이디 출력-->
           <div @click="viewModal" class="account_tab"> <!--/setting/mypage-->
             <Icon type="md-contact" size="30" color="#5030E5"/>
-            {{ user.username }}
+            <span>{{ user.username }}</span>
           </div>
           <div v-if="visibleAccount" class="account_modal">
             <div class="profile">
@@ -410,6 +410,7 @@
         color: @purple;
         font-size: @font-medium;
         font-weight: @weight-bold;
+        -webkit-text-stroke: 1.5px;
     }
 
     @media screen and (max-width : 900px) {
@@ -495,6 +496,9 @@
       padding: 5px 7px 5px 5px;
       border: 3px solid @purple;
       border-radius: @size-border-radius;
+      span {
+        -webkit-text-stroke: 0.5px;
+      }
     }
     .account_modal {
       position: absolute;
