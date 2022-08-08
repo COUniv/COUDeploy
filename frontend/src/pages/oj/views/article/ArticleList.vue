@@ -520,6 +520,7 @@
     .community_menu_list {
         // color: black;
         transition: all 0.3s ease-in-out;
+        cursor: pointer;
         // border-bottom: 1px solid rgb(90, 90, 90);
     }
     .community_menu_list:hover {
@@ -532,6 +533,7 @@
     }
 
     .community_free_bar_order_element {
+      cursor: pointer;
       transition: all 0.3s ease-in-out;
     }
 
@@ -570,6 +572,7 @@
     }
 
     #add-new {
+      cursor: pointer;
       position: relative;
       right: 50px;
       padding: 0 10px;

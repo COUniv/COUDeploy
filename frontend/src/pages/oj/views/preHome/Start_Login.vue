@@ -170,7 +170,11 @@ export default {
     },
     afterlogin (route) {
       if (route) {
-        this.$router.push({path: route.path})
+        if (route.path === '/logout') {
+          this.$router.push({path: '/'})
+        } else {
+          this.$router.push({path: route.path})
+        }
       } else {
         this.$router.push({path: '/'})
       }
