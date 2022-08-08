@@ -340,7 +340,6 @@
       },
       closeModal () {
         if (this.visibleAccount === true) {
-          console.log('hi')
           this.visibleAccount = false
         }
       },
