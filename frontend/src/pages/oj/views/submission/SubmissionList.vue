@@ -73,7 +73,7 @@
             }
           },
           {
-            title: '채점 번호',
+            title: '채점 해시섬',
             align: 'center',
             render: (h, params) => {
               if (params.row.show_link) {
