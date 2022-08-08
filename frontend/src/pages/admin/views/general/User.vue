@@ -23,36 +23,36 @@
         style="width: 100%">
         <el-table-column type="selection" width="55"></el-table-column>
 
-        <el-table-column prop="id" label="ID"></el-table-column>
+        <el-table-column prop="id" label="고유 ID"></el-table-column>
 
-        <el-table-column prop="username" label="Username"></el-table-column>
+        <el-table-column prop="username" label="닉네임"></el-table-column>
 
-        <el-table-column prop="create_time" label="Create Time">
+        <el-table-column prop="create_time" label="생성일자">
           <template slot-scope="scope">
             {{scope.row.create_time | localtime }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="last_login" label="Last Login">
+        <el-table-column prop="last_login" label="마지막 로그인">
           <template slot-scope="scope">
             {{scope.row.last_login | localtime }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="real_name" label="Real Name"></el-table-column>
+        <el-table-column prop="real_name" label="이름"></el-table-column>
 
-        <el-table-column prop="email" label="Email"></el-table-column>
+        <el-table-column prop="email" label="이메일"></el-table-column>
 
-        <el-table-column prop="admin_type" label="User Type">
+        <el-table-column prop="admin_type" label="사용자 권한">
           <template slot-scope="scope">
             {{ scope.row.admin_type }}
           </template>
         </el-table-column>
 
-        <el-table-column fixed="right" label="Option" width="200">
+        <el-table-column fixed="right" label="옵션" width="200">
           <template slot-scope="{row}">
-            <icon-btn name="Edit" icon="edit" @click.native="openUserDialog(row.id)"></icon-btn>
-            <icon-btn name="Delete" icon="trash" @click.native="deleteUsers([row.id])"></icon-btn>
+            <icon-btn name="수정" icon="edit" @click.native="openUserDialog(row.id)"></icon-btn>
+            <icon-btn name="삭제" icon="trash" @click.native="deleteUsers([row.id])"></icon-btn>
           </template>
         </el-table-column>
       </el-table>
@@ -172,7 +172,7 @@
         </el-form-item>
       </el-form>
     </Panel>
-    <!--对话框-->
+    <!--유저 수정-->
     <el-dialog :title="$t('m.User_Info')" class="dialogView" :visible.sync="showUserDialog" :close-on-click-modal="false">
       <el-form :model="user" label-width="140px" label-position="left">
         <el-row :gutter="20">
@@ -187,7 +187,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('m.User_Email')" required>
+            <el-form-item :label="$t('m.User_Email')">
               <el-input v-model="user.email"></el-input>
             </el-form-item>
           </el-col>
@@ -208,9 +208,9 @@
           <el-col :span="12">
             <el-form-item :label="$t('m.Problem_Permission')">
               <el-select v-model="user.problem_permission" :disabled="user.admin_type!=='Admin'">
-                <el-option label="None" value="None"></el-option>
-                <el-option label="Own" value="Own"></el-option>
-                <el-option label="All" value="All"></el-option>
+                <el-option label="권한 없음" value="None"></el-option>
+                <el-option label="본인 권한" value="Own"></el-option>
+                <el-option label="모든 권한" value="All"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
