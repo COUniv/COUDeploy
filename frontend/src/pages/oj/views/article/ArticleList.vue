@@ -1,33 +1,6 @@
 <template>
   <div class="flex-container">
     <div id="main">
-      <!-- <div id="main-block">
-        <div id="first-line">
-          <div id="three-categories">
-
-          </div>
-          <div id="new-article">
-
-          </div>
-        </div>
-        <div id="second-line">
-          <div id="order-by">
-            // three order options
-          </div>
-          <div id="search-by">
-            // search line + option / language dropdown menu
-          </div>
-        </div>
-        <div class="entry">
-
-        </div>
-        <div id="pages">
-
-        </div>
-      </div>  -->
-        <!-- breakpoint -->
-
-        <!-- front test -->
         <div class="community">
           <!--<div class="community_menu_name">커뮤니티</div>-->
           <div class="community_menu">
@@ -642,6 +615,11 @@
         div:nth-of-type(2) {
           a, li {
             color: @gray;
+            transition: all 0.3s ease-in-out;
+          }
+          a:hover {
+            color: @orange;
+            
           }
           li:first-child {
             margin-right: 4px;
