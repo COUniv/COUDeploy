@@ -13,10 +13,10 @@
     left: 0;
     background-color: @black;
     color: @light-gray;
-    padding: 20px;
+    padding: 0;
     font-size: @font-small;
     width: 100vw;
-    height: 8vh;
+    height: 60px;
     text-align: center;
   }
 </style>
