@@ -297,7 +297,11 @@
     justify-content: center;
     color: #fff;
     font-size: 20px;
-    background: #506b9e;
+    background: #000000;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .contest {
