@@ -16,8 +16,10 @@
         <ul class="announcements-container" key="list">
           <li v-for="announcement in announcements" :key="announcement.title">
             <div class="entry">
-              <div class="title"><a @click="goAnnouncement(announcement)">
+              <div v-if="isAuthenticated" class="title"><a @click="goAnnouncement(announcement)">
                 {{announcement.title}}</a></div>
+              <div v-else class="title"><span class="non-a-tag">
+                {{announcement.title}}</span></div>
               <div class="date-creator">
                 <div class="creator"> {{announcement.created_by.username}} |</div>
                 <div class="date">{{ convertDate(announcement.create_time) }}</div>
@@ -45,7 +47,7 @@
   import api from '@oj/api'
   import time from '@/utils/time'
   import Pagination from '@oj/components/Pagination'
-
+  import { mapGetters } from 'vuex'
   export default {
     name: 'Announcement',
     components: {
@@ -104,6 +106,7 @@
       }
     },
     computed: {
+      ...mapGetters(['isAuthenticated']),
       title () {
         if (this.listVisible) {
           return this.isContest ? this.$i18n.t('m.Contest_Announcements') : this.$i18n.t('m.Announcements')
@@ -144,6 +147,10 @@
             &:hover {
               color: @purple;
             }
+          }
+          span.non-a-tag {
+            color: @black;
+            font-size: @font-regular;
           }
         }
         .date-creator {
