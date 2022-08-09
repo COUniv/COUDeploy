@@ -2,7 +2,7 @@
   <div v-if="listVisible" class="home_container">
 
     <div class="img_container" style="width: 100%;">
-        <Carousel autoplay height=600px v-model="value1" loop arrow="hover" @on-change="handleChange">
+        <Carousel autoplay v-model="value1" loop arrow="hover" @on-change="handleChange">
             <CarouselItem>
                 <div class="demo-carousel">
                   <img src="../../../../assets/main01.png" />
@@ -464,7 +464,6 @@
   .left_announcement{
     display: inline-block;
     vertical-align: top;
-    min-width: 580px;
     width: 60%;
     height: 450px;
     padding: 20px;
@@ -507,7 +506,6 @@
   }
 
   .tab-content {
-    min-width: 510px;
     .no_announcement, .no_contest {
       text-align: center;
       padding: 120px 0;
