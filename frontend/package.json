@@ -27,6 +27,7 @@
     "screenfull": "^3.3.2",
     "tar-simditor": "^3.0.5",
     "tar-simditor-markdown": "^1.2.3",
+    "v-click-outside": "^3.2.0",
     "vue": "^2.5.16",
     "vue-analytics": "^5.10.4",
     "vue-clipboard2": "^0.2.1",
