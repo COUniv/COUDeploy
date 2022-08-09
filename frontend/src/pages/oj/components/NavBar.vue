@@ -372,6 +372,11 @@
     watch: {
       init_notification_count: function (newVal, oldVal) {
         this.init_notification_count = newVal
+      },
+      '$route' (to, from) {
+        if (this.visibleAccount !== false) {
+          this.visibleAccount = false
+        }
       }
     }
   }
