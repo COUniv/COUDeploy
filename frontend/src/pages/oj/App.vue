@@ -99,14 +99,13 @@
 
   .content-app {
     margin-top: 100px;
-    padding-bottom: 200px;
+    padding-bottom: 280px;
   }
   @media screen and (max-width: 1200px) {
     .content-app {
       margin-top: 80px;
       min-height: 100%;
       position: relative;
-      padding-bottom: 90px;
     }
   }
 

@@ -119,7 +119,7 @@
                   ref="loginBtn"
                   shape="circle"
                   @click="goLogin"
-                  style="height:60px; line-height:50%;">
+                  style="line-height:50%;">
                   <p>{{$t('m.Login')}}</p>
           </Button>
           <!-- <Button v-if="website.allow_register"
@@ -340,7 +340,6 @@
       },
       closeModal () {
         if (this.visibleAccount === true) {
-          console.log('hi')
           this.visibleAccount = false
         }
       },
@@ -483,9 +482,19 @@
     float: right;
     padding: 0 30px;
     // position: fixed;
-    width: 160px;
     height: 60px;
-
+    padding: 0 60px;
+    button {
+      border: 2px solid @light-gray;
+      border-radius: 5px;
+      height: 40px;
+      padding: 20px;
+      font-weight: @weight-bold;
+      &:hover {
+        box-shadow: 0 1px 5px 0 rgba(90, 82, 128, 0.31);
+        color: @purple;
+      }
+    }
   }
   .right_menu {
     line-height: 50%;

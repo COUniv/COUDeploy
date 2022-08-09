@@ -12,11 +12,11 @@
     bottom: 0;
     left: 0;
     background-color: @black;
-    color: @white;
-    padding: 30px;
+    color: @light-gray;
+    padding: 0;
     font-size: @font-small;
-    width: 100%;
-    height: 100px;
+    width: 100vw;
+    height: 60px;
     text-align: center;
   }
 </style>
