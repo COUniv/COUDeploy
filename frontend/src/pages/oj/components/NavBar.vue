@@ -119,7 +119,7 @@
                   ref="loginBtn"
                   shape="circle"
                   @click="goLogin"
-                  style="height:60px; line-height:50%;">
+                  style="line-height:50%;">
                   <p>{{$t('m.Login')}}</p>
           </Button>
           <!-- <Button v-if="website.allow_register"
@@ -156,11 +156,11 @@
             </Badge>
           </div>
             <!--사용자 아이디 출력-->
-          <div @click="viewModal" class="account_tab"> <!--/setting/mypage-->
+          <div @click="viewModal" @blur="visibleAccount = false" class="account_tab"> <!--/setting/mypage-->
             <Icon type="md-contact" size="30" color="#5030E5"/>
             <span>{{ user.username }}</span>
           </div>
-          <div v-if="visibleAccount" class="account_modal">
+          <div v-if="visibleAccount" class="account_modal" v-click-outside="closeModal">
             <div class="profile">
               <div class="photo">
                 <Icon type="md-contact" size="100" color="#5030E5"/>
@@ -196,7 +196,11 @@
   import login from '@oj/views/user/Login'
   import register from '@oj/views/user/Register'
   import api from '@oj/api'
+  import vClickOutside from 'v-click-outside'
   export default {
+    directives: {
+      clickOutside: vClickOutside.directive
+    },
     components: {
       login,
       register
@@ -334,6 +338,11 @@
       viewModal () {
         this.visibleAccount = !this.visibleAccount
       },
+      closeModal () {
+        if (this.visibleAccount === true) {
+          this.visibleAccount = false
+        }
+      },
       vGetNotifications () {
         api.getNotificationList().then(res => {
           this.vNotifications = res.data.data
@@ -372,6 +381,11 @@
     watch: {
       init_notification_count: function (newVal, oldVal) {
         this.init_notification_count = newVal
+      },
+      '$route' (to, from) {
+        if (this.visibleAccount !== false) {
+          this.visibleAccount = false
+        }
       }
     }
   }
@@ -469,9 +483,19 @@
     float: right;
     padding: 0 30px;
     // position: fixed;
-    width: 160px;
     height: 60px;
-
+    padding: 0 60px;
+    button {
+      border: 2px solid @light-gray;
+      border-radius: 5px;
+      height: 40px;
+      padding: 20px;
+      font-weight: @weight-bold;
+      &:hover {
+        box-shadow: 0 1px 5px 0 rgba(90, 82, 128, 0.31);
+        color: @purple;
+      }
+    }
   }
   .right_menu {
     line-height: 50%;
