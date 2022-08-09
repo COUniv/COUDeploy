@@ -6,8 +6,13 @@
       <div class="item_box">
         <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id)">
           <h3>{{ category.title }}</h3>
-          <div class="description" v-katex v-html="category.description"></div>
-          <div class="progress"><Progress :percent="category.percent" /></div>
+          <!-- <Icon color="#858585" type="ios-arrow-forward" /> -->
+          <span class="description" v-katex v-html="category.description"></span>
+          <div class="progress">
+            <p class="percent">달성률: {{ category.percent }}%</p>
+            <progress max="100" :value="category.percent"></progress>
+          </div>
+          <!-- <div class="progress"><Progress :percent="category.percent" /></div> -->
         </div>
     </div>
     </div>
@@ -112,7 +117,7 @@
     /* width: 37vh;
     height: 20vh; */
     width: 300px;
-    height: 180px;
+    height: 210px;
     font-size: 16px;
     /* background: salmon; */
     border: 2px solid #DDD7FA;
@@ -139,21 +144,34 @@
       font-size: 18px;
     }
     p {
-      font-size: 16px;
       width: 100%;
       padding-top: 10px;
     }
   }
   }
-
-  
-
   .progress{
     position: absolute;
     bottom: 0;
     width: 100%;
-    left: 0;
-    padding: 10px 0 0 10px;
+    //padding: 10px 0 0 10px;
+    .percent {
+      color: @gray;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    progress {
+      width: 80%;
+      height: 10px;
+      border: none;
+      &::-webkit-progress-bar {
+        background-color: @light-gray;
+        border-radius: 25px;
+      }
+      &::-webkit-progress-value {
+        background-color: #6EEE03;
+        border-radius: 25px;
+      }
+    }
   }
 
 </style>
