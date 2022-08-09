@@ -16,8 +16,16 @@
         <ul class="announcements-container" key="list">
           <li v-for="announcement in announcements" :key="announcement.title">
             <div class="flex-container">
-              <div class="title"><a class="entry" @click="goAnnouncement(announcement)">
-                {{announcement.title}}</a></div>
+              <div v-if="isAuthenticated" class="title">
+                <a class="entry" @click="goAnnouncement(announcement)">
+                  {{announcement.title}}
+                </a>
+              </div>
+              <div v-else class="title">
+                <span class="non-a-tag">
+                  {{announcement.title}}
+                </span>
+              </div>
               <div class="date">{{announcement.create_time | localtime }}</div>
               <div class="creator"> {{$t('m.By')}} {{announcement.created_by.username}}</div>
             </div>
@@ -41,7 +49,7 @@
 <script>
   import api from '@oj/api'
   import Pagination from '@oj/components/Pagination'
-
+  import { mapGetters } from 'vuex'
   export default {
     name: 'Announcement',
     components: {
@@ -97,6 +105,7 @@
       }
     },
     computed: {
+      ...mapGetters(['isAuthenticated']),
       title () {
         if (this.listVisible) {
           return this.isContest ? this.$i18n.t('m.Contest_Announcements') : this.$i18n.t('m.Announcements')
@@ -136,6 +145,9 @@
               color: #2d8cf0;
               border-bottom: 1px solid #2d8cf0;
             }
+          }
+          span.non-a-tag {
+            color: #495060;
           }
         }
         .creator {
