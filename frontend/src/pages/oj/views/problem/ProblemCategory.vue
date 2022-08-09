@@ -2,13 +2,17 @@
   <div class="category">
     <div class="title">문제 카테고리</div>
     <hr style="color: gray;">
-    <div class="item_box">
-      <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id)">
-        <h3>{{ category.title }}</h3>
-        <div class="description" v-katex v-html="category.description"></div>
-        <div class="progress"><Progress :percent="category.percent" /></div>
-      </div>
+    <div class="box_container">
+      <div class="item_box">
+        <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id)">
+          <h3>{{ category.title }}</h3>
+          <div class="description" v-katex v-html="category.description"></div>
+          <div class="progress"><Progress :percent="category.percent" /></div>
+        </div>
     </div>
+    </div>
+
+    
   </div>
 </template>
 
@@ -77,20 +81,38 @@
     }
   }
 
-  .item_box{
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    margin-top: 20px;
-    padding: 10px 20px;
+  .box_container {
+    padding: 10px 30px 30px;
   }
 
-  .item{
+  .item_box{
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    //white-space: nowrap;
+    align-content: flex-start;
+    margin-top: 20px;
+    padding: 0 0 10px 0;
+    &::-webkit-scrollbar {
+      height: 14px;
+      background-color: transparent;
+      width: 15px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: @gray;
+      border-radius: 25px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: @light-gray;
+      border-radius: 25px;
+    }
+    .item{
     position: relative;
+    flex: 0 0 auto;
     /* width: 37vh;
     height: 20vh; */
-    width: 345px;
-    height: 200px;
+    width: 300px;
+    height: 180px;
     font-size: 16px;
     /* background: salmon; */
     border: 2px solid #DDD7FA;
@@ -100,6 +122,10 @@
     margin: 0 1.5% 20px 1.5%;
     padding: 24px;
     cursor: pointer;
+    &:hover {
+      box-shadow: 0px 4px 20px @purple;
+      transition-duration: @animation-duration;
+    }
     h3, div {
       padding-bottom: 10px;
     }
@@ -118,6 +144,9 @@
       padding-top: 10px;
     }
   }
+  }
+
+  
 
   .progress{
     position: absolute;
