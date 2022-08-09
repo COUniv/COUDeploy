@@ -177,6 +177,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 120vh;
   height: calc(~"100vh - 80px");
 }
 
