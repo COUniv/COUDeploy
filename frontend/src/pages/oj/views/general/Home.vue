@@ -35,8 +35,49 @@
           </ul>
           
           <div class="tab-content">
-            <div v-show="currentTab == 0">Contents 1</div>
-            <div v-show="currentTab == 1">Contents 2</div>
+            <!-- 공지사항 탭-->
+            <div v-show="currentTab == 0">
+              <div v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)">
+                <div class="announcement-title-box">
+                  <a>
+                    ▶︎ {{announcement.title}}
+                  </a>
+                </div>
+                <div class="announcement-time"> {{announcement.create_time | localtime('YYYY.MM.DD') }} </div>
+                <div style="clear:both;"></div>
+              </div>
+              <div style="clear:both;"></div>
+            </div>
+            <!-- 대회일정 탭-->
+            <div v-show="currentTab == 1">
+              <Dropdown @on-click="onStatusChange" :transfer="true" class="contest-status-list">
+                <span>{{contest_stat === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[contest_stat].name.replace(/ /g,"_"))}}
+                </span>
+                <Dropdown-menu slot="list">
+                  <Dropdown-item name="">모든 대회</Dropdown-item>
+                  <Dropdown-item name="0">진행 중인 대회</Dropdown-item>
+                  <Dropdown-item name="1">개최 예정인 대회</Dropdown-item>
+                </Dropdown-menu>
+              </Dropdown>
+
+              <div class="contest_title" v-for="(contest, contest_idx) in contests" :key="contest_idx" @click="goContest">
+                <div v-if="contest.status == '1'">
+                  <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
+                  <div class="color-yellow"> {{contest.title}} </div>
+                  <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}}
+                  </div>
+                  <div style="clear:both"></div>
+                </div>
+                <div v-else-if="contest.status == '0'">
+                  <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
+                  <div class="color-green"> {{contest.title}} </div>
+                  <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}}
+                  </div>
+                  <div style="clear:both"></div>
+                </div>
+                <div style="clear:both;"></div>
+                    </div>
+            </div>
           </div>
           <!-- <Row :gutter="32"> -->
             <!-- <Col span="12" class="demo-tabs-style1" style="background: #ebebeb;"> -->
@@ -345,7 +386,8 @@
     float: right;
     height: 34px;
     line-height: 34px;
-    font-size: 10px;
+    font-size: 14px;
+    color: @gray;
   }
 
   .color-green {
@@ -401,7 +443,7 @@
     // margin: 10px 0 0 0;
     // padding: 0 20%;
     width: 100%;
-    height: 350px;
+    height: 450px;
     margin-bottom: 50px;
     // background: #506b9e;
   }
@@ -409,11 +451,11 @@
   .left_announcement{
     display: inline-block;
     vertical-align: top;
+    min-width: 570px;
     width: 60%;
-    height: 400px;
+    height: 450px;
     padding: 20px;
     background: #ffffff;
-
     border-radius: 5px;
     box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
     // border-bottom: 1px solid rgb(213, 213, 213);
@@ -422,7 +464,7 @@
       list-style: none;
       display: flex;
       position: relative;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       li.tab-item {
         margin-right: 10px;
         padding: 10px 30px;
@@ -451,19 +493,26 @@
     }
   }
 
+  .tab-content {
+    min-width: 510px;
+  }
+
   .announcement_title, .contest_title{
-    padding: 17px 10px 3px 10px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border: 1px solid @light-gray;
+    border-radius: 5px;
     font-size: 18px;
     overflow: hidden;
     text-overflow: ellipsis;
-    height: 2.8em;
+    // height: 2.8em;
     line-height: 1.7em;
     width: 100%;
     white-space: nowrap;
     a {
-      color: #495060;
+      color: @black;
       &:hover {
-        color: #2d8cf0;
+        color: @dark-orange;
       }
     }
   }
@@ -479,7 +528,7 @@
     border: 1px solid rgb(226, 226, 226);
     border-radius: 5px;
     width: 37%;
-    height: 400px;
+    height: 450px;
     background: white;
     // background: #dfdfdf;
   }
