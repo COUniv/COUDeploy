@@ -25,11 +25,23 @@
         <!-- <Button @click="value1 = 2">change</Button> -->
     </div>
     <div class="main_container">
-      <div class="lsit_container" style="display: block">
+      <div class="list_container" style="display: block">
         <div class="left_announcement" style="float:left">
+          <ul class="tab-menu">
+            <li v-for="(tab, index) in tabs" :key="index" class="tab-item" :class="{ active: currentTab===index }">
+              <a href="#" @click="currentTab = index">{{tab}}</a>
+            </li>
+            <div class="plus"><Icon type="md-add" size="30" color="#858585"/></div>
+          </ul>
+          
+          <div class="tab-content">
+            <div v-show="currentTab == 0">Contents 1</div>
+            <div v-show="currentTab == 1">Contents 2</div>
+          </div>
           <!-- <Row :gutter="32"> -->
             <!-- <Col span="12" class="demo-tabs-style1" style="background: #ebebeb;"> -->
-              <Tabs value="name1" type="card" :animated="false">
+
+              <!-- <Tabs value="name1" type="card" :animated="false">
                 <div v-if="!announcements.length" key="no-announcement">
                   <TabPane :index=0 label="공지사항" name="name1" class="tabpan_padding">
                     <p class="announcement_title">{{$t('m.No_Announcements')}}</p>
@@ -52,9 +64,9 @@
                 <div>
                   <TabPane v-model="contest_idx" :index=1 label="대회일정" name="name2" class="tabpan_padding-s">
                     <Dropdown @on-click="onStatusChange" :transfer="true" class="contest-status-list">
-                      <span>{{contest_stat === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[contest_stat].name.replace(/ /g,"_"))}}
+                      <span>{{contest_stat === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[contest_stat].name.replace(/ /g,"_"))}} -->
                         <!-- <Icon type="arrow-down-b"></Icon> -->
-                        <Icon type="md-arrow-dropdown" />
+                        <!-- <Icon type="md-arrow-dropdown" />
                       </span>
                       <Dropdown-menu slot="list">
                         <Dropdown-item name="">모든 대회</Dropdown-item>
@@ -67,24 +79,24 @@
                       <div v-if="contest.status == '1'">
                         <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
                         <div class="color-yellow"> {{contest.title}} </div>
-                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}}
+                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}} -->
                           <!-- ~ {{contest.end_time | localtime('YY/M/D')}}  -->
-                        </div>
+                        <!-- </div>
                         <div style="clear:both"></div>
                       </div>
                       <div v-else-if="contest.status == '0'">
                         <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
                         <div class="color-green"> {{contest.title}} </div>
-                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}}
+                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}} -->
                           <!-- ~ {{contest.end_time | localtime('YY/M/D')}}  -->
-                        </div>
+                        <!-- </div>
                         <div style="clear:both"></div>
                       </div>
                       <div style="clear:both;"></div>
                     </div>
                   </TabPane>
                 </div>
-              </Tabs>
+              </Tabs> -->
             <!-- </Col> -->
           <!-- </Row> -->
         </div>
@@ -172,6 +184,8 @@
           keyword: '',
           rule_type: ''
         },
+        currentTab: 0,
+        tabs: ['공지사항', '대회일정'],
         CONTEST_STATUS_REVERSE: CONTEST_STATUS_REVERSE
       }
     },
@@ -253,6 +267,8 @@
 </script>
 
 <style lang="less" scoped>
+@import '../../../../styles/common.less';
+
   // .home_container{
   //   margin-top: -18px;
   //   padding-bottom: -120px;
@@ -380,7 +396,7 @@
     // height: 100vh;
   }
 
-  .lsit_container{
+  .list_container{
     display: block;
     // margin: 10px 0 0 0;
     // padding: 0 20%;
@@ -393,14 +409,46 @@
   .left_announcement{
     display: inline-block;
     vertical-align: top;
-    width: 65%;
-    height: 350px;
-    padding: 0;
+    width: 60%;
+    height: 400px;
+    padding: 20px;
     background: #ffffff;
-    border: 1px solid rgb(226, 226, 226);
+
     border-radius: 5px;
+    box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
     // border-bottom: 1px solid rgb(213, 213, 213);
     // border-right: 1px solid rgb(208, 208, 208);
+    ul.tab-menu {
+      list-style: none;
+      display: flex;
+      position: relative;
+      margin-bottom: 10px;
+      li.tab-item {
+        margin-right: 10px;
+        padding: 10px 30px;
+        border-radius: 25px;
+        font-size: 20px;
+        font-weight: @weight-bold;
+        background-color: @light-gray;
+        a {
+          color: @gray;
+        }
+        &.active {
+          background-color: @dark-orange;
+          a {
+            color: @white;
+          }
+        }
+      }
+      .plus {
+        border: 2px solid @light-gray;
+        position: absolute;
+        padding: 5px;
+        top: 5px;
+        right: 0;
+        cursor: pointer;
+      }
+    }
   }
 
   .announcement_title, .contest_title{
@@ -430,8 +478,8 @@
     vertical-align: top;
     border: 1px solid rgb(226, 226, 226);
     border-radius: 5px;
-    width: 34.5%;
-    height: 350px;
+    width: 37%;
+    height: 400px;
     background: white;
     // background: #dfdfdf;
   }
