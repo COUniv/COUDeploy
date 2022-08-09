@@ -4,7 +4,7 @@
     <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
       <!-- <div class="logo"> -->
         
-      <Menu-item class="home_bar" name="/" >Online Judge Platform</Menu-item>
+      <Menu-item class="home_bar" name="/" >COU</Menu-item>
         <!-- <span><a href="/">Online Judge Platform</a></span> -->
         
       <!-- </div> -->
@@ -114,21 +114,22 @@
         </Menu-item> -->
       <!-- </Submenu> -->
       <template v-if="!isAuthenticated">
-        <!-- <div class="btn-menu">
-          <Button type="ghost"
+        <div class="login_menu">
+          <Button type="text"
                   ref="loginBtn"
                   shape="circle"
-                  @click="handleBtnClick('login')">
-                  <p style="color:white">{{$t('m.Login')}}</p>
+                  @click="goLogin"
+                  style="line-height:50%;">
+                  <p>{{$t('m.Login')}}</p>
           </Button>
-          <Button v-if="website.allow_register"
-                  type="ghost"
+          <!-- <Button v-if="website.allow_register"
+                  type="text"
                   shape="circle"
                   @click="handleBtnClick('register')"
                   style="margin-left: 5px;">
-                  <p style="color:white">{{$t('m.Register')}}</p>
-          </Button>
-        </div> -->
+                  <p>{{$t('m.Register')}}</p>
+          </Button> -->
+        </div>
       </template>
       <template v-else>
         <!-- <Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
@@ -143,36 +144,35 @@
             <Dropdown-item divided name="/logout">{{$t('m.Logout')}}</Dropdown-item>
           </Dropdown-menu>
         </Dropdown> -->
-        <div style="right-div">
-        <Menu-item class="drop-menu" name="/setting/mypage">
-          {{ user.username }}
-        </Menu-item>
-
+        <div class="right_menu">
         <!-- 알림 출력 버튼 -->
-        <div class="alarm">
-        <Badge v-if="init_notification_count > 0" dot style="height: 40px;margin-right: 10px;margin-top: 10px;">
-          <Button type="text" style="
-          margin-top: -20;
-          margin-top: -40px;
-          padding-left: 0px;
-          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
-          <!-- to change to white -> add "ghost" -->
-
-          </Button>
-          <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
-        </Badge>
-        <Badge v-else style="height: 40px;margin-right: 10px;margin-top: 10px;">
-          <Button type="text" style="
-          margin-top: -20;
-          margin-top: -40px;
-          padding-left: 0px;
-          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline">
-          <!-- to change to white -> add "ghost" -->
-
-          </Button>
-          <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
-        </Badge>
-        </div>
+          <div class="alarm">
+            <Badge dot v-if="init_notification_count > 0" style="height: 40px;margin-right: 10px;margin-top: 10px;">
+              <Button type="text" class="bell" size="large" @click="changeNoti" icon="ios-notifications-outline"></Button>
+            </Badge>
+            
+            <Badge v-else style="height: 40px; margin-right: 10px; margin-top: 10px;">
+              <Button type="text" class="bell" size="large" @click="changeNoti" icon="ios-notifications-outline"></Button>
+            </Badge>
+          </div>
+            <!--사용자 아이디 출력-->
+          <div @click="viewModal" @blur="visibleAccount = false" class="account_tab"> <!--/setting/mypage-->
+            <Icon type="md-contact" size="30" color="#5030E5"/>
+            {{ user.username }}
+          </div>
+          <div v-if="visibleAccount" class="account_modal" v-click-outside="closeModal">
+            <div class="profile">
+              <div class="photo">
+                <Icon type="md-contact" size="100" color="#5030E5"/>
+              </div>
+              <div class="name">{{ user.username }}</div>
+              <div class="email">root@gmail.com</div>
+            </div>
+            <div class="mypage_btn" @click="$router.push('/setting/mypage')">계정관리</div>
+            <div class="line"></div>
+            <div class="logout_btn" @click="$router.push('/logout')">로그아웃</div>
+          </div>
+          
         </div>
 
         <!-- <Button @click="changeNoti" type="primary">Open</Button> -->
@@ -184,7 +184,7 @@
       </template>
     </Menu>
     <Modal v-model="modalVisible" :width="400">
-      <div slot="header" class="modal-title">{{$t('m.Welcome_to')}} {{website.website_name_shortcut}}</div>
+      <div slot="header" class="modal-title">반갑습니다!</div>
       <component :is="modalStatus.mode" v-if="modalVisible"></component>
       <div slot="footer" style="display: none"></div>
     </Modal>
@@ -196,7 +196,11 @@
   import login from '@oj/views/user/Login'
   import register from '@oj/views/user/Register'
   import api from '@oj/api'
+  import vClickOutside from 'v-click-outside'
   export default {
+    directives: {
+      clickOutside: vClickOutside.directive
+    },
     components: {
       login,
       register
@@ -208,6 +212,7 @@
         showHeaderandborder: false,
         dishovering: true,
         visivleDraw: false,
+        visibleAccount: false,
         vNotifications: [],
         colums: [
           {
@@ -303,6 +308,9 @@
         })
         this.handleRoute('login')
       },
+      goLogin () {
+        this.$router.push({path: '/login'}).catch(() => {})
+      },
       getOnlyNotificationsListLength () {
         // let li = []
         // api.getNotificationList().then(res => {
@@ -326,6 +334,14 @@
       changeNoti () {
         this.vGetNotifications()
         this.visivleDraw = true
+      },
+      viewModal () {
+        this.visibleAccount = !this.visibleAccount
+      },
+      closeModal () {
+        if (this.visibleAccount === true) {
+          this.visibleAccount = false
+        }
       },
       vGetNotifications () {
         api.getNotificationList().then(res => {
@@ -365,12 +381,19 @@
     watch: {
       init_notification_count: function (newVal, oldVal) {
         this.init_notification_count = newVal
+      },
+      '$route' (to, from) {
+        if (this.visibleAccount !== false) {
+          this.visibleAccount = false
+        }
       }
     }
   }
 </script>
 
 <style lang="less" scoped>
+@import '../../../styles/common.less';
+
   #header {
     min-width: 300px;
     position: fixed;
@@ -383,7 +406,8 @@
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
     .oj-menu {
       //background: #404040;
-      background: #fff;
+      position: relative;
+      background: @white;
     }
     .logo {
       margin-left: 2%;
@@ -393,13 +417,13 @@
       line-height: 60px;
     }
     .logo > span > a, .bar_list{
-      //color: white;
-      color: #404040;
+      color: @black;
+      font-weight: @weight-regular;
     }
     .home_bar{
-        //color: white;
-        color: #404040;
-        font-size: 20px;
+        color: @purple;
+        font-size: @font-medium;
+        font-weight: @weight-bold;
     }
 
     @media screen and (max-width : 900px) {
@@ -418,8 +442,8 @@
     .drop-menu {
       float: right;
       padding: 0 30px 0 30px;
-      margin-right: 50px;
-      position: fixed;
+      //margin-right: 50px;
+      //position: fixed;
       right: 10px;
       //color: white;
       color: #404040;
@@ -443,20 +467,134 @@
     }
   }
   .alarm {
-    float: right;
-    position: fixed;
-    right: 0;
+    position: absolute;
+    top: 0;
     height: 40px;
-    padding-top: 10px;
+    line-height: 50%;
     margin-right: 20px;
+    .bell {
+      color: @purple;
+      font-size: 1.5em;
+    }
   }
-  .right-div {
+  .login_menu {
+    overflow:hidden;
     float: right;
-    right: 0;
-    padding: 0 0 0 0;
-    position: fixed;
+    padding: 0 30px;
+    // position: fixed;
+    height: 60px;
+    padding: 0 60px;
+    button {
+      border: 2px solid @light-gray;
+      border-radius: 5px;
+      height: 40px;
+      padding: 20px;
+      font-weight: @weight-bold;
+      &:hover {
+        box-shadow: 0 1px 5px 0 rgba(90, 82, 128, 0.31);
+        color: @purple;
+      }
+    }
+  }
+  .right_menu {
+    line-height: 50%;
+    overflow:hidden;
+    float: right;
+    padding: 20px 30px;
+    // position: fixed;
     width: 160px;
     height: 60px;
+    margin-right: 20px;
+    .account_tab {
+      &:hover {
+        cursor: pointer;
+      }
+      position: absolute;
+      line-height: 50%;
+      vertical-align: middle;
+      top: 8px;
+      right: 20px;
+      color: @purple;
+      font-weight: 600;
+      padding: 5px 7px 5px 5px;
+      border: 3px solid @purple;
+      border-radius: @size-border-radius;
+    }
+    .account_modal {
+      position: absolute;
+      display:flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: @size-border-radius;
+      padding: 24px;
+      top: 60px;
+      right: 20px;
+      width: 300px;
+      min-width: 250px;
+      height: 340px;
+      min-height: 300px;
+      background-color: @white;
+      color: @black;
+      box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
+      .profile {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        height: 150px;
+        .name {
+          color: @purple;
+          font-size: @font-medium;
+          font-weight: @weight-semi-bold;
+        }
+        .email {
+          color: @gray;
+          font-size: @font-small;
+          margin-top: 10px;
+        }
+      }
+      .mypage_btn {
+        border: 2px solid @gray;
+        border-radius: 20px;
+        width: 40%;
+        padding: 12px;
+        margin: 10px 0;
+        color: @gray;
+        font-size: @font-micro;
+        font-weight: @weight-bold;
+        text-align: center;
+        &:hover {
+          cursor: pointer;
+          border: 2px solid @white;
+          background-color: @purple;
+          color: @white;
+        }
+      }
+
+      .line {
+        width: 100%;
+        height: 2px;
+        background-color: @light-gray;
+      }
+      .logout_btn {
+        border: 2px solid @gray;
+        border-radius: @size-border-radius;
+        width: 80%;
+        margin-top: 20px;
+        padding: 15px;
+        color: @gray;
+        font-size: @font-small;
+        font-weight: @weight-bold;
+        text-align: center;
+        &:hover {
+          cursor: pointer;
+          border: 2px solid @white;
+          background-color: @purple;
+          color: @white;
+        }
+      }
+    }
   }
 
 
