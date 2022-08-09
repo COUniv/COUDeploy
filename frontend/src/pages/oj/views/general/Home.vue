@@ -55,8 +55,8 @@
                   <a>
                     {{announcement.title}}
                   </a>
-                </div>
-                <div class="announcement-time"> {{announcement.create_time | localtime('YYYY.MM.DD') }} </div>
+                </div> 
+                <div class="announcement-time"> {{announcement.create_time | localtime('YYYY.MM.DD') }} </div> 
                 <div style="clear:both;"></div>
               </div>
               <div style="clear:both;"></div>
@@ -387,15 +387,17 @@
     }
   }
   .announcement-title-box {
+    position: relative;
     float: left;
     height: 34px;
     line-height: 34px;
     font-size: 1rem;
-    width: calc(95% - 45px);
+    width: calc(80% - 40px);
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .announcement-time {
+    // display: none;
     float: right;
     height: 34px;
     line-height: 34px;
