@@ -23,6 +23,7 @@ import {
   AnnouncementList
 } from '../views'
 import Logout from '../views/user/Logout.vue'
+import Join from '../views/preHome/Join.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
 // import FreeBoard from '../views/board_pages/Free_Board.vue'
 // import RequestBoard from '../views/board_pages/Request_Board.vue'
@@ -44,6 +45,12 @@ export default [
     path: '/login',
     meta: {title: 'StartLogin'},
     component: StartLogin
+  },
+  {
+    name: 'join',
+    path: '/join',
+    meta: {title: 'Join'},
+    component: Join
   },
 
   // {

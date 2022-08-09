@@ -1,10 +1,10 @@
 <template>
   <div class="content_container">
     <div class="blockingdrag">
-      <NavBar v-show="$route.name !== 'start-login' && $route.name !== 'problem-details'"></NavBar>
+      <NavBar v-show="$route.name !== 'start-login' && $route.name !== 'problem-details' && $route.name !== 'join'"></NavBar>
     </div>
     <div class="content-app">
-      <SessionExpire v-if="isIdle && $route.name !== 'start-login'"/>
+      <SessionExpire v-if="isIdle && $route.name !== 'start-login'  && $route.name !== 'join'"/>
       <transition name="fadeInUp" mode="out-in">
         <router-view></router-view>
       </transition>
