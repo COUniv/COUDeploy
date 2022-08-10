@@ -23,12 +23,12 @@
           </FormItem>
           <FormItem prop="email">
             <p class="form_title">이메일</p>
-            <Input v-if="!authModal" class ="login_input" type="email" v-model="formRegister.email" placeholder="이메일을 입력해주세요" size="large" @on-enter="handleRegister">
+            <Input v-if="!authModal && !isAuthed" class ="login_input" type="email" v-model="formRegister.email" placeholder="이메일을 입력해주세요" size="large" @on-enter="handleRegister">
             </Input>
             <Input v-else class ="login_input" type="email" v-model="formRegister.email" placeholder="이메일을 입력해주세요" size="large" disabled>
             </Input>
             <div v-if="!authModal">
-              <Button v-if="authButton" type="primary" class="auth_email_btn" @click="callAuthEmail">인증코드발송</Button>
+              <Button v-if="authButton" type="primary" class="auth_email_btn" @click="callAuthEmail" :loading="authButtonLoading">인증코드발송</Button>
               <Button v-else type="primary" class="auth_email_btn" disabled>인증코드발송</Button>
             </div>
             <div v-else>
@@ -123,6 +123,7 @@
         btnRegisterLoading: false,
         authCode: '',
         authButton: false,
+        authButtonLoading: false,
         authModal: false,
         isAuthed: false,
         formRegister: {
@@ -157,7 +158,7 @@
     methods: {
       ...mapActions(['getProfile']),
       handleRegister () {
-        if (this.isAuthed) {
+        if (!this.isAuthed) {
           this.$error('이메일 인증을 먼저 진행해주세요.')
         } else {
           this.validateForm('formRegister').then(valid => {
@@ -177,7 +178,28 @@
         }
       },
       callAuthEmail () {
-        this.authModal = !this.authModal
+        this.authButtonLoading = true
+        api.callAuthEmail(this.formRegister.email).then(res => {
+          this.$success('성공적으로 이메일이 전송되었습니다.')
+          this.authModal = true
+          this.authButtonLoading = false
+        }, _ => {
+          this.$error('이메일 전송이 실패하였습니다.')
+          this.authButtonLoading = false
+        })
+        this.authButtonLoading = false
+      },
+      authEmail () {
+        api.authEmail(this.formRegister.email, this.authCode).then(res => {
+          this.isAuthed = true
+          this.authModal = false
+          this.$success('인증 성공')
+        }, _ => {
+        })
+      },
+      editEmail () {
+        this.isAuthed = false
+        this.authModal = false
       }
     },
     computed: {
