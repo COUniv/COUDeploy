@@ -177,6 +177,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 120vh;
   height: calc(~"100vh - 80px");
 }
 
@@ -221,7 +222,7 @@ export default {
   background-color: @white;
   box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
   border-radius: @size-border-radius;
-  padding: 20px 30px;
+  padding: 20px;
   width: 30%;
   max-width: 500px;
   overflow: auto;
