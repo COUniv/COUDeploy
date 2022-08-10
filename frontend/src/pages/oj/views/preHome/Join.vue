@@ -44,9 +44,9 @@
             <div class="login_btn">
               <Button 
                 type="primary"
-                @click="handleLogin"
+                @click="handleRegister"
                 class="primary btn register_btn" v-if="website.allow_register" long
-                :loading="btnLoginLoading">
+                :loading="btnRegisterLoading">
                 회원가입
               </Button>
             </div>
