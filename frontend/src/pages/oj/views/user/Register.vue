@@ -162,7 +162,6 @@
     },
     computed: {
       ...mapGetters(['website', 'modalStatus'])
-
     }
   }
 </script>

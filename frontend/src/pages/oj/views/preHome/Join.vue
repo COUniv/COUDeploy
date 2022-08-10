@@ -133,19 +133,7 @@
       }
     },
     methods: {
-      ...mapActions(['changeModalStatus', 'getProfile']),
-      switchMode (mode) {
-        this.changeModalStatus({
-          mode,
-          visible: false
-        })
-      },
-      switchModeOff (mode) {
-        this.changeModalStatus({
-          mode,
-          visible: false
-        })
-      },
+      ...mapActions(['getProfile']),
       handleRegister () {
         this.validateForm('formRegister').then(valid => {
           let formData = Object.assign({}, this.formRegister)
@@ -153,8 +141,8 @@
           this.btnRegisterLoading = true
           api.register(formData).then(res => {
             this.$success(this.$i18n.t('m.Thanks_for_registering'))
-            this.switchModeOff('register')
             this.btnRegisterLoading = false
+            this.$router.push({name: 'login'})
           }, _ => {
             this.getCaptchaSrc()
             this.formRegister.captcha = ''
@@ -164,7 +152,7 @@
       }
     },
     computed: {
-      ...mapGetters(['website', 'modalStatus'])
+      ...mapGetters(['website'])
     }
   }
 </script>
