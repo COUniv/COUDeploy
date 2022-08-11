@@ -28,8 +28,14 @@
             <Input v-else class ="login_input" type="email" v-model="formRegister.email" placeholder="이메일을 입력해주세요" size="large" disabled>
             </Input>
             <div v-if="!authModal">
-              <Button v-if="authButton" type="primary" class="auth_email_btn" @click="callAuthEmail" :loading="authButtonLoading">인증코드발송</Button>
-              <Button v-else type="primary" class="auth_email_btn" disabled>인증코드발송</Button>
+              <Button v-if="isAuthed" type="primary" class="auth_email_btn" @click="editEmail">이메일 재입력</Button>
+              <Button v-else-if="authButton" type="primary" class="auth_email_btn" @click="callAuthEmail" :loading="authButtonLoading">
+                <span v-if="!authButtonLoading">인증코드발송</span>
+                <span v-else="authButtonLoading">Loading...</span>
+              </Button>
+              <Button v-else type="primary" class="auth_email_btn" :loading="authButtonLoading" disabled>
+              인증코드발송
+              </Button>
             </div>
             <div v-else>
               <Button type="primary" class="auth_email_btn" @click="editEmail">이메일 재입력</Button>
@@ -159,7 +165,7 @@
       ...mapActions(['getProfile']),
       handleRegister () {
         if (!this.isAuthed) {
-          this.$error('이메일 인증을 먼저 진행해주세요.')
+          this.$error('이메일 인증을 진행해주세요.')
         } else {
           this.validateForm('formRegister').then(valid => {
             let formData = Object.assign({}, this.formRegister)
@@ -168,7 +174,7 @@
             api.register(formData).then(res => {
               this.$success(this.$i18n.t('m.Thanks_for_registering'))
               this.btnRegisterLoading = false
-              this.$router.push({name: 'login'})
+              this.$router.push({path: '/login'})
             }, _ => {
               this.getCaptchaSrc()
               this.formRegister.captcha = ''
@@ -178,23 +184,30 @@
         }
       },
       callAuthEmail () {
+        setTimeout(() => this.convertStatusAuthButtonLoading(), 0)
+        setTimeout(() => this.authPass(), 1000)
+      },
+      convertStatusAuthButtonLoading () {
         this.authButtonLoading = true
+      },
+      deconvertStatusAuthButtonLoading () {
+        this.authButtonLoading = false
+      },
+      authPass () {
         let formData = Object.assign({}, this.formRegister)
         delete formData['passwordAgain']
         delete formData['password']
         delete formData['username']
         delete formData['captcha']
-        console.log(formData)
         api.callAuthEmail(formData).then(res => {
           this.$success('성공적으로 이메일이 전송되었습니다.')
           this.authModal = true
-          this.authButtonLoading = false
+          setTimeout(() => this.deconvertStatusAuthButtonLoading(), 500)
         }, err => {
           console.log(err)
           this.$error('이메일 전송이 실패하였습니다.')
-          this.authButtonLoading = false
+          setTimeout(() => this.deconvertStatusAuthButtonLoading(), 500)
         })
-        this.authButtonLoading = false
       },
       authEmail () {
         api.authEmail(this.formRegister.email, this.authCode).then(res => {
