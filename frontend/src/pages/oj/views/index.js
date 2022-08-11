@@ -20,8 +20,6 @@ const ResetPassword = () => import(/* webpackChunkName: "password" */ '@oj/views
 
 const Problem = () => import(/* webpackChunkName: "Problem" */ '@oj/views/problem/Problem.vue')
 
-const ApplyVerifyEmail = () => import('@oj/views/user/ApplyVerifyEmail.vue')
-const VerifyEmail = () => import('@oj/views/user/VerifyEmail.vue')
 const ArticleList = () => import('@oj/views/article/ArticleList.vue')
 const CreateArticle = () => import('@oj/views/article/CreateArticle.vue')
 const Article = () => import('@oj/views/article/ArticleDetails.vue')
@@ -35,5 +33,5 @@ export {
   ACMRank, OIRank,
   SubmissionList, SubmissionDetails,
   ApplyResetPassword, ResetPassword,
-  ApplyVerifyEmail, VerifyEmail, ArticleList, CreateArticle, Article, Notification, AnnouncementList
+  ArticleList, CreateArticle, Article, Notification, AnnouncementList
 }

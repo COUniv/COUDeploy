@@ -96,18 +96,6 @@ export default [
     component: CreateArticle
   },
   {
-    name: 'apply-verify-email',
-    path: '/apply-verify-email',
-    meta: {requiresAuth: true, title: 'Apply Verify Email'},
-    component: ApplyVerifyEmail
-  },
-  {
-    name: 'verify-email',
-    path: '/verify-email/:token',
-    meta: {requiresAuth: true, title: 'Verify Email'},
-    component: VerifyEmail
-  },
-  {
     name: 'home',
     path: '/',
     meta: {title: 'Home'},
