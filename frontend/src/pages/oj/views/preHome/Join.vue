@@ -23,9 +23,33 @@
           </FormItem>
           <FormItem prop="email">
             <p class="form_title">이메일</p>
-            <Input class ="login_input" type="email" v-model="formRegister.email" placeholder="이메일을 입력해주세요" size="large" @on-enter="handleRegister">
+            <Input v-if="!authModal && !isAuthed" class ="login_input" type="email" v-model="formRegister.email" placeholder="이메일을 입력해주세요" size="large" @on-enter="handleRegister">
             </Input>
+            <Input v-else class ="login_input" type="email" v-model="formRegister.email" placeholder="이메일을 입력해주세요" size="large" disabled>
+            </Input>
+            <div v-if="!authModal">
+              <Button v-if="isAuthed" type="primary" class="auth_email_btn" @click="editEmail">이메일 재입력</Button>
+              <Button v-else-if="authButton" type="primary" class="auth_email_btn" @click="callAuthEmail" :loading="authButtonLoading">
+                <span v-if="!authButtonLoading">인증코드발송</span>
+                <span v-else="authButtonLoading">Loading...</span>
+              </Button>
+              <Button v-else type="primary" class="auth_email_btn" :loading="authButtonLoading" disabled>
+              인증코드발송
+              </Button>
+            </div>
+            <div v-else>
+              <Button type="primary" class="auth_email_btn" @click="editEmail">이메일 재입력</Button>
+            </div>
           </FormItem>
+          <transition name="slide-fade" mode="out-in">
+            <div v-if="authModal" class="auth_form">
+              <div class="input">
+                <Input type="text" v-model="authCode" placeholder="인증 코드" size="large" @on-enter="handleRegister">
+                </Input>
+              </div>
+              <Button class="auth-btn" type="primary" @click="authEmail">인증확인</Button>
+            </div>
+          </transition>
           <FormItem prop="captcha">
             <p class="form_title">Captcha</p>
             <div class="oj-captcha">
@@ -103,6 +127,11 @@
 
       return {
         btnRegisterLoading: false,
+        authCode: '',
+        authButton: false,
+        authButtonLoading: false,
+        authModal: false,
+        isAuthed: false,
         formRegister: {
           username: '',
           password: '',
@@ -135,35 +164,145 @@
     methods: {
       ...mapActions(['getProfile']),
       handleRegister () {
-        this.validateForm('formRegister').then(valid => {
-          let formData = Object.assign({}, this.formRegister)
-          delete formData['passwordAgain']
-          this.btnRegisterLoading = true
-          api.register(formData).then(res => {
-            this.$success(this.$i18n.t('m.Thanks_for_registering'))
-            this.btnRegisterLoading = false
-            this.$router.push({name: 'login'})
-          }, _ => {
-            this.getCaptchaSrc()
-            this.formRegister.captcha = ''
-            this.btnRegisterLoading = false
+        if (!this.isAuthed) {
+          this.$error('이메일 인증을 진행해주세요.')
+        } else {
+          this.validateForm('formRegister').then(valid => {
+            let formData = Object.assign({}, this.formRegister)
+            delete formData['passwordAgain']
+            this.btnRegisterLoading = true
+            api.register(formData).then(res => {
+              this.$success(this.$i18n.t('m.Thanks_for_registering'))
+              this.btnRegisterLoading = false
+              this.$router.push({path: '/login'})
+            }, _ => {
+              this.getCaptchaSrc()
+              this.formRegister.captcha = ''
+              this.btnRegisterLoading = false
+            })
           })
+        }
+      },
+      callAuthEmail () {
+        setTimeout(() => this.convertStatusAuthButtonLoading(), 0)
+        setTimeout(() => this.authPass(), 1000)
+      },
+      convertStatusAuthButtonLoading () {
+        this.authButtonLoading = true
+      },
+      deconvertStatusAuthButtonLoading () {
+        this.authButtonLoading = false
+      },
+      authPass () {
+        let formData = Object.assign({}, this.formRegister)
+        delete formData['passwordAgain']
+        delete formData['password']
+        delete formData['username']
+        delete formData['captcha']
+        api.callAuthEmail(formData).then(res => {
+          this.$success('성공적으로 이메일이 전송되었습니다.')
+          this.authModal = true
+          setTimeout(() => this.deconvertStatusAuthButtonLoading(), 500)
+        }, err => {
+          console.log(err)
+          this.$error('이메일 전송이 실패하였습니다.')
+          setTimeout(() => this.deconvertStatusAuthButtonLoading(), 500)
         })
+      },
+      authEmail () {
+        api.authEmail(this.formRegister.email, this.authCode).then(res => {
+          this.isAuthed = true
+          this.authModal = false
+          this.$success('인증 성공')
+        }, _ => {
+        })
+      },
+      editEmail () {
+        this.isAuthed = false
+        this.authModal = false
       }
     },
     computed: {
       ...mapGetters(['website'])
+    },
+    watch: {
+      'formRegister.email' (newVal) {
+        this.formRegister.email = newVal
+        this.$refs.formRegister.validateField('email', valid => {
+          if (valid) {
+            this.authButton = false
+          } else {
+            this.authButton = true
+          }
+        }, _ => {
+          this.authButton = false
+        })
+      }
     }
   }
 </script>
-<style>
+<style lang="less">
 .ivu-form-item {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+}
+.auth_form {
+  display: -webkit-box; /* ios 6이하, 사파리 3.1 */
+  display: -moz-box; /* 파이어폭스 19 이하 */
+  display: -ms-flexbox; /* IE 10 */
+  display: -webkit-flex; /* 웹킷 구 버전*/
+  display: flex;
+  flex-wrap: nowrap;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  width: 100%;
+  height: 36px;
+
+  &.input {
+    -webkit-box-flex: 1;
+    -ms-flex: auto;
+    flex: auto;
+  }
+  .auth-btn {
+    margin-left: 10px !important;
+    padding: 3px !important;
+    -webkit-box-flex: initial;
+    -ms-flex: initial;
+    flex: initial;
+    font-weight: bold;
+  }
 }
 </style>
 <style scoped lang="less">
 @import '../../../../styles/common.less';
 
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease-out;
+}
+
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-fade-enter {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.5s ease;
+}
+
+.slide-fade-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
 .join {
   display: -webkit-box; /* ios 6이하, 사파리 3.1 */
   display: -moz-box; /* 파이어폭스 19 이하 */
@@ -174,6 +313,7 @@
   align-items: center;
   min-height: 800px;
   height: calc(~"100vh - 80px");
+
 }
 
 
@@ -231,8 +371,15 @@
       margin: 30px 0 30px 0;
     }
   }
+  .auth_email_btn {
+    margin-top: 5px;
+    border: none;
+    background: @purple;
+    font-weight: bold;
+    float:right;
+    color: white
+  }
 }
-
 
 /* 회원가입 박스의 Coding Platform Dev title css */
 .join_title{
