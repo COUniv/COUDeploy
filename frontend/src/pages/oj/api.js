@@ -13,9 +13,12 @@ export default {
       data
     })
   },
-  authEmail (data) {
+  authEmail (email, token) {
     return ajax('authed_email', 'post', {
-      data
+      data: {
+        email,
+        token
+      }
     })
   },
   getProblemPercent (categoryId) {

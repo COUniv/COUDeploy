@@ -32,7 +32,7 @@
               <Button v-else type="primary" class="auth_email_btn" disabled>인증코드발송</Button>
             </div>
             <div v-else>
-              <Button type="primary" class="auth_email_btn" @click="callAuthEmail">이메일 재입력</Button>
+              <Button type="primary" class="auth_email_btn" @click="editEmail">이메일 재입력</Button>
             </div>
           </FormItem>
           <transition name="slide-fade" mode="out-in">
@@ -41,7 +41,7 @@
                 <Input type="text" v-model="authCode" placeholder="인증 코드" size="large" @on-enter="handleRegister">
                 </Input>
               </div>
-              <Button class="auth-btn" type="primary">인증확인</Button>
+              <Button class="auth-btn" type="primary" @click="authEmail">인증확인</Button>
             </div>
           </transition>
           <FormItem prop="captcha">
@@ -179,11 +179,18 @@
       },
       callAuthEmail () {
         this.authButtonLoading = true
-        api.callAuthEmail(this.formRegister.email).then(res => {
+        let formData = Object.assign({}, this.formRegister)
+        delete formData['passwordAgain']
+        delete formData['password']
+        delete formData['username']
+        delete formData['captcha']
+        console.log(formData)
+        api.callAuthEmail(formData).then(res => {
           this.$success('성공적으로 이메일이 전송되었습니다.')
           this.authModal = true
           this.authButtonLoading = false
-        }, _ => {
+        }, err => {
+          console.log(err)
           this.$error('이메일 전송이 실패하였습니다.')
           this.authButtonLoading = false
         })
@@ -206,7 +213,8 @@
       ...mapGetters(['website'])
     },
     watch: {
-      'formRegister.email' () {
+      'formRegister.email' (newVal) {
+        this.formRegister.email = newVal
         this.$refs.formRegister.validateField('email', valid => {
           if (valid) {
             this.authButton = false

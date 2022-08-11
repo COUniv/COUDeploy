@@ -7,3 +7,5 @@ class EmailAuthentication(models.Model):
     email = models.TextField(null=True)   # 인증 할 이메일
     verify_email_token = models.TextField(null=True)  # 이메일 토큰
     verify_email_token_expire_time = models.DateTimeField(null=True)  # 이메일 인증 제한 시간
+    class Meta:
+        db_table = "emailauthentication"

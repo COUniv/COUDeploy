@@ -20,10 +20,10 @@ import {
   CreateArticle,
   Article,
   Notification,
-  AnnouncementList
+  AnnouncementList,
+  Join
 } from '../views'
 import Logout from '../views/user/Logout.vue'
-import Join from '../views/preHome/Join.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
 // import FreeBoard from '../views/board_pages/Free_Board.vue'
 // import RequestBoard from '../views/board_pages/Request_Board.vue'

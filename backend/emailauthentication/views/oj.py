@@ -36,15 +36,15 @@ class MakeEmailAuthenticationTokenAPI(APIView):
         data = request.data
         email = data["email"].lower()
         if email:
-            exist_email = EmailAuthentication.objects.get(email__iexact=email)
+            
             auth_token = rand_str(length=8)
             """
             이메일이 존재하는 경우
             """
-            if exist_email:
-                """
-                이메일 인증 과정 중 DDoS 를 막기 위한 제한시간(60초) 설정
-                """
+            if EmailAuthentication.objects.filter(email__iexact=email).exists():
+                exist_email = EmailAuthentication.objects.filter(email__iexact=email).first()
+                print(exist_email)
+                # 이메일 인증 과정 중 DDoS 를 막기 위한 제한시간(60초) 설정
                 if exist_email.verify_email_token_expire_time and 0 < int(
                       (exist_email.verify_email_token_expire_time - now()).total_seconds()) < 60:
                     return self.error("재전송은 1분마다 가능합니다.")
@@ -63,7 +63,7 @@ class MakeEmailAuthenticationTokenAPI(APIView):
                 "token": auth_token
             }
             try:
-                email_html = render_to_string("verify_token_email.html", render_data)
+                email_html = render_to_string("auth_token_email.html", render_data)
                 send_email(smtp_config=SysOptions.smtp_config,
                            from_name=SysOptions.website_name_shortcut,
                            to_name="email 인증",
