@@ -29,7 +29,7 @@
 
       <!-- 작성자명 및 작성 시간-->
       <div class="user-date">
-        <img id="user-avatar" :scr="avatar"/>
+        <img id="user-avatar" :src="getAvatarSource(username)"/>
         <div>
           <a @click="goUser"><b>{{username}}</b></a>
           <div id="user-time">{{article.create_time}}</div>
@@ -59,11 +59,10 @@
       </div>
       <!-- 구분선 -->
       <div></div>
-      <!-- <hr class="hr-style"> -->
 
       <!-- 댓글 입력 -->
       <div class="comment-section">
-        <textarea ref="commentInput" v-model="formComment.content" placeholder="댓글 입력" class="comment-submit-textarea" @input="resizeInput"></textarea>
+        <textarea ref="commentInput" v-model.lazy="formComment.content" placeholder="댓글 입력" class="comment-submit-textarea" @input="resizeInput"></textarea>
         <div class="comment-submit-area">
           <Button id="comment_submit_btn" type="text" icon="ios-paper-plane" @click="commentSubmit"></Button>
         </div>
@@ -77,7 +76,7 @@
             <!-- 사용자 정보영역 -->
               <div class="comment-user-time">
                 <div>
-                  <img id="user-avatar-2"/>
+                  <img id="user-avatar-2" :src="getAvatarSource(comment.username)"/>
                   <div class="linkdiv" @click="goCommentUesr(comment.username)">
                     <b>{{ comment.username }}</b>
                   </div>
@@ -125,14 +124,6 @@
             </Modal>
 
       </div>
-
-      <!-- 댓글 입력 -->
-      <!-- <div class="comment-section">
-        <Input type="textarea" v-model="formComment.content" :autosize="{minRows: 2, maxRows: 6}" placeholder="댓글 입력" class="comment_submit_input"></Input>
-        <Button class="comment_submit_btn" type="text" icon="ios-paper-plane" @click="commentSubmit"></Button>
-      </div> -->
-      <!-- float 겹침 방지 (삭제하지마세요) -->
-      <!-- <div style="clear:both;"></div> -->
     </Panel>
   </div>
 </template>
@@ -252,11 +243,6 @@
           }
         }, () => {
         })
-        // this.profile = this.$route.query.username
-        // api.getUserInfo(this.profile).then(res => {
-        //   this.avatar = res.data.data.avatar
-        //   console.log(this.avatar)
-        // })
       },
       refreshComment () {
         api.getArticle(this.articleID).then(res => {
@@ -267,8 +253,12 @@
           this.is_writer = article.is_writer
           this.username = article.username
           this.comments = article.comments
+          this.is_liked = article.is_liked
+          this.article.like_count = article.like_count
+          this.article.comment_count = article.comment_count
           this.formComment.articleid = ''
           this.formComment.content = ''
+          this.$refs.commentInput.style.height = '90px' // resize comment area
           this.convertUTC()
           if (article.boardtype === 'QUESTION') {
             this.problemid = article.problemid
@@ -354,6 +344,15 @@
             params: {problemID: problemid}
           }
         )
+      },
+      getAvatarSource (username) {
+        let profile = ''
+        api.getUserInfo(username).then(res => {
+          profile = res.data.data
+          console.log(username + ' avatar source : ')
+          console.log(profile.avatar)
+        })
+        return profile.avatar
       }
     }
   }
@@ -397,17 +396,19 @@
   #user-avatar {
     height: 40px;
     width: 40px;
-    border-radius: 20px;
-    background-color: @purple;
+    border-radius: 50%;
+    // background-color: @purple;
     margin-right: 10px;
+    object-fit: cover;
   }
 
   #user-avatar-2 {
     height: 30px;
     width: 30px;
-    border-radius: 15px;
-    background-color: @light-purple;
+    border-radius: 50%;
+    // background-color: @light-purple;
     margin-right: 10px;
+    object-fit: cover;
   }
 
   #user-time {
@@ -496,9 +497,6 @@
 
   .article-animate-enter-active {
     animation: fadeIn 1s;
-  }
-  .hr-style {
-    border: 1px solid #e8eaec;
   }
 
   .slotWrapper {
