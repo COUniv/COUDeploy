@@ -1,38 +1,76 @@
 <template>
   <div class="join">
     <div class="form">
-      <Form ref="formLogin" :model="formLogin" :rules="ruleLogin">
+      <Form ref="formRegister" :model="formRegister" :rules="ruleRegister">
         <!-- 회원가입 박스 title-->
         <div class="join_title"><p @click="goRoute('/')">COU</p></div>
                 
         <div class = "join_edge">
           <FormItem prop="username">
             <p class="form_title">아이디</p>
-            <Input class ="login_input" type="text" v-model="formLogin.username" placeholder="아이디를 입력해주세요" size="large" @on-enter="handleLogin">
+            <Input class ="login_input" type="text" v-model="formRegister.username" placeholder="아이디를 입력해주세요" size="large" @on-enter="handleRegister">
             </Input>
           </FormItem>
           <FormItem prop="password">
             <p class="form_title">비밀번호</p>
-            <Input class ="login_input" type="password" v-model="formLogin.password" placeholder="비밀번호를 입력해주세요" size="large" @on-enter="handleLogin">
+            <Input class ="login_input" type="password" v-model="formRegister.password" placeholder="비밀번호를 입력해주세요" size="large" @on-enter="handleRegister">
             </Input>
           </FormItem>
-          <FormItem prop="password">
+          <FormItem prop="passwordAgain">
             <p class="form_title">비밀번호 확인</p>
-            <Input class ="login_input" type="password" v-model="formLogin.password" placeholder="비밀번호를 다시 한 번 입력해주세요" size="large" @on-enter="handleLogin">
+            <Input class ="login_input" type="password" v-model="formRegister.passwordAgain" placeholder="비밀번호를 다시 한 번 입력해주세요" size="large" @on-enter="handleRegister">
             </Input>
           </FormItem>
           <FormItem prop="email">
             <p class="form_title">이메일</p>
-            <Input class ="login_input" type="password" v-model="formLogin.password" placeholder="이메일을 입력해주세요" size="large" @on-enter="handleLogin">
+            <Input v-if="!authModal && !isAuthed" class ="login_input" type="email" v-model="formRegister.email" placeholder="이메일을 입력해주세요" size="large" @on-enter="handleRegister">
             </Input>
+            <Input v-else class ="login_input" type="email" v-model="formRegister.email" placeholder="이메일을 입력해주세요" size="large" disabled>
+            </Input>
+            <div v-if="!authModal">
+              <Button v-if="isAuthed" type="primary" class="auth_email_btn" @click="editEmail">이메일 재입력</Button>
+              <Button v-else-if="authButton" type="primary" class="auth_email_btn" @click="callAuthEmail" :loading="authButtonLoading">
+                <span v-if="!authButtonLoading">인증코드발송</span>
+                <span v-else="authButtonLoading">Loading...</span>
+              </Button>
+              <Button v-else type="primary" class="auth_email_btn" :loading="authButtonLoading" disabled>
+              인증코드발송
+              </Button>
+            </div>
+            <div v-else>
+              <Button type="primary" class="auth_email_btn" @click="editEmail">이메일 재입력</Button>
+            </div>
+          </FormItem>
+          <transition name="slide-fade" mode="out-in">
+            <div v-if="authModal" class="auth_form">
+              <div class="input">
+                <Input type="text" v-model="authCode" placeholder="인증 코드" size="large" @on-enter="handleRegister">
+                </Input>
+              </div>
+              <Button class="auth-btn" type="primary" @click="authEmail">인증확인</Button>
+            </div>
+          </transition>
+          <FormItem prop="captcha">
+            <p class="form_title">Captcha</p>
+            <div class="oj-captcha">
+              <div class="oj-captcha-code">
+                <Input v-model="formRegister.captcha" :placeholder="$t('m.Captcha')" size="large" @on-enter="handleRegister">
+                </Input>
+              </div>
+              <div class="oj-captcha-img">
+                <Tooltip content="Click to refresh" placement="top">
+                  <img :src="captchaSrc" @click="getCaptchaSrc"/>
+                </Tooltip>
+              </div>
+            </div>
           </FormItem>
           <FormItem>
             <div class="login_btn">
               <Button 
                 type="primary"
-                @click="handleLogin"
-                class="primary btn" v-if="website.allow_register" long
-                :loading="btnLoginLoading">
+                @click="handleRegister"
+                class="primary btn register_btn" v-if="website.allow_register" long
+                :loading="btnRegisterLoading">
                 회원가입
               </Button>
             </div>
@@ -45,159 +83,257 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import api from '@oj/api'
-import { FormMixin } from '@oj/components/mixins'
-import register from '@oj/views/user/Register'
-export default {
-  mixins: [FormMixin],
-  components: {
-    register
-  },
-  data () {
-    // LoginStaus :false;  //로그인 상태 초기값 : false
-    const CheckRequiredTFA = (rule, value, callback) => {
-      if (value !== '') {
-        api.tfaRequiredCheck(value).then(res => {
-          this.tfaRequired = res.data.data.result
-        })
+  import { mapGetters, mapActions } from 'vuex'
+  import api from '@oj/api'
+  import { FormMixin } from '@oj/components/mixins'
+  export default {
+    mixins: [FormMixin],
+    mounted () {
+      this.getCaptchaSrc()
+    },
+    data () {
+      const CheckUsernameNotExist = (rule, value, callback) => {
+        api.checkUsernameOrEmail(value, undefined).then(res => {
+          if (res.data.data.username === true) {
+            callback(new Error(this.$i18n.t('m.The_username_already_exists')))
+          } else {
+            callback()
+          }
+        }, _ => callback())
       }
-      callback()
-    }
-
-    return {
-      lastURL: '',
-      tfaRequired: false,
-      btnLoginLoading: false,
-      formLogin: {
-        username: '',
-        password: '',
-        // 로그인 상태  prop 값
-        login_status: false,
-        tfa_code: ''
-      },
-      ruleLogin: {
-        username: [
-          {required: true, trigger: 'blur'},
-          {validator: CheckRequiredTFA, trigger: 'blur'}
-        ],
-        password: [
-          {required: true, trigger: 'change', min: 6, max: 20}
-        ]
+      const CheckEmailNotExist = (rule, value, callback) => {
+        api.checkUsernameOrEmail(undefined, value).then(res => {
+          if (res.data.data.email === true) {
+            callback(new Error(this.$i18n.t('m.The_email_already_exists')))
+          } else {
+            callback()
+          }
+        }, _ => callback())
       }
-    }
-  },
-  methods: {
-    ...mapActions(['changeModalStatus', 'getProfile']),
-    handleBtnClick (mode) {
-      this.changeModalStatus({
-        visible: true,
-        mode: mode
-      })
-    },
-    changeInputText (event) {
-      this.formLogin.username = event
-    },
-    changeInputTextP (event) {
-      this.formLogin.password = event
-    },
-
-    handleLogin () {
-      this.validateForm('formLogin').then(valid => {
-        this.btnLoginLoading = true
-        let formData = Object.assign({}, this.formLogin)
-        if (!this.tfaRequired) {
-          delete formData['tfa_code']
+      const CheckPassword = (rule, value, callback) => {
+        if (this.formRegister.password !== '') {
+          // 두 번째 비밀번호 상자를 다시 확인
+          this.$refs.formRegister.validateField('passwordAgain')
         }
-        api.login(formData).then(res => {       // login : api.js파일의 login 함수를 사용하게 함
-          this.btnLoginLoading = false
-          this.changeModalStatus({visible: false})
-          this.getProfile()
-          this.$success(this.$i18n.t('m.Welcome_back'))
-          setTimeout(() => {
-            this.afterlogin(this.lastURL)
-          }, 500)
-        }, _ => {
-          this.btnLoginLoading = false
-        })
-      })
-    },
-    afterlogin (route) {
-      if (route) {
-        this.$router.push({path: route.path})
-      } else {
-        this.$router.push({path: '/'})
+        callback()
+      }
+
+      const CheckAgainPassword = (rule, value, callback) => {
+        if (value !== this.formRegister.password) {
+          callback(new Error(this.$i18n.t('m.password_does_not_match')))
+        }
+        callback()
+      }
+
+      return {
+        btnRegisterLoading: false,
+        authCode: '',
+        authButton: false,
+        authButtonLoading: false,
+        authModal: false,
+        isAuthed: false,
+        formRegister: {
+          username: '',
+          password: '',
+          passwordAgain: '',
+          email: '',
+          captcha: ''
+        },
+        ruleRegister: {
+          username: [
+            {required: true, trigger: 'blur'},
+            {validator: CheckUsernameNotExist, trigger: 'blur'}
+          ],
+          email: [
+            {required: true, type: 'email', trigger: 'blur'},
+            {validator: CheckEmailNotExist, trigger: 'blur'}
+          ],
+          password: [
+            {required: true, trigger: 'blur', min: 6, max: 20},
+            {validator: CheckPassword, trigger: 'blur'}
+          ],
+          passwordAgain: [
+            {required: true, validator: CheckAgainPassword, trigger: 'change'}
+          ],
+          captcha: [
+            {required: true, trigger: 'blur', min: 1, max: 10}
+          ]
+        }
       }
     },
-    goRoute (route) {
-      if (route) {
-        this.$router.push({path: route})
-      } else {
-        this.$router.push({path: '/'})
-      }
-    },
-    goResetPassword () {
-      this.changeModalStatus({visible: false})
-      this.$router.push({name: 'apply-reset-password'})
-    },
-    isAlreadyLoggedin () {
-      if (this.$store.getters.isAuthenticated === true) {
-        this.$router.push({
-          name: 'home'
-        })
-      }
-    }
-  },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.lastURL = from
-    })
-  },
-  computed: {
-    ...mapGetters(['website', 'modalStatus']),
-    visible: {
-      get () {
-        return this.modalStatus.visible
+    methods: {
+      ...mapActions(['getProfile']),
+      handleRegister () {
+        if (!this.isAuthed) {
+          this.$error('이메일 인증을 진행해주세요.')
+        } else {
+          this.validateForm('formRegister').then(valid => {
+            let formData = Object.assign({}, this.formRegister)
+            delete formData['passwordAgain']
+            this.btnRegisterLoading = true
+            api.register(formData).then(res => {
+              this.$success(this.$i18n.t('m.Thanks_for_registering'))
+              this.btnRegisterLoading = false
+              this.$router.push({path: '/login'})
+            }, _ => {
+              this.getCaptchaSrc()
+              this.formRegister.captcha = ''
+              this.btnRegisterLoading = false
+            })
+          })
+        }
       },
-      set (value) {
-        this.changeModalStatus({visible: value})
+      callAuthEmail () {
+        setTimeout(() => this.convertStatusAuthButtonLoading(), 0)
+        setTimeout(() => this.authPass(), 1000)
+      },
+      convertStatusAuthButtonLoading () {
+        this.authButtonLoading = true
+      },
+      deconvertStatusAuthButtonLoading () {
+        this.authButtonLoading = false
+      },
+      authPass () {
+        let formData = Object.assign({}, this.formRegister)
+        delete formData['passwordAgain']
+        delete formData['password']
+        delete formData['username']
+        delete formData['captcha']
+        api.callAuthEmail(formData).then(res => {
+          this.$success('성공적으로 이메일이 전송되었습니다.')
+          this.authModal = true
+          setTimeout(() => this.deconvertStatusAuthButtonLoading(), 500)
+        }, err => {
+          console.log(err)
+          this.$error('이메일 전송이 실패하였습니다.')
+          setTimeout(() => this.deconvertStatusAuthButtonLoading(), 500)
+        })
+      },
+      authEmail () {
+        api.authEmail(this.formRegister.email, this.authCode).then(res => {
+          this.isAuthed = true
+          this.authModal = false
+          this.$success('인증 성공')
+        }, _ => {
+        })
+      },
+      editEmail () {
+        this.isAuthed = false
+        this.authModal = false
+      }
+    },
+    computed: {
+      ...mapGetters(['website'])
+    },
+    watch: {
+      'formRegister.email' (newVal) {
+        this.formRegister.email = newVal
+        this.$refs.formRegister.validateField('email', valid => {
+          if (valid) {
+            this.authButton = false
+          } else {
+            this.authButton = true
+          }
+        }, _ => {
+          this.authButton = false
+        })
       }
     }
-  },
-  mounted () {
-    this.isAlreadyLoggedin()
+  }
+</script>
+<style lang="less">
+.ivu-form-item {
+  margin-bottom: 10px;
+}
+.auth_form {
+  display: -webkit-box; /* ios 6이하, 사파리 3.1 */
+  display: -moz-box; /* 파이어폭스 19 이하 */
+  display: -ms-flexbox; /* IE 10 */
+  display: -webkit-flex; /* 웹킷 구 버전*/
+  display: flex;
+  flex-wrap: nowrap;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  width: 100%;
+  height: 36px;
+
+  &.input {
+    -webkit-box-flex: 1;
+    -ms-flex: auto;
+    flex: auto;
+  }
+  .auth-btn {
+    margin-left: 10px !important;
+    padding: 3px !important;
+    -webkit-box-flex: initial;
+    -ms-flex: initial;
+    flex: initial;
+    font-weight: bold;
   }
 }
-</script>
-
+</style>
 <style scoped lang="less">
 @import '../../../../styles/common.less';
 
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease-out;
+}
+
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-fade-enter {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.5s ease;
+}
+
+.slide-fade-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
 .join {
+  display: -webkit-box; /* ios 6이하, 사파리 3.1 */
+  display: -moz-box; /* 파이어폭스 19 이하 */
+  display: -ms-flexbox; /* IE 10 */
+  display: -webkit-flex; /* 웹킷 구 버전*/
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 800px;
   height: calc(~"100vh - 80px");
+
 }
 
 
 @media screen and (max-width: 1200px) {
   .join {
-    margin: -80px -50px -190px -50px;
+    margin: 0px -50px -100px -50px;
     position: relative;
   }
 }
 
-@media screen and (max-height: 725px) {
+@media screen and (max-height: 800px) {
   .join {
-    margin: -80px -50px -190px -50px;
+    margin: 60px -50px -100px -50px;
     position: relative;
   }
 }
 
 @media screen and (min-width: 1200px) {
   .join {
-    margin: -80px -50px -190px -50px;
+    margin: 0px -50px -100px -50px;
   }
 }
 
@@ -221,18 +357,29 @@ export default {
   background-color: @white;
   box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
   border-radius: @size-border-radius;
-  padding: 20px 30px;
-  width: 30%;
+  padding: 20px;
+  width: 40vw;
+  height: 800px;  // 소수점으로 떨어지는 높이를 730px로 고정
   max-width: 500px;
+  min-width: 350px; // width가 강제적으로 줄어드는걸 방지
+  margin-top: 60px;
+  margin-bottom: 60px;
   overflow: auto;
   .btn {
     margin: 0 0 0 0;
     &:last-child {
-      margin: 0 0 60px 0;
+      margin: 30px 0 30px 0;
     }
   }
+  .auth_email_btn {
+    margin-top: 5px;
+    border: none;
+    background: @purple;
+    font-weight: bold;
+    float:right;
+    color: white
+  }
 }
-
 
 /* 회원가입 박스의 Coding Platform Dev title css */
 .join_title{
@@ -277,7 +424,7 @@ export default {
   text-align: left;
 }
 
-.register_btn{
+.register_btn {
   margin-top: 20px;
 }
 
