@@ -16,7 +16,6 @@ class CategoryListSerializer(serializers.ModelSerializer):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.user = kwargs.pop("user", None)
     class Meta:
         model = ProblemCategory
         fields = "__all__"

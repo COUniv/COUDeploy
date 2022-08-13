@@ -34,8 +34,8 @@ class CategoryListAPI(APIView):
                 categories_data = categories_data.filter(description__contains=search)
         # return self.success(list(categories_data))   
         # categories_data = list(categories_data)     
-        data = self.paginate_data(request, categories_data)["results"] # 페이징
-        categories = data
+        data = self.paginate_data(request, categories_data) # 페이징
+        categories = data["results"]
         categories_data = ProblemCategorySerializer(categories, many=True).data
 
         isNotloggedIn = False # 로그인 사용자의 경우
@@ -91,8 +91,8 @@ class CategoryListAPI(APIView):
                     else:
                         categories_data[idx]['percent'] = int(len(result) / total * 100)
                 idx = idx + 1
-
-        return self.success(categories_data)
+        res = {'result' : categories_data, 'total': data["total"] }
+        return self.success(res)
 
 
 class ProblemTagAPI(APIView):
