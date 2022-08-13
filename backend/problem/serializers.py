@@ -10,6 +10,17 @@ from utils.serializers import LanguageNameMultiChoiceField, SPJLanguageNameChoic
 from .models import Problem, ProblemRuleType, ProblemTag, ProblemIOMode, ProblemCategory
 from .utils import parse_problem_template
 
+class CategoryListSerializer(serializers.ModelSerializer):
+    """
+    카테고리 리스트 전송용
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = kwargs.pop("user", None)
+    class Meta:
+        model = ProblemCategory
+        fields = "__all__"
+
 class ModifyProblemCategorySerializer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField()
