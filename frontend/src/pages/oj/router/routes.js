@@ -4,7 +4,6 @@ import {
   ACMRank,
   Announcements,
   ApplyResetPassword,
-  ApplyVerifyEmail,
   Languages,
   Home,
   NotFound,
@@ -15,13 +14,13 @@ import {
   SubmissionDetails,
   SubmissionList,
   UserHome,
-  VerifyEmail,
   ArticleList,
   CreateArticle,
   Article,
   Notification,
   AnnouncementList,
-  Join
+  Join,
+  CategoryList
 } from '../views'
 import Logout from '../views/user/Logout.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
@@ -33,6 +32,12 @@ import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
 
 export default [
+  {
+    name: 'category-list',
+    path: '/category-list',
+    meta: {title: 'category-list'},
+    component: CategoryList
+  },
   {
     name: 'notification-list',
     path: '/notification-list',

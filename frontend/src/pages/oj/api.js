@@ -28,8 +28,12 @@ export default {
       }
     })
   },
-  getProblemCategoryList () {
-    return ajax('categories', 'get')
+  getProblemCategoryList (offset, limit, params) {
+    params.limit = limit
+    params.offset = offset
+    return ajax('categories', 'get', {
+      params
+    })
   },
   getReadNotification () {
     return ajax('read_notification', 'get')
