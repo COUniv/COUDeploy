@@ -52,7 +52,7 @@
               <div id="separator"></div>
               <li class="submenu_list">
                 <Dropdown @on-click="handleLanguageChange">
-                  <span><div style="padding-right:3px; display: inline-flex;" v-bind:style="[this.language != '' ? {'color' : '#222222'}:{}]">{{ toLanguage(this.language) }}</div><div style="display: inline-flex;"><Icon type="md-arrow-dropdown" /></div></span>
+                  <span><div style="padding-right:3px; display: inline-flex;" v-bind:style="[this.language != '' ? {'color' : '#858585'}:{}]">{{ toLanguage(this.language) }}</div><div style="display: inline-flex;"><Icon type="md-arrow-dropdown" /></div></span>
                   <Dropdown-menu slot="list">
                     <Dropdown-item name="Java">Java</Dropdown-item>
                     <Dropdown-item name="C">C</Dropdown-item>
