@@ -29,16 +29,17 @@
 
       <!-- 작성자명 및 작성 시간-->
       <div class="user-date">
-        <img id="user-avatar" :src="getAvatarSource(username)"/>
         <div>
-          <a @click="goUser"><b>{{username}}</b></a>
-          <div id="user-time">{{article.create_time}}</div>
+          <img id="user-avatar" :src="getAvatarSource(username)"/>
+          <div>
+            <a @click="goUser"><b>{{username}}</b></a>
+            <div id="user-time">{{article.create_time}}</div>
+          </div>
         </div>
-      </div>
-      
-      <!-- 질문 게시판의 경우 문제 링크 -->
-      <div v-if="problemid">
-        <button @click="goProblemDetail(problemid)">{{ problemid }}</button>
+        <!-- 질문 게시판의 경우 문제 링크 -->
+        <div id="problem-id-container" v-if="problemid">
+          <Button id="problem-id-btn" type="text" @click="goProblemDetail(problemid)">#{{ problemid }}</Button>
+        </div>
       </div>
 
       <!-- 게시글 내용 -->
@@ -385,11 +386,15 @@
 
   .user-date {
     display: flex;
-    margin: 5px 0px 5px 70px;
+    justify-content: space-between;
+    margin: 5px 70px 5px 70px;
     div:nth-of-type(1) {
-      display:flex;
-      flex-direction: column;
-      line-height: 20px;
+      display: flex;
+      div:nth-of-type(1) {
+        display:flex;
+        flex-direction: column;
+        line-height: 20px;
+      }
     }
   }
 
@@ -544,6 +549,29 @@
     }
     * {
       border: none;
+    }
+  }
+
+  #problem-id-container {
+    line-height: 40px;
+    #problem-id-btn {
+      padding: 0;
+      border-radius: 0;
+      font-size: 100%;
+      border-color: transparent;
+      color: @black;
+      background-color: transparent;
+      &:hover {
+        outline: none;
+        box-shadow: none;
+        background-color: transparent;
+        color: @purple;
+      }
+      &:focus {
+        outline: none;
+        box-shadow: none;
+        background-color: transparent;
+      }
     }
   }
 

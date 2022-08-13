@@ -33,22 +33,7 @@
           <!--<div class="community_free_title" slot="title">{{mainTitle}}</div>-->
 
           <div class="community_free_bar" slot="extra">
-            <ul class="filter" style="display:none">
-              
-              <!-- 질문 게시판의 경우 언어 카테고리 -->
-              <li v-if="formFilter.boardtype === '2'" class="submenu_list" style="width=200px">
-                <Dropdown @on-click="handleLanguageChange">
-                  <span><div style="padding-right:3px; display: inline-flex;">언어</div><div style="display: inline-flex;"><Icon type="md-arrow-dropdown" /></div></span>
-                  <Dropdown-menu slot="list">
-                    <Dropdown-item name="Java">Java</Dropdown-item>
-                    <Dropdown-item name="C">C</Dropdown-item>
-                    <Dropdown-item name="C++">C++</Dropdown-item>
-                    <Dropdown-item name="Python">Python</Dropdown-item>
-                  </Dropdown-menu>
-                </Dropdown>
-              </li>
-              </ul>
-              
+            <div>
               <div id="order-by">
                 <!-- 게시판 정렬 선택 -->
                 <div class="community_free_bar_order_by" @click="handleSortChange('0')">
@@ -62,7 +47,24 @@
                 </div>
               </div>
 
-              <div style="position:relative; right:50px;">
+              <ul v-if="formFilter.boardtype === '2'" class="filter">
+              <!-- 질문 게시판의 경우 언어 카테고리 -->
+              <div id="separator"></div>
+              <li class="submenu_list">
+                <Dropdown @on-click="handleLanguageChange">
+                  <span><div style="padding-right:3px; display: inline-flex;" v-bind:style="[this.language != '' ? {'color' : '#222222'}:{}]">{{ toLanguage(this.language) }}</div><div style="display: inline-flex;"><Icon type="md-arrow-dropdown" /></div></span>
+                  <Dropdown-menu slot="list">
+                    <Dropdown-item name="Java">Java</Dropdown-item>
+                    <Dropdown-item name="C">C</Dropdown-item>
+                    <Dropdown-item name="C++">C++</Dropdown-item>
+                    <Dropdown-item name="Python">Python</Dropdown-item>
+                  </Dropdown-menu>
+                </Dropdown>
+              </li>
+              </ul>
+            </div>
+
+              <div>
                 <ul>
                   <li class="submenu_list">
                     <!-- 게시글 검색 카테고리 선택 - searchtype 결정 -->
@@ -75,7 +77,7 @@
 
                   <li class="submenu_list">
                     <!-- 게시글 검색 내용 입력 - search -->
-                    <Input @on-search="handleQueryChange" v-model="formFilter.search" search placeholder="검색어를 입력하세요." style="width: 225px"></Input>
+                    <Input @on-search="handleQueryChange" v-model="formFilter.search" search placeholder="검색어를 입력하세요."></Input>
                   </li>
                   <!-- <li class="submenu_list">
                     <Button type="primary" icon="ios-search" @click="handleQueryChange"></Button>
@@ -333,6 +335,7 @@
         this.formFilter.searchtype = query.searchtype || ''
         this.formFilter.language = query.language || ''
         this.page = parseInt(query.page) || 1
+        console.log(this.formFilter)
         if (this.page < 1) {
           this.page = 1
         }
@@ -448,6 +451,10 @@
       },
       convertDate (item) {
         return time.utcToLocal(item.create_time, 'YYYY-MM-DD HH:mm')
+      },
+      toLanguage (language) {
+        if (language === '') return '언어'
+        else return this.language
       }
     },
     watch: {
@@ -473,42 +480,23 @@
       width: 80%;
     }
   }
-      .community {
-        // display: inline-block;
-        // vertical-align: top;
-        /* padding: 0 0 20px 0; */
-        // width: 17%;
-        // height: 15%;
-        // padding: 0 10px 20px 0;
-        display: flex;
-        justify-content: space-between;
-        margin-top: 10px;
-        position: relative;
-        font-size: 16px;
-        text-align: center;
-    }
+  .community {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 16px;
+    text-align: center;
+    padding: 0 50px;
+  }
 
-    .community_menu {
-        position: relative;
-        left: 50px;
-        display: flex;
-        /* vertical-align: top; */
-        /* width: 20%; */
-        /* height: 20%; */
-        // margin-top: 10px;
-        // padding: 0 0 20px 0;
-        font-size: 16px;
-        /* text-align: center; */
-        /* background-color: rgb(232, 238, 177);  */
-        // border-radius: 5px;
-        /* border-top: 2px solid rgb(61, 61, 61); */
-        line-height: 35px;
-        color: @gray;
-    }
+  .community_menu {
+    display: flex;
+    font-size: 16px;
+    line-height: 35px;
+    color: @gray;
+  }
 
     #order-by {
-      position: relative;
-      left: 50px;
       display: flex;
       font-size: 12px;
       color: #C0C0C0;
@@ -553,9 +541,29 @@
         display: flex;
         justify-content: space-between;
         margin: 10px 0 0 0;
+        padding: 10px 50px;
         background-color: #F9F9F9;
-        padding: 10px 0px;
         line-height: 40px;
+        div:nth-of-type(1) {
+          display: flex;
+        }
+    }
+
+    .filter {
+      display: flex;
+      li {
+        color: #c0c0c0;
+        &:hover {
+          color: @black;
+          transition: all .3s ease-in-out;
+        }
+      }
+    }
+
+    #separator {
+      border-left: 2px solid #c0c0c0;
+      border-radius: 20px;
+      margin-right: 15px;
     }
     // .community_free_title {
     //     /* display: block; */
@@ -573,8 +581,6 @@
 
     #add-new {
       cursor: pointer;
-      position: relative;
-      right: 50px;
       padding: 0 10px;
       height: 35px;
       background-color: @white;
