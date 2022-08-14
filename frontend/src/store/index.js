@@ -65,7 +65,9 @@ export default new Vuex.Store({
     user,
     contest
   },
-  plugins: [createPersistedState()],
+  plugins: [createPersistedState({
+    storage: window.sessionStorage
+  })],
   state: rootState,
   getters: rootGetters,
   mutations: rootMutations,

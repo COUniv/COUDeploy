@@ -65,34 +65,32 @@ class ApplyVerifyEmailAPI(APIView):
     def post(self, request):
         if not request.user.is_authenticated:
             return self.error("잘못 된 접근입니다.")
+        if not SysOptions.smtp_config:
+            return self.error("Please setup SMTP config at first")
         data = request.data
         try:
             user = User.objects.get(email__iexact=data["email"])
         except User.DoesNotExist:
-            return self.error("cannot find user")
+            return self.error("사용자를 찾을 수 없습니다.")
         if user != request.user:
-            return self.error("invalid email")
+            return self.error("이메일이 일치하지 않습니다.")
         if user.verify_email_token_expire_time and 0 < int(
-                (user.verify_email_token_expire_time - now()).total_seconds()) < 5 * 60:
-            return self.error("You can only verify account once per 5 minutes")
-        user.verify_email_token = rand_str()
-        user.verify_email_token_expire_time = now() + timedelta(minutes=20)
+                (user.verify_email_token_expire_time - now()).total_seconds()) < 60:
+            return self.error("재전송은 1분마다 가능합니다.")
+        user.verify_email_token = rand_str(length=8)
+        user.verify_email_token_expire_time = now() + timedelta(minutes=15)
         user.save()
         render_data = {
-            "username": user.username,
-            "website_name": SysOptions.website_name,
-            "link": f"{SysOptions.website_base_url}/verify-email/{user.verify_email_token}"
+                "website_name": SysOptions.website_name,
+                "token": user.verify_email_token
         }
-
-        if not SysOptions.smtp_config:
-            return self.error("Please setup SMTP config at first")
         try:
-            email_html = render_to_string("verify_token_email.html", render_data)
+            email_html = render_to_string("auth_token_email.html", render_data)
             send_email(smtp_config=SysOptions.smtp_config,
                        from_name=SysOptions.website_name_shortcut,
                        to_name=request.user.username,
                        to_email=request.data["email"],
-                       subject="Verify Your Account",
+                       subject="[" + SysOptions.website_name_shortcut + "] 이메일 인증 코드",
                        content=email_html)
         except smtplib.SMTPResponseException as e:
             # guess error message encoding
@@ -112,15 +110,18 @@ class ApplyVerifyEmailAPI(APIView):
 
 # DG 02.13
 class VerifyEmailAPI(APIView):
+    @login_required
     @validate_serializer(VerifyEmailSerializer)
     def post(self, request):
         data = request.data
         try:
             user = User.objects.get(verify_email_token=data["token"])
         except User.DoesNotExist:
-            return self.error("Token does not exist")
+            return self.error("유효하지 않은 코드입니다")
+        if request.user.username != user.username:
+            return self.error("유효하지 않은 코드입니다")
         if user.verify_email_token_expire_time < now():
-            return self.error("Token has expired")
+            return self.error("만료된 코드입니다.")
         user.verify_email_token = None
         user.is_email_verify = True
         user.save()
@@ -325,7 +326,7 @@ class UserRegisterAPI(APIView):
             return self.error("Username already exists")
         if User.objects.filter(email=data["email"]).exists():
             return self.error("Email already exists")
-        user = User.objects.create(username=data["username"], email=data["email"], is_email_verify=False)
+        user = User.objects.create(username=data["username"], email=data["email"], is_email_verify=True)
         user.set_password(data["password"])
 
 

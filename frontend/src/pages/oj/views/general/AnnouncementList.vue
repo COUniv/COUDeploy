@@ -50,9 +50,6 @@
       }
     },
     mounted () {
-      setTimeout(() => {
-        this.homeStatus()
-      }, 500)
       let params = {status: CONTEST_STATUS.NOT_START}
       api.getContestList(0, 5, params).then(res => {
         this.contests = res.data.data.results
@@ -67,13 +64,6 @@
           name: 'contest-details',
           params: {contestID: this.contests[this.index].id}
         })
-      },
-      homeStatus () {
-        if (this.$store.getters.isAuthenticated === false) {
-          this.$router.push({
-            path: '/login'
-          })
-        }
       }
     },
     computed: {
