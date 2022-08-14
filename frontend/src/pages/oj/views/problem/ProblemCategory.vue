@@ -7,7 +7,7 @@
         <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id)">
           <h3>{{ category.title }}</h3>
           <!-- <Icon color="#858585" type="ios-arrow-forward" /> -->
-          <span class="description" v-katex v-html="category.description"></span>
+          <div class="description" v-katex v-html="category.description"></div>
           <div class="progress">
             <p class="percent">달성률: {{ category.percent }}%</p>
             <progress max="100" :value="category.percent"></progress>
@@ -142,6 +142,8 @@
       font-weight: @weight-bold;
       color: @gray;
       font-size: 18px;
+      height: 50%;
+      overflow: hidden;
     }
     p {
       width: 100%;

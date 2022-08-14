@@ -7,6 +7,14 @@ v2.
 - [ ] 할 내용 
 - [x] 완료된 내용
 
+** Hinatoy **
+> 커뮤니티
+- [x] Overall view
+- [ ] Create New Page
+- [ ] View Article Page
+- [ ] Search bar (style change)
+- [ ] Dropdown menus (style change)
+- [ ] 질문 게시판 -> sort by language dropdown (?) menu
 
 **KIMJiho / kdgyun**   
 > 페이지 이름
