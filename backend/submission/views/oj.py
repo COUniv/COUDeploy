@@ -1,6 +1,7 @@
 import ipaddress
 
 from account.decorators import login_required, check_contest_permission
+from account.models import User
 from contest.models import ContestStatus, ContestRuleType
 from judge.tasks import judge_task
 from options.options import SysOptions
@@ -78,9 +79,10 @@ class SubmissionAPI(APIView):
                                                problem_id=problem.id,
                                                ip=request.session["ip"],
                                                contest_id=data.get("contest_id"))
+        
         # use this for debug
         # JudgeDispatcher(submission.id, problem.id).judge()
-        judge_task.send(submission.id, problem.id)
+        judge_task.send(submission.id, problem.id)            
         if hide_id:
             return self.success()
         else:
@@ -97,6 +99,20 @@ class SubmissionAPI(APIView):
             return self.error("Submission doesn't exist")
         if not submission.check_user_permission(request.user):
             return self.error("No permission for this submission")
+
+        try:    #-->> 잔디 데이터 삽입
+            judge_result = submission.result
+            if(judge_result==0):
+                user = User.objects.get(id=submission.user_id)
+                try: #중복체크
+                    if str(submission.problem_id) not in user.problem_sequence:
+                        user.problem_sequence.append(submission.problem_id)
+                        user.grass.append(submission.create_time)
+                        user.save()
+                except Problem.DoesNotExist:
+                    return self.error("invalid 'problem_id'")
+        except Submission.DoesNotExist:
+            return self.error("invalid id")
 
         if submission.problem.rule_type == ProblemRuleType.OI or request.user.is_admin_role():
             submission_data = SubmissionModelSerializer(submission).data
@@ -122,7 +138,7 @@ class SubmissionAPI(APIView):
             return self.error("Can not share submission now")
         submission.shared = request.data["shared"]
         submission.save(update_fields=["shared"])
-        return self.success()
+        return self.success('success')
 
 
 class SubmissionListAPI(APIView):
