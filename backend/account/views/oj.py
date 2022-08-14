@@ -133,11 +133,13 @@ class VerifyEmailAPI(APIView):
 class GrassAPI(APIView):
     @login_required
     def get(self, request):
-        data = request.GET.get("username",None)
+        username = request.user.username
+        """
         if data is None:
             return self.error("invalid Query")
+        """
         try:
-            user = User.objects.get(username=data)
+            user = User.objects.get(username=username)
         except User.DoesNotExist:
             return self.error("User does not exist")
         return self.success(UserGrassDataSerializer(user).data)

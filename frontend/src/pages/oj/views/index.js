@@ -7,7 +7,7 @@ import NotFound from './general/404.vue'
 import Home from './general/Home.vue'
 import Announcements from './general/Announcements.vue'
 import AnnouncementList from './general/AnnouncementList.vue'
-
+import Grass from './user/Grass.vue'
 // Grouping Components in the Same Chunk
 const SubmissionList = () => import(/* webpackChunkName: "submission" */ '@oj/views/submission/SubmissionList.vue')
 const SubmissionDetails = () => import(/* webpackChunkName: "submission" */ '@oj/views/submission/SubmissionDetails.vue')
@@ -35,5 +35,6 @@ export {
   ACMRank, OIRank,
   SubmissionList, SubmissionDetails,
   ApplyResetPassword, ResetPassword,
-  ArticleList, CreateArticle, Article, Notification, AnnouncementList, CategoryList
+  ArticleList, CreateArticle, Article, Notification, AnnouncementList, CategoryList,
+  Grass
 }

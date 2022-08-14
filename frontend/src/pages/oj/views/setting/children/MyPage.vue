@@ -58,6 +58,9 @@
           </div>
         </div>
       </div>
+
+      <Grass></Grass>
+
       <!-- account setting, profile setting button -->
       <div class="flex-container">
         <div class="btn-menu">
@@ -97,8 +100,11 @@
   import { mapActions } from 'vuex'
   import time from '@/utils/time'
   import api from '@oj/api'
-
+  import Grass from '../../user/Grass.vue'
   export default {
+    components: {
+      Grass
+    },
     data () {
       return {
         username: '',
@@ -116,7 +122,6 @@
         api.getUserInfo(this.username).then(res => {
           this.changeDomTitle({title: res.data.data.user.username})
           this.profile = res.data.data
-          console.log(this.profile)
           this.getSolvedProblems()
         })
       },

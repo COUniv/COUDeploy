@@ -8,6 +8,9 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  getGrassList () {
+    return ajax('get_grass_data', 'get')
+  },
   callAuthEmail (data) {
     return ajax('auth_email_call', 'post', {
       data
