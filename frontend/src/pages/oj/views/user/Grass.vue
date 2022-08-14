@@ -120,6 +120,7 @@
   justify-content: center;
   align-items: center;
   .flex-level-item {
+    max-width: 677px;
     width:75%;
     height: 18px;
     .level-left {
