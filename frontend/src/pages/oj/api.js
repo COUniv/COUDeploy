@@ -8,6 +8,19 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  callAuthEmail (data) {
+    return ajax('auth_email_call', 'post', {
+      data
+    })
+  },
+  authEmail (email, token) {
+    return ajax('authed_email', 'post', {
+      data: {
+        email,
+        token
+      }
+    })
+  },
   getProblemPercent (categoryId) {
     return ajax('percent', 'get', {
       params: {
@@ -15,8 +28,12 @@ export default {
       }
     })
   },
-  getProblemCategoryList () {
-    return ajax('categories', 'get')
+  getProblemCategoryList (offset, limit, params) {
+    params.limit = limit
+    params.offset = offset
+    return ajax('categories', 'get', {
+      params
+    })
   },
   getReadNotification () {
     return ajax('read_notification', 'get')

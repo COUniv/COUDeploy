@@ -4,7 +4,6 @@ import {
   ACMRank,
   Announcements,
   ApplyResetPassword,
-  ApplyVerifyEmail,
   Languages,
   Home,
   NotFound,
@@ -15,15 +14,15 @@ import {
   SubmissionDetails,
   SubmissionList,
   UserHome,
-  VerifyEmail,
   ArticleList,
   CreateArticle,
   Article,
   Notification,
-  AnnouncementList
+  AnnouncementList,
+  Join,
+  CategoryList
 } from '../views'
 import Logout from '../views/user/Logout.vue'
-import Join from '../views/preHome/Join.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
 // import FreeBoard from '../views/board_pages/Free_Board.vue'
 // import RequestBoard from '../views/board_pages/Request_Board.vue'
@@ -33,6 +32,12 @@ import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
 
 export default [
+  {
+    name: 'category-list',
+    path: '/category-list',
+    meta: {title: 'category-list'},
+    component: CategoryList
+  },
   {
     name: 'notification-list',
     path: '/notification-list',
@@ -94,18 +99,6 @@ export default [
     path: '/create-article',
     meta: {requiresAuth: true, isEmailVerify: true, title: 'Create Article'},
     component: CreateArticle
-  },
-  {
-    name: 'apply-verify-email',
-    path: '/apply-verify-email',
-    meta: {requiresAuth: true, title: 'Apply Verify Email'},
-    component: ApplyVerifyEmail
-  },
-  {
-    name: 'verify-email',
-    path: '/verify-email/:token',
-    meta: {requiresAuth: true, title: 'Verify Email'},
-    component: VerifyEmail
   },
   {
     name: 'home',

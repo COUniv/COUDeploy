@@ -1,14 +1,23 @@
 <template>
   <div class="category">
-    <div class="title">문제 카테고리</div>
+    <div class="title" @click="goCategoryList">문제 카테고리</div>
     <hr style="color: gray;">
-    <div class="item_box">
-      <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id)">
-        <h3>{{ category.title }}</h3>
-        <div class="description" v-katex v-html="category.description"></div>
-        <div class="progress"><Progress :percent="category.percent" /></div>
-      </div>
+    <div class="box_container">
+      <div class="item_box">
+        <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id)">
+          <h3>{{ category.title }}</h3>
+          <!-- <Icon color="#858585" type="ios-arrow-forward" /> -->
+          <div class="description" v-katex v-html="category.description"></div>
+          <div class="progress">
+            <p class="percent">달성률: {{ category.percent }}%</p>
+            <progress max="100" :value="category.percent"></progress>
+          </div>
+          <!-- <div class="progress"><Progress :percent="category.percent" /></div> -->
+        </div>
     </div>
+    </div>
+
+    
   </div>
 </template>
 
@@ -18,7 +27,13 @@
   export default {
     data () {
       return {
-        problemCategoryList: {}
+        problemCategoryList: {},
+        page: 1, // 페이지로 보일 떄 시작 할 리스트 페이지 시점
+        limit: 10, // 최대 표시할 개수
+        formFilter: { // 카테고리를 불러올 때 필터 설정용 데이터
+          search: '', // 카테고리 검색 시 검색할 내용
+          searchtype: '' // 카테고리 검색 시 검색할 카테고리 - 전체 = 0, 제목 = 1, 댓글 = 2
+        }
       }
     },
     mounted () {
@@ -26,14 +41,18 @@
     },
     methods: {
       init () {
-        api.getProblemCategoryList().then(res => {
-          this.problemCategoryList = res.data.data
-          // this.problemCategoryList.forEach(element => {
-          //   api.getProblemPercent(element.id).then(res => {
-          //     element.percent = res.data.data
-          //   })
-          // })
+        let params = this.buildQuery()
+        let offset = (this.page - 1) * this.limit
+        api.getProblemCategoryList(offset, this.limit, params).then(res => {
+          this.problemCategoryList = res.data.data.result
         })
+      },
+      buildQuery () { // 쿼리로 설정한 필터값을 전송용 데이터로 빌드
+        return {
+          page: this.page,
+          search: this.formFilter.search,
+          searchtype: this.formFilter.searchtype
+        }
       },
       goProblemList (id) {
         let query = {
@@ -48,6 +67,9 @@
           name: 'problem-list',
           query: utils.filterEmptyValue(query)
         })
+      },
+      goCategoryList () {
+        this.$router.push({path: 'category-list'})
       }
     }
   }
@@ -74,23 +96,42 @@
       font-size: 24px;
       text-align: center;
       font-weight: @weight-bold;
+      cursor: pointer;
     }
+  }
+
+  .box_container {
+    padding: 10px 30px 30px;
   }
 
   .item_box{
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    //white-space: nowrap;
     align-content: flex-start;
     margin-top: 20px;
-    padding: 10px 20px;
-  }
-
-  .item{
+    padding: 0 0 10px 0;
+    &::-webkit-scrollbar {
+      height: 14px;
+      background-color: transparent;
+      width: 15px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: @gray;
+      border-radius: 25px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: @light-gray;
+      border-radius: 25px;
+    }
+    .item{
     position: relative;
+    flex: 0 0 auto;
     /* width: 37vh;
     height: 20vh; */
-    width: 345px;
-    height: 200px;
+    width: 300px;
+    height: 210px;
     font-size: 16px;
     /* background: salmon; */
     border: 2px solid #DDD7FA;
@@ -100,6 +141,10 @@
     margin: 0 1.5% 20px 1.5%;
     padding: 24px;
     cursor: pointer;
+    &:hover {
+      box-shadow: 0px 4px 20px @purple;
+      transition-duration: @animation-duration;
+    }
     h3, div {
       padding-bottom: 10px;
     }
@@ -111,20 +156,38 @@
       font-weight: @weight-bold;
       color: @gray;
       font-size: 18px;
+      height: 50%;
+      overflow: hidden;
     }
     p {
-      font-size: 16px;
       width: 100%;
       padding-top: 10px;
     }
   }
-
+  }
   .progress{
     position: absolute;
     bottom: 0;
     width: 100%;
-    left: 0;
-    padding: 10px 0 0 10px;
+    //padding: 10px 0 0 10px;
+    .percent {
+      color: @gray;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    progress {
+      width: 80%;
+      height: 10px;
+      border: none;
+      &::-webkit-progress-bar {
+        background-color: @light-gray;
+        border-radius: 25px;
+      }
+      &::-webkit-progress-value {
+        background-color: #6EEE03;
+        border-radius: 25px;
+      }
+    }
   }
 
 </style>
