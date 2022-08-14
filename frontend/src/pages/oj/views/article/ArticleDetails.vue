@@ -98,7 +98,7 @@
             </div>
 
             <Modal v-model="deletemodalcomment">
-              <p slot="header" style="color:red">경고</p>
+              <p slot="header" style="color:#EE2E03">경고</p>
               <p style="font-size:14px">댓글을 삭제하시겠습니까?</p>
               <div slot="footer" class="slotWrapper">
                 <Button @click="commentDeleteModalClosed">취소</Button>
@@ -109,7 +109,7 @@
             <!-- 댓글 수정 modal창 -->
             <Modal v-model="commandmodal"
               :mask-closable="false" :fullscreen="fullscreen" :z-index="999">
-              <p slot="header" style="color:#f60; text-align:center">
+              <p slot="header" style="color:#5030e5; text-align:center">
                 <span>댓글 수정</span>
               </p>
               <div>
@@ -457,7 +457,7 @@
 
   .fullscreen-btn {
     float: right;
-    //margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
   .comment-user-time {
@@ -505,8 +505,8 @@
   }
 
   .slotWrapper {
-    //padding-top: 15px;
-    border-top: 1px solid #e8eaec;
+    padding-top: 10px;
+    border-top: 1px solid #C4C4C4;
   }
 
   .comment-submit-textarea {

@@ -554,7 +554,7 @@
       li {
         color: #c0c0c0;
         &:hover {
-          color: @black;
+          color: #858585;
           transition: all .3s ease-in-out;
         }
       }
