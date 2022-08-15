@@ -43,7 +43,7 @@
       <ol id="contest-list">
         <li v-for="contest in contests" :key="contest.title">
           <Row type="flex" justify="space-between" align="middle">
-            <img class="trophy" src="../../../../assets/Cup.png"/>
+            <img class="trophy" src="../../../../assets/trophy.png"/>
             <Col :span="18" class="contest-main">
             <p class="title">
               <a class="entry" @click.stop="goContest(contest)">
@@ -214,8 +214,7 @@
 
         .trophy {
           height: 40px;
-          margin-left: 10px;
-          margin-right: -20px;
+          margin: 0px -20px 10px 10px;
         }
         .contest-main {
           .title {
