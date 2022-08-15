@@ -186,7 +186,7 @@
     </Menu>
     <Modal v-model="modalVisible" :width="430">
       <div slot="header" class="modal-title">인증이 필요해요!</div>
-      <GuardMessage :is="modalStatus.mode" v-if="modalVisible"></GuardMessage>
+      <component :is="modalStatus.mode" v-if="modalVisible"></component>
       <div slot="footer" style="display: none"></div>
     </Modal>
   </div>
