@@ -35,7 +35,7 @@
           </li>
           <li>
             <Input id="keyword" @on-enter="changeRoute" @on-click="changeRoute" v-model="query.keyword"
-              style="border-color:#F5A547"    icon="ios-search-strong" placeholder="Keyword"/>
+            icon="ios-search-strong" placeholder="Keyword"/>
           </li>
         </ul>
       </div>
@@ -76,7 +76,7 @@
         </li>
       </ol>
     </Panel>
-    <Pagination :total="total" :page-size.sync="limit" @on-change="changeRoute" :current.sync="page" :show-sizer="true" @on-page-size-change="changeRoute"></Pagination>
+    <Pagination :total="total" :page-size.sync="limit" @on-change="changeRoute" :current.sync="page" :show-sizer="true" @on-page-size-change="changeRoute" style="float:"></Pagination>
     </Col>
   </Row>
 
