@@ -148,25 +148,25 @@
           <!-- </Row> -->
         </div>
         <div class="right_rankings" style="float:right">
-          <div class="rankings_title">사용자 순위</div>
+          <div class="rankings_title"></div>
           <div style="padding: 30px">
             <div class="rankings_user" v-for="(data, index) in dataRank" :key="data.user.username" @click="goUser(data.user)">
               <!-- <span v-if="index > 2">{{index + 1}} 등 : </span> -->
               <a v-if="index == 0" class="first">
-                <img class="rankings-img" src="../../../../assets/rank1.png"/>
+                <img class="rankings-img" src="../../../../assets/gold crown.png"/>
                 {{data.user.username}}
               </a>
               <a v-else-if="index == 1" class="second">
-                <img class="rankings-img" src="../../../../assets/rank2.png"/>
+                <img class="rankings-img" src="../../../../assets/silver crown.png"/>
                 {{data.user.username}}
               </a>
               <a v-else-if="index == 2" class="third">
-                <img class="rankings-img" src="../../../../assets/rank3.png"/>
+                <img class="rankings-img" src="../../../../assets/bronse crown.png"/>
                 {{data.user.username}}
               </a>
               <a v-else class="defa">
-                <img v-if="index == 3" class="rankings-img" src="../../../../assets/rank4.png"/>
-                <img v-if="index == 4" class="rankings-img" src="../../../../assets/rank5.png"/>
+                <span v-if="index == 3" class="rankings-img">4</span>
+                <span v-if="index == 4" class="rankings-img">5</span>
                 {{data.user.username}}
               </a>
             </div>
@@ -549,6 +549,7 @@
     width: 37%;
     height: 450px;
     background: white;
+    box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
     // background: #dfdfdf;
   }
 
