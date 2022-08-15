@@ -26,6 +26,8 @@ const Article = () => import('@oj/views/article/ArticleDetails.vue')
 const Notification = () => import('@oj/views/article/Notification.vue')
 const Join = () => import('@oj/views/preHome/Join.vue')
 
+const CategoryList = () => import('@oj/views/problem/CategoryList.vue')
+
 export {
   Join, Home, NotFound, Announcements,
   Logout, UserHome, About, Languages,
@@ -33,5 +35,5 @@ export {
   ACMRank, OIRank,
   SubmissionList, SubmissionDetails,
   ApplyResetPassword, ResetPassword,
-  ArticleList, CreateArticle, Article, Notification, AnnouncementList
+  ArticleList, CreateArticle, Article, Notification, AnnouncementList, CategoryList
 }

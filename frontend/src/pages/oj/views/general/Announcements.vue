@@ -1,11 +1,12 @@
 <template>
   <Panel shadow :padding="10">
-    <div slot="title">
-      {{title}}
+    <div style="line-height: 50px; display: flex;" slot="title">
+      <Button v-if="!listVisible" id="back-button" icon="md-arrow-back" size="large" @click="goBack" type="text"></Button>
+      <div>{{title}}</div>
     </div>
     <div slot="extra">
       <!-- <Button v-if="listVisible" type="info" @click="init" :loading="btnLoading">{{$t('m.Refresh')}}</Button> -->
-      <Button v-if="!listVisible" icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button>
+      <!-- <Button v-if="!listVisible" icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button> -->
     </div>
 
     <transition-group name="announcement-animate" mode="in-out">
@@ -36,8 +37,8 @@
       </template>
 
       <template v-else>
+        
         <div v-katex v-html="announcement.content" key="content" class="content-container markdown-body"></div>
-
       </template>
     </transition-group>
   </Panel>
@@ -182,5 +183,16 @@
 
   .announcement-animate-enter-active {
     animation: fadeIn 1s;
+  }
+
+  #back-button {
+    font-size: 120%;
+    padding: 0px 8px;
+    color: @gray;
+    &:hover, &:focus {
+      color: @black;
+      border-color: transparent;
+      box-shadow: 0 0 0 transparent;
+    }
   }
 </style>
