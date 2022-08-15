@@ -36,7 +36,7 @@
             <label v-else="getStatusEmailAuth" class="warnning-label"><Icon type="md-information" class="rotate-icon" />  (인증되지 않은 이메일)</label>
             <Input type="text" v-model="getTokenToCheck" disabled></Input>
           </FormItem>
-          <FormItem label="New Email" prop="new_email">
+          <FormItem label="New Email" prop="new_email" class="new-email-container">
             <Input type="text" v-model="formEmail.new_email"></Input>
           </FormItem>
           <FormItem v-if="visible.tfaRequired" label="Two Factor Auth" prop="tfa_code">
@@ -92,7 +92,7 @@
             <Input type="text" v-model="formDelete.tfa_code"/>
           </FormItem>
           <FormItem v-if="visible.accountDelete">
-            <Alert type="success">You will logout after 5 seconds..</Alert>
+            <Alert type="success">5초후에 자동 로그아웃 됩니다..</Alert>
           </FormItem>
           <Button type="primary" @click="deleteAccount">{{$t('m.Delete_Account')}}</Button>
         </Form>
@@ -162,25 +162,25 @@
           old_password: oldPasswordCheck,
           new_password: [
             {required: true, trigger: 'blur', min: 6, max: 20},
-            {validator: CheckNewPassword, trigger: 'blur'}
+            {validator: CheckNewPassword, message: '다른 비밀번호로 변경하세요', trigger: 'blur'}
           ],
           again_password: [
-            {required: true, validator: CheckAgainPassword, trigger: 'change'}
+            {required: true, validator: CheckAgainPassword, message: '비밀번호가 일치하지 않습니다', trigger: 'change'}
           ],
           tfa_code: tfaCheck
         },
         ruleEmail: {
           password: oldPasswordCheck,
-          new_email: [{required: true, type: 'email', trigger: 'change'}],
+          new_email: [{required: true, type: 'email', message: '일치하지 않습니다', trigger: 'change'}],
           tfa_code: tfaCheck
         },
         ruleDelete: {
           username: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur', message: '아이디를 입력해주세요'}
           ],
           password: oldPasswordCheck,
           captcha: [
-            {required: true, trigger: 'blur', min: 1, max: 10}
+            {required: true, trigger: 'blur', message: '일치하지 않습니다', min: 1, max: 10}
           ],
           tfa_code: tfaCheck
         }
@@ -246,7 +246,7 @@
           api.changePassword(data).then(res => {
             this.loading.btnPassword = false
             this.visible.passwordAlert = true
-            this.$success('Update password successfully')
+            this.$success('비밀번호가 변경되었습니다')
             setTimeout(() => {
               this.visible.passwordAlert = false
               this.$router.push({name: 'logout'})
@@ -269,7 +269,7 @@
           api.changeEmail(data).then(res => {
             this.loading.btnEmail = false
             this.visible.emailAlert = true
-            this.$success('변경되었습니다.')
+            this.$success('변경되었습니다')
             this.$refs.formEmail.resetFields()
             setTimeout(() => {
               api.getUserInfo(this.$store.state.user.username).then(res => {
@@ -296,7 +296,7 @@
           api.deleteAccount(data).then(res => {
             this.loading.btnPassword = false
             this.visible.accountDelete = true
-            this.$success('Delete Account successfully')
+            this.$success('탈퇴가 완료되었습니다')
             this.$refs.formDelete.resetFields()
             setTimeout(() => {
               this.visible.accountDelete = false
@@ -329,6 +329,9 @@
   }
 </script>
 <style lang="less">
+.new-email-container {
+  margin-bottom: 20px;
+}
 .email-label-container {
   .rotate-icon {
     -webkit-transform: rotate(180deg);
