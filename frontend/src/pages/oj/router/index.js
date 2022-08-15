@@ -35,7 +35,6 @@ router.beforeEach(async(to, from, next) => {
       })
     } else if (to.matched.some(record => record.meta.isEmailVerify)) {
       if (!store.getters['isVerifiedEmail'] && !store.getters['isAdminRole'] && !(from.path === '/logout')) {
-        Vue.prototype.$error('이메일이 인증되어있어야 합니다')
         store.commit(types.CHANGE_MODAL_STATUS, {mode: 'GuardMessage', visible: true})
         next(false)
       } else {
