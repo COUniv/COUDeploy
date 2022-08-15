@@ -19,7 +19,7 @@ from ..serializers import SubmissionSafeModelSerializer, SubmissionListSerialize
 
 class SubmissionAPI(APIView):
     def throttling(self, request):
-        # 使用 open_api 的请求暂不做限制
+        # open_api를 사용한 요청에는 제한이 없음
         auth_method = getattr(request, "auth_method", "")
         if auth_method == "api_key":
             return
@@ -39,12 +39,12 @@ class SubmissionAPI(APIView):
     def check_contest_permission(self, request):
         contest = self.contest
         if contest.status == ContestStatus.CONTEST_ENDED:
-            return self.error("The contest have ended")
+            return self.error("대회가 종료되었습니다")
         if not request.user.is_contest_admin(contest):
             user_ip = ipaddress.ip_address(request.session.get("ip"))
             if contest.allowed_ip_ranges:
                 if not any(user_ip in ipaddress.ip_network(cidr, strict=False) for cidr in contest.allowed_ip_ranges):
-                    return self.error("Your IP is not allowed in this contest")
+                    return self.error("접근 권한이 없는 IP입니다")
 
     @validate_serializer(CreateSubmissionSerializer)
     @login_required
@@ -61,7 +61,7 @@ class SubmissionAPI(APIView):
 
         if data.get("captcha"):
             if not Captcha(request).check(data["captcha"]):
-                return self.error("Invalid captcha")
+                return self.error("captcha가 올바르지 않습니다")
         error = self.throttling(request)
         if error:
             return self.error(error)
@@ -69,7 +69,7 @@ class SubmissionAPI(APIView):
         try:
             problem = Problem.objects.get(id=data["problem_id"], contest_id=data.get("contest_id"), visible=True)
         except Problem.DoesNotExist:
-            return self.error("Problem not exist")
+            return self.error("존재하지 않은 문제입니다")
         if data["language"] not in problem.languages:
             return self.error(f"{data['language']} is now allowed in the problem")
         submission = Submission.objects.create(user_id=request.user.id,
@@ -92,13 +92,13 @@ class SubmissionAPI(APIView):
     def get(self, request):
         submission_id = request.GET.get("id")
         if not submission_id:
-            return self.error("Parameter id doesn't exist")
+            return self.error("해당 제출 아이디가 존재하지 않습니다")
         try:
             submission = Submission.objects.select_related("problem").get(id=submission_id)
         except Submission.DoesNotExist:
-            return self.error("Submission doesn't exist")
+            return self.error("제출한 코드가 존재하지 않습니다")
         if not submission.check_user_permission(request.user):
-            return self.error("No permission for this submission")
+            return self.error("제출 소스에 접근 권한이 없습니다")
 
         try:    #-->> 잔디 데이터 삽입
             judge_result = submission.result
@@ -110,15 +110,15 @@ class SubmissionAPI(APIView):
                         user.grass.append(submission.create_time)
                         user.save()
                 except Problem.DoesNotExist:
-                    return self.error("invalid 'problem_id'")
+                    return self.error("문제 id가 올바르지 않습니다")
         except Submission.DoesNotExist:
-            return self.error("invalid id")
+            return self.error("id가 올바르지 않습니다")
 
         if submission.problem.rule_type == ProblemRuleType.OI or request.user.is_admin_role():
             submission_data = SubmissionModelSerializer(submission).data
         else:
             submission_data = SubmissionSafeModelSerializer(submission).data
-        # 是否有权限取消共享
+        # 공유 해제 권한이 있는지 여부
         submission_data["can_unshare"] = submission.check_user_permission(request.user, check_share=False)
         return self.success(submission_data)
 
@@ -131,14 +131,14 @@ class SubmissionAPI(APIView):
         try:
             submission = Submission.objects.select_related("problem").get(id=request.data["id"])
         except Submission.DoesNotExist:
-            return self.error("Submission doesn't exist")
+            return self.error("제출 소스가 없습니다")
         if not submission.check_user_permission(request.user, check_share=False):
-            return self.error("No permission to share the submission")
+            return self.error("제출 소스에 접근 권한이 없습니다")
         if submission.contest and submission.contest.status == ContestStatus.CONTEST_UNDERWAY:
-            return self.error("Can not share submission now")
+            return self.error("제출 소스를 비공개로 할 수 없습니다")
         submission.shared = request.data["shared"]
         submission.save(update_fields=["shared"])
-        return self.success('success')
+        return self.success('성공하였습니다')
 
 
 class SubmissionListAPI(APIView):
@@ -157,7 +157,7 @@ class SubmissionListAPI(APIView):
             try:
                 problem = Problem.objects.get(_id=problem_id, contest_id__isnull=True, visible=True)
             except Problem.DoesNotExist:
-                return self.error("Problem doesn't exist")
+                return self.error("문제가 존재하지 않습니다")
             submissions = submissions.filter(problem=problem)
         if (myself and myself == "1") or not SysOptions.submission_list_show_all:
             submissions = submissions.filter(user_id=request.user.id)
@@ -186,7 +186,7 @@ class ContestSubmissionListAPI(APIView):
             try:
                 problem = Problem.objects.get(_id=problem_id, contest_id=contest.id, visible=True)
             except Problem.DoesNotExist:
-                return self.error("Problem doesn't exist")
+                return self.error("문제가 존재하지 않습니다")
             submissions = submissions.filter(problem=problem)
 
         if myself and myself == "1":
