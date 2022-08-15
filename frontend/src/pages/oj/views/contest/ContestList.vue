@@ -35,7 +35,7 @@
           </li>
           <li>
             <Input id="keyword" @on-enter="changeRoute" @on-click="changeRoute" v-model="query.keyword"
-                   icon="ios-search-strong" placeholder="Keyword"/>
+              style="border-color:#F5A547"    icon="ios-search-strong" placeholder="Keyword"/>
           </li>
         </ul>
       </div>
@@ -189,9 +189,16 @@
   }
 </script>
 <style lang="less" scoped>
+@import '../../../../styles/common.less';
   #contest-card {
+    .filter {
+      li:hover {
+        cursor: pointer;
+        color: @dark-orange;
+      }
+    }
     #keyword {
-      width: 80%;
+      width: 100%;
       margin-right: 30px;
     }
     #no-contest {
@@ -214,10 +221,10 @@
           .title {
             font-size: 18px;
             a.entry {
-              color: #495060;
+              color: @black;
               &:hover {
-                color: #2d8cf0;
-                border-bottom: 1px solid #2d8cf0;
+                color: @dark-orange;
+                //border-bottom: 1px solid @purple;
               }
             }
           }
