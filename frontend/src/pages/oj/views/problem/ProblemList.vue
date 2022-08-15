@@ -102,7 +102,7 @@
                 },
                 on: {
                   click: () => {
-                    this.$router.push({name: 'problem-details', params: {problemID: params.row._id}})
+                    this.$router.push({name: 'problem-details', params: {problemID: params.row._id}}).catch(() => {})
                   }
                 },
                 style: {
@@ -123,7 +123,7 @@
                 },
                 on: {
                   click: () => {
-                    this.$router.push({name: 'problem-details', params: {problemID: params.row._id}})
+                    this.$router.push({name: 'problem-details', params: {problemID: params.row._id}}).catch(() => {})
                   }
                 },
                 style: {
@@ -210,7 +210,7 @@
         this.$router.push({
           name: 'problem-list',
           query: utils.filterEmptyValue(this.query)
-        })
+        }).catch(() => {})
       },
       getProblemList () {
         let offset = (this.query.page - 1) * this.query.limit
@@ -268,12 +268,12 @@
         }
       },
       onReset () {
-        this.$router.push({name: 'problem-list'})
+        this.$router.push({name: 'problem-list'}).catch(() => {})
       },
       pickone () {
         api.pickone().then(res => {
           this.$success('Good Luck')
-          this.$router.push({name: 'problem-details', params: {problemID: res.data.data}})
+          this.$router.push({name: 'problem-details', params: {problemID: res.data.data}}).catch(() => {})
         })
       }
     },

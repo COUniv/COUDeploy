@@ -150,7 +150,7 @@ class ProblemAPI(APIView):
                 self._add_problem_status(request, problem_data)
                 return self.success(problem_data)
             except Problem.DoesNotExist:
-                return self.error("Problem does not exist")
+                return self.error("문제가 존재하지 않습니다")
 
         limit = request.GET.get("limit")
         if not limit:
@@ -179,7 +179,7 @@ class ProblemAPI(APIView):
             problem_id_list = category.problems
             problems = Problem.objects.filter(id__in=problem_id_list)
         
-        # 根据profile 为做过的题目添加标记
+        # 프로필에 따라 완료한 문제에 태그 추가
         data = self.paginate_data(request, problems, ProblemSerializer)
         self._add_problem_status(request, data)
         return self.success(data)
@@ -205,7 +205,7 @@ class ContestProblemAPI(APIView):
                                                                            contest=self.contest,
                                                                            visible=True)
             except Problem.DoesNotExist:
-                return self.error("Problem does not exist.")
+                return self.error("문제가 존재하지 않습니다")
             if self.contest.problem_details_permission(request.user):
                 problem_data = ProblemSerializer(problem).data
                 self._add_problem_status(request, [problem_data, ])

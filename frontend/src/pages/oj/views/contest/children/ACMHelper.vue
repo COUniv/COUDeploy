@@ -77,7 +77,7 @@
                     this.$router.push({
                       name: 'contest-submission-list',
                       query: {username: row.username}
-                    })
+                    }).catch(() => {})
                   }
                 }
               }, row.username)

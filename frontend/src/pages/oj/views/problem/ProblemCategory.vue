@@ -66,10 +66,10 @@
         this.$router.push({
           name: 'problem-list',
           query: utils.filterEmptyValue(query)
-        })
+        }).catch(() => {})
       },
       goCategoryList () {
-        this.$router.push({path: 'category-list'})
+        this.$router.push({path: 'category-list'}).catch(() => {})
       }
     }
   }
