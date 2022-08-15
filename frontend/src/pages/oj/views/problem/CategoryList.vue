@@ -138,7 +138,7 @@
         this.$router.push({
           name: 'problem-list',
           query: utils.filterEmptyValue(query)
-        })
+        }).catch(() => {})
       },
       buildQuery () { // 쿼리로 설정한 필터값을 전송용 데이터로 빌드
         return {

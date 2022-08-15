@@ -176,17 +176,17 @@
           this.$error('접근 권한 없음')
         } else {
           if (this.routeName === 'problem-list') {
-            this.$router.push({name: 'edit-problem', params: {problemId}})
+            this.$router.push({name: 'edit-problem', params: {problemId}}).catch(() => {})
           } else if (this.routeName === 'contest-problem-list') {
-            this.$router.push({name: 'edit-contest-problem', params: {problemId: problemId, contestId: this.contestId}})
+            this.$router.push({name: 'edit-contest-problem', params: {problemId: problemId, contestId: this.contestId}}).catch(() => {})
           }
         }
       },
       goCreateProblem () {
         if (this.routeName === 'problem-list') {
-          this.$router.push({name: 'create-problem'})
+          this.$router.push({name: 'create-problem'}).catch(() => {})
         } else if (this.routeName === 'contest-problem-list') {
-          this.$router.push({name: 'create-contest-problem', params: {contestId: this.contestId}})
+          this.$router.push({name: 'create-contest-problem', params: {contestId: this.contestId}}).catch(() => {})
         }
       },
       // 切换页码回调

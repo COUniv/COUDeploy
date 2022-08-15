@@ -35,7 +35,7 @@
       ...mapActions(['changeModalStatus', 'getProfile']),
       goAccountSeeting () {
         this.changeModalStatus({visible: false})
-        this.$router.push({name: 'account-setting'})
+        this.$router.push({name: 'account-setting'}).catch(() => {})
       },
       closeVisible () {
         this.changeModalStatus({visible: false})

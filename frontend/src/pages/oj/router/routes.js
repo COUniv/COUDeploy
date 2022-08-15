@@ -206,7 +206,7 @@ export default [
         name: 'default-setting',
         path: '',
         meta: {requiresAuth: true, title: 'Default Settings'},
-        component: Setting.ProfileSetting
+        component: Setting.MyPage
       },
       {
         name: 'comment-list',

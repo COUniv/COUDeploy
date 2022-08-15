@@ -272,7 +272,7 @@
         this.$router.push({
           name: 'user-home',
           query: {username: user.username}
-        })
+        }).catch(() => {})
       },
       goAnnouncement (announcement) {
         this.announcement = announcement
@@ -289,7 +289,7 @@
         this.$router.push({
           name: 'contest-details',
           params: {contestID: this.contests[this.contest_idx].id}
-        })
+        }).catch(() => {})
       },
       onStatusChange (status) {
         this.query.status = status
@@ -301,9 +301,9 @@
       },
       addPage () {
         if (this.currentTab === 0) {
-          this.$router.push('/announcement-list')
+          this.$router.push('/announcement-list').catch(() => {})
         } else if (this.currentTab === 1) {
-          this.$router.push('/contest')
+          this.$router.push('/contest').catch(() => {})
         }
       }
     },

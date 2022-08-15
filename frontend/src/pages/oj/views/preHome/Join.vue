@@ -77,7 +77,7 @@
           </FormItem>
         </div>
       </Form>
-      <div class="join_foot" @click="$router.push('/login')"> &#60; 로그인 페이지</div>
+      <div class="join_foot" @click="goLogin"> &#60; 로그인 페이지</div>
     </div>
   </div>
 </template>
@@ -174,7 +174,7 @@
             api.register(formData).then(res => {
               this.$success(this.$i18n.t('m.Thanks_for_registering'))
               this.btnRegisterLoading = false
-              this.$router.push({path: '/login'})
+              this.$router.push({path: '/login'}).catch(() => {})
             }, _ => {
               this.getCaptchaSrc()
               this.formRegister.captcha = ''
@@ -220,6 +220,9 @@
       editEmail () {
         this.isAuthed = false
         this.authModal = false
+      },
+      goLogin () {
+        this.$router.push({path: '/login'}).catch(() => {})
       }
     },
     computed: {

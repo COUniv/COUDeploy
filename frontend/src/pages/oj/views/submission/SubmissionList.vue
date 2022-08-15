@@ -122,9 +122,9 @@
                           {
                             name: 'contest-problem-details',
                             params: {problemID: params.row.problem, contestID: this.contestID}
-                          })
+                          }).catch(() => {})
                       } else {
-                        this.$router.push({name: 'problem-details', params: {problemID: params.row.problem}})
+                        this.$router.push({name: 'problem-details', params: {problemID: params.row.problem}}).catch(() => {})
                       }
                     }
                   }
@@ -166,7 +166,7 @@
                       {
                         name: 'user-home',
                         query: {username: params.row.username}
-                      })
+                      }).catch(() => {})
                   }
                 }
               }, params.row.username)
@@ -247,10 +247,10 @@
         this.$router.push({
           name: routeName,
           query: utils.filterEmptyValue(query)
-        })
+        }).catch(() => {})
       },
       goRoute (route) {
-        this.$router.push(route)
+        this.$router.push(route).catch(() => {})
       },
       adjustRejudgeColumn () {
         if (!this.rejudgeColumnVisible || this.rejudge_column) {

@@ -44,7 +44,7 @@
             this.logining = true
             api.login(this.ruleForm2.account, this.ruleForm2.password).then(data => {
               this.logining = false
-              this.$router.push({name: 'dashboard'})
+              this.$router.push({name: 'dashboard'}).catch(() => {})
             }, () => {
               this.logining = false
             })

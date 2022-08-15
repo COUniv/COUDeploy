@@ -126,16 +126,16 @@
         })
       },
       goProfileSetting () {
-        this.$router.push({name: 'profile-setting'})
+        this.$router.push({name: 'profile-setting'}).catch(() => {})
       },
       goAccountSetting () {
-        this.$router.push({name: 'account-setting'})
+        this.$router.push({name: 'account-setting'}).catch(() => {})
       },
       goCommentList () {
-        this.$router.push({name: 'comment-list'})
+        this.$router.push({name: 'comment-list'}).catch(() => {})
       },
       goLikeList () {
-        this.$router.push({name: 'like-list'})
+        this.$router.push({name: 'like-list'}).catch(() => {})
       },
       getSolvedProblems () {
         let ACMProblems = this.profile.acm_problems_status.problems || {}
@@ -153,7 +153,7 @@
         this.problems = ACProblems
       },
       goProblem (problemID) {
-        this.$router.push({name: 'problem-details', params: {problemID: problemID}})
+        this.$router.push({name: 'problem-details', params: {problemID: problemID}}).catch(() => {})
       },
       freshProblemDisplayID () {
         api.freshDisplayID().then(res => {

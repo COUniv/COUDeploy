@@ -249,7 +249,7 @@
             this.$success('비밀번호가 변경되었습니다')
             setTimeout(() => {
               this.visible.passwordAlert = false
-              this.$router.push({name: 'logout'})
+              this.$router.push({name: 'logout'}).catch(() => {})
             }, 5000)
           }, res => {
             if (res.data.data === 'tfa_required') {
@@ -300,8 +300,8 @@
             this.$refs.formDelete.resetFields()
             setTimeout(() => {
               this.visible.accountDelete = false
-              this.$router.push({name: 'delete-account'})
-              this.$router.push({name: 'logout'})
+              this.$router.push({name: 'delete-account'}).catch(() => {})
+              this.$router.push({name: 'logout'}).catch(() => {})
             }, 5000)
           }, res => {
             if (res.data.data === 'tfa_required') {

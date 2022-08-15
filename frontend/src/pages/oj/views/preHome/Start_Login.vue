@@ -37,7 +37,7 @@
                 </Button>
               </div>
               <div class="register_btn">
-                <Button @click="$router.push('/join')" class="second btn" long
+                <Button @click="$router.push('/join').catch(() => {})" class="second btn" long
                   :loading="btnLoginLoading">{{$t('m.No_Account')}} </Button>
               </div>
             </FormItem>
@@ -129,30 +129,30 @@ export default {
     afterlogin (route) {
       if (route) {
         if (route.path === '/logout' || route.path === '/join') {
-          this.$router.push({path: '/'})
+          this.$router.push({path: '/'}).catch(() => {})
         } else {
-          this.$router.push({path: route.path})
+          this.$router.push({path: route.path}).catch(() => {})
         }
       } else {
-        this.$router.push({path: '/'})
+        this.$router.push({path: '/'}).catch(() => {})
       }
     },
     goRoute (route) {
       if (route) {
-        this.$router.push({path: route})
+        this.$router.push({path: route}).catch(() => {})
       } else {
-        this.$router.push({path: '/'})
+        this.$router.push({path: '/'}).catch(() => {})
       }
     },
     goResetPassword () {
       this.changeModalStatus({visible: false})
-      this.$router.push({name: 'apply-reset-password'})
+      this.$router.push({name: 'apply-reset-password'}).catch(() => {})
     },
     isAlreadyLoggedin () {
       if (this.$store.getters.isAuthenticated === true) {
         this.$router.push({
           name: 'home'
-        })
+        }).catch(() => {})
       }
     }
   },
