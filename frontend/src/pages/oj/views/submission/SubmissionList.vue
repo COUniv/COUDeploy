@@ -84,7 +84,7 @@
                   },
                   on: {
                     click: () => {
-                      this.$router.push('/status/' + params.row.id)
+                      this.$router.push('/status/' + params.row.id).catch(() => {})
                     }
                   }
                 }, params.row.id.slice(0, 12))

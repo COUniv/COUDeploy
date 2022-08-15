@@ -184,9 +184,9 @@
         </Drawer>
       </template>
     </Menu>
-    <Modal v-model="modalVisible" :width="400">
-      <div slot="header" class="modal-title">반갑습니다!</div>
-      <component :is="modalStatus.mode" v-if="modalVisible"></component>
+    <Modal v-model="modalVisible" :width="430">
+      <div slot="header" class="modal-title">인증이 필요해요!</div>
+      <GuardMessage :is="modalStatus.mode" v-if="modalVisible"></GuardMessage>
       <div slot="footer" style="display: none"></div>
     </Modal>
   </div>
@@ -194,8 +194,7 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import login from '@oj/views/user/Login'
-  import register from '@oj/views/user/Register'
+  import GuardMessage from '@oj/views/user/GuardMessage.vue'
   import api from '@oj/api'
   import vClickOutside from 'v-click-outside'
   export default {
@@ -203,8 +202,7 @@
       clickOutside: vClickOutside.directive
     },
     components: {
-      login,
-      register
+      GuardMessage
     },
     data () {
       return {
@@ -302,12 +300,12 @@
           window.open('/admin/')
         }
       },
-      handleBtnClick (mode) {
+      handleBtnClick () {
         this.changeModalStatus({
           visible: true,
-          mode: mode
+          mode: 'GuardMessage'
         })
-        this.handleRoute('login')
+        this.handleRoute('GuardMessage')
       },
       goLogin () {
         this.$router.push({path: '/login'}).catch(() => {})

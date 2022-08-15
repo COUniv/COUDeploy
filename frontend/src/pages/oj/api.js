@@ -435,7 +435,7 @@ function ajax (url, method, options) {
         reject(res)
         // 백엔드가 로그인으로 반환되면 세션이 유효하지 않으며 현재 로그인한 사용자는 로그아웃해야 함
         if (res.data.data.startsWith('Please login')) {
-          store.dispatch('changeModalStatus', {'mode': 'login', 'visible': true})
+          this.$router.push({path: '/login'})
         }
       } else {
         resolve(res)

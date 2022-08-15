@@ -57,25 +57,6 @@ export default [
     meta: {title: 'Join'},
     component: Join
   },
-
-  // {
-  //   name: 'Free_Board',
-  //   path: '/Free_Board',
-  //   meta: {requiresAuth: true, title: 'Free_Board'},
-  //   component: FreeBoard
-  // },
-  // {
-  //   name: 'Request_Board',
-  //   path: '/Request_Board',
-  //   meta: {requiresAuth: true, title: 'Request_Board'},
-  //   component: RequestBoard
-  // },
-  // {
-  //   name: 'Question_Board',
-  //   path: '/Question_Board',
-  //   meta: {requiresAuth: true, title: 'Question_Board'},
-  //   component: QuestionBoard
-  // },
   {
     path: '/article/modify/:articleID',
     name: 'modify-article',
