@@ -144,12 +144,12 @@
         if (this.mode === 'modify') { // 게시글 수정인 경우
           api.modifyArticle(data.title, data.content, this.articleID).then(res => {
             this.$success('success!!')
-            this.$router.push({name: 'article-list'}) // 작성 완료 후 게시글 목록으로 돌아감
+            this.$router.push({name: 'article-list'}).catch(() => {}) // 작성 완료 후 게시글 목록으로 돌아감
           })
         } else { // 게시글 신규 작성인 경우
           api.createArticle(data).then(res => {
             this.$success('success!!')
-            this.$router.push({name: 'article-list'}) // 작성 완료 후 게시글 목록으로 돌아감
+            this.$router.push({name: 'article-list'}).catch(() => {}) // 작성 완료 후 게시글 목록으로 돌아감
           })
         }
       }

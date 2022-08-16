@@ -1,13 +1,6 @@
 <template>
   <div class="start_login">
-    <!-- <div class="nav">
-      <NavBar></NavBar>
-    </div> -->
-    <!-- <div class="image">
-        <div>Image</div>
-        <img src="../../../../assets/main03.jpg" class="image"/>
-    </div> -->
-    <!-- <div class="contents" style="height:70vh;"> -->
+
       <div class="form">
         <Form ref="formLogin" :model="formLogin" :rules="ruleLogin">
           <!-- 로그인 박스 title-->
@@ -15,11 +8,9 @@
                   
           <div class = "login_edge">
           <!-- 로그인 username textbox -->
-            <!-- <input type="text" v-model="formLogin.username" @on-enter="handleLogin" placeholder="아이디를 입력하세요"> -->
             <FormItem prop="username">
               <p class="form_title">아이디</p>
               <Input class ="login_input" type="text" v-model="formLogin.username" placeholder="아이디를 입력해주세요" size="large" @on-enter="handleLogin">
-                <!-- <Icon type="ios-person-outline" slot="prepend"></Icon> -->
               </Input>
             </FormItem>
             <!-- 로그인 password textbox -->
@@ -30,14 +21,10 @@
                 <!-- <Icon type="ios-lock-outline" slot="prepend"></Icon> -->
               </Input>
               <div class = "login_foot">
-              <!-- <a class="register" v-if="website.allow_register" @click.stop="handleBtnClick('register')">{{$t('m.No_Account')}}</a> -->
               <a class="foot_password" @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
             </div>
             </FormItem>
             <!-- 로그인 상태 체크박스 -->
-            <!-- <FormItem prop="login_status">
-              <Checkbox class="login_check"  v-model="formLogin.LoginStaus" >로그인 상태 유지하기</Checkbox>
-            </FormItem> -->
             
             <FormItem>
               <div class="login_btn">
@@ -50,42 +37,13 @@
                 </Button>
               </div>
               <div class="register_btn">
-                <Button @click="$router.push('/join')" class="second btn" long
+                <Button @click="$router.push('/join').catch(() => {})" class="second btn" long
                   :loading="btnLoginLoading">{{$t('m.No_Account')}} </Button>
-                <!-- <Button 
-                  type="disabled"
-                  v-if="website.allow_register"
-                  @click.stop="handleBtnClick('register')"
-                  class="second btn" long
-                  :loading="btnLoginLoading">
-                  {{$t('m.No_Account')}}
-                </Button> -->
               </div>
             </FormItem>
           </div>
         </Form>
-        
-        
-        <!-- </div>
-          <div class="last"> -->
-        <!-- <Button
-            type="primary"
-            @click="handleLogin"
-            class="btn" long
-            :loading="btnLoginLoading">
-            {{$t('m.UserLogin')}}
-            </Button>
-            <a v-if="website.allow_register" @click.stop="handleBtnClick('register')">{{$t('m.No_Account')}}</a>
-            <a @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>
-          </div> -->
       </div>
-      <!-- <div class="footer" >
-        <p v-html="website.website_footer"></p>
-        <p>Powered by <a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge</a>
-          <span v-if="version">&nbsp; Version: {{ version }}</span>
-        </p>
-      </div> -->
-    <!-- </div>     -->
   </div>
   
 </template>
@@ -124,11 +82,11 @@ export default {
       },
       ruleLogin: {
         username: [
-          {required: true, trigger: 'blur'},
+          {required: true, trigger: 'blur', message: '아이디를 입력해주세요'},
           {validator: CheckRequiredTFA, trigger: 'blur'}
         ],
         password: [
-          {required: true, trigger: 'change', min: 6, max: 20}
+          {required: true, trigger: 'change', message: '6~20자 사이로 입력해주세요', min: 6, max: 20}
         ]
       }
     }
@@ -170,31 +128,31 @@ export default {
     },
     afterlogin (route) {
       if (route) {
-        if (route.path === '/logout') {
-          this.$router.push({path: '/'})
+        if (route.path === '/logout' || route.path === '/join') {
+          this.$router.push({path: '/'}).catch(() => {})
         } else {
-          this.$router.push({path: route.path})
+          this.$router.push({path: route.path}).catch(() => {})
         }
       } else {
-        this.$router.push({path: '/'})
+        this.$router.push({path: '/'}).catch(() => {})
       }
     },
     goRoute (route) {
       if (route) {
-        this.$router.push({path: route})
+        this.$router.push({path: route}).catch(() => {})
       } else {
-        this.$router.push({path: '/'})
+        this.$router.push({path: '/'}).catch(() => {})
       }
     },
     goResetPassword () {
       this.changeModalStatus({visible: false})
-      this.$router.push({name: 'apply-reset-password'})
+      this.$router.push({name: 'apply-reset-password'}).catch(() => {})
     },
     isAlreadyLoggedin () {
       if (this.$store.getters.isAuthenticated === true) {
         this.$router.push({
           name: 'home'
-        })
+        }).catch(() => {})
       }
     }
   },
@@ -394,6 +352,7 @@ export default {
     display:inline-block;
     cursor: pointer;
     margin: 0 auto;
+    -webkit-text-stroke: 2px;
   }
 }
 

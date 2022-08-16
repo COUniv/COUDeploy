@@ -475,7 +475,7 @@
         this.largePie.series[0].data = largePieData
       },
       handleRoute (route) {
-        this.$router.push(route)
+        this.$router.push(route).catch(() => {})
       },
       onChangeLang (newLang) {
         if (this.problem.template[newLang]) {
@@ -617,9 +617,9 @@
       },
       goSubmissionList () {
         if (this.contestID) {
-          this.$router.push({name: 'contest-submission-list', query: {problemID: this.problemID}})
+          this.$router.push({name: 'contest-submission-list', query: {problemID: this.problemID}}).catch(() => {})
         } else {
-          this.$router.push({name: 'submission-list', query: {problemID: this.problemID}})
+          this.$router.push({name: 'submission-list', query: {problemID: this.problemID}}).catch(() => {})
         }
       }
     },

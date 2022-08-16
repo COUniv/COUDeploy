@@ -12,6 +12,7 @@ from django.utils.timezone import now
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from otpauth import OtpAuth
 
+from account.models import User
 from problem.models import Problem
 from utils.constants import ContestRuleType
 from options.options import SysOptions
@@ -25,7 +26,8 @@ from ..serializers import (ApplyResetPasswordSerializer, ResetPasswordSerializer
                            UserRegisterSerializer, UsernameOrEmailCheckSerializer,
                            RankInfoSerializer, UserChangeEmailSerializer, SSOSerializer)
 from ..serializers import (TwoFactorAuthCodeSerializer, UserProfileSerializer,
-                           EditUserProfileSerializer, ImageUploadForm, ApplyVerifyEmailSerializer, VerifyEmailSerializer)
+                           EditUserProfileSerializer, ImageUploadForm, ApplyVerifyEmailSerializer, VerifyEmailSerializer,
+                           UserGrassDataSerializer)
 from ..tasks import send_email_async
 
 # JG 02.15
@@ -41,7 +43,7 @@ class UserDeleteAPI(APIView):
         data["password"] = data["password"].lower()
         captcha = Captcha(request)
         if not captcha.check(data["captcha"]):
-            return self.error("Invalid captcha")
+            return self.error("captcha가 올바르지 않습니다")
         
         
         user = auth.authenticate(username=data["username"], password=data["password"])
@@ -53,7 +55,7 @@ class UserDeleteAPI(APIView):
                     return self.error("Invalid two factor verification code")
             request.user.delete()
             auth.logout(request)
-            return self.success("Succeeded")
+            return self.success("성공하였습니다")
         else:
             return self.error("Invalid Password")
 
@@ -65,38 +67,36 @@ class ApplyVerifyEmailAPI(APIView):
     def post(self, request):
         if not request.user.is_authenticated:
             return self.error("잘못 된 접근입니다.")
+        if not SysOptions.smtp_config:
+            return self.error("SMTP 설정이 되어있지 않습니다")
         data = request.data
         try:
             user = User.objects.get(email__iexact=data["email"])
         except User.DoesNotExist:
-            return self.error("cannot find user")
+            return self.error("사용자를 찾을 수 없습니다.")
         if user != request.user:
-            return self.error("invalid email")
+            return self.error("이메일이 일치하지 않습니다.")
         if user.verify_email_token_expire_time and 0 < int(
-                (user.verify_email_token_expire_time - now()).total_seconds()) < 5 * 60:
-            return self.error("You can only verify account once per 5 minutes")
-        user.verify_email_token = rand_str()
-        user.verify_email_token_expire_time = now() + timedelta(minutes=20)
+                (user.verify_email_token_expire_time - now()).total_seconds()) < 60:
+            return self.error("재전송은 1분마다 가능합니다.")
+        user.verify_email_token = rand_str(length=8)
+        user.verify_email_token_expire_time = now() + timedelta(minutes=15)
         user.save()
         render_data = {
-            "username": user.username,
-            "website_name": SysOptions.website_name,
-            "link": f"{SysOptions.website_base_url}/verify-email/{user.verify_email_token}"
+                "website_name": SysOptions.website_name,
+                "token": user.verify_email_token
         }
-
-        if not SysOptions.smtp_config:
-            return self.error("Please setup SMTP config at first")
         try:
-            email_html = render_to_string("verify_token_email.html", render_data)
+            email_html = render_to_string("auth_token_email.html", render_data)
             send_email(smtp_config=SysOptions.smtp_config,
                        from_name=SysOptions.website_name_shortcut,
                        to_name=request.user.username,
                        to_email=request.data["email"],
-                       subject="Verify Your Account",
+                       subject="[" + SysOptions.website_name_shortcut + "] 이메일 인증 코드",
                        content=email_html)
         except smtplib.SMTPResponseException as e:
             # guess error message encoding
-            msg = b"Failed to send email"
+            msg = "이메일 전송이 실패했습니다"
             try:
                 msg = e.smtp_error
                 # qq mail
@@ -108,29 +108,48 @@ class ApplyVerifyEmailAPI(APIView):
             msg = str(e)
             return self.error(msg)
        
-        return self.success("Succeeded")
+        return self.success("성공하였습니다")
 
 # DG 02.13
 class VerifyEmailAPI(APIView):
+    @login_required
     @validate_serializer(VerifyEmailSerializer)
     def post(self, request):
         data = request.data
         try:
             user = User.objects.get(verify_email_token=data["token"])
         except User.DoesNotExist:
-            return self.error("Token does not exist")
+            return self.error("유효하지 않은 코드입니다")
+        if request.user.username != user.username:
+            return self.error("유효하지 않은 코드입니다")
         if user.verify_email_token_expire_time < now():
-            return self.error("Token has expired")
+            return self.error("만료된 코드입니다.")
         user.verify_email_token = None
         user.is_email_verify = True
         user.save()
-        return self.success("Succeeded")
+        return self.success("성공하였습니다")
 
+#temp
+class GrassAPI(APIView):
+    @login_required
+    def get(self, request):
+        username = request.user.username
+        """
+        if data is None:
+            return self.error("invalid Query")
+        """
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return self.error("존재하지 않는 유저입니다")
+        return self.success(UserGrassDataSerializer(user).data)
+
+    
 class UserProfileAPI(APIView):
     @method_decorator(ensure_csrf_cookie)
     def get(self, request, **kwargs):
         """
-        判断是否登录， 若登录返回用户信息
+        로그인 여부 결정, 로그인한 경우 사용자 정보 반환
         """
         user = request.user
         if not user.is_authenticated:
@@ -145,7 +164,7 @@ class UserProfileAPI(APIView):
                 # api返回的是自己的信息，可以返real_name
                 show_real_name = True
         except User.DoesNotExist:
-            return self.error("User does not exist")
+            return self.error("존재하지 않는 유저입니다")
         return self.success(UserProfileSerializer(user.userprofile, show_real_name=show_real_name).data)
 
     @validate_serializer(EditUserProfileSerializer)
@@ -185,7 +204,7 @@ class AvatarUploadAPI(APIView):
 
         user_profile.avatar = f"{settings.AVATAR_URI_PREFIX}/{name}"
         user_profile.save()
-        return self.success("Succeeded")
+        return self.success("성공하였습니다")
 
 
 class TwoFactorAuthAPI(APIView):
@@ -216,7 +235,7 @@ class TwoFactorAuthAPI(APIView):
         if OtpAuth(user.tfa_token).valid_totp(code):
             user.two_factor_auth = True
             user.save()
-            return self.success("Succeeded")
+            return self.success("성공하였습니다")
         else:
             return self.error("Invalid code")
 
@@ -230,7 +249,7 @@ class TwoFactorAuthAPI(APIView):
         if OtpAuth(user.tfa_token).valid_totp(code):
             user.two_factor_auth = False
             user.save()
-            return self.success("Succeeded")
+            return self.success("성공하였습니다")
         else:
             return self.error("Invalid code")
 
@@ -255,6 +274,7 @@ class CheckTFARequiredAPI(APIView):
 class UserLoginAPI(APIView):
     @validate_serializer(UserLoginSerializer)
     def post(self, request):
+        print("login")
         """
         User login api
         """
@@ -263,10 +283,10 @@ class UserLoginAPI(APIView):
         # None is returned if username or password is wrong
         if user:
             if user.is_disabled:
-                return self.error("Your account has been disabled")
+                return self.error("사용할 수 없는 계정입니다")
             if not user.two_factor_auth:
                 auth.login(request, user)
-                return self.success("Succeeded")
+                return self.success("성공하였습니다")
 
             # `tfa_code` not in post data
             if user.two_factor_auth and "tfa_code" not in data:
@@ -274,11 +294,11 @@ class UserLoginAPI(APIView):
 
             if OtpAuth(user.tfa_token).valid_totp(data["tfa_code"]):
                 auth.login(request, user)
-                return self.success("Succeeded")
+                return self.success("성공하였습니다")
             else:
-                return self.error("Invalid two factor verification code")
+                return self.error("two factor verification code가 올바르지 않습니다")
         else:
-            return self.error("Invalid username or password")
+            return self.error("아이디 혹은 비밀번호가 올바르지 않습니다")
 
 
 class UserLogoutAPI(APIView):
@@ -313,19 +333,19 @@ class UserRegisterAPI(APIView):
         User register api
         """
         if not SysOptions.allow_register:
-            return self.error("Register function has been disabled by admin")
+            return self.error("관리자에 의해 가입 기능이 제한되어있습니다")
 
         data = request.data
         data["username"] = data["username"].lower()
         data["email"] = data["email"].lower()
         captcha = Captcha(request)
         if not captcha.check(data["captcha"]):
-            return self.error("Invalid captcha")
+            return self.error("captcha가 올바르지 않습니다")
         if User.objects.filter(username=data["username"]).exists():
             return self.error("Username already exists")
         if User.objects.filter(email=data["email"]).exists():
             return self.error("Email already exists")
-        user = User.objects.create(username=data["username"], email=data["email"], is_email_verify=False)
+        user = User.objects.create(username=data["username"], email=data["email"], is_email_verify=True)
         user.set_password(data["password"])
 
 
@@ -342,7 +362,7 @@ class UserRegisterAPI(APIView):
         }
 
         if not SysOptions.smtp_config:
-            return self.error("Please setup SMTP config at first")
+            return self.error("SMTP 설정이 되어있지 않습니다")
         try:
             email_html = render_to_string("verify_token_email.html", render_data)
             send_email(smtp_config=SysOptions.smtp_config,
@@ -365,7 +385,7 @@ class UserRegisterAPI(APIView):
             msg = str(e)
             return self.error(msg)
 
-        return self.success("Succeeded")
+        return self.success("성공하였습니다")
 
 
 class UserChangeEmailAPI(APIView):
@@ -379,16 +399,16 @@ class UserChangeEmailAPI(APIView):
                 if "tfa_code" not in data:
                     return self.error("tfa_required")
                 if not OtpAuth(user.tfa_token).valid_totp(data["tfa_code"]):
-                    return self.error("Invalid two factor verification code")
+                    return self.error("two factor verification code가 올바르지 않습니다")
             data["new_email"] = data["new_email"].lower()
             if User.objects.filter(email=data["new_email"]).exists():
-                return self.error("The email is owned by other account")
+                return self.error("이미 사용되고 있는 이메일입니다.")
             user.email = data["new_email"]
             user.is_email_verify = False
             user.save()
-            return self.success("Succeeded")
+            return self.success("성공하였습니다")
         else:
-            return self.error("Wrong password")
+            return self.error("비밀번호가 올바르지 않습니다")
 
 
 class UserChangePasswordAPI(APIView):
@@ -406,27 +426,27 @@ class UserChangePasswordAPI(APIView):
                 if "tfa_code" not in data:
                     return self.error("tfa_required")
                 if not OtpAuth(user.tfa_token).valid_totp(data["tfa_code"]):
-                    return self.error("Invalid two factor verification code")
+                    return self.error("two factor verification code가 올바르지 않습니다")
             user.set_password(data["new_password"])
             user.save()
-            return self.success("Succeeded")
+            return self.success("성공하였습니다")
         else:
-            return self.error("Invalid old password")
+            return self.error("비밀번호가 일치하지 않습니다")
 
 
 class ApplyResetPasswordAPI(APIView):
     @validate_serializer(ApplyResetPasswordSerializer)
     def post(self, request):
         if request.user.is_authenticated:
-            return self.error("You have already logged in, are you kidding me? ")
+            return self.error("이미 로그인 상태입니다.")
         data = request.data
         captcha = Captcha(request)
         if not captcha.check(data["captcha"]):
-            return self.error("Invalid captcha")
+            return self.error("captcha가 올바르지 않습니다")
         try:
             user = User.objects.get(email__iexact=data["email"])
         except User.DoesNotExist:
-            return self.error("User does not exist")
+            return self.error("존재하지 않는 유저입니다")
         # if user.reset_password_token_expire_time and 0 < int(
         #         (user.reset_password_token_expire_time - now()).total_seconds()) < 20 * 60:
         #     return self.error("You can only reset password once per 20 minutes")
@@ -440,7 +460,7 @@ class ApplyResetPasswordAPI(APIView):
         }
         email_html = render_to_string("reset_password_email.html", render_data)
         if not SysOptions.smtp_config:
-            return self.error("Please setup SMTP config at first")
+            return self.error("SMTP 설정이 되어있지 않습니다")
         try:
             email_html = render_to_string("reset_password_email.html", render_data)
             send_email(smtp_config=SysOptions.smtp_config,
@@ -463,7 +483,7 @@ class ApplyResetPasswordAPI(APIView):
             msg = str(e)
             return self.error(msg)
 
-        return self.success("Succeeded")
+        return self.success("성공하였습니다")
 
 
 class ResetPasswordAPI(APIView):
@@ -472,18 +492,18 @@ class ResetPasswordAPI(APIView):
         data = request.data
         captcha = Captcha(request)
         if not captcha.check(data["captcha"]):
-            return self.error("Invalid captcha")
+            return self.error("captcha가 올바르지 않습니다")
         try:
             user = User.objects.get(reset_password_token=data["token"])
         except User.DoesNotExist:
-            return self.error("Token does not exist")
+            return self.error("토큰이 올바르지 않습니다")
         if user.reset_password_token_expire_time < now():
-            return self.error("Token has expired")
+            return self.error("토큰이 유효하지 않습니다")
         user.reset_password_token = None
         user.two_factor_auth = False
         user.set_password(data["password"])
         user.save()
-        return self.success("Succeeded")
+        return self.success("성공하였습니다")
 
 
 class SessionManagementAPI(APIView):
@@ -524,9 +544,9 @@ class SessionManagementAPI(APIView):
         if session_key in request.user.session_keys:
             request.user.session_keys.remove(session_key)
             request.user.save()
-            return self.success("Succeeded")
+            return self.success("성공하였습니다")
         else:
-            return self.error("Invalid session_key")
+            return self.error("session_key 가 올바르지 않습니다")
 
 
 class UserRankAPI(APIView):
@@ -567,7 +587,7 @@ class OpenAPIAppkeyAPI(APIView):
     def post(self, request):
         user = request.user
         if not user.open_api:
-            return self.error("OpenAPI function is truned off for you")
+            return self.error("OpenAPI 권한이 없습니다")
         api_appkey = rand_str()
         user.open_api_appkey = api_appkey
         user.save()
@@ -588,6 +608,6 @@ class SSOAPI(CSRFExemptAPIView):
         try:
             user = User.objects.get(auth_token=request.data["token"])
         except User.DoesNotExist:
-            return self.error("User does not exist")
+            return self.error("존재하지 않는 유저입니다")
         return self.success({"username": user.username, "avatar": user.userprofile.avatar, "admin_type": user.admin_type})
         
