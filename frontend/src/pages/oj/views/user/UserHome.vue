@@ -103,7 +103,7 @@
         this.problems = ACProblems
       },
       goProblem (problemID) {
-        this.$router.push({name: 'problem-details', params: {problemID: problemID}})
+        this.$router.push({name: 'problem-details', params: {problemID: problemID}}).catch(() => {})
       },
       freshProblemDisplayID () {
         api.freshDisplayID().then(res => {

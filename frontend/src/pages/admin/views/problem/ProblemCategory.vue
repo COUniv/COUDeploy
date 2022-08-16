@@ -146,12 +146,12 @@
           if (this.mode === 'modify') {
             api.modifyProblemCategory(data).then(res => {
               this.$success('success!!')
-              this.$router.push({name: 'problem-category-list'})
+              this.$router.push({name: 'problem-category-list'}).catch(() => {})
             })
           } else {
             api.createProblemCategory(data).then(res => {
               this.$success('success!!')
-              this.$router.push({name: 'problem-category-list'})
+              this.$router.push({name: 'problem-category-list'}).catch(() => {})
             })
           }
         }

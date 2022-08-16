@@ -5,7 +5,8 @@ from ..views.oj import (ApplyResetPasswordAPI, ResetPasswordAPI,
                         UserLoginAPI, UserLogoutAPI, UsernameOrEmailCheck,
                         AvatarUploadAPI, TwoFactorAuthAPI, UserProfileAPI,
                         UserRankAPI, CheckTFARequiredAPI, SessionManagementAPI,
-                        ProfileProblemDisplayIDRefreshAPI, OpenAPIAppkeyAPI, SSOAPI, UserDeleteAPI)
+                        ProfileProblemDisplayIDRefreshAPI, OpenAPIAppkeyAPI, SSOAPI, UserDeleteAPI,
+                        GrassAPI)
 
 from ..views.oj import (ApplyVerifyEmailAPI, VerifyEmailAPI)
 
@@ -14,7 +15,6 @@ from utils.captcha.views import CaptchaAPIView
 urlpatterns = [
     url(r"^apply_verify_email/?$", ApplyVerifyEmailAPI.as_view(), name="apply_verify_email_api"),
     url(r"^verify_email/?$", VerifyEmailAPI.as_view(), name="verify_email_api"),
-
     url(r"^login/?$", UserLoginAPI.as_view(), name="user_login_api"),
     url(r"^logout/?$", UserLogoutAPI.as_view(), name="user_logout_api"),
     url(r"^register/?$", UserRegisterAPI.as_view(), name="user_register_api"),
@@ -24,6 +24,7 @@ urlpatterns = [
     url(r"^reset_password/?$", ResetPasswordAPI.as_view(), name="reset_password_api"),
     url(r"^captcha/?$", CaptchaAPIView.as_view(), name="show_captcha"),
     url(r"^check_username_or_email", UsernameOrEmailCheck.as_view(), name="check_username_or_email"),
+    url(r"^get_grass_data/?$", GrassAPI.as_view(), name="get_grass"),
     url(r"^profile/?$", UserProfileAPI.as_view(), name="user_profile_api"),
     url(r"^profile/fresh_display_id", ProfileProblemDisplayIDRefreshAPI.as_view(), name="display_id_fresh"),
     url(r"^upload_avatar/?$", AvatarUploadAPI.as_view(), name="avatar_upload_api"),

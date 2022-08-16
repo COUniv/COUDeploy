@@ -114,12 +114,12 @@
       },
       deleteNotification (notificationid) { // 알림 삭제
         api.deleteNotification(notificationid).then(res => { // 알림 고유 ID를 전송해 알림 삭제
-          this.$router.push({name: 'notification-list'})
+          this.$router.push({name: 'notification-list'}).catch(() => {})
         })
       },
       checkNotification (notificationid) { // 알림 확인
         api.checkNotification(notificationid).then(res => { // 알림 고유 ID를 전송해 알림 확인
-          this.$router.push({name: 'notification-list'})
+          this.$router.push({name: 'notification-list'}).catch(() => {})
         })
       },
       convertDate (date) {
