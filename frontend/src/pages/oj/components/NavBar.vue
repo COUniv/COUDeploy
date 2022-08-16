@@ -145,21 +145,22 @@
           </Dropdown-menu>
         </Dropdown> -->
         <div class="right_menu">
-        <!-- 알림 출력 버튼 -->
+          <!-- 알림 출력 버튼 -->
           <div class="alarm">
-            <Badge dot v-if="init_notification_count > 0" style="height: 40px;margin-right: 10px;margin-top: 10px;">
+            <Badge dot v-if="init_notification_count > 0" class="alram-box">
               <Button type="text" class="bell" size="large" @click="changeNoti" icon="ios-notifications-outline"></Button>
             </Badge>
             
-            <Badge v-else style="height: 40px; margin-right: 10px; margin-top: 10px;">
+            <Badge v-else>
               <Button type="text" class="bell" size="large" @click="changeNoti" icon="ios-notifications-outline"></Button>
             </Badge>
           </div>
             <!--사용자 아이디 출력-->
           <div @click="viewModal" @blur="visibleAccount = false" class="account_tab"> <!--/setting/mypage-->
             <Icon type="md-contact" size="30" color="#5030E5"/>
-            {{ user.username }}
+            <span>{{ user.username }}</span>
           </div>
+          <div style="clear:both"></div>
           <div v-if="visibleAccount" class="account_modal" v-click-outside="closeModal">
             <div class="profile">
               <div class="photo">
@@ -390,7 +391,14 @@
     }
   }
 </script>
-
+<style lang="less">
+  .alram-box {
+    .ivu-badge-dot {
+      top: 5px !important;
+      right: 5px !important;
+    }
+  }
+</style>
 <style lang="less" scoped>
 @import '../../../styles/common.less';
 
@@ -424,6 +432,7 @@
         color: @purple;
         font-size: @font-medium;
         font-weight: @weight-bold;
+        -webkit-text-stroke: 1.5px;
     }
 
     @media screen and (max-width : 900px) {
@@ -467,11 +476,11 @@
     }
   }
   .alarm {
-    position: absolute;
-    top: 0;
-    height: 40px;
+    // top: 0;
+    // height: 40px;
     line-height: 50%;
-    margin-right: 20px;
+    float: right;
+    margin-right: 10px;
     .bell {
       color: @purple;
       font-size: 1.5em;
@@ -497,28 +506,34 @@
     }
   }
   .right_menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     line-height: 50%;
     overflow:hidden;
     float: right;
-    padding: 20px 30px;
+    padding: 0px 30px;
     // position: fixed;
-    width: 160px;
     height: 60px;
-    margin-right: 20px;
+    margin-right: 5px;
     .account_tab {
       &:hover {
         cursor: pointer;
       }
-      position: absolute;
+      float: right;
       line-height: 50%;
-      vertical-align: middle;
-      top: 8px;
-      right: 20px;
+      height: 45px;
+      // vertical-align: middle;
+      // top: 8px;
+      // right: 20px;
       color: @purple;
       font-weight: 600;
       padding: 5px 7px 5px 5px;
-      border: 3px solid @purple;
+      border: 2px solid @purple;
       border-radius: @size-border-radius;
+      span {
+        -webkit-text-stroke: 0.5px;
+      }
     }
     .account_modal {
       position: absolute;
