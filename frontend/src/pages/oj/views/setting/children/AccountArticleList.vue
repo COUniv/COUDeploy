@@ -43,7 +43,7 @@
                   },
                   on: { // 게시글 제목 클릭 시 해당 게시글 detail 뷰로 이동, 게시글 고유 ID 전송
                     click: () => {
-                      this.$router.push({name: 'article-details', params: {articleID: params.row.id}})
+                      this.$router.push({name: 'article-details', params: {articleID: params.row.id}}).catch(() => {})
                     }
                   }
                 }, params.row.title)
@@ -71,7 +71,7 @@
                       {
                         name: 'user-home',
                         query: {username: params.row.username}
-                      })
+                      }).catch(() => {})
                   }
                 }
               }, params.row.username)
@@ -158,7 +158,7 @@
         this.$router.push({
           name: routeName,
           query: utils.filterEmptyValue(query)
-        })
+        }).catch(() => {})
       }
     },
     computed: {

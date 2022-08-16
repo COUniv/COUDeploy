@@ -35,25 +35,25 @@
               마찬가지로 출력 Standard Output으로는 <code>stdout</code>을 통해 출력을 하게 되며, 대표적으로 <code>printf</code>가 있습니다. 언어별 예제는 위 언어별 채점 방식을 참고하시기를 바랍니다.
             </p>
           </li>
-          <li><b><span style="color:red">틀렸습니다</span>를 받았을 경우</b>
-          <p>작성한 코드에 대해 입력값에 대한 출력 값이 정확하게 일치하지 않으면 <span style="color:red">틀렸습니다</span>를 받게 됩니다.
+          <li><b><span>틀렸습니다</span>를 받았을 경우</b>
+          <p>작성한 코드에 대해 입력값에 대한 출력 값이 정확하게 일치하지 않으면 <span>틀렸습니다</span>를 받게 됩니다.
           데이터가 잘못 된 경우는 거의 없으며, 주어진 예제 입력이 맞는다고 다른 테스트케이스들 까지 모두 맞는 것은 아닙니다. 주어진 데이터의 범위 혹은 극단적인 케이스들까지 모두 고려하여 올바른 정답인지를 다시 확인해보세요.
           </p>
           </li>
-          <li><b><span style="color:orangered">시간 초과</span>를 받았을 경우</b>
-            <p><span style="color:orangered">시간 초과</span>는 말 그대로 문제에서 제한하는 시간 내에 통과하지 못할 경우 받게 됩니다. <span style="color:green">통과</span> 혹은 <span style="color:red">틀렸습니다</span>가 아닙니다.
+          <li><b><span>시간 초과</span>를 받았을 경우</b>
+            <p><span>시간 초과</span>는 말 그대로 문제에서 제한하는 시간 내에 통과하지 못할 경우 받게 됩니다. <span>통과</span> 혹은 <span>틀렸습니다</span>가 아닙니다.
             제한 시간을 초과하게 될 경우에 프로그램이 종료되기 때문에 맞았는지 틀렸는지 알 수 없습니다.</p>
           </li>
-          <li><b><span style="color:orangered">메모리 초과</span>를 받았을 경우</b>
-            <p><span style="color:orangered">메모리 초과</span>는 말 그대로 문제에서 제한 된 메모리를 초과하여 할당 할 경우 받게 됩니다. 단, 컴파일러의 최적화에 의해 임의로 초과시키더라도 반드시 <span style="color:orangered">메모리 초과</span>가 나는 것은 아니며, <span style="color:orangered">런타임 에러</span> 등
+          <li><b><span>메모리 초과</span>를 받았을 경우</b>
+            <p><span>메모리 초과</span>는 말 그대로 문제에서 제한 된 메모리를 초과하여 할당 할 경우 받게 됩니다. 단, 컴파일러의 최적화에 의해 임의로 초과시키더라도 반드시 <span>메모리 초과</span>가 나는 것은 아니며, <span>런타임 에러</span> 등
             다른 에러 결과를 받을 수도 있습니다.
             </p>
           </li>
-          <li><b><span style="color:goldenrod">컴파일 에러</span>를 받았을 경우</b>
-            <p><span style="color:goldenrod">컴파일 에러</span>의 경우 컴파일에 실패한 메세지를 자신이 제출했던 결과를 클릭하면 볼 수 있습니다.</p>
+          <li><b><span>컴파일 에러</span>를 받았을 경우</b>
+            <p><span>컴파일 에러</span>의 경우 컴파일에 실패한 메세지를 자신이 제출했던 결과를 클릭하면 볼 수 있습니다.</p>
            </li>
-          <li><b><span style="color:red">런타임 에러</span>를 받았을 경우</b>
-            <p><span style="color:red">런타임 에러</span>의 경우에는 별도의 원인을 알려주진 않습니다.</p>
+          <li><b><span>런타임 에러</span>를 받았을 경우</b>
+            <p><span>런타임 에러</span>의 경우에는 별도의 원인을 알려주진 않습니다.</p>
           </li>
         </ul>
       </div>
@@ -81,6 +81,7 @@
 </script>
 
 <style scoped lang="less">
+@import '../../../../styles/common.less';
   .container {
     margin-bottom: 20px;
     
@@ -96,6 +97,10 @@
           }
         }
       }
+    }
+
+    span {
+      color: @purple;
     }
   }
 </style>

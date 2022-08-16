@@ -1,9 +1,11 @@
 <template>
   <div class="articles-container">
     
-    <Panel shadow :padding="30">
+    <Panel shadow>
       <!-- 게시글 제목 -->
       <div slot="title" style="font-size: 1.5em;">
+        <!-- 뒤로가기 버튼 -->
+        <Button id="back-button" icon="md-arrow-back" size="large" @click="goBack" type="text"></Button>
         {{article.title}}
       </div>
       
@@ -11,77 +13,92 @@
       <div slot="extra">
 
         <!-- 게시글 수정 버튼(작성자만 보임) -->
-        <Button v-if="is_writer" icon="ios-create" @click="goModify">수정</Button>
+        <Button v-if="is_writer" type="primary" icon="md-create" @click="goModify" class="modify-button"></Button>
 
         <!-- 게시글 삭제 버튼(작성자만 보임) -->
-        <Button v-if="is_writer" icon="md-trash" @click="deletemodal=true">삭제</Button>
+        <Button v-if="is_writer" type="primary" icon="md-trash" @click="deletemodal=true" class="delete-button"></Button>
         <Modal v-model="deletemodal">
           <p slot="header" style="color:red">경고</p>
-          <p style="font-size:14px">게시물을 삭제합니다.</p>
+          <p>게시물을 삭제합니다.</p>
           <div slot="footer" class="slotWrapper">
             <Button @click="articleDeleteModalClosed">취소</Button>
             <Button type="primary" @click="ok">확인</Button>
           </div>
         </Modal>
-
-        <!-- 뒤로가기 버튼 -->
-        <Button icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button>
       </div>
 
       <!-- 작성자명 및 작성 시간-->
-      <div style="margin-bottom:50px">
-        <a style="display:inline-block" @click="goUser"><b>{{username}}</b></a>
-        <div style="display:inline-block; padding-left:30px">{{article.create_time}}</div>
-      </div>
-      
-      <!-- 질문 게시판의 경우 문제 링크 -->
-      <div v-if="problemid">
-        <button @click="goProblemDetail(problemid)">{{ problemid }}</button>
+      <div class="user-date">
+        <div>
+          <img id="user-avatar" :src="getAvatarSource(username)"/>
+          <div>
+            <a @click="goUser"><b>{{username}}</b></a>
+            <div id="user-time">{{article.create_time}}</div>
+          </div>
+        </div>
+        <!-- 질문 게시판의 경우 문제 링크 -->
+        <div id="problem-id-container" v-if="problemid">
+          <Button id="problem-id-btn" type="text" @click="goProblemDetail(problemid)">#{{ problemid }}</Button>
+        </div>
       </div>
 
       <!-- 게시글 내용 -->
-      <div style="display:flex; margin-top:30px">
-        <div v-katex v-html="article.content" key="content" class="content-container markdown-body"></div>
+      <div>
+        <div v-katex v-html="article.content" key="content" class="content-container"></div>
       </div>
 
-      <div style="margin-top:30px; padding-bottom:30px">
-        <div style="float:right; clear:both;">
-          <div slot="extra" :v-model="is_liked">
+      <div style>
+        <div>
+          <div class="like-comment-section" slot="extra" :v-model="is_liked">
             <!-- 좋아요 버튼 -->
-            <Button v-if="!is_liked" icon="ios-heart-outline" @click="like" class="like_button">좋아요</Button>
-            <Button v-else icon="ios-heart" @click="like" class="like_button">좋아요</Button>
+            <Button v-if="!is_liked" icon="ios-heart-outline" :border="false" @click="like" size="large" id="like-button" type="text">{{article.like_count}}</Button>
+            <Button v-else icon="ios-heart" :border="false" @click="like" size="large" class="like_button" id="like-button" type="text">{{article.like_count}}</Button>
+            <!-- 댓글 버튼 -->
+            <Button icon="ios-chatboxes-outline" :border="false" @click="comment" size="large" id="comment-button" type="text">{{article.comment_count}}</Button>
           </div>
         </div>
       </div>
       <!-- 구분선 -->
-      <div style="padding-top:15px; clear:both;"></div>
-      <hr class="hr-style">
+      <div></div>
+
+      <!-- 댓글 입력 -->
+      <div class="comment-section">
+        <textarea ref="commentInput" v-model.lazy="formComment.content" placeholder="댓글 입력" class="comment-submit-textarea" @input="resizeInput"></textarea>
+        <div class="comment-submit-area">
+          <Button id="comment_submit_btn" type="text" icon="ios-paper-plane" @click="commentSubmit"></Button>
+        </div>
+      </div>
+      <!-- float 겹침 방지 (삭제하지마세요) -->
+      <div style="clear:both;"></div>
+      
       <!-- 댓글 목록 -->
-      <div v-for="comment in comments" :key="comment.id" style="padding-top:20px">
+      <div v-for="comment in comments" :key="comment.id">
 
-          <Card>
             <!-- 사용자 정보영역 -->
-            <Card style="background:#eee;" dis-hover>
-              <div style="overflow: hidden;">
-                <div class="linkdiv" @click="goCommentUesr(comment.username)">
-                  <b>{{ comment.username }}</b>
+              <div class="comment-user-time">
+                <div>
+                  <img id="user-avatar-2" :src="getAvatarSource(comment.username)"/>
+                  <div class="linkdiv" @click="goCommentUesr(comment.username)">
+                    <b>{{ comment.username }}</b>
+                  </div>
                 </div>
-                <div style="float:right; line-height: 27.3px;">
-                  {{ comment.create_time }}
-                </div>
+                <div>
+                  <!-- 수정 버튼 -->
+                  <Button v-if="comment.is_comment_writer" icon="md-create" @click="onModalComment(comment)" class="modify-button smaller"></Button>
+                  <!-- 삭제 버튼 -->
+                  <Button v-if="comment.is_comment_writer" icon="md-trash"  @click="onDeleteModalComment(comment)" class="delete-button smaller"></Button>
               </div>
-            </Card>
+              </div>
 
 
-            <pre v-katex v-html="comment.content" style="padding-top:15px; margin: 0 15px 0 15px; white-space: pre-wrap; overflow: auto; word-break:break-all"></pre>
-            <div style="float:right; padding-top:15px; ">
-              <!-- 수정 버튼 -->
-              <Button v-if="comment.is_comment_writer" icon="ios-create" @click="onModalComment(comment)">수정</Button>
-              <!-- 삭제 버튼 -->
-              <Button v-if="comment.is_comment_writer" icon="md-trash"  @click="onDeleteModalComment(comment)">삭제</Button>
+            <pre v-katex v-html="comment.content" style="overflow: auto;"></pre>
+            
+            <div id="comment-time">
+                {{ comment.create_time }}
             </div>
+
             <Modal v-model="deletemodalcomment">
-              <p slot="header" style="color:red">경고</p>
+              <p slot="header" style="color:#EE2E03">경고</p>
               <p style="font-size:14px">댓글을 삭제하시겠습니까?</p>
               <div slot="footer" class="slotWrapper">
                 <Button @click="commentDeleteModalClosed">취소</Button>
@@ -92,7 +109,7 @@
             <!-- 댓글 수정 modal창 -->
             <Modal v-model="commandmodal"
               :mask-closable="false" :fullscreen="fullscreen" :z-index="999">
-              <p slot="header" style="color:#f60; text-align:center">
+              <p slot="header" style="color:#5030e5; text-align:center">
                 <span>댓글 수정</span>
               </p>
               <div>
@@ -105,20 +122,9 @@
                 <Button @click="modalClosed">취소</Button>
                 <Button type="primary" @click="modifyCommentOk(tempComment)">확인</Button>
               </div>
-
             </Modal>
-            <div style="padding-top:15px; clear:both;"></div>
-          </Card>
 
       </div>
-
-      <!-- 댓글 입력 -->
-      <div style="margin-top:30px">
-        <Input type="textarea" v-model="formComment.content" :autosize="{minRows: 2, maxRows: 6}" placeholder="댓글 입력" class="comment_submit_input"></Input>
-        <Button class="comment_submit_btn" type="text" icon="ios-paper-plane" @click="commentSubmit"></Button>
-      </div>
-      <!-- float 겹침 방지 (삭제하지마세요) -->
-      <div style="clear:both;"></div>
     </Panel>
   </div>
 </template>
@@ -140,7 +146,9 @@
         article: { // 게시글 내용 출력용 data
           title: '',
           content: '',
-          create_time: ''
+          create_time: '',
+          like_count: '',
+          comment_count: ''
         },
         formComment: {
           articleid: '',
@@ -149,6 +157,8 @@
         comments: [], // 댓글 목록
         articleID: '', // 게시글 ID
         username: '', // 게시글 작성자 명
+        profile: '',
+        avatar: '',
         problemid: '',
         deleteComment_id: null, // 댓글 삭제를 위한 임시 value
         tempComment: {  // 댓글 수정을 위한 임시 value
@@ -207,9 +217,12 @@
         this.deleteComment(comment)
         this.deletemodalcomment = false
       },
+      comment () {
+        this.$refs.commentInput.focus()
+      },
       convertUTC () {
         this.comments.forEach(element => {
-          element.create_time = time.utcToLocal(element.create_time, 'YYYY-MM-DD HH:mm:ss')
+          element.create_time = time.utcToLocal(element.create_time, 'YYYY-MM-DD HH:mm')
         })
       },
       init () {
@@ -218,11 +231,13 @@
           let article = res.data.data
           this.article.title = article.title
           this.article.content = article.content
-          this.article.create_time = time.utcToLocal(article.create_time, 'YYYY-MM-DD HH:mm:ss')
+          this.article.create_time = time.utcToLocal(article.create_time, 'YYYY-MM-DD HH:mm')
           this.is_writer = article.is_writer
           this.username = article.username
           this.comments = article.comments
           this.is_liked = article.is_liked
+          this.article.like_count = article.like_count
+          this.article.comment_count = article.comment_count
           this.convertUTC()
           if (article.boardtype === 'QUESTION') {
             this.problemid = article.problemid
@@ -239,24 +254,33 @@
           this.is_writer = article.is_writer
           this.username = article.username
           this.comments = article.comments
+          this.is_liked = article.is_liked
+          this.article.like_count = article.like_count
+          this.article.comment_count = article.comment_count
           this.formComment.articleid = ''
           this.formComment.content = ''
+          this.$refs.commentInput.style.height = '90px' // resize comment area
           this.convertUTC()
           if (article.boardtype === 'QUESTION') {
             this.problemid = article.problemid
           }
         })
       },
+      resizeInput () {
+        let commentInput = this.$refs['commentInput']
+        commentInput.style.height = '18px'
+        commentInput.style.height = commentInput.scrollHeight + 'px'
+      },
       goBack () { // 뒤로 가기 - 게시글 목록으로 이동
-        this.$router.push({name: 'article-list'})
+        this.$router.push({name: 'article-list'}).catch(() => {})
       },
       goModify () { // 게시글 수정 - 현재 게시글 ID를 전송
-        this.$router.push({name: 'modify-article', params: {articleID: this.articleID}})
+        this.$router.push({name: 'modify-article', params: {articleID: this.articleID}}).catch(() => {})
       },
       deleteArticle () { // 게시글 삭제
         api.deleteArticle(this.articleID).then(res => { // 게시글 ID를 전송해 해당 게시글을 삭제함
           this.$Message.error('삭제되었습니다.')
-          this.$router.push({name: 'article-list'})
+          this.$router.push({name: 'article-list'}).catch(() => {})
         })
       },
       commentSubmit () { // 댓글 작성
@@ -304,7 +328,7 @@
             name: 'user-home',
             query: {username: this.username}
           }
-        )
+        ).catch(() => {})
       },
       goCommentUesr (usr) {
         this.$router.push(
@@ -312,7 +336,7 @@
             name: 'user-home',
             query: {username: usr}
           }
-        )
+        ).catch(() => {})
       },
       goProblemDetail (problemid) {
         this.$router.push(
@@ -320,110 +344,193 @@
             name: 'problem-details',
             params: {problemID: problemid}
           }
-        )
+        ).catch(() => {})
+      },
+      getAvatarSource (username) {
+        let profile = ''
+        api.getUserInfo(username).then(res => {
+          profile = res.data.data
+          console.log(username + ' avatar source : ')
+          console.log(profile.avatar)
+        })
+        return profile.avatar
       }
     }
   }
 </script>
 
 <style scoped lang="less">
-  .flex-container {
-      margin: 0 5% 0 5%;
-      padding-top: 15px;
-  }
+@import '../../../../styles/common.less';
   .articles-container {
     margin: 0 5% 0 5%;
-    padding-top: 15px;
+    //padding-top: 15px;
     li {
-      padding-top: 15px;
+      //padding-top: 15px;
       list-style: none;
-      padding-bottom: 15px;
-      margin-left: 20px;
+      //padding-bottom: 15px;
+      //margin-left: 20px;
       font-size: 16px;
-      border-bottom: 1px solid rgba(187, 187, 187, 0.5);
+      //border-bottom: 1px solid rgba(187, 187, 187, 0.5);
       &:last-child {
         border-bottom: none;
       }
-      .flex-container {
-        .title {
-          flex: 1 1;
-          text-align: left;
-          padding-left: 10px;
-          a.entry {
-            color: #495060;
-            &:hover {
-              color: #2d8cf0;
-              border-bottom: 1px solid #2d8cf0;
-            }
-          }
-        }
-        .creator {
-          flex: none;
-          width: 200px;
-          text-align: center;
-        }
-        .date {
-          flex: none;
-          width: 200px;
-          text-align: center;
-        }
-      }
     }
     a {
-      font-size: 1.3em;
-      color: #3c4250;
-    }
-    a:hover {
-      color:cornflowerblue
+      color: @black;
+      //margin-right: 20px;
+      &:hover {
+        color: @purple;
+      }
     }
   }
+
+  .user-date {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 70px 5px 70px;
+    div:nth-of-type(1) {
+      display: flex;
+      div:nth-of-type(1) {
+        display:flex;
+        flex-direction: column;
+        line-height: 20px;
+      }
+    }
+  }
+
+  #user-avatar {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    // background-color: @purple;
+    margin-right: 10px;
+    object-fit: cover;
+  }
+
+  #user-avatar-2 {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    // background-color: @light-purple;
+    margin-right: 10px;
+    object-fit: cover;
+  }
+
+  #user-time {
+    font-size: 10px;
+  }
+
+  .like-comment-section {
+    padding: 15px 65px;
+    background-color: #F9F9F9;
+    margin-top: 10px;
+  }
+
+  #like-button, #comment-button {
+    padding: 0 10px;
+    border-radius: 10px;
+    border-color: transparent;
+    color: @black;
+    margin-right: 20px;
+    background-color: #e6e6e6;
+    &:hover {
+      outline: none;
+      box-shadow: none;
+      background-color: #d2d0d0;
+    }
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+
+  #back-button {
+    font-size: 90%;
+    padding: 0px 8px;
+    color: @gray;
+    &:hover, &:focus {
+      color: @black;
+      border-color: transparent;
+      box-shadow: 0 0 0 transparent;
+    }
+  }
+
   .fullscreen-btn {
     float: right;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
+
+  .comment-user-time {
+    line-height: 30px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 25px;
+    div:nth-of-type(1) {
+      display: flex;
+    }
+    div:nth-of-type(2) {
+      display: flex;
+    }
+  }
+
   .linkdiv {
     float: left;
-    font-size:1.3em;
-    color: #3c4250;
+    //font-size:1.3em;
+    margin-right: 15px;
+    color: @black;
   }
+
+  #comment-time {
+    color: @gray;
+    font-size: 10px;
+    margin: 0px 65px;
+    padding-bottom: 20px;
+  }
+
   .linkdiv:hover {
-    color:cornflowerblue
+    color:@purple;
   }
   .content-container {
-    padding: 0 20px 20px 20px;
+    margin: 15px 70px 5px 70px;
+    white-space: break-spaces;
   }
 
   .no-article {
     text-align: center;
     font-size: 16px;
-  }changeLocale
+  }
 
   .article-animate-enter-active {
     animation: fadeIn 1s;
   }
-  .hr-style {
-    border: 1px solid #e8eaec;
-  }
-</style>
 
-<style lang="less">
   .slotWrapper {
-    padding-top: 15px;
-    border-top: 1px solid #e8eaec;
+    padding-top: 10px;
+    border-top: 1px solid #C4C4C4;
   }
-  .comment_submit_input textarea {
-    padding-right: 45px;
+
+  .comment-submit-textarea {
+    width: 100%;
+    min-height: 90px;
+    height: 90px;
+    padding: 10px;
+    overflow: hidden;
     resize: none;
-    
+    outline: none;
+    display: block;
+    border-color: #C4C4C4;
   }
-  .comment_submit_btn {
-    float: right;
-    position: absolute;
-    font-size: 1.2rem;
-    right: 35px;
-    bottom: 35px;
-    margin: 0;
-    color: #2d8cf0;
+  .comment-section {
+    margin-top: 20px;
+    padding: 0 25px 15px;
+  }
+
+
+  #comment_submit_btn {
+    border-radius: 0px;
+    font-size: 1.3em;
+    color: @white;
+    background-color: @purple;
     border: none;
     &:focus {
       outline: none !important;
@@ -436,14 +543,47 @@
       box-shadow: none;
     }
     * > &:hover {
-      color: #8ab8e9;
-      background-color: #00000000;
-      border-color: #00000000;
+      color: @white;
+      background-color: @light-purple;
+      border-color: @light-purple;
     }
     * {
       border: none;
     }
   }
+
+  #problem-id-container {
+    line-height: 40px;
+    #problem-id-btn {
+      padding: 0;
+      border-radius: 0;
+      font-size: 100%;
+      border-color: transparent;
+      color: @black;
+      background-color: transparent;
+      &:hover {
+        outline: none;
+        box-shadow: none;
+        background-color: transparent;
+        color: @purple;
+      }
+      &:focus {
+        outline: none;
+        box-shadow: none;
+        background-color: transparent;
+      }
+    }
+  }
+
+  .comment-submit-area {
+    border-bottom: 1px solid #C4C4C4;
+    border-left: 1px solid #C4C4C4;
+    border-right: 1px solid #C4C4C4;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
   .like_button {
     &:focus {
       outline: none !important;
@@ -456,4 +596,42 @@
       box-shadow: none;
     }
   }
+
+  pre {
+    font-family: 'Manrope', sans-serif;
+    margin: 10px 25px 10px 65px;
+    white-space: break-spaces;
+  }
+
+  .modify-button, .delete-button {
+    background-color: transparent;
+    padding: 5px 10px;
+    border-color: transparent;
+    font-size: 120%;
+  }
+
+  .modify-button {
+    color: @purple;
+    &:hover, &:focus {
+      color: @light-purple;
+      border-color: transparent;
+      background-color: transparent;
+      box-shadow: 0 0 0 transparent;
+    }
+  }
+
+  .delete-button {
+    color: @red;
+    &:hover, &:focus {
+      color: #ed856e;
+      border-color: transparent;
+      background-color: transparent;
+      box-shadow: 0 0 0 transparent;
+    }
+  }
+
+  .smaller {
+    font-size: 90%;
+  }
+
 </style>

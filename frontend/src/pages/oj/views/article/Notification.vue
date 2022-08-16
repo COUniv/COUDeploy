@@ -3,13 +3,37 @@
     <div id="main">
       <div>
         
-        <div class="community_free" style="float:right">
+        <div class="community_free">
         <div class="community_free_title" slot="title">알림</div>
 
-          <div>
-              <!-- 알림 목록 -->
+          <!-- <div>
             <Table stripe :disabled-hover="true" :columns="columns" :data="notifications"></Table>
-          </div>
+          </div> -->
+
+          <!-- 알림 목록 -->
+          <ul class="notifications-table">
+            <li v-for="(item) in notifications">
+              <ul class="notifications-entry">
+                <div>
+                  <div id="icon">
+                    <!-- icon -->
+                  </div>
+                  <div>
+                    <div>
+                      <li>{{ item.notificationtype }}</li>
+                    </div>
+                    <div>
+                      <li><a :href="item.url"> {{item.content}} </a></li>
+                    </div>
+                    <div>
+                      <li id="date-time"> {{ convertDate(item.create_time) }} </li>
+                    </div>
+                  </div>
+                </div>
+              </ul>
+              <hr>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -18,6 +42,7 @@
 
 <script>
   import api from '@oj/api'
+  import time from '@/utils/time'
 
   export default {
     name: 'Notification',
@@ -89,13 +114,16 @@
       },
       deleteNotification (notificationid) { // 알림 삭제
         api.deleteNotification(notificationid).then(res => { // 알림 고유 ID를 전송해 알림 삭제
-          this.$router.push({name: 'notification-list'})
+          this.$router.push({name: 'notification-list'}).catch(() => {})
         })
       },
       checkNotification (notificationid) { // 알림 확인
         api.checkNotification(notificationid).then(res => { // 알림 고유 ID를 전송해 알림 확인
-          this.$router.push({name: 'notification-list'})
+          this.$router.push({name: 'notification-list'}).catch(() => {})
         })
+      },
+      convertDate (date) {
+        return time.utcToLocal(date, 'YYYY-MM-DD HH:mm')
       }
     }
   }
@@ -157,10 +185,10 @@
         color: white;
     }
     .community_free {
-        display: inline-block;
-        vertical-align: top;
-        width: 80%;
-        height: 60%;
+        //display: inline-block;
+        //vertical-align: top;
+        width: 100vw;
+        //height: 60%;
         padding: 0 20px 0 20px;
         /* background-color: rgb(136, 167, 138); */
     }
@@ -181,5 +209,35 @@
     .submenu_list {
       display: inline-block;
       margin-right: 10px;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .notifications-table {
+
+    }
+
+    .notifications-entry {
+      div:first-of-type {
+        display: flex;
+        #icon {
+          margin: 5px 10px;
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          background: black;
+        }
+        div:nth-of-type(2) {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+
+    hr {
+        border: 0;
+        border-top: 1px solid #C4C4C4;
     }
 </style>

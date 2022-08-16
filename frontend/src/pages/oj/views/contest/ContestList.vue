@@ -1,6 +1,6 @@
 <template>
-  <Row type="flex">
-    <Col :span="24">
+  <Row type="flex" style="margin-left: 50px;margin-right: 50px;">
+    <Col span="24">
     <Panel id="contest-card" shadow>
       <div slot="title">{{query.rule_type === '' ? '' : query.rule_type}} {{$t('m.Contests')}}</div>
       <div slot="extra">
@@ -149,7 +149,7 @@
         this.$router.push({
           name: 'contest-list',
           query: utils.filterEmptyValue(query)
-        })
+        }).catch(() => {})
       },
       onRuleChange (rule) {
         this.query.rule_type = rule
@@ -167,7 +167,7 @@
           this.$error(this.$i18n.t('m.Please_login_first'))
           this.$store.dispatch('changeModalStatus', {visible: true})
         } else {
-          this.$router.push({name: 'contest-details', params: {contestID: contest.id}})
+          this.$router.push({name: 'contest-details', params: {contestID: contest.id}}).catch(() => {})
         }
       },
 

@@ -63,7 +63,8 @@
             <!-- 제출 버튼 -->
             <VerticalMenu style="margin-bottom: 20px;">
               <!-- <VerticalMenu-item :route="{name: 'contest-problem-list', params: {contestID: contestID}}"> -->
-                <Button type="primary" size="large" @click="goSubmitView" long>제출하기</Button>
+                <Button v-if="isAuthenticated && isVerifiedEmail" type="primary" size="large" @click="goSubmitView" long>제출하기</Button>
+                <Button v-else type="primary" size="large" disabled long>제출하기</Button>
               <!-- </VerticalMenu-item> -->
             </VerticalMenu>
 
@@ -144,12 +145,12 @@
                 </li>
               </ul>
             </Card>
-            <div class="footer">
+            <!-- <div class="footer">
               <p v-html="website.website_footer"></p>
               <p>Poweredaaa by <a href="https://github.com/OnlineJudgePlatformDev">COU</a>
                 <span v-if="version">&nbsp; Version: {{ version }}</span>
               </p>
-            </div>
+            </div> -->
           </div>
         </div>
       </template>
@@ -181,7 +182,7 @@
                       <p class="title">출력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
                       <p class="content" v-html="problem.output_description"></p>
                       <div v-for="(sample, index) of problem.samples" :key="index">
-                        <div class="flex-container sample split-sapple">
+                        <div class="flex-container-submit-mode sample split-sapple">
                           <div class="sample-input">
                             <p class="title">{{$t('m.Sample_Input')}} {{index + 1}}
                               <a class="copy"
@@ -474,7 +475,7 @@
         this.largePie.series[0].data = largePieData
       },
       handleRoute (route) {
-        this.$router.push(route)
+        this.$router.push(route).catch(() => {})
       },
       onChangeLang (newLang) {
         if (this.problem.template[newLang]) {
@@ -616,14 +617,14 @@
       },
       goSubmissionList () {
         if (this.contestID) {
-          this.$router.push({name: 'contest-submission-list', query: {problemID: this.problemID}})
+          this.$router.push({name: 'contest-submission-list', query: {problemID: this.problemID}}).catch(() => {})
         } else {
-          this.$router.push({name: 'submission-list', query: {problemID: this.problemID}})
+          this.$router.push({name: 'submission-list', query: {problemID: this.problemID}}).catch(() => {})
         }
       }
     },
     computed: {
-      ...mapGetters(['problemSubmitDisabled', 'contestRuleType', 'OIContestRealTimePermission', 'contestStatus', 'website']),
+      ...mapGetters(['problemSubmitDisabled', 'contestRuleType', 'OIContestRealTimePermission', 'contestStatus', 'website', 'isVerifiedEmail', 'isAuthenticated']),
       contest () {
         return this.$store.state.contest.contest
       },
@@ -673,6 +674,10 @@
   }
 
   .flex-container {
+    max-width: calc(~"100vw - 100px");
+    margin-left: 50px;
+    margin-right: 50px;
+    justify-content: flex-start;
     #problem-main {
       flex: auto;
       margin-right: 18px;
@@ -682,7 +687,12 @@
       width: 220px;
     }
   }
-
+  .flex-container-submit-mode {
+    max-width: calc(~"100vw - 100px");
+    margin-left: 0px;
+    margin-right: 0px;
+    justify-content: flex-start;
+  }
   #problem-content {
     margin-top: -50px;
     margin-left: 10px;
@@ -791,7 +801,9 @@
 
   .demo-split {
     height: 87vh;
-    /* margin: -80px -45px -250px -45px; */
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    /* margin: -80px -45px -250px -45px; 
     /* border: 1px solid #dcdee2; */
   }
   .ss_header{

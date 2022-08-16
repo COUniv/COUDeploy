@@ -4,7 +4,6 @@ import {
   ACMRank,
   Announcements,
   ApplyResetPassword,
-  ApplyVerifyEmail,
   Languages,
   Home,
   NotFound,
@@ -15,12 +14,13 @@ import {
   SubmissionDetails,
   SubmissionList,
   UserHome,
-  VerifyEmail,
   ArticleList,
   CreateArticle,
   Article,
   Notification,
-  AnnouncementList
+  AnnouncementList,
+  Join,
+  CategoryList
 } from '../views'
 import Logout from '../views/user/Logout.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
@@ -32,6 +32,12 @@ import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
 
 export default [
+  {
+    name: 'category-list',
+    path: '/category-list',
+    meta: {title: 'category-list'},
+    component: CategoryList
+  },
   {
     name: 'notification-list',
     path: '/notification-list',
@@ -45,29 +51,16 @@ export default [
     meta: {title: 'StartLogin'},
     component: StartLogin
   },
-
-  // {
-  //   name: 'Free_Board',
-  //   path: '/Free_Board',
-  //   meta: {requiresAuth: true, title: 'Free_Board'},
-  //   component: FreeBoard
-  // },
-  // {
-  //   name: 'Request_Board',
-  //   path: '/Request_Board',
-  //   meta: {requiresAuth: true, title: 'Request_Board'},
-  //   component: RequestBoard
-  // },
-  // {
-  //   name: 'Question_Board',
-  //   path: '/Question_Board',
-  //   meta: {requiresAuth: true, title: 'Question_Board'},
-  //   component: QuestionBoard
-  // },
+  {
+    name: 'join',
+    path: '/join',
+    meta: {title: 'Join'},
+    component: Join
+  },
   {
     path: '/article/modify/:articleID',
     name: 'modify-article',
-    meta: {requiresAuth: true, isEmailVerify: true, title: 'Article Modify'},
+    meta: {title: 'Article Modify'},
     component: CreateArticle
   },
   {
@@ -79,7 +72,7 @@ export default [
   {
     name: 'article-list',
     path: '/article-list',
-    meta: {requiresAuth: true, isEmailVerify: true, title: 'Article List'},
+    meta: {title: 'Article List'},
     component: ArticleList
   },
   {
@@ -89,28 +82,16 @@ export default [
     component: CreateArticle
   },
   {
-    name: 'apply-verify-email',
-    path: '/apply-verify-email',
-    meta: {requiresAuth: true, title: 'Apply Verify Email'},
-    component: ApplyVerifyEmail
-  },
-  {
-    name: 'verify-email',
-    path: '/verify-email/:token',
-    meta: {requiresAuth: true, title: 'Verify Email'},
-    component: VerifyEmail
-  },
-  {
     name: 'home',
     path: '/',
-    meta: {requiresAuth: true, isEmailVerify: true, title: 'Home'},
+    meta: {title: 'Home'},
     alias: '/main-announcement',
     component: Home
   },
   {
     name: 'announcement-list',
     path: '/announcement-list',
-    meta: {requiresAuth: true, isEmailVerify: true, title: 'Announcement List'},
+    meta: {title: 'Announcement List'},
     component: AnnouncementList
   },
   {
@@ -134,19 +115,19 @@ export default [
   {
     name: 'problem-list',
     path: '/problem',
-    meta: {requiresAuth: true, isEmailVerify: true, title: 'Problem List'},
+    meta: {title: 'Problem List'},
     component: ProblemList
   },
   {
     name: 'problem-details',
     path: '/problem/:problemID',
-    meta: {requiresAuth: true, isEmailVerify: true, title: 'Problem Details'},
+    meta: {title: 'Problem Details'},
     component: Problem
   },
   {
     name: 'submission-list',
     path: '/status',
-    meta: {requiresAuth: true, isEmailVerify: true, title: 'Submission List'},
+    meta: {title: 'Submission List'},
     component: SubmissionList
   },
   {
@@ -158,7 +139,7 @@ export default [
   {
     name: 'contest-list',
     path: '/contest',
-    meta: {requiresAuth: true, isEmailVerify: true, title: 'Contest List'},
+    meta: {title: 'Contest List'},
     component: Contest.ContestList
   },
   {
@@ -225,7 +206,7 @@ export default [
         name: 'default-setting',
         path: '',
         meta: {requiresAuth: true, title: 'Default Settings'},
-        component: Setting.ProfileSetting
+        component: Setting.MyPage
       },
       {
         name: 'comment-list',
@@ -268,13 +249,13 @@ export default [
   {
     path: '/help',
     name: 'help',
-    meta: {requiresAuth: true, isEmailVerify: true, title: 'About'},
+    meta: {title: 'About'},
     component: About
   },
   {
     path: '/languages',
     name: 'languages',
-    meta: {requiresAuth: true, isEmailVerify: true, title: 'languages'},
+    meta: {title: 'languages'},
     component: Languages
   },
   {

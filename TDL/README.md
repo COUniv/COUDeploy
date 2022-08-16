@@ -7,11 +7,47 @@ v2.
 - [ ] 할 내용 
 - [x] 완료된 내용
 
+**Hinatoy**
+> 커뮤니티
+- [x] Overall view
+- [x] Create New Page
+- [ ] View Article Page
+- [x] Search bar (style change)
+- [x] Dropdown menus (style change)
+- [x] Buttons (style change)
+- [x] Pagination (style change)
+- [ ] 질문 게시판 -> sort by language dropdown (?) menu
+
+> 공지사항
+- [x] Change the format of the entries
+- [ ] Design the contest carousel
+
+**Dobby**
+> 네비게이션
+- [x] custom-color 색상 변경
+- [x] 계정 모달창 생성 및 router 변경
+
+> Footer
+- [x] 디자인 변경 및 화면 너비에 맞추기
+
+> 메인페이지
+- [x] 배너 이미지 변경
+- [x] 공지사항/대회 탭 디자인 변경
+- [ ] 사용자 순위 디자인 변경 
+- [x] 문제 카테고리 디자인 변경
+
+> 대회
+- [ ] 테마 색상 변경하기 (blue->purple)
+- [ ] 요소 hover 처리 
+- [ ] 화면 축소 시 transition time 변경(현재 너무 느림)
+- [ ] 대회 잔여 시간 요소 디자인 변경
+- [ ] 페이징 네비게이터 디자인 변경
 
 **KIMJiho / kdgyun**   
-> 페이지 이름
-- [ ] 할 내용 
-- [x] 완료된 내용
+> 
+- [ ] '잔디 심기' 기능 추가
+- [x] 문제를 풀었을 때(정답일시) 해당 시각 기록
+- [x] 풀었던 문제 다시 풀었을 때 중복문제 해결
 
 
 ----
