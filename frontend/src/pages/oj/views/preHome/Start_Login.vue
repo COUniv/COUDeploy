@@ -352,6 +352,7 @@ export default {
     display:inline-block;
     cursor: pointer;
     margin: 0 auto;
+    -webkit-text-stroke: 2px;
   }
 }
 

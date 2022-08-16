@@ -460,6 +460,7 @@
         color: @purple;
         font-size: @font-medium;
         font-weight: @weight-bold;
+        -webkit-text-stroke: 1.5px;
     }
 
     @media screen and (max-width : 900px) {
@@ -564,6 +565,9 @@
       -ms-transition: all .2s ease-in;
       -o-transition: all .2s ease-in;
       transition: all .2s ease-in;
+      span {
+        -webkit-text-stroke: 0.5px;
+      }
     }
     .account_modal {
       position: absolute;
