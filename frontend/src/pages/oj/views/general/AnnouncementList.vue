@@ -63,7 +63,7 @@
         this.$router.push({
           name: 'contest-details',
           params: {contestID: this.contests[this.index].id}
-        })
+        }).catch(() => {})
       }
     },
     computed: {

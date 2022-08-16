@@ -77,7 +77,7 @@
           </FormItem>
         </div>
       </Form>
-      <div class="join_foot" @click="$router.push('/login')"> &#60; 로그인 페이지</div>
+      <div class="join_foot" @click="goLogin"> &#60; 로그인 페이지</div>
     </div>
   </div>
 </template>
@@ -141,22 +141,22 @@
         },
         ruleRegister: {
           username: [
-            {required: true, trigger: 'blur'},
-            {validator: CheckUsernameNotExist, trigger: 'blur'}
+            {required: true, trigger: 'blur', message: '아이디를 입력해주세요'},
+            {validator: CheckUsernameNotExist, trigger: 'blur', message: '이미 존재하는 아이디입니다'}
           ],
           email: [
-            {required: true, type: 'email', trigger: 'blur'},
-            {validator: CheckEmailNotExist, trigger: 'blur'}
+            {required: true, type: 'email', trigger: 'blur', message: '이메일을 입력해주세요'},
+            {validator: CheckEmailNotExist, trigger: 'blur', message: '이미 사용 된 이메일입니다'}
           ],
           password: [
-            {required: true, trigger: 'blur', min: 6, max: 20},
+            {required: true, trigger: 'blur', message: '6~20자 사이로 입력해주세요', min: 6, max: 20},
             {validator: CheckPassword, trigger: 'blur'}
           ],
           passwordAgain: [
-            {required: true, validator: CheckAgainPassword, trigger: 'change'}
+            {required: true, validator: CheckAgainPassword, message: '비밀번호가 일치하지 않습니다', trigger: 'change'}
           ],
           captcha: [
-            {required: true, trigger: 'blur', min: 1, max: 10}
+            {required: true, trigger: 'blur', message: '일치하지 않습니다', min: 1, max: 10}
           ]
         }
       }
@@ -174,7 +174,7 @@
             api.register(formData).then(res => {
               this.$success(this.$i18n.t('m.Thanks_for_registering'))
               this.btnRegisterLoading = false
-              this.$router.push({path: '/login'})
+              this.$router.push({path: '/login'}).catch(() => {})
             }, _ => {
               this.getCaptchaSrc()
               this.formRegister.captcha = ''
@@ -220,6 +220,9 @@
       editEmail () {
         this.isAuthed = false
         this.authModal = false
+      },
+      goLogin () {
+        this.$router.push({path: '/login'}).catch(() => {})
       }
     },
     computed: {

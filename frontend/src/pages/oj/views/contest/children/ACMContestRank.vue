@@ -90,7 +90,7 @@
                       {
                         name: 'user-home',
                         query: {username: params.row.user.username}
-                      })
+                      }).catch(() => {})
                   }
                 }
               }, params.row.user.username)
@@ -109,7 +109,7 @@
                       this.$router.push({
                         name: 'contest-submission-list',
                         query: {username: params.row.user.username}
-                      })
+                      }).catch(() => {})
                     }
                   }
                 }, params.row.submission_number)
@@ -286,7 +286,7 @@
                         contestID: this.contestID,
                         problemID: problem._id
                       }
-                    })
+                    }).catch(() => {})
                   }
                 }
               }, problem._id)

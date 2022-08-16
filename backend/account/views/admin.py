@@ -63,7 +63,7 @@ class UserAdminAPI(APIView):
         try:
             user = User.objects.get(id=data["id"])
         except User.DoesNotExist:
-            return self.error("User does not exist")
+            return self.error("존재하지 않는 유저입니다")
         if User.objects.filter(username=data["username"].lower()).exclude(id=user.id).exists():
             return self.error("Username already exists")
         if User.objects.filter(email=data["email"].lower()).exclude(id=user.id).exists():
@@ -120,7 +120,7 @@ class UserAdminAPI(APIView):
             try:
                 user = User.objects.get(id=user_id)
             except User.DoesNotExist:
-                return self.error("User does not exist")
+                return self.error("존재하지 않는 유저입니다")
             return self.success(UserAdminSerializer(user).data)
 
         user = User.objects.all().order_by("-create_time")
