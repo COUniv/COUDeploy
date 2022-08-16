@@ -13,19 +13,20 @@
           <!-- 알림 목록 -->
           <ul class="notifications-table">
             <li v-for="(item) in notifications">
-              <ul class="notifications-entry">
+              <ul v-bind:style="[!item.is_read ?{'background-color' : '#bfb1fc6a'}:{}]" class="notifications-entry"  @click="redirectToArticle(item)">
                 <div>
-                  <div id="icon">
-                    <!-- icon -->
+                  <div id="icon-container">
+                    <Icon v-if="item.notificationtype === 'COMMENT'" class="icon" size=24 type="ios-chatboxes" />
+                    <Icon v-if="item.notificationtype === 'LIKE'" class="icon" size=24 type="md-heart" />
                   </div>
                   <div>
-                    <div>
+                    <div id="notification-type">
                       <li>{{ item.notificationtype }}</li>
                     </div>
-                    <div>
-                      <li><a :href="item.url"> {{item.content}} </a></li>
+                    <div id="notification-content">
+                      <li> {{item.content}} </li>
                     </div>
-                    <div>
+                    <div id="notification-date">
                       <li id="date-time"> {{ convertDate(item.create_time) }} </li>
                     </div>
                   </div>
@@ -124,16 +125,24 @@
       },
       convertDate (date) {
         return time.utcToLocal(date, 'YYYY-MM-DD HH:mm')
+      },
+      redirectToArticle (notification) {
+        api.checkNotification(notification.id).then(res => {
+          this.$router.push({path: notification.url})
+        })
       }
     }
   }
 </script>
 
 <style scoped lang="less">
+@import '../../../../styles/common.less';
   .flex-container {
     #main {
       margin: 0 5% 0 5%;
-      padding-top: 15px;
+      padding: 15px 0 65px 0;
+      background-color: #ffffff;
+      width: 80vw;
     }
   }
       .community {
@@ -187,7 +196,7 @@
     .community_free {
         //display: inline-block;
         //vertical-align: top;
-        width: 100vw;
+        //width: 100vw;
         //height: 60%;
         padding: 0 20px 0 20px;
         /* background-color: rgb(136, 167, 138); */
@@ -201,9 +210,11 @@
         /* display: block; */
         /* margin-top: -10px; */
         padding: 0 0 10px 0;
-        border-bottom: 2px solid black;
+        //border-bottom: 2px solid black;
         font-size: 24px;
-        color: #1f4e79;
+        color: @black;
+        text-align: center;
+        -webkit-text-stroke: 0.5px;
         /* background-color: rgb(255, 234, 239); */
     }
     .submenu_list {
@@ -220,18 +231,39 @@
     }
 
     .notifications-entry {
+      padding: 10px 0;
       div:first-of-type {
         display: flex;
-        #icon {
-          margin: 5px 10px;
+        #icon-container {
+          margin: 10px 10px;
           width: 50px;
           height: 50px;
           border-radius: 50%;
-          background: black;
+          background: @orange;
+
+          .icon {
+            margin: auto;
+            color: @white;
+          }
         }
         div:nth-of-type(2) {
           display: flex;
           flex-direction: column;
+          color: @black;
+          #notification-type {
+            line-height: 20px;
+            -webkit-text-stroke: 0.3px;
+            color: @dark-white;
+          }
+
+          #notification-content {
+            line-height: 30px;
+          }
+
+          #notification-date {
+            line-height: 20px;
+            font-size: 80%;
+          }
         }
       }
     }
