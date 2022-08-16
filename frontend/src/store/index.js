@@ -12,7 +12,7 @@ const debug = process.env.NODE_ENV !== 'production'
 const rootState = {
   website: {},
   modalStatus: {
-    mode: 'register', // or 'register',
+    mode: 'GuardMessage', // or 'register',
     visible: false
   }
 }

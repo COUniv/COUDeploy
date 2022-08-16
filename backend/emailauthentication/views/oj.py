@@ -32,7 +32,7 @@ class MakeEmailAuthenticationTokenAPI(APIView):
         SMTP 설정 여부
         """
         if not SysOptions.smtp_config:
-            return self.error("Please setup SMTP config at first")
+            return self.error("SMTP 설정이 되어있지 않습니다")
         data = request.data
         email = data["email"].lower()
         if email:
@@ -72,7 +72,7 @@ class MakeEmailAuthenticationTokenAPI(APIView):
                            content=email_html)
             except smtplib.SMTPResponseException as e:
                 # guess error message encoding
-                msg = b"Failed to send email"
+                msg = "이메일 전송이 실패했습니다"
                 try:
                     msg = e.smtp_error
                     # qq mail
@@ -83,6 +83,6 @@ class MakeEmailAuthenticationTokenAPI(APIView):
             except Exception as e:
                 msg = str(e)
                 return self.error(msg)
-            return self.success("Succeeded")
+            return self.success("성공하였습니다")
         else:
-            return self.error("invalid email")
+            return self.error("올바르지 않은 email 형식입니다")

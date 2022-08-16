@@ -65,7 +65,7 @@
       handleCommand (command) {
         if (command === 'logout') {
           api.logout().then(() => {
-            this.$router.push({name: 'login'})
+            this.$router.push({name: 'login'}).catch(() => {})
           })
         }
       }

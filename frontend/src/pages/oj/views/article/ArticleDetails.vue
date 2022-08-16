@@ -272,15 +272,15 @@
         commentInput.style.height = commentInput.scrollHeight + 'px'
       },
       goBack () { // 뒤로 가기 - 게시글 목록으로 이동
-        this.$router.push({name: 'article-list'})
+        this.$router.push({name: 'article-list'}).catch(() => {})
       },
       goModify () { // 게시글 수정 - 현재 게시글 ID를 전송
-        this.$router.push({name: 'modify-article', params: {articleID: this.articleID}})
+        this.$router.push({name: 'modify-article', params: {articleID: this.articleID}}).catch(() => {})
       },
       deleteArticle () { // 게시글 삭제
         api.deleteArticle(this.articleID).then(res => { // 게시글 ID를 전송해 해당 게시글을 삭제함
           this.$Message.error('삭제되었습니다.')
-          this.$router.push({name: 'article-list'})
+          this.$router.push({name: 'article-list'}).catch(() => {})
         })
       },
       commentSubmit () { // 댓글 작성
@@ -328,7 +328,7 @@
             name: 'user-home',
             query: {username: this.username}
           }
-        )
+        ).catch(() => {})
       },
       goCommentUesr (usr) {
         this.$router.push(
@@ -336,7 +336,7 @@
             name: 'user-home',
             query: {username: usr}
           }
-        )
+        ).catch(() => {})
       },
       goProblemDetail (problemid) {
         this.$router.push(
@@ -344,7 +344,7 @@
             name: 'problem-details',
             params: {problemID: problemid}
           }
-        )
+        ).catch(() => {})
       },
       getAvatarSource (username) {
         let profile = ''

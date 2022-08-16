@@ -1,13 +1,14 @@
 import ProblemList from './problem/ProblemList.vue'
 import Logout from './user/Logout.vue'
 import UserHome from './user/UserHome.vue'
+import GuardMessage from './user/GuardMessage.vue'
 import About from './help/About.vue'
 import Languages from './help/languages.vue'
 import NotFound from './general/404.vue'
 import Home from './general/Home.vue'
 import Announcements from './general/Announcements.vue'
 import AnnouncementList from './general/AnnouncementList.vue'
-
+import Grass from './user/Grass.vue'
 // Grouping Components in the Same Chunk
 const SubmissionList = () => import(/* webpackChunkName: "submission" */ '@oj/views/submission/SubmissionList.vue')
 const SubmissionDetails = () => import(/* webpackChunkName: "submission" */ '@oj/views/submission/SubmissionDetails.vue')
@@ -29,11 +30,12 @@ const Join = () => import('@oj/views/preHome/Join.vue')
 const CategoryList = () => import('@oj/views/problem/CategoryList.vue')
 
 export {
-  Join, Home, NotFound, Announcements,
+  Join, Home, NotFound, Announcements, GuardMessage,
   Logout, UserHome, About, Languages,
   ProblemList, Problem,
   ACMRank, OIRank,
   SubmissionList, SubmissionDetails,
   ApplyResetPassword, ResetPassword,
-  ArticleList, CreateArticle, Article, Notification, AnnouncementList, CategoryList
+  ArticleList, CreateArticle, Article, Notification, AnnouncementList, CategoryList,
+  Grass
 }
