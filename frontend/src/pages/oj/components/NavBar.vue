@@ -425,6 +425,10 @@
     &.ivu-btn:hover {
       border-color: #fff;
     }
+    &.ivu-btn:focus {
+      border-color: transparent;
+      box-shadow: none;
+    }
   }
 </style>
 <style lang="less" scoped>
