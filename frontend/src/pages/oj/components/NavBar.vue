@@ -1,7 +1,7 @@
 <template>
   <div id="header">
 
-    <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
+    <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
       <!-- <div class="logo"> -->
         
       <Menu-item class="home_bar" name="/" >COU</Menu-item>
@@ -386,11 +386,6 @@
       },
       navToggle () {
         this.navOpen = !this.navOpen
-        console.log(this.navOpen)
-        // if(this.navOpen === true)
-        //   this.navOpen = false
-        // else
-        //   this.navOpen = true
       }
     },
 
@@ -423,6 +418,9 @@
         if (this.visibleAccount !== false) {
           this.visibleAccount = false
         }
+        if (this.navOpen !== false) {
+          this.navOpen = false
+        }
       }
     }
   }
@@ -442,34 +440,7 @@
 </style>
 <style lang="less" scoped>
 @import '../../../styles/common.less';
-  @media screen and (max-width : 900px) {
-    .home_bar {
-      width: 20%;
-    }
-    .bar_list {
-      display: none;
-      background-color: @white;
-    }
-    .bar_list.open {
-      display: block;
-    }
-    .navbar_toggle-btn {
-      display: block;
-      &:hover {
-        cursor: pointer;
-      }
-    }
-    .oj-menu {
-      display: flex;
-      flex-direction: column;
-    }
-    .account_tab {
-      display: none;
-    }
-  }
-  @media screen and (min-width : 901px) {
-    visibility: visible;
-  }
+  
   #header {
     min-width: 300px;
     position: fixed;
@@ -492,7 +463,7 @@
       right: 32px;
       font-size: 24px;
       color: @purple;
-      //display: none;
+      display: none;
     }
     .logo {
       margin-left: 2%;
@@ -703,7 +674,31 @@
     line-height:30px;
   }
 
-  
+  @media screen and (max-width : 900px) {
+    .home_bar {
+      width: 20%;
+    }
+    .bar_list {
+      display: none;
+      background-color: @white;
+    }
+    .bar_list.open {
+      display: block;
+    }
+    .navbar_toggle-btn {
+      display: block !important;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    .oj-menu {
+      display: flex;
+      flex-direction: column;
+    }
+    .account_tab {
+      display: none;
+    }
+  }
 
 
 // .dropdown {
