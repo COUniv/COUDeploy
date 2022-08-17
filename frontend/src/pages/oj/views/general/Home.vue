@@ -188,15 +188,25 @@
               <tr v-else-if="index == 2" class="ranker third">
                 <td class="image">
                   <img class="rankings-img" src="../../../../assets/bronse crown.png"/>
-                  <span class="no">3</span>
+                  <span class="no" style="color: white">3</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">0</td>
+                <td class="score">500</td>
               </tr>
-              <tr v-else class="ranker defa">
-                <td v-if="index == 3" class="image rankings-img">4</td>
-                <td v-if="index == 4" class="image rankings-img">5</td>
-                {{data.user.username}}
+              <tr v-else-if="index == 3" class="ranker defa">
+                <td class="no">4</td>
+                <td class="name">{{data.user.username}}</td>
+                <td class="score">100</td>
+              </tr>
+              <tr v-else-if="index == 4" class="ranker defa">
+                <td class="no">5</td>
+                <td class="name">{{data.user.username}}</td>
+                <td class="score">100</td>
+              </tr>
+              <tr v-else-if="index == 5" class="ranker defa">
+                <td class="no">6</td>
+                <td class="name">{{data.user.username}}</td>
+                <td class="score">100</td>
               </tr>
             </tbody>
           </table>
@@ -616,7 +626,7 @@
     thead:after {
       content: "-";
       display: block; 
-      line-height: 1em;
+      line-height: 1.5em;
       color: transparent;
     }
   }
@@ -661,6 +671,7 @@
           position: relative;
           .no {
             position: absolute;
+            font-weight: bold;
             top: 50%;
             left: 50%;
             transform: translate( -50%, -50% );
@@ -684,14 +695,14 @@
         //     color: #2d8cf0;
         //   }
         // }
-        // .third {
+        //.third {
         //   height: 42px;
         //   line-height: 42px;
         //   color: orange;
         //   margin-left: 15px;
         //   &:hover {
         //     color: #2d8cf0;
-        //   }
+        //}
         // }
         // .defa {
         //   height: 42px;
