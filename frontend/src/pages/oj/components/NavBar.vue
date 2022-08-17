@@ -57,7 +57,15 @@
       <!-- <Menu-item class="bar_list" name="/acm-rank">
         랭킹
       </Menu-item> -->
-
+      <Menu-item v-if="navOpen && !isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/login">
+        로그인
+      </Menu-item>
+      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/setting/mypage">
+        마이페이지
+      </Menu-item>
+      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/logout">
+        로그아웃
+      </Menu-item>
 
       <!-- <Menu-item class="bar_list" name="/about"> -->
       <!-- <Menu-item class="bar_list">
