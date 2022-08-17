@@ -15,18 +15,18 @@
       
       
       
-      <Menu-item class="bar_list" name="/problem">
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/problem">
         <!-- <Icon type="ios-keypad"></Icon>
         {{$t('m.NavProblems')}} -->
         문제
       </Menu-item>
-      <Menu-item class="bar_list" name="/contest">
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/contest">
         <!-- <Icon type="trophy"></Icon>
         {{$t('m.Contests')}} -->
         대회
       </Menu-item>
 
-      <Submenu class="bar_list" name="/info">
+      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/info">
         <template slot="title">
           정보
         </template>
@@ -36,7 +36,7 @@
           <MenuItem name="/acm-rank">사용자 순위</MenuItem>
       </Submenu>
 
-      <Submenu class="bar_list" name="/community">
+      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/community">
         <template slot="title">
           커뮤니티
         </template>
@@ -47,7 +47,7 @@
       </Submenu>
 
 
-      <Menu-item class="bar_list" name="/status">
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/status">
         <!-- <Icon type="ios-pulse-strong"></Icon> -->
         {{$t('m.NavStatus')}}
       </Menu-item>
@@ -188,7 +188,11 @@
           <Table :border="dishovering" :no-data-text="emptyChar" :columns="colums" :data="vNotifications" :show-header="showHeaderandborder" :disabled-hover="dishovering"></Table>
         </Drawer>
       </template>
+        <button class="navbar_toggle-btn" @click="navToggle">
+          <Icon type="md-menu" />
+        </button>
     </Menu>
+    
     <Modal v-model="modalVisible" :width="430">
       <div slot="header" class="modal-title">인증이 필요해요!</div>
       <component :is="modalStatus.mode" v-if="modalVisible"></component>
@@ -211,6 +215,7 @@
     },
     data () {
       return {
+        navOpen: false,
         alarmHoverActive: false,
         init_notification_count: 0,
         emptyChar: '알람이 존재하지 않습니다.',
@@ -378,6 +383,14 @@
       },
       alarmHoverForNoActive () {
         this.alarmHoverActive = false
+      },
+      navToggle () {
+        this.navOpen = !this.navOpen
+        console.log(this.navOpen)
+        // if(this.navOpen === true)
+        //   this.navOpen = false
+        // else
+        //   this.navOpen = true
       }
     },
 
@@ -429,7 +442,34 @@
 </style>
 <style lang="less" scoped>
 @import '../../../styles/common.less';
-
+  @media screen and (max-width : 900px) {
+    .home_bar {
+      width: 20%;
+    }
+    .bar_list {
+      display: none;
+      background-color: @white;
+    }
+    .bar_list.open {
+      display: block;
+    }
+    .navbar_toggle-btn {
+      display: block;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    .oj-menu {
+      display: flex;
+      flex-direction: column;
+    }
+    .account_tab {
+      display: none;
+    }
+  }
+  @media screen and (min-width : 901px) {
+    visibility: visible;
+  }
   #header {
     min-width: 300px;
     position: fixed;
@@ -444,6 +484,15 @@
       //background: #404040;
       position: relative;
       background: @white;
+    }
+    .navbar_toggle-btn {
+      position: absolute;
+      background: transparent;
+      border: none;
+      right: 32px;
+      font-size: 24px;
+      color: @purple;
+      //display: none;
     }
     .logo {
       margin-left: 2%;
@@ -463,14 +512,7 @@
         -webkit-text-stroke: 1.5px;
     }
 
-    @media screen and (max-width : 900px) {
-      .bar_list {
-        visibility: hidden;
-      }
-    }
-    @media screen and (min-width : 901px) {
-      visibility: visible;
-    }
+    
     .bar_list {
       padding-right: 30px;
       padding-left: 30px;
@@ -660,6 +702,8 @@
     height: 100%;
     line-height:30px;
   }
+
+  
 
 
 // .dropdown {
