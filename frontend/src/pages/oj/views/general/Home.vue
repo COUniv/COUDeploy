@@ -147,30 +147,98 @@
             <!-- </Col> -->
           <!-- </Row> -->
         </div>
-        <div class="right_rankings" style="float:right">
-          <div class="rankings_title"></div>
-          <div style="padding: 30px">
+        <!-- <table class="right_rankings">
+          <thead>
+            <tr>
+              <th>순위</th>
+              <th>아이디</th>
+              <th>점수</th>
+            </tr>
+          </thead>
+        </table> -->
+        <div class="right_rankings">
+          <table>
+            <!-- 제목 -->
+            <thead>
+              <tr class="ranking_title">
+                <td>순위</td>
+                <td>아이디</td>
+                <td>점수</td>
+              </tr>
+            </thead>
+            <!-- 내용 -->
+            <tbody class="rankings_user" v-for="(data, index) in dataRank" :key="data.user.username" @click="goUser(data.user)">
+              <tr v-if="index == 0" class="ranker first">
+                <td class="image">
+                  <img class="rankings-img" src="../../../../assets/gold crown.png"/>
+                  <span class="no">1</span>
+                </td>
+                <td class="name">{{data.user.username}}</td>
+                <td class="score">2000</td>
+              </tr>
+              <tr v-else-if="index == 1" class="ranker second">
+                <td class="image">
+                  <img class="rankings-img" src="../../../../assets/silver crown.png"/>
+                  <span class="no">2</span>
+                </td>
+                <td class="name">{{data.user.username}}</td>
+                <td class="score">1000</td>
+              </tr>
+              
+              <tr v-else-if="index == 2" class="ranker third">
+                <td class="image">
+                  <img class="rankings-img" src="../../../../assets/bronse crown.png"/>
+                  <span class="no">3</span>
+                </td>
+                <td class="name">{{data.user.username}}</td>
+                <td class="score">0</td>
+              </tr>
+              <tr v-else class="ranker defa">
+                <td v-if="index == 3" class="image rankings-img">4</td>
+                <td v-if="index == 4" class="image rankings-img">5</td>
+                {{data.user.username}}
+              </tr>
+            </tbody>
+          </table>
+          
+          <!-- <div class="rankings_title">
+            <div class="title_rank">순위</div>
+            <div class="title_id">아이디</div>
+            <div class="title_score">점수</div>
+          </div>
+          <div class="rankings">
             <div class="rankings_user" v-for="(data, index) in dataRank" :key="data.user.username" @click="goUser(data.user)">
-              <!-- <span v-if="index > 2">{{index + 1}} 등 : </span> -->
-              <a v-if="index == 0" class="first">
-                <img class="rankings-img" src="../../../../assets/gold crown.png"/>
-                {{data.user.username}}
+              <a v-if="index == 0" class="ranker first">
+                <div class="image">
+                  <img class="rankings-img" src="../../../../assets/gold crown.png"/>
+                  <span class="no">1</span>
+                </div>
+                <span class="name">{{data.user.username}}</span>
+                <span class="score">2000</span>
               </a>
-              <a v-else-if="index == 1" class="second">
-                <img class="rankings-img" src="../../../../assets/silver crown.png"/>
-                {{data.user.username}}
+              <a v-else-if="index == 1" class="ranker second">
+                <div class="image">
+                  <img class="rankings-img" src="../../../../assets/silver crown.png"/>
+                  <span class="no">2</span>
+                </div>
+                <span class="name">{{data.user.username}}</span>
+                <span class="score">1000</span>
               </a>
-              <a v-else-if="index == 2" class="third">
-                <img class="rankings-img" src="../../../../assets/bronse crown.png"/>
-                {{data.user.username}}
+              <a v-else-if="index == 2" class="ranker third">
+                <div class="image">
+                  <img class="rankings-img" src="../../../../assets/bronse crown.png"/>
+                  <span class="no">3</span>
+                </div>
+                <span class="name">{{data.user.username}}</span>
+                <span class="score">0</span>
               </a>
-              <a v-else class="defa">
-                <span v-if="index == 3" class="rankings-img">4</span>
-                <span v-if="index == 4" class="rankings-img">5</span>
+              <a v-else class="ranker defa">
+                <span v-if="index == 3" class="image rankings-img">4</span>
+                <span v-if="index == 4" class="image rankings-img">5</span>
                 {{data.user.username}}
               </a>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
       <ProblemCategory style="margin: 20px 0 0 0"></ProblemCategory>
@@ -341,7 +409,6 @@
       padding-bottom: -80px;
     }
   }
-
   .img_container{
     // margin-right: 21%;
     // padding-left : 20%;
@@ -541,25 +608,104 @@
   .tabpan_padding-s {
     padding: 0px 10px 10px 10px;
   }
+  table {
+    width: 100%;
+    td {
+      text-align: center;
+    }
+    thead:after {
+      content: "-";
+      display: block; 
+      line-height: 1em;
+      color: transparent;
+    }
+  }
+
   .right_rankings{
     display: inline-block;
     vertical-align: top;
+    float: right;
     border: 1px solid rgb(226, 226, 226);
     border-radius: 5px;
+    padding: 30px 20px;
     width: 37%;
     height: 450px;
     background: white;
     box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
     // background: #dfdfdf;
+    .ranking_title {
+      color: @gray;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .rankings_user {
+      margin-bottom: 10px;
+      font-size: 14px;
+      height: 42px;
+      width: 100%;
+      .ranker {
+        position: relative;
+        height: 42px;
+        line-height: 42px;
+        margin-left: 15px;
+        color: @black;
+        font-weight: 600;
+        &:hover {
+          cursor: pointer;
+          .name, .score{
+            color: @dark-orange;
+            transition-duration: 3ms;
+          }
+        }
+        .image {
+          position: relative;
+          .no {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate( -50%, -50% );
+          }
+        }
+        // .first {
+        //   height: 42px;
+        //   line-height: 42px;
+        //   color: #800080;
+        //   //margin-left: 15px;
+        //   &:hover {
+        //     color: #2d8cf0;
+        //   }
+        // }
+        // .second {
+        //   height: 42px;
+        //   line-height: 42px;
+        //   color: red;
+        //   //margin-left: 15px;
+        //   &:hover {
+        //     color: #2d8cf0;
+        //   }
+        // }
+        // .third {
+        //   height: 42px;
+        //   line-height: 42px;
+        //   color: orange;
+        //   margin-left: 15px;
+        //   &:hover {
+        //     color: #2d8cf0;
+        //   }
+        // }
+        // .defa {
+        //   height: 42px;
+        //   line-height: 42px;
+        //   color: #495060;
+        //   margin-left: 15px;
+        //   &:hover {
+        //     color: #2d8cf0;
+        //   }
+        // }
+        
+      }
+    }
   }
-
-  .rankings_title{
-    font-size: 20px;
-    padding: 1px 15px;
-    background: rgb(235, 235, 235);
-  }
-
-
   .content-container {
     padding: 0 20px 20px 20px;
   }
@@ -608,60 +754,4 @@
     z-index: 997;
   }
 
-  .rankings_user{
-    display: inline-block;
-    margin-bottom: 10px;
-    font-size: 16px;
-    background: white;
-    height: 42px;
-    line-height: 42px;
-    width: 100%;
-
-    a {
-      display: inline-block;
-      height: 42px;
-      line-height: 42px;
-      img {
-        display: block;
-        float: left;
-        margin-right: 15px;
-      }
-    }
-    .first {
-      height: 42px;
-      line-height: 42px;
-      color: #800080;
-      margin-left: 15px;
-      &:hover {
-        color: #2d8cf0;
-      }
-    }
-    .second {
-      height: 42px;
-      line-height: 42px;
-      color: red;
-      margin-left: 15px;
-      &:hover {
-        color: #2d8cf0;
-      }
-    }
-    .third {
-      height: 42px;
-      line-height: 42px;
-      color: orange;
-      margin-left: 15px;
-      &:hover {
-        color: #2d8cf0;
-      }
-    }
-    .defa {
-      height: 42px;
-      line-height: 42px;
-      color: #495060;
-      margin-left: 15px;
-      &:hover {
-        color: #2d8cf0;
-      }
-    }
-  }
 </style>
