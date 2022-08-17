@@ -64,19 +64,6 @@
       <!-- account setting, profile setting button -->
       <div class="flex-container">
         <div class="btn-menu">
-          <div>
-            <Button
-              shape="circle"
-              @click="goProfileSetting">
-              Profile Setting
-            </Button>
-            <Button
-              shape="circle"
-              @click="goAccountSetting"
-              style="margin-left: 5px;">
-              Account Setting
-            </Button>
-          </div>
           <div style="margin-top: 10px;">
             <Button
               shape="circle"
