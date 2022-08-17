@@ -100,7 +100,7 @@
               </template>
             </VerticalMenu>
 
-            <Card id="info">
+            <Card id="info" class="tag-card">
               <div slot="title" class="header">
                 <Icon type="information-circled"></Icon>
                 <span class="card-title">{{$t('m.Information')}}</span>
@@ -755,6 +755,10 @@
   }
 
   #info {
+    ivu-card-body {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
     margin-bottom: 20px;
     margin-top: 20px;
     ul {
@@ -991,6 +995,12 @@
   }
 </style>
 <style lang="less">
+  .tag-card {
+    & > .ivu-card-body {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
   .help-btn{
     float: left;
     color: white;
