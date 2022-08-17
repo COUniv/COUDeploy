@@ -1,6 +1,6 @@
 <template>
   <div class="category">
-    <div class="title">문제 카테고리</div>
+    <div class="title" @click="goCategoryList">문제 카테고리</div>
     <hr style="color: gray;">
     <div class="box_container">
       <div class="item_box">
@@ -27,7 +27,13 @@
   export default {
     data () {
       return {
-        problemCategoryList: {}
+        problemCategoryList: {},
+        page: 1, // 페이지로 보일 떄 시작 할 리스트 페이지 시점
+        limit: 10, // 최대 표시할 개수
+        formFilter: { // 카테고리를 불러올 때 필터 설정용 데이터
+          search: '', // 카테고리 검색 시 검색할 내용
+          searchtype: '' // 카테고리 검색 시 검색할 카테고리 - 전체 = 0, 제목 = 1, 댓글 = 2
+        }
       }
     },
     mounted () {
@@ -35,14 +41,18 @@
     },
     methods: {
       init () {
-        api.getProblemCategoryList().then(res => {
-          this.problemCategoryList = res.data.data
-          // this.problemCategoryList.forEach(element => {
-          //   api.getProblemPercent(element.id).then(res => {
-          //     element.percent = res.data.data
-          //   })
-          // })
+        let params = this.buildQuery()
+        let offset = (this.page - 1) * this.limit
+        api.getProblemCategoryList(offset, this.limit, params).then(res => {
+          this.problemCategoryList = res.data.data.result
         })
+      },
+      buildQuery () { // 쿼리로 설정한 필터값을 전송용 데이터로 빌드
+        return {
+          page: this.page,
+          search: this.formFilter.search,
+          searchtype: this.formFilter.searchtype
+        }
       },
       goProblemList (id) {
         let query = {
@@ -56,7 +66,10 @@
         this.$router.push({
           name: 'problem-list',
           query: utils.filterEmptyValue(query)
-        })
+        }).catch(() => {})
+      },
+      goCategoryList () {
+        this.$router.push({path: 'category-list'}).catch(() => {})
       }
     }
   }
@@ -83,6 +96,7 @@
       font-size: 24px;
       text-align: center;
       font-weight: @weight-bold;
+      cursor: pointer;
     }
   }
 

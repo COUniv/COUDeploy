@@ -57,7 +57,7 @@
                       {
                         name: 'user-home',
                         query: {username: params.row.user.username}
-                      })
+                      }).catch(() => {})
                   }
                 }
               }, params.row.user.username)

@@ -4,7 +4,6 @@ import {
   ACMRank,
   Announcements,
   ApplyResetPassword,
-  ApplyVerifyEmail,
   Languages,
   Home,
   NotFound,
@@ -15,13 +14,13 @@ import {
   SubmissionDetails,
   SubmissionList,
   UserHome,
-  VerifyEmail,
   ArticleList,
   CreateArticle,
   Article,
   Notification,
   AnnouncementList,
-  Join
+  Join,
+  CategoryList
 } from '../views'
 import Logout from '../views/user/Logout.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
@@ -33,6 +32,12 @@ import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
 
 export default [
+  {
+    name: 'category-list',
+    path: '/category-list',
+    meta: {title: 'category-list'},
+    component: CategoryList
+  },
   {
     name: 'notification-list',
     path: '/notification-list',
@@ -52,25 +57,6 @@ export default [
     meta: {title: 'Join'},
     component: Join
   },
-
-  // {
-  //   name: 'Free_Board',
-  //   path: '/Free_Board',
-  //   meta: {requiresAuth: true, title: 'Free_Board'},
-  //   component: FreeBoard
-  // },
-  // {
-  //   name: 'Request_Board',
-  //   path: '/Request_Board',
-  //   meta: {requiresAuth: true, title: 'Request_Board'},
-  //   component: RequestBoard
-  // },
-  // {
-  //   name: 'Question_Board',
-  //   path: '/Question_Board',
-  //   meta: {requiresAuth: true, title: 'Question_Board'},
-  //   component: QuestionBoard
-  // },
   {
     path: '/article/modify/:articleID',
     name: 'modify-article',
@@ -220,7 +206,7 @@ export default [
         name: 'default-setting',
         path: '',
         meta: {requiresAuth: true, title: 'Default Settings'},
-        component: Setting.ProfileSetting
+        component: Setting.MyPage
       },
       {
         name: 'comment-list',

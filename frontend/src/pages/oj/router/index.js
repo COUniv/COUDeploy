@@ -28,18 +28,15 @@ router.beforeEach(async(to, from, next) => {
   // }
   if (to.matched.some(record => record.meta.requiresAuth) && from.path.substring(0, 13) !== '/verify-email') {
     if (!storage.get(STORAGE_KEY.AUTHED)) {
-      Vue.prototype.$error('Please login first')
+      Vue.prototype.$error('로그인을 해주세요')
       // store.commit(types.CHANGE_MODAL_STATUS, {mode: 'login', visible: true})
       next({
         path: '/login'
       })
     } else if (to.matched.some(record => record.meta.isEmailVerify)) {
       if (!store.getters['isVerifiedEmail'] && !store.getters['isAdminRole'] && !(from.path === '/logout')) {
-        Vue.prototype.$error('Please verifying email')
-        // store.commit(types.CHANGE_MODAL_STATUS, {mode: 'login', visible: true})
-        next({
-          path: '/apply-verify-email'
-        })
+        store.commit(types.CHANGE_MODAL_STATUS, {mode: 'GuardMessage', visible: true})
+        next(false)
       } else {
         next()
       }

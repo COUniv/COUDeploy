@@ -8,6 +8,9 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  getGrassList () {
+    return ajax('get_grass_data', 'get')
+  },
   callAuthEmail (data) {
     return ajax('auth_email_call', 'post', {
       data
@@ -28,8 +31,12 @@ export default {
       }
     })
   },
-  getProblemCategoryList () {
-    return ajax('categories', 'get')
+  getProblemCategoryList (offset, limit, params) {
+    params.limit = limit
+    params.offset = offset
+    return ajax('categories', 'get', {
+      params
+    })
   },
   getReadNotification () {
     return ajax('read_notification', 'get')
@@ -428,7 +435,7 @@ function ajax (url, method, options) {
         reject(res)
         // 백엔드가 로그인으로 반환되면 세션이 유효하지 않으며 현재 로그인한 사용자는 로그아웃해야 함
         if (res.data.data.startsWith('Please login')) {
-          store.dispatch('changeModalStatus', {'mode': 'login', 'visible': true})
+          this.$router.push({path: '/login'}).catch(() => {})
         }
       } else {
         resolve(res)
