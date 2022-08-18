@@ -3,7 +3,7 @@
     <div class="form">
       <Form ref="formRegister" :model="formRegister" :rules="ruleRegister">
         <!-- 회원가입 박스 title-->
-        <div class="join_title"><p @click="goRoute('/')">COU</p></div>
+        <div class="join_title"><p @click="goHome">COU</p></div>
                 
         <div class = "join_edge">
           <FormItem prop="username">
@@ -220,6 +220,9 @@
       editEmail () {
         this.isAuthed = false
         this.authModal = false
+      },
+      goHome () {
+        this.$router.push({path: '/'}).catch(() => {})
       },
       goLogin () {
         this.$router.push({path: '/login'}).catch(() => {})
