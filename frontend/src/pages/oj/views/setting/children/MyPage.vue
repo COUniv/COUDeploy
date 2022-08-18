@@ -58,6 +58,9 @@
           </div>
         </div>
       </div>
+
+      <Grass></Grass>
+
       <!-- account setting, profile setting button -->
       <div class="flex-container">
         <div class="btn-menu">
@@ -97,8 +100,11 @@
   import { mapActions } from 'vuex'
   import time from '@/utils/time'
   import api from '@oj/api'
-
+  import Grass from '../../user/Grass.vue'
   export default {
+    components: {
+      Grass
+    },
     data () {
       return {
         username: '',
@@ -116,21 +122,20 @@
         api.getUserInfo(this.username).then(res => {
           this.changeDomTitle({title: res.data.data.user.username})
           this.profile = res.data.data
-          console.log(this.profile)
           this.getSolvedProblems()
         })
       },
       goProfileSetting () {
-        this.$router.push({name: 'profile-setting'})
+        this.$router.push({name: 'profile-setting'}).catch(() => {})
       },
       goAccountSetting () {
-        this.$router.push({name: 'account-setting'})
+        this.$router.push({name: 'account-setting'}).catch(() => {})
       },
       goCommentList () {
-        this.$router.push({name: 'comment-list'})
+        this.$router.push({name: 'comment-list'}).catch(() => {})
       },
       goLikeList () {
-        this.$router.push({name: 'like-list'})
+        this.$router.push({name: 'like-list'}).catch(() => {})
       },
       getSolvedProblems () {
         let ACMProblems = this.profile.acm_problems_status.problems || {}
@@ -148,7 +153,7 @@
         this.problems = ACProblems
       },
       goProblem (problemID) {
-        this.$router.push({name: 'problem-details', params: {problemID: problemID}})
+        this.$router.push({name: 'problem-details', params: {problemID: problemID}}).catch(() => {})
       },
       freshProblemDisplayID () {
         api.freshDisplayID().then(res => {

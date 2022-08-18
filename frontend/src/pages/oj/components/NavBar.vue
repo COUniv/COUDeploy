@@ -1,7 +1,7 @@
 <template>
   <div id="header">
 
-    <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
+    <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
       <!-- <div class="logo"> -->
         
       <Menu-item class="home_bar" name="/" >COU</Menu-item>
@@ -15,18 +15,18 @@
       
       
       
-      <Menu-item class="bar_list" name="/problem">
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/problem">
         <!-- <Icon type="ios-keypad"></Icon>
         {{$t('m.NavProblems')}} -->
         문제
       </Menu-item>
-      <Menu-item class="bar_list" name="/contest">
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/contest">
         <!-- <Icon type="trophy"></Icon>
         {{$t('m.Contests')}} -->
         대회
       </Menu-item>
 
-      <Submenu class="bar_list" name="/info">
+      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/info">
         <template slot="title">
           정보
         </template>
@@ -36,7 +36,7 @@
           <MenuItem name="/acm-rank">사용자 순위</MenuItem>
       </Submenu>
 
-      <Submenu class="bar_list" name="/community">
+      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/community">
         <template slot="title">
           커뮤니티
         </template>
@@ -47,7 +47,7 @@
       </Submenu>
 
 
-      <Menu-item class="bar_list" name="/status">
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/status">
         <!-- <Icon type="ios-pulse-strong"></Icon> -->
         {{$t('m.NavStatus')}}
       </Menu-item>
@@ -57,7 +57,15 @@
       <!-- <Menu-item class="bar_list" name="/acm-rank">
         랭킹
       </Menu-item> -->
-
+      <Menu-item v-if="navOpen && !isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/login">
+        로그인
+      </Menu-item>
+      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/setting/mypage">
+        마이페이지
+      </Menu-item>
+      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/logout">
+        로그아웃
+      </Menu-item>
 
       <!-- <Menu-item class="bar_list" name="/about"> -->
       <!-- <Menu-item class="bar_list">
@@ -145,21 +153,27 @@
           </Dropdown-menu>
         </Dropdown> -->
         <div class="right_menu">
-        <!-- 알림 출력 버튼 -->
+          <!-- 알림 출력 버튼 -->
           <div class="alarm">
-            <Badge dot v-if="init_notification_count > 0" style="height: 40px;margin-right: 10px;margin-top: 10px;">
-              <Button type="text" class="bell" size="large" @click="changeNoti" icon="ios-notifications-outline"></Button>
+            <Badge dot v-if="init_notification_count > 0" class="alram-box">
+              <Button type="text" class="bell bells" size="large" @click="changeNoti" @mouseover.native="alarmHoverForActive" @mouseleave.native="alarmHoverForNoActive">
+                <i v-bind:class="AlarmHoverActive" style="padding-bottom:5px"></i>
+              </Button>
+              <!-- <Icon type="ios-notifications" /> -->
             </Badge>
             
-            <Badge v-else style="height: 40px; margin-right: 10px; margin-top: 10px;">
-              <Button type="text" class="bell" size="large" @click="changeNoti" icon="ios-notifications-outline"></Button>
+            <Badge v-else>
+              <Button type="text" class="bell bells" size="large" @click="changeNoti" @mouseover.native="alarmHoverForActive" @mouseleave.native="alarmHoverForNoActive">
+                <i v-bind:class="AlarmHoverActive" style="padding-bottom:5px"></i>
+              </Button>
             </Badge>
           </div>
             <!--사용자 아이디 출력-->
           <div @click="viewModal" @blur="visibleAccount = false" class="account_tab"> <!--/setting/mypage-->
             <Icon type="md-contact" size="30" color="#5030E5"/>
-            {{ user.username }}
+            <span class="username">{{ user.username }}</span>
           </div>
+          <div style="clear:both"></div>
           <div v-if="visibleAccount" class="account_modal" v-click-outside="closeModal">
             <div class="profile">
               <div class="photo">
@@ -168,9 +182,9 @@
               <div class="name">{{ user.username }}</div>
               <div class="email">root@gmail.com</div>
             </div>
-            <div class="mypage_btn" @click="$router.push('/setting/mypage')">계정관리</div>
+            <div class="mypage_btn" @click="goMySettingPage">계정관리</div>
             <div class="line"></div>
-            <div class="logout_btn" @click="$router.push('/logout')">로그아웃</div>
+            <div class="logout_btn" @click="goLogOut">로그아웃</div>
           </div>
           
         </div>
@@ -182,9 +196,13 @@
           <Table :border="dishovering" :no-data-text="emptyChar" :columns="colums" :data="vNotifications" :show-header="showHeaderandborder" :disabled-hover="dishovering"></Table>
         </Drawer>
       </template>
+        <button class="navbar_toggle-btn" @click="navToggle">
+          <Icon type="md-menu" />
+        </button>
     </Menu>
-    <Modal v-model="modalVisible" :width="400">
-      <div slot="header" class="modal-title">반갑습니다!</div>
+    
+    <Modal v-model="modalVisible" :width="430">
+      <div slot="header" class="modal-title">인증이 필요해요!</div>
       <component :is="modalStatus.mode" v-if="modalVisible"></component>
       <div slot="footer" style="display: none"></div>
     </Modal>
@@ -193,8 +211,7 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import login from '@oj/views/user/Login'
-  import register from '@oj/views/user/Register'
+  import GuardMessage from '@oj/views/user/GuardMessage.vue'
   import api from '@oj/api'
   import vClickOutside from 'v-click-outside'
   export default {
@@ -202,11 +219,12 @@
       clickOutside: vClickOutside.directive
     },
     components: {
-      login,
-      register
+      GuardMessage
     },
     data () {
       return {
+        navOpen: false,
+        alarmHoverActive: false,
         init_notification_count: 0,
         emptyChar: '알람이 존재하지 않습니다.',
         showHeaderandborder: false,
@@ -301,12 +319,18 @@
           window.open('/admin/')
         }
       },
-      handleBtnClick (mode) {
+      handleBtnClick () {
         this.changeModalStatus({
           visible: true,
-          mode: mode
+          mode: 'GuardMessage'
         })
-        this.handleRoute('login')
+        this.handleRoute('GuardMessage')
+      },
+      goLogOut () {
+        this.$router.push({path: '/logout'}).catch(() => {})
+      },
+      goMySettingPage () {
+        this.$router.push({name: 'my-page'}).catch(() => {})
       },
       goLogin () {
         this.$router.push({path: '/login'}).catch(() => {})
@@ -360,12 +384,28 @@
         this.visivleDraw = false
         this.$router.push({
           path: '/notification-list'
-        })
+        }).catch(() => {})
+      },
+      alarmHoverForActive () {
+        this.alarmHoverActive = true
+      },
+      alarmHoverForNoActive () {
+        this.alarmHoverActive = false
+      },
+      navToggle () {
+        this.navOpen = !this.navOpen
       }
     },
 
     computed: {
       ...mapGetters(['website', 'modalStatus', 'user', 'isAuthenticated', 'isAdminRole', 'isVerifiedEmail']),
+      AlarmHoverActive () {
+        if (this.alarmHoverActive) {
+          return 'ivu-icon ivu-icon-ios-notifications'
+        } else {
+          return 'ivu-icon ivu-icon-ios-notifications-outline'
+        }
+      },
       activeMenu () {
         return '/' + this.$route.path.split('/')[1]
       },
@@ -386,14 +426,29 @@
         if (this.visibleAccount !== false) {
           this.visibleAccount = false
         }
+        if (this.navOpen !== false) {
+          this.navOpen = false
+        }
       }
     }
   }
 </script>
-
+<style lang="less">
+  .alram-box {
+    .ivu-badge-dot {
+      top: 5px !important;
+      right: 5px !important;
+    }
+  }
+  .bells {
+    &.ivu-btn:hover {
+      border-color: #fff;
+    }
+  }
+</style>
 <style lang="less" scoped>
 @import '../../../styles/common.less';
-
+  
   #header {
     min-width: 300px;
     position: fixed;
@@ -408,6 +463,15 @@
       //background: #404040;
       position: relative;
       background: @white;
+    }
+    .navbar_toggle-btn {
+      position: absolute;
+      background: transparent;
+      border: none;
+      right: 32px;
+      font-size: 24px;
+      color: @purple;
+      display: none;
     }
     .logo {
       margin-left: 2%;
@@ -424,16 +488,10 @@
         color: @purple;
         font-size: @font-medium;
         font-weight: @weight-bold;
+        -webkit-text-stroke: 1.5px;
     }
 
-    @media screen and (max-width : 900px) {
-      .bar_list {
-        visibility: hidden;
-      }
-    }
-    @media screen and (min-width : 901px) {
-      visibility: visible;
-    }
+    
     .bar_list {
       padding-right: 30px;
       padding-left: 30px;
@@ -467,11 +525,11 @@
     }
   }
   .alarm {
-    position: absolute;
-    top: 0;
-    height: 40px;
+    // top: 0;
+    // height: 40px;
     line-height: 50%;
-    margin-right: 20px;
+    float: right;
+    margin-right: 10px;
     .bell {
       color: @purple;
       font-size: 1.5em;
@@ -497,28 +555,40 @@
     }
   }
   .right_menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     line-height: 50%;
     overflow:hidden;
     float: right;
-    padding: 20px 30px;
+    padding: 0px 30px;
     // position: fixed;
-    width: 160px;
     height: 60px;
-    margin-right: 20px;
+    margin-right: 5px;
     .account_tab {
       &:hover {
         cursor: pointer;
+        border: 1.5px solid @purple;
       }
-      position: absolute;
+      float: right;
       line-height: 50%;
-      vertical-align: middle;
-      top: 8px;
-      right: 20px;
+      height: 45px;
+      // vertical-align: middle;
+      // top: 8px;
+      // right: 20px;
       color: @purple;
       font-weight: 600;
       padding: 5px 7px 5px 5px;
-      border: 3px solid @purple;
+      border: 1.5px solid #fff;
       border-radius: @size-border-radius;
+      -webkit-transition: all .2s ease-in;
+      -moz-transition: all .2s ease-in;
+      -ms-transition: all .2s ease-in;
+      -o-transition: all .2s ease-in;
+      transition: all .2s ease-in;
+      span {
+        -webkit-text-stroke: 0.5px;
+      }
     }
     .account_modal {
       position: absolute;
@@ -564,9 +634,14 @@
         font-size: @font-micro;
         font-weight: @weight-bold;
         text-align: center;
+        -webkit-transition: all .2s ease-in;
+        -moz-transition: all .2s ease-in;
+        -ms-transition: all .2s ease-in;
+        -o-transition: all .2s ease-in;
+        transition: all .2s ease-in;
         &:hover {
           cursor: pointer;
-          border: 2px solid @white;
+          border: 2px solid @purple;
           background-color: @purple;
           color: @white;
         }
@@ -587,17 +662,51 @@
         font-size: @font-small;
         font-weight: @weight-bold;
         text-align: center;
+        // transition area
+        -webkit-transition: all .2s ease-in;
+        -moz-transition: all .2s ease-in;
+        -ms-transition: all .2s ease-in;
+        -o-transition: all .2s ease-in;
+        transition: all .2s ease-in;
         &:hover {
           cursor: pointer;
-          border: 2px solid @white;
+          border: 2px solid @purple;
           background-color: @purple;
           color: @white;
         }
       }
     }
   }
+  .username {
+    height: 100%;
+    line-height:30px;
+  }
 
-
+  @media screen and (max-width : 900px) {
+    .home_bar {
+      width: 20%;
+    }
+    .bar_list {
+      display: none;
+      background-color: @white;
+    }
+    .bar_list.open {
+      display: block;
+    }
+    .navbar_toggle-btn {
+      display: block !important;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    .oj-menu {
+      display: flex;
+      flex-direction: column;
+    }
+    .account_tab {
+      display: none;
+    }
+  }
 
 
 // .dropdown {

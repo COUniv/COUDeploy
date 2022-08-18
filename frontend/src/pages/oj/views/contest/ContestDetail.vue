@@ -147,7 +147,7 @@
     methods: {
       ...mapActions(['changeDomTitle']),
       handleRoute (route) {
-        this.$router.push(route)
+        this.$router.push(route).catch(() => {})
       },
       checkPassword () {
         if (this.contestPassword === '') {

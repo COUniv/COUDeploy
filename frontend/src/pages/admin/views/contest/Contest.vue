@@ -122,7 +122,7 @@
         }
         data.allowed_ip_ranges = ranges
         api[funcName](data).then(res => {
-          this.$router.push({name: 'contest-list', query: {refresh: 'true'}})
+          this.$router.push({name: 'contest-list', query: {refresh: 'true'}}).catch(() => {})
         }).catch(() => {
         })
       },

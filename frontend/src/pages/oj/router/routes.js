@@ -4,7 +4,6 @@ import {
   ACMRank,
   Announcements,
   ApplyResetPassword,
-  ApplyVerifyEmail,
   Languages,
   Home,
   NotFound,
@@ -15,12 +14,13 @@ import {
   SubmissionDetails,
   SubmissionList,
   UserHome,
-  VerifyEmail,
   ArticleList,
   CreateArticle,
   Article,
   Notification,
-  AnnouncementList
+  AnnouncementList,
+  Join,
+  CategoryList
 } from '../views'
 import Logout from '../views/user/Logout.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
@@ -32,6 +32,12 @@ import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
 
 export default [
+  {
+    name: 'category-list',
+    path: '/category-list',
+    meta: {title: 'category-list'},
+    component: CategoryList
+  },
   {
     name: 'notification-list',
     path: '/notification-list',
@@ -45,25 +51,12 @@ export default [
     meta: {title: 'StartLogin'},
     component: StartLogin
   },
-
-  // {
-  //   name: 'Free_Board',
-  //   path: '/Free_Board',
-  //   meta: {requiresAuth: true, title: 'Free_Board'},
-  //   component: FreeBoard
-  // },
-  // {
-  //   name: 'Request_Board',
-  //   path: '/Request_Board',
-  //   meta: {requiresAuth: true, title: 'Request_Board'},
-  //   component: RequestBoard
-  // },
-  // {
-  //   name: 'Question_Board',
-  //   path: '/Question_Board',
-  //   meta: {requiresAuth: true, title: 'Question_Board'},
-  //   component: QuestionBoard
-  // },
+  {
+    name: 'join',
+    path: '/join',
+    meta: {title: 'Join'},
+    component: Join
+  },
   {
     path: '/article/modify/:articleID',
     name: 'modify-article',
@@ -87,18 +80,6 @@ export default [
     path: '/create-article',
     meta: {requiresAuth: true, isEmailVerify: true, title: 'Create Article'},
     component: CreateArticle
-  },
-  {
-    name: 'apply-verify-email',
-    path: '/apply-verify-email',
-    meta: {requiresAuth: true, title: 'Apply Verify Email'},
-    component: ApplyVerifyEmail
-  },
-  {
-    name: 'verify-email',
-    path: '/verify-email/:token',
-    meta: {requiresAuth: true, title: 'Verify Email'},
-    component: VerifyEmail
   },
   {
     name: 'home',
@@ -225,7 +206,7 @@ export default [
         name: 'default-setting',
         path: '',
         meta: {requiresAuth: true, title: 'Default Settings'},
-        component: Setting.ProfileSetting
+        component: Setting.MyPage
       },
       {
         name: 'comment-list',
