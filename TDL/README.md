@@ -23,9 +23,15 @@ v2.
 - [ ] Design the contest carousel
 
 **Dobby**
-> 네비게이션
+> navBar
 - [x] custom-color 색상 변경
 - [x] 계정 모달창 생성 및 router 변경
+
+> navBar_responsive
+- [x] 메뉴 vertical 및 디자인 변경
+- [x] out-click, router 변경 감지 처리
+- [ ] sub_Menu 펼침 처리
+- [x] 로그인 여부에 따른 메뉴(로그인/ 마이페이지,로그아웃) 설정
 
 > Footer
 - [x] 디자인 변경 및 화면 너비에 맞추기
@@ -33,7 +39,7 @@ v2.
 > 메인페이지
 - [x] 배너 이미지 변경
 - [x] 공지사항/대회 탭 디자인 변경
-- [ ] 사용자 순위 디자인 변경 
+- [x] 사용자 순위 디자인 변경 
 - [x] 문제 카테고리 디자인 변경
 
 > 대회
