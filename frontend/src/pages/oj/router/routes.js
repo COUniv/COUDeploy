@@ -20,13 +20,11 @@ import {
   Notification,
   AnnouncementList,
   Join,
-  CategoryList
+  CategoryList,
+  ProblemSubmission
 } from '../views'
 import Logout from '../views/user/Logout.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
-// import FreeBoard from '../views/board_pages/Free_Board.vue'
-// import RequestBoard from '../views/board_pages/Request_Board.vue'
-// import QuestionBoard from '../views/board_pages/Question_Board.vue'
 
 import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
@@ -125,6 +123,12 @@ export default [
     component: Problem
   },
   {
+    name: 'problem-submission',
+    path: '/submission/:problemID',
+    meta: {title: 'Problem Submission'},
+    component: ProblemSubmission
+  },
+  {
     name: 'submission-list',
     path: '/status',
     meta: {title: 'Submission List'},
@@ -162,6 +166,11 @@ export default [
         name: 'contest-problem-details',
         path: 'problem/:problemID/',
         component: Problem
+      },
+      {
+        name: 'contest-problem-submission',
+        path: 'submission/:problemID/',
+        component: ProblemSubmission
       },
       {
         name: 'contest-announcement-list',
