@@ -20,6 +20,7 @@ const ApplyResetPassword = () => import(/* webpackChunkName: "password" */ '@oj/
 const ResetPassword = () => import(/* webpackChunkName: "password" */ '@oj/views/user/ResetPassword.vue')
 
 const Problem = () => import(/* webpackChunkName: "Problem" */ '@oj/views/problem/Problem.vue')
+const ProblemSubmission = () => import(/* webpackChunkName: "Problem" */ '@oj/views/problem/ProblemSubmission.vue')
 
 const ArticleList = () => import('@oj/views/article/ArticleList.vue')
 const CreateArticle = () => import('@oj/views/article/CreateArticle.vue')
@@ -37,5 +38,6 @@ export {
   SubmissionList, SubmissionDetails,
   ApplyResetPassword, ResetPassword,
   ArticleList, CreateArticle, Article, Notification, AnnouncementList, CategoryList,
-  Grass
+  Grass,
+  ProblemSubmission
 }
