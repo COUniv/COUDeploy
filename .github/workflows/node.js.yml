@@ -13,7 +13,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      working-directory: ./frontend
     strategy:
       matrix:
         node-version: [14.x, 16.x]
@@ -21,14 +22,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Change Directory
-      run: |
-        cd ./frontend
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
+        working-directory: ${{ env.working-directory }}
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+    - name: npm install
+      run: npm ci
+      working-directory: ${{ env.working-directory }}
+
+    - name: build
     - run: npm run build --if-present
-    - run: npm test
+      working-directory: ${{ env.working-directory }}
+      
+    - name: test
+      run: npm test
+      working-directory: ${{ env.working-directory }}
