@@ -40,7 +40,7 @@ class login_required(BasePermissionDecorator):
 class verify_required(BasePermissionDecorator):
     def check_permission(self):
         user = self.request.user
-        return user.is_email_verify
+        return user.is_email_verify or user.is_admin_role()
     
     def __call__(self, *args, **kwargs):
         self.request = args[1]
