@@ -162,14 +162,24 @@
           </div>
             <!--사용자 아이디 출력-->
           <div @click="viewModal" @blur="visibleAccount = false" class="account_tab"> <!--/setting/mypage-->
-            <Icon type="md-contact" size="30" color="#5030E5"/>
+
+              <i v-if="getAvatar" class="small-avatar-container">
+                <img :src="profile.avatar"/>
+              </i>
+              <Icon v-else type="md-contact" size="30" color="#5030E5"/>
+
             <span class="username">{{ user.username }}</span>
           </div>
           <div style="clear:both"></div>
           <div v-if="visibleAccount" class="account_modal" v-click-outside="closeModal">
             <div class="profile">
               <div class="photo">
-                <Icon type="md-contact" size="100" color="#5030E5"/>
+                <div v-if="getAvatar" class="avatar-container">
+
+                  <img :src="profile.avatar"/>
+
+                </div>
+                <Icon v-else type="md-contact" size="100" color="#5030E5"/>
               </div>
               <div class="name">{{ user.username }}</div>
               <div class="email">root@gmail.com</div>
@@ -382,7 +392,7 @@
     },
 
     computed: {
-      ...mapGetters(['website', 'modalStatus', 'user', 'isAuthenticated', 'isAdminRole', 'isVerifiedEmail']),
+      ...mapGetters(['website', 'modalStatus', 'user', 'isAuthenticated', 'isAdminRole', 'isVerifiedEmail', 'profile']),
       AlarmHoverActive () {
         if (this.alarmHoverActive) {
           return 'ivu-icon ivu-icon-ios-notifications'
@@ -400,6 +410,9 @@
         set (value) {
           this.changeModalStatus({visible: value})
         }
+      },
+      getAvatar () {
+        return this.profile.avatar !== '/public/avatar/default.png'
       }
     },
     watch: {
@@ -429,7 +442,7 @@
 </style>
 <style lang="less" scoped>
 @import '../../../styles/common.less';
-
+@avatar-radius: 50%;
   #header {
     min-width: 300px;
     position: fixed;
@@ -659,6 +672,35 @@
   .username {
     height: 100%;
     line-height:30px;
+  }
+
+  .avatar-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+
+  .small-avatar-container {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    img {
+      width: 30px;
+      max-width: 30px;
+    }
+  }
+
+  img {
+    display: inline-block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    display: block;
+    border-radius: @avatar-radius;
+    box-shadow: 0px 0px 1px 0px;
   }
 
 
