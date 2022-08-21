@@ -309,8 +309,8 @@
       },
       like () { // 좋아요
         api.likeArticle(this.articleID).then(res => { // 게시글 ID를 전송
-          this.$success(res.data.data)
-          this.init()
+          // this.$success(res.data.data)
+          this.refreshComment()
         })
       },
       modifyComment (comment) { // 댓글 수정 제출 버튼 클릭 이벤트 리스너

@@ -575,6 +575,7 @@
     //     /* background-color: rgb(255, 234, 239); */
     // }
     .submenu_list {
+      cursor: pointer;
       display: inline-block;
       //margin-right: 10px;
     }
