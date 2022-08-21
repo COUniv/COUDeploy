@@ -93,7 +93,7 @@
       border-radius: 5px 5px 0 0;
       padding: 10px;
       color: @white;
-      font-size: 20px;
+      font-size: 24px;
       text-align: center;
       font-weight: @weight-bold;
       cursor: pointer;
@@ -113,7 +113,7 @@
     margin-top: 20px;
     padding: 0 0 10px 0;
     &::-webkit-scrollbar {
-      height: 12px;
+      height: 14px;
       background-color: transparent;
       width: 15px;
     }
@@ -130,8 +130,8 @@
     flex: 0 0 auto;
     /* width: 37vh;
     height: 20vh; */
-    width: 250px;
-    height: 180px;
+    width: 300px;
+    height: 210px;
     font-size: 16px;
     /* background: salmon; */
     border: 2px solid #DDD7FA;
@@ -149,14 +149,14 @@
       padding-bottom: 10px;
     }
     h3 {
-      font-size: 20px;
+      font-size: 24px;
       color: @black;
     }
     .description {
       font-weight: @weight-bold;
       color: @gray;
-      font-size: 16px;
-      height: 40%;
+      font-size: 18px;
+      height: 50%;
       overflow: hidden;
     }
     p {
