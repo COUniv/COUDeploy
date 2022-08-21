@@ -259,7 +259,7 @@
           this.article.comment_count = article.comment_count
           this.formComment.articleid = ''
           this.formComment.content = ''
-          this.$refs.commentInput.style.height = '90px' // resize comment area
+          this.$refs['commentInput'].style.height = '90px' // resize comment area
           this.convertUTC()
           if (article.boardtype === 'QUESTION') {
             this.problemid = article.problemid
