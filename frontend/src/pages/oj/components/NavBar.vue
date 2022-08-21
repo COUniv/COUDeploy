@@ -337,11 +337,16 @@
     mounted () {
       this.init()
     },
+    created () {
+      this.getOnlyNotificationsListLength()
+      setInterval(() => {
+        this.getOnlyNotificationsListLength()
+      }, 5000)
+    },
     methods: {
       ...mapActions(['getProfile', 'changeModalStatus']),
       init () {
         this.getProfile()
-        this.getOnlyNotificationsListLength()
       },
       handleRoute (route) {
         if (this.notification_checked) { // 변경될 때 마다 알림창을 닫음
@@ -428,8 +433,10 @@
         this.alarmHoverActive = false
       },
       redirectToArticle (notification) {
+        let noti = notification.url.split('/')
+        let articleId = noti[noti.length - 1]
         api.checkNotification(notification.id).then(res => {
-          this.$router.push({path: notification.url})
+          this.$router.push({name: 'article-details', params: {articleID: articleId}}).catch(() => {})
         })
         this.visibleDraw = false
         this.init_notification_count -= 1

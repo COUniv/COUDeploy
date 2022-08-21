@@ -350,10 +350,14 @@
         let profile = ''
         api.getUserInfo(username).then(res => {
           profile = res.data.data
-          console.log(username + ' avatar source : ')
-          console.log(profile.avatar)
         })
         return profile.avatar
+      }
+    },
+    watch: {
+      '$route' (newVal, oldVal) {
+        this.articleID = newVal.params.articleID
+        this.init()
       }
     }
   }
