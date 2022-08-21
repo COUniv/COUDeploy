@@ -616,9 +616,9 @@
         }
         api[funcName](this.problem).then(res => {
           if (this.routeName === 'create-contest-problem' || this.routeName === 'edit-contest-problem') {
-            this.$router.push({name: 'contest-problem-list', params: {contestId: this.$route.params.contestId}})
+            this.$router.push({name: 'contest-problem-list', params: {contestId: this.$route.params.contestId}}).catch(() => {})
           } else {
-            this.$router.push({name: 'problem-list'})
+            this.$router.push({name: 'problem-list'}).catch(() => {})
           }
         }).catch(() => {
         })

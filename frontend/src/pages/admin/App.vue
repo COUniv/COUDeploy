@@ -15,7 +15,8 @@
   body {
     margin: 0;
     padding: 0;
-    font-family: Arial,sans-serif,"Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑";
+    //font-family: Arial,sans-serif,"Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑";
+    font-family: 'Manrope', sans-serif;
     font-size: 14px;
     -webkit-font-smoothing: antialiased;
     background-color: #324157;

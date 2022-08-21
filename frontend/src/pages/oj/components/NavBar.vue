@@ -4,7 +4,7 @@
     <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
       <!-- <div class="logo"> -->
         
-      <Menu-item class="home_bar" name="/" >Online Judge Platform</Menu-item>
+      <Menu-item class="home_bar" name="/" >COU</Menu-item>
         <!-- <span><a href="/">Online Judge Platform</a></span> -->
         
       <!-- </div> -->
@@ -114,21 +114,22 @@
         </Menu-item> -->
       <!-- </Submenu> -->
       <template v-if="!isAuthenticated">
-        <!-- <div class="btn-menu">
-          <Button type="ghost"
+        <div class="login_menu">
+          <Button type="text"
                   ref="loginBtn"
                   shape="circle"
-                  @click="handleBtnClick('login')">
-                  <p style="color:white">{{$t('m.Login')}}</p>
+                  @click="goLogin"
+                  style="line-height:50%;">
+                  <p>{{$t('m.Login')}}</p>
           </Button>
-          <Button v-if="website.allow_register"
-                  type="ghost"
+          <!-- <Button v-if="website.allow_register"
+                  type="text"
                   shape="circle"
                   @click="handleBtnClick('register')"
                   style="margin-left: 5px;">
-                  <p style="color:white">{{$t('m.Register')}}</p>
-          </Button>
-        </div> -->
+                  <p>{{$t('m.Register')}}</p>
+          </Button> -->
+        </div>
       </template>
       <template v-else>
         <!-- <Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
@@ -143,46 +144,101 @@
             <Dropdown-item divided name="/logout">{{$t('m.Logout')}}</Dropdown-item>
           </Dropdown-menu>
         </Dropdown> -->
-        <div style="right-div">
-        <Menu-item class="drop-menu" name="/setting/mypage">
-          {{ user.username }}
-        </Menu-item>
+        <div class="right_menu">
+          <!-- 알림 출력 버튼 -->
+          <div class="alarm">
+            <Badge dot v-if="init_notification_count > 0" class="alarm-box">
+              <Button type="text" class="bell bells" size="large" @click="changeNoti" @mouseover.native="alarmHoverForActive" @mouseleave.native="alarmHoverForNoActive">
+                <i v-bind:class="AlarmHoverActive" style="padding-bottom:5px"></i>
+              </Button>
+              <!-- <Icon type="ios-notifications" /> -->
+            </Badge>
+            
+            <Badge v-else>
+              <Button type="text" class="bell bells" size="large" @click="changeNoti" @mouseover.native="alarmHoverForActive" @mouseleave.native="alarmHoverForNoActive">
+                <i v-bind:class="AlarmHoverActive" style="padding-bottom:5px"></i>
+              </Button>
+            </Badge>
+            
+            <div style="clear:both"></div>
+            <div v-if="visibleDraw" class="notifications-tab" v-click-outside="closeNoti">
+              <ul class="notifications-table">
+                <li v-for="(item, index) in vNotifications">
+                  <ul v-bind:style="[!item.is_read ?{'background-color' : '#e0dafc4d'}:{}]" class="notifications-entry"  @click="redirectToArticle(item)">
+                    <div>
+                      <div>
+                        <div>
+                          <div id="icon-container">
+                            <Icon v-if="item.notificationtype === 'COMMENT'" class="icon" size=12 type="ios-chatboxes" />
+                            <Icon v-if="item.notificationtype === 'LIKE'" class="icon" size=12 type="md-heart" />
+                          </div>
+                          <div id="notification-type">
+                              <li>{{ item.notificationtype }}</li>
+                          </div>
+                        </div>
+                        <div id="notification-date">
+                          <li> {{ convertDate(item.create_time) }}</li>
+                        </div>
+                      </div>
+                      <div>
+                        <div id="notification-content">
+                          <li> {{item.content}} </li>
+                        </div>
+                      </div>
+                    </div>
+                  </ul>
+                  <hr v-if="index < vNotifications.length - 1">
+                </li>
+              </ul>
+              <div id="all-notifications">
+                <hr>
+                <a @click="goAllNotificationList">알람 전체 보기</a>
+              </div>
+            </div>
 
-        <!-- 알림 출력 버튼 -->
-        <div class="alarm">
-        <Badge v-if="init_notification_count > 0" dot style="height: 40px;margin-right: 10px;margin-top: 10px;">
-          <Button type="text" style="
-          margin-top: -20;
-          margin-top: -40px;
-          padding-left: 0px;
-          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline" ghost>
+            <!-- <Drawer title="알림창" :width="300" :closable="true" v-model="visibleDraw">
+            <div style="float:right; margin-bottom:15px" @click="goAllNotificationList"><a>알람 전체 보기</a></div>
+            <div style="clear:both;"></div>
+            <Table :border="dishovering" :no-data-text="emptyChar" :columns="colums" :data="vNotifications" :show-header="showHeaderandborder" :disabled-hover="dishovering"></Table>
+            </Drawer> -->
+          </div>
+            <!--사용자 아이디 출력-->
+          <div @click="viewModal" @blur="visibleAccount = false" class="account_tab"> <!--/setting/mypage-->
 
-          </Button>
-          <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
-        </Badge>
-        <Badge v-else style="height: 40px;margin-right: 10px;margin-top: 10px;">
-          <Button type="text" style="
-          margin-top: -20;
-          margin-top: -40px;
-          padding-left: 0px;
-          padding-right: 6px" size="large" @click="changeNoti" icon="ios-notifications-outline" ghost>
+              <i v-if="getAvatar" class="small-avatar-container">
+                <img :src="profile.avatar"/>
+              </i>
+              <Icon v-else type="md-contact" size="30" color="#5030E5"/>
 
-          </Button>
-          <!-- <Icon type="ios-notifications-outline" size="26"></Icon> -->
-        </Badge>
-        </div>
+            <span class="username">{{ user.username }}</span>
+          </div>
+          <div style="clear:both"></div>
+          <div v-if="visibleAccount" class="account_modal" v-click-outside="closeModal">
+            <div class="profile">
+              <div class="photo">
+                <div v-if="getAvatar" class="avatar-container">
+
+                  <img :src="profile.avatar"/>
+
+                </div>
+                <Icon v-else type="md-contact" size="100" color="#5030E5"/>
+              </div>
+              <div class="name">{{ user.username }}</div>
+              <div class="email">root@gmail.com</div>
+            </div>
+            <div class="mypage_btn" @click="goMySettingPage">계정관리</div>
+            <div class="line"></div>
+            <div class="logout_btn" @click="goLogOut">로그아웃</div>
+          </div>
+          
         </div>
 
         <!-- <Button @click="changeNoti" type="primary">Open</Button> -->
-        <Drawer title="알림창" :width="300" :closable="true" v-model="visivleDraw">
-          <div style="float:right; margin-bottom:15px" @click="goAllNotificationList"><a>알람 전체 보기</a></div>
-          <div style="clear:both;"></div>
-          <Table :border="dishovering" :no-data-text="emptyChar" :columns="colums" :data="vNotifications" :show-header="showHeaderandborder" :disabled-hover="dishovering"></Table>
-        </Drawer>
+
       </template>
     </Menu>
-    <Modal v-model="modalVisible" :width="400">
-      <div slot="header" class="modal-title">{{$t('m.Welcome_to')}} {{website.website_name_shortcut}}</div>
+    <Modal v-model="modalVisible" :width="430">
+      <div slot="header" class="modal-title">인증이 필요해요!</div>
       <component :is="modalStatus.mode" v-if="modalVisible"></component>
       <div slot="footer" style="display: none"></div>
     </Modal>
@@ -191,21 +247,26 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import login from '@oj/views/user/Login'
-  import register from '@oj/views/user/Register'
+  import GuardMessage from '@oj/views/user/GuardMessage.vue'
   import api from '@oj/api'
+  import time from '@/utils/time'
+  import vClickOutside from 'v-click-outside'
   export default {
+    directives: {
+      clickOutside: vClickOutside.directive
+    },
     components: {
-      login,
-      register
+      GuardMessage
     },
     data () {
       return {
+        alarmHoverActive: false,
         init_notification_count: 0,
         emptyChar: '알람이 존재하지 않습니다.',
         showHeaderandborder: false,
         dishovering: true,
-        visivleDraw: false,
+        visibleDraw: false,
+        visibleAccount: false,
         vNotifications: [],
         colums: [
           {
@@ -294,23 +355,23 @@
           window.open('/admin/')
         }
       },
-      handleBtnClick (mode) {
+      handleBtnClick () {
         this.changeModalStatus({
           visible: true,
-          mode: mode
+          mode: 'GuardMessage'
         })
-        this.handleRoute('login')
+        this.handleRoute('GuardMessage')
+      },
+      goLogOut () {
+        this.$router.push({path: '/logout'}).catch(() => {})
+      },
+      goMySettingPage () {
+        this.$router.push({name: 'my-page'}).catch(() => {})
+      },
+      goLogin () {
+        this.$router.push({path: '/login'}).catch(() => {})
       },
       getOnlyNotificationsListLength () {
-        // let li = []
-        // api.getNotificationList().then(res => {
-        //   li = res.data.data
-        //   if (li === undefined || li === null || li.length <= 0) {
-        //     this.init_notification_count = 0
-        //   } else {
-        //     this.init_notification_count = li.length
-        //   }
-        // })
         let li = []
         api.getReadNotification().then(res => { // 현재 접속한 유저의 알림을 전송 받음
           li = res.data.data
@@ -323,7 +384,23 @@
       },
       changeNoti () {
         this.vGetNotifications()
-        this.visivleDraw = true
+        this.visibleDraw = !this.visibleDraw
+      },
+      viewModal () {
+        this.visibleAccount = !this.visibleAccount
+      },
+      closeModal () {
+        if (this.visibleAccount === true) {
+          this.visibleAccount = false
+        }
+      },
+      closeNoti () {
+        if (this.visibleDraw === true) {
+          this.visibleDraw = false
+        }
+      },
+      convertDate (date) {
+        return time.utcToLocal(date, 'YYYY-MM-DD HH:mm')
       },
       vGetNotifications () {
         api.getNotificationList().then(res => {
@@ -339,15 +416,35 @@
         }
       },
       goAllNotificationList () {
-        this.visivleDraw = false
+        this.visibleDraw = false
         this.$router.push({
           path: '/notification-list'
+        }).catch(() => {})
+      },
+      alarmHoverForActive () {
+        this.alarmHoverActive = true
+      },
+      alarmHoverForNoActive () {
+        this.alarmHoverActive = false
+      },
+      redirectToArticle (notification) {
+        api.checkNotification(notification.id).then(res => {
+          this.$router.push({path: notification.url})
         })
+        this.visibleDraw = false
+        this.init_notification_count -= 1
       }
     },
 
     computed: {
-      ...mapGetters(['website', 'modalStatus', 'user', 'isAuthenticated', 'isAdminRole', 'isVerifiedEmail']),
+      ...mapGetters(['website', 'modalStatus', 'user', 'isAuthenticated', 'isAdminRole', 'isVerifiedEmail', 'profile']),
+      AlarmHoverActive () {
+        if (this.alarmHoverActive) {
+          return 'ivu-icon ivu-icon-ios-notifications'
+        } else {
+          return 'ivu-icon ivu-icon-ios-notifications-outline'
+        }
+      },
       activeMenu () {
         return '/' + this.$route.path.split('/')[1]
       },
@@ -358,17 +455,43 @@
         set (value) {
           this.changeModalStatus({visible: value})
         }
+      },
+      getAvatar () {
+        return this.profile.avatar !== '/public/avatar/default.png'
       }
     },
     watch: {
       init_notification_count: function (newVal, oldVal) {
         this.init_notification_count = newVal
+      },
+      '$route' (to, from) {
+        if (this.visibleAccount !== false) {
+          this.visibleAccount = false
+        }
       }
     }
   }
 </script>
-
+<style lang="less">
+  .alarm-box {
+    .ivu-badge-dot {
+      top: 5px !important;
+      right: 5px !important;
+    }
+  }
+  .bells {
+    &.ivu-btn:hover {
+      border-color: #fff;
+    }
+    &.ivu-btn:focus {
+      border-color: transparent;
+      box-shadow: none;
+    }
+  }
+</style>
 <style lang="less" scoped>
+@import '../../../styles/common.less';
+@avatar-radius: 50%;
   #header {
     min-width: 300px;
     position: fixed;
@@ -380,7 +503,9 @@
     background-color: #fff;
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
     .oj-menu {
-      background: #404040;
+      //background: #404040;
+      position: relative;
+      background: @white;
     }
     .logo {
       margin-left: 2%;
@@ -390,12 +515,16 @@
       line-height: 60px;
     }
     .logo > span > a, .bar_list{
-      color: white;
+      color: @black;
+      font-weight: @weight-regular;
     }
     .home_bar{
-        color: white;
-        font-size: 20px;
+        color: @purple;
+        font-size: @font-medium;
+        font-weight: @weight-bold;
+        -webkit-text-stroke: 1.5px;
     }
+
     @media screen and (max-width : 900px) {
       .bar_list {
         visibility: hidden;
@@ -412,10 +541,11 @@
     .drop-menu {
       float: right;
       padding: 0 30px 0 30px;
-      margin-right: 50px;
-      position: fixed;
+      //margin-right: 50px;
+      //position: fixed;
       right: 10px;
-      color: white;
+      //color: white;
+      color: #404040;
       font-size: 18px;
       &-title {
         font-size: 20px;
@@ -436,23 +566,308 @@
     }
   }
   .alarm {
+    // top: 0;
+    // height: 40px;
+    line-height: 50%;
     float: right;
-    position: fixed;
-    right: 0;
-    height: 40px;
-    padding-top: 10px;
-    margin-right: 20px;
+    margin-right: 10px;
+    .bell {
+      color: @purple;
+      font-size: 1.5em;
+    }
   }
-  .right-div {
+  .login_menu {
+    overflow:hidden;
     float: right;
-    right: 0;
-    padding: 0 0 0 0;
-    position: fixed;
-    width: 160px;
+    padding: 0 30px;
+    // position: fixed;
     height: 60px;
+    padding: 0 60px;
+    button {
+      border: 2px solid @light-gray;
+      border-radius: 5px;
+      height: 40px;
+      padding: 20px;
+      font-weight: @weight-bold;
+      &:hover {
+        box-shadow: 0 1px 5px 0 rgba(90, 82, 128, 0.31);
+        color: @purple;
+      }
+    }
+  }
+  .right_menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 50%;
+    overflow:hidden;
+    float: right;
+    padding: 0px 30px;
+    // position: fixed;
+    height: 60px;
+    margin-right: 5px;
+    .account_tab {
+      &:hover {
+        cursor: pointer;
+        border: 1.5px solid @purple;
+      }
+      float: right;
+      line-height: 50%;
+      height: 45px;
+      // vertical-align: middle;
+      // top: 8px;
+      // right: 20px;
+      color: @purple;
+      font-weight: 600;
+      padding: 5px 7px 5px 5px;
+      border: 1.5px solid #fff;
+      border-radius: @size-border-radius;
+      -webkit-transition: all .2s ease-in;
+      -moz-transition: all .2s ease-in;
+      -ms-transition: all .2s ease-in;
+      -o-transition: all .2s ease-in;
+      transition: all .2s ease-in;
+      span {
+        -webkit-text-stroke: 0.5px;
+      }
+    }
+    .account_modal {
+      position: absolute;
+      display:flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: @size-border-radius;
+      padding: 24px;
+      top: 60px;
+      right: 20px;
+      width: 300px;
+      min-width: 250px;
+      height: 340px;
+      min-height: 300px;
+      background-color: @white;
+      color: @black;
+      box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
+      .profile {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        height: 150px;
+        .name {
+          color: @purple;
+          font-size: @font-medium;
+          font-weight: @weight-semi-bold;
+        }
+        .email {
+          color: @gray;
+          font-size: @font-small;
+          margin-top: 10px;
+        }
+      }
+      .mypage_btn {
+        border: 2px solid @gray;
+        border-radius: 20px;
+        width: 40%;
+        padding: 12px;
+        margin: 10px 0;
+        color: @gray;
+        font-size: @font-micro;
+        font-weight: @weight-bold;
+        text-align: center;
+        -webkit-transition: all .2s ease-in;
+        -moz-transition: all .2s ease-in;
+        -ms-transition: all .2s ease-in;
+        -o-transition: all .2s ease-in;
+        transition: all .2s ease-in;
+        &:hover {
+          cursor: pointer;
+          border: 2px solid @purple;
+          background-color: @purple;
+          color: @white;
+        }
+      }
+
+      .line {
+        width: 100%;
+        height: 2px;
+        background-color: @light-gray;
+      }
+      .logout_btn {
+        border: 2px solid @gray;
+        border-radius: @size-border-radius;
+        width: 80%;
+        margin-top: 20px;
+        padding: 15px;
+        color: @gray;
+        font-size: @font-small;
+        font-weight: @weight-bold;
+        text-align: center;
+        // transition area
+        -webkit-transition: all .2s ease-in;
+        -moz-transition: all .2s ease-in;
+        -ms-transition: all .2s ease-in;
+        -o-transition: all .2s ease-in;
+        transition: all .2s ease-in;
+        &:hover {
+          cursor: pointer;
+          border: 2px solid @purple;
+          background-color: @purple;
+          color: @white;
+        }
+      }
+    }
+  }
+  .username {
+    height: 100%;
+    line-height:30px;
   }
 
+  .avatar-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
 
+  .small-avatar-container {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    img {
+      width: 30px;
+      max-width: 30px;
+    }
+  }
+
+  img {
+    display: inline-block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    display: block;
+    border-radius: @avatar-radius;
+    box-shadow: 0px 0px 1px 0px;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  .notifications-tab {
+    transition: background-color .3s;
+    font-size: 70%;
+    position: absolute;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: @size-border-radius;
+    top: 60px;
+    right: 60px;
+    min-height: 100px;
+    max-height: 400px;
+    width: 400px;
+    background-color: @white;
+    color: @black;
+    box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
+    .notifications-table {
+      width: inherit;
+      overflow-x: hidden;
+      // scrollbar
+      overflow-y:scroll;
+      &::-webkit-scrollbar {
+        background-color: transparent;
+      }
+      &:hover {
+        &::-webkit-scrollbar {
+          width: 15px;
+          height: 20px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background-color: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: #d6dee1;
+          border-radius: 20px;
+          border: 6px solid transparent;
+          background-clip: content-box;
+        }
+      }
+    }
+    .notifications-entry {
+      padding: 10px 10px 10px 20px;
+      cursor: pointer;
+      &:hover {
+        background: rgb(0,0,0);
+        background: linear-gradient(0deg, rgba(240, 240, 240, 0.3) 0%, rgba(255,255,255,0.6) 100%);
+      }
+      div:first-child {
+        display: flex;
+        flex-direction: column;
+        div:first-child {
+          color: @dark-white;
+          line-height: 20px;
+          display: flex;
+          justify-content: space-between;
+          flex-direction: row;
+          div:first-child {
+            display: flex;  
+          }
+          #icon-container {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: @orange;
+
+            .icon {
+              margin: auto;
+              color: @white;
+            }
+          }
+        }
+      }
+      #notification-content {
+        color: @black;
+      }
+      #notification-type {
+        -webkit-text-stroke: .3px;
+      }
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #dfdfdf;
+      margin-left: 20px;
+    }
+
+    #all-notifications {
+      width: inherit;
+      hr {
+        border: 0;
+        border-top: 1px solid #dfdfdf;
+        margin: 0;
+      }
+      a {
+        color: @light-purple;
+        padding-right: 15px;
+        -webkit-text-stroke: .3px;
+        &:hover {
+          color: @purple;
+          transition: color .3s ease-in;
+        }
+      }
+      height: 50px;
+      line-height: 50px;
+      text-align: right;
+      //color: #e0dafc4d;
+    }
+  }
 
 
 // .dropdown {

@@ -98,6 +98,7 @@ class Problem(models.Model):
         self.save(update_fields=["accepted_number"])
 
 class ProblemCategory(models.Model):
+    id = models.AutoField(primary_key=True, db_index=True)
     title = models.TextField()
     description = RichTextField()
     problems = ArrayField(models.IntegerField(), blank=True, default=list)
