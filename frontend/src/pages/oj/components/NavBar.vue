@@ -428,11 +428,19 @@
         this.alarmHoverActive = false
       },
       redirectToArticle (notification) {
+        if (!notification.is_read) this.init_notification_count -= 1
+        console.log(this.$route)
         api.checkNotification(notification.id).then(res => {
-          this.$router.push({path: notification.url})
+          this.visibleDraw = false
+          if (this.$route.name !== 'article-details') {
+            this.$router.push({path: notification.url}).catch(() => {})
+          } else {
+            if (this.$route.fullPath !== notification.url) {
+              this.$router.push({path: notification.url}).catch(() => {})
+              this.$router.go()
+            }
+          }
         })
-        this.visibleDraw = false
-        this.init_notification_count -= 1
       }
     },
 
