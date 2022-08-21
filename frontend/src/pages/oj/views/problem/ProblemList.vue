@@ -1,5 +1,26 @@
 <template>
-  <Row type="flex" :gutter="18" style="margin-left:50px; margin-right:50px">
+  <table class="problem-list">
+    <thead>
+      <tr>
+        <th style="width:15%">문제 번호</th>
+        <th style="width:40%">제목</th>
+        <th style="width:15%">난이도</th>
+        <th style="width:15%">제출</th>
+        <th style="width:15%">정답 비율</th>
+      </tr>
+    </thead>
+    <tbody v-for="problem in problemList">
+      <tr @click="redirectToProblem(problem)">
+        <td id="problem-id">{{ problem._id }}</td>
+        <td id="problem-title">{{ problem.title }}</td>
+        <td :class="[(problem.difficulty === 'Low' ? 'green' : ''), (problem.difficulty === 'Mid' ? 'orange' : ''), (problem.difficulty === 'High' ? 'red' : '')]">{{ problem.difficulty }}</td>
+        <td>{{ problem.submission_number }}</td>
+        <td> {{ convertToACRate(problem) }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- <Row type="flex" :gutter="18" style="margin-left:50px; margin-right:50px">
     <Col :span="19">
       <Panel shadow>
         <div slot="title">{{$t('m.Problem_List')}}</div>
@@ -8,7 +29,7 @@
             <li>
               <Dropdown @on-click="filterByDifficulty">
                 <span>{{query.difficulty === '' ? this.$i18n.t('m.Difficulty') : this.$i18n.t('m.' + query.difficulty)}}
-                <!-- <Icon type="arrow-down-b"></Icon> -->
+                 <Icon type="arrow-down-b"></Icon> 
                   <Icon type="md-arrow-dropdown" />
                 </span>
                 <Dropdown-menu slot="list">
@@ -18,14 +39,14 @@
                   <Dropdown-item name="High">{{$t('m.High')}}</Dropdown-item>
                 </Dropdown-menu>
               </Dropdown>
-            </li>
-          <!-- <li>
-            <i-switch size="large" @on-change="handleTagsVisible">
-              <span slot="open">{{$t('m.Tags')}}</span>
-              <span slot="close">{{$t('m.Tags')}}</span>
-            </i-switch>
-          </li> -->
-            <li>
+            </li> -->
+                                <!-- <li>
+                                  <i-switch size="large" @on-change="handleTagsVisible">
+                                    <span slot="open">{{$t('m.Tags')}}</span>
+                                    <span slot="close">{{$t('m.Tags')}}</span>
+                                  </i-switch>
+                                </li> -->
+            <!-- <li>
               <Input v-model="query.keyword"
                    @on-enter="filterByKeyword"
                    @on-click="filterByKeyword"
@@ -50,9 +71,9 @@
       <Pagination
           :total="total" :page-size.sync="query.limit" @on-change="pushRouter" @on-page-size-change="pushRouter" :current.sync="query.page" :show-sizer="true"></Pagination>
 
-    </Col>
+    </Col> -->
 
-    <Col :span="5">
+    <!-- <Col :span="5">
       <Panel :padding="10">
         <div slot="title" class="taglist-title">{{$t('m.Tags')}}</div>
         <Button v-for="tag in tagList"
@@ -69,7 +90,7 @@
       </Panel>
       <Spin v-if="loadings.tag" fix size="large"></Spin>
     </Col>
-  </Row>
+  </Row>-->
 </template>
 
 <script>
@@ -78,12 +99,14 @@
   import utils from '@/utils/utils'
   import { ProblemMixin } from '@oj/components/mixins'
   import Pagination from '@oj/components/Pagination'
+  import ProblemCategory from './ProblemCategory.vue'
 
   export default {
     name: 'ProblemList',
     mixins: [ProblemMixin],
     components: {
-      Pagination
+      Pagination,
+      ProblemCategory
     },
     data () {
       return {
@@ -275,6 +298,12 @@
           this.$success('Good Luck')
           this.$router.push({name: 'problem-details', params: {problemID: res.data.data}}).catch(() => {})
         })
+      },
+      redirectToProblem (problem) {
+        this.$router.push({name: 'problem-details', params: {problemID: problem._id}}).catch(() => {})
+      },
+      convertToACRate (item) {
+        return this.getACRate(item.accepted_number, item.submission_number)
       }
     },
     computed: {
@@ -296,6 +325,54 @@
 </script>
 
 <style scoped lang="less">
+  @import '../../../../styles/common.less';
+  .problem-list {
+    border-collapse: collapse;
+    width: 80vw !important; 
+    table-layout: fixed;
+    margin: auto;
+    td {
+      padding: 8px;
+    }
+    th {
+      border-bottom: 1px solid #c4c4c4;
+      padding: 8px;
+    }
+
+    tbody {
+      color: @gray;
+      -webkit-text-stroke: .3px;
+      &:nth-child(even){
+        background-color: #f5f5f5;
+      }
+
+      &:hover {
+        #problem-title {
+          transition: color .3s ease-in;
+          color: @purple;
+        }
+      }
+
+      tr {
+        .green {
+          color: @green;
+        } 
+        .orange {
+          color: @dark-orange;
+        }
+        .red {
+          color: @red;
+        }
+      }
+    }
+  }
+
+  .problem-list th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    color: silver;
+  }
   .taglist-title {
     margin-left: -10px;
     margin-bottom: -10px;
