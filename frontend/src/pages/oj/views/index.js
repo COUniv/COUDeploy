@@ -3,7 +3,7 @@ import Logout from './user/Logout.vue'
 import UserHome from './user/UserHome.vue'
 import GuardMessage from './user/GuardMessage.vue'
 import About from './help/About.vue'
-import Languages from './help/languages.vue'
+import Languages from './help/Languages.vue'
 import NotFound from './general/404.vue'
 import Home from './general/Home.vue'
 import Announcements from './general/Announcements.vue'
@@ -20,6 +20,7 @@ const ApplyResetPassword = () => import(/* webpackChunkName: "password" */ '@oj/
 const ResetPassword = () => import(/* webpackChunkName: "password" */ '@oj/views/user/ResetPassword.vue')
 
 const Problem = () => import(/* webpackChunkName: "Problem" */ '@oj/views/problem/Problem.vue')
+const ProblemSubmission = () => import(/* webpackChunkName: "Problem" */ '@oj/views/problem/ProblemSubmission.vue')
 
 const ArticleList = () => import('@oj/views/article/ArticleList.vue')
 const CreateArticle = () => import('@oj/views/article/CreateArticle.vue')
@@ -37,5 +38,6 @@ export {
   SubmissionList, SubmissionDetails,
   ApplyResetPassword, ResetPassword,
   ArticleList, CreateArticle, Article, Notification, AnnouncementList, CategoryList,
-  Grass
+  Grass,
+  ProblemSubmission
 }

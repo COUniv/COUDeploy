@@ -29,7 +29,7 @@
         <div class="left_announcement" style="float:left">
           <ul class="tab-menu">
             <li v-for="(tab, index) in tabs" :key="index" class="tab-item" :class="{ active: currentTab===index }">
-              <a href="#" @click="currentTab = index">{{tab}}</a>
+              <a @click="currentTab = index">{{tab}}</a>
             </li>
             <Dropdown v-show="currentTab == 1" @on-click="onStatusChange" :transfer="true" class="contest-status-list">
                 <span>{{contest_stat === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[contest_stat].name.replace(/ /g,"_"))}}
