@@ -13,7 +13,7 @@
           <!-- 알림 목록 -->
           <ul class="notifications-table">
             <li v-for="(item) in notifications">
-              <ul v-bind:style="[!item.is_read ?{'background-color' : '#bfb1fc6a'}:{}]" class="notifications-entry"  @click="redirectToArticle(item)">
+              <ul v-bind:style="[!item.is_read ?{'background-color' : '#e0dafc4d'}:{}]" class="notifications-entry"  @click="redirectToArticle(item)">
                 <div>
                   <div id="icon-container">
                     <Icon v-if="item.notificationtype === 'COMMENT'" class="icon" size=24 type="ios-chatboxes" />
@@ -226,12 +226,13 @@
       list-style: none;
     }
 
-    .notifications-table {
-
-    }
-
     .notifications-entry {
       padding: 10px 0;
+      cursor: pointer;
+      &:hover {
+        background: rgb(0,0,0);
+        background: linear-gradient(0deg, rgba(240, 240, 240, 0.3) 0%, rgba(255,255,255,0.6) 100%);
+      }
       div:first-of-type {
         display: flex;
         #icon-container {

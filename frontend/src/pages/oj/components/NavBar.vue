@@ -147,7 +147,7 @@
         <div class="right_menu">
           <!-- 알림 출력 버튼 -->
           <div class="alarm">
-            <Badge dot v-if="init_notification_count > 0" class="alram-box">
+            <Badge dot v-if="init_notification_count > 0" class="alarm-box">
               <Button type="text" class="bell bells" size="large" @click="changeNoti" @mouseover.native="alarmHoverForActive" @mouseleave.native="alarmHoverForNoActive">
                 <i v-bind:class="AlarmHoverActive" style="padding-bottom:5px"></i>
               </Button>
@@ -159,6 +159,48 @@
                 <i v-bind:class="AlarmHoverActive" style="padding-bottom:5px"></i>
               </Button>
             </Badge>
+            
+            <div style="clear:both"></div>
+            <div v-if="visibleDraw" class="notifications-tab" v-click-outside="closeNoti">
+              <ul class="notifications-table">
+                <li v-for="(item, index) in vNotifications">
+                  <ul v-bind:style="[!item.is_read ?{'background-color' : '#e0dafc4d'}:{}]" class="notifications-entry"  @click="redirectToArticle(item)">
+                    <div>
+                      <div>
+                        <div>
+                          <div id="icon-container">
+                            <Icon v-if="item.notificationtype === 'COMMENT'" class="icon" size=12 type="ios-chatboxes" />
+                            <Icon v-if="item.notificationtype === 'LIKE'" class="icon" size=12 type="md-heart" />
+                          </div>
+                          <div id="notification-type">
+                              <li>{{ item.notificationtype }}</li>
+                          </div>
+                        </div>
+                        <div id="notification-date">
+                          <li> {{ convertDate(item.create_time) }}</li>
+                        </div>
+                      </div>
+                      <div>
+                        <div id="notification-content">
+                          <li> {{item.content}} </li>
+                        </div>
+                      </div>
+                    </div>
+                  </ul>
+                  <hr v-if="index < vNotifications.length - 1">
+                </li>
+              </ul>
+              <div id="all-notifications">
+                <hr>
+                <a @click="goAllNotificationList">알람 전체 보기</a>
+              </div>
+            </div>
+
+            <!-- <Drawer title="알림창" :width="300" :closable="true" v-model="visibleDraw">
+            <div style="float:right; margin-bottom:15px" @click="goAllNotificationList"><a>알람 전체 보기</a></div>
+            <div style="clear:both;"></div>
+            <Table :border="dishovering" :no-data-text="emptyChar" :columns="colums" :data="vNotifications" :show-header="showHeaderandborder" :disabled-hover="dishovering"></Table>
+            </Drawer> -->
           </div>
             <!--사용자 아이디 출력-->
           <div @click="viewModal" @blur="visibleAccount = false" class="account_tab"> <!--/setting/mypage-->
@@ -192,11 +234,7 @@
         </div>
 
         <!-- <Button @click="changeNoti" type="primary">Open</Button> -->
-        <Drawer title="알림창" :width="300" :closable="true" v-model="visivleDraw">
-          <div style="float:right; margin-bottom:15px" @click="goAllNotificationList"><a>알람 전체 보기</a></div>
-          <div style="clear:both;"></div>
-          <Table :border="dishovering" :no-data-text="emptyChar" :columns="colums" :data="vNotifications" :show-header="showHeaderandborder" :disabled-hover="dishovering"></Table>
-        </Drawer>
+
       </template>
     </Menu>
     <Modal v-model="modalVisible" :width="430">
@@ -211,6 +249,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import GuardMessage from '@oj/views/user/GuardMessage.vue'
   import api from '@oj/api'
+  import time from '@/utils/time'
   import vClickOutside from 'v-click-outside'
   export default {
     directives: {
@@ -226,7 +265,7 @@
         emptyChar: '알람이 존재하지 않습니다.',
         showHeaderandborder: false,
         dishovering: true,
-        visivleDraw: false,
+        visibleDraw: false,
         visibleAccount: false,
         vNotifications: [],
         colums: [
@@ -333,15 +372,6 @@
         this.$router.push({path: '/login'}).catch(() => {})
       },
       getOnlyNotificationsListLength () {
-        // let li = []
-        // api.getNotificationList().then(res => {
-        //   li = res.data.data
-        //   if (li === undefined || li === null || li.length <= 0) {
-        //     this.init_notification_count = 0
-        //   } else {
-        //     this.init_notification_count = li.length
-        //   }
-        // })
         let li = []
         api.getReadNotification().then(res => { // 현재 접속한 유저의 알림을 전송 받음
           li = res.data.data
@@ -354,7 +384,7 @@
       },
       changeNoti () {
         this.vGetNotifications()
-        this.visivleDraw = true
+        this.visibleDraw = !this.visibleDraw
       },
       viewModal () {
         this.visibleAccount = !this.visibleAccount
@@ -363,6 +393,14 @@
         if (this.visibleAccount === true) {
           this.visibleAccount = false
         }
+      },
+      closeNoti () {
+        if (this.visibleDraw === true) {
+          this.visibleDraw = false
+        }
+      },
+      convertDate (date) {
+        return time.utcToLocal(date, 'YYYY-MM-DD HH:mm')
       },
       vGetNotifications () {
         api.getNotificationList().then(res => {
@@ -378,7 +416,7 @@
         }
       },
       goAllNotificationList () {
-        this.visivleDraw = false
+        this.visibleDraw = false
         this.$router.push({
           path: '/notification-list'
         }).catch(() => {})
@@ -388,6 +426,13 @@
       },
       alarmHoverForNoActive () {
         this.alarmHoverActive = false
+      },
+      redirectToArticle (notification) {
+        api.checkNotification(notification.id).then(res => {
+          this.$router.push({path: notification.url})
+        })
+        this.visibleDraw = false
+        this.init_notification_count -= 1
       }
     },
 
@@ -428,7 +473,7 @@
   }
 </script>
 <style lang="less">
-  .alram-box {
+  .alarm-box {
     .ivu-badge-dot {
       top: 5px !important;
       right: 5px !important;
@@ -705,6 +750,123 @@
     display: block;
     border-radius: @avatar-radius;
     box-shadow: 0px 0px 1px 0px;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  .notifications-tab {
+    transition: background-color .3s;
+    font-size: 70%;
+    position: absolute;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: @size-border-radius;
+    top: 60px;
+    right: 60px;
+    min-height: 100px;
+    max-height: 400px;
+    width: 400px;
+    background-color: @white;
+    color: @black;
+    box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
+    .notifications-table {
+      width: inherit;
+      overflow-x: hidden;
+      // scrollbar
+      overflow-y:scroll;
+      &::-webkit-scrollbar {
+        background-color: transparent;
+      }
+      &:hover {
+        &::-webkit-scrollbar {
+          width: 15px;
+          height: 20px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background-color: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: #d6dee1;
+          border-radius: 20px;
+          border: 6px solid transparent;
+          background-clip: content-box;
+        }
+      }
+    }
+    .notifications-entry {
+      padding: 10px 10px 10px 20px;
+      cursor: pointer;
+      &:hover {
+        background: rgb(0,0,0);
+        background: linear-gradient(0deg, rgba(240, 240, 240, 0.3) 0%, rgba(255,255,255,0.6) 100%);
+      }
+      div:first-child {
+        display: flex;
+        flex-direction: column;
+        div:first-child {
+          color: @dark-white;
+          line-height: 20px;
+          display: flex;
+          justify-content: space-between;
+          flex-direction: row;
+          div:first-child {
+            display: flex;  
+          }
+          #icon-container {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: @orange;
+
+            .icon {
+              margin: auto;
+              color: @white;
+            }
+          }
+        }
+      }
+      #notification-content {
+        color: @black;
+      }
+      #notification-type {
+        -webkit-text-stroke: .3px;
+      }
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #dfdfdf;
+      margin-left: 20px;
+    }
+
+    #all-notifications {
+      width: inherit;
+      hr {
+        border: 0;
+        border-top: 1px solid #dfdfdf;
+        margin: 0;
+      }
+      a {
+        color: @light-purple;
+        padding-right: 15px;
+        -webkit-text-stroke: .3px;
+        &:hover {
+          color: @purple;
+          transition: color .3s ease-in;
+        }
+      }
+      height: 50px;
+      line-height: 50px;
+      text-align: right;
+      //color: #e0dafc4d;
+    }
   }
 
 
