@@ -128,7 +128,6 @@
             problem.isEditing = false
           }
           this.problemTagList = res.data.data.results
-          console.log(this.problemTagList)
         }, res => {
           this.loading = false
         })

@@ -348,43 +348,8 @@ class UserRegisterAPI(APIView):
         user = User.objects.create(username=data["username"], email=data["email"], is_email_verify=True)
         user.set_password(data["password"])
 
-
-        user.verify_email_token = rand_str()
-        user.verify_email_token_expire_time = now() + timedelta(minutes=20)
         user.save()
-        
         UserProfile.objects.create(user=user)
-
-        render_data = {
-            "username": user.username,
-            "website_name": SysOptions.website_name,
-            "link": f"{SysOptions.website_base_url}/verify-email/{user.verify_email_token}"
-        }
-
-        if not SysOptions.smtp_config:
-            return self.error("SMTP 설정이 되어있지 않습니다")
-        try:
-            email_html = render_to_string("verify_token_email.html", render_data)
-            send_email(smtp_config=SysOptions.smtp_config,
-                       from_name=SysOptions.website_name_shortcut,
-                       to_name=request.user.username,
-                       to_email=request.data["email"],
-                       subject="Verify Your Account",
-                       content=email_html)
-        except smtplib.SMTPResponseException as e:
-            # guess error message encoding
-            msg = b"Failed to send email"
-            try:
-                msg = e.smtp_error
-                # qq mail
-                msg = msg.decode("gbk")
-            except Exception:
-                msg = msg.decode("utf-8", "ignore")
-            return self.error(msg)
-        except Exception as e:
-            msg = str(e)
-            return self.error(msg)
-
         return self.success("성공하였습니다")
 
 
