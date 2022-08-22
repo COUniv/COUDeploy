@@ -30,15 +30,6 @@
         <!-- <Icon type="ios-pulse-strong"></Icon> -->
         {{$t('m.NavStatus')}}
       </Menu-item>
-      <Menu-item v-if="navOpen && !isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/login">
-        로그인
-      </Menu-item>
-      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/setting/mypage">
-        마이페이지
-      </Menu-item>
-      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/logout">
-        로그아웃
-      </Menu-item>
       <template v-if="!isAuthenticated">
         <div class="login_menu">
           <Button type="text"
