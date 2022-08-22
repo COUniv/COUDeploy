@@ -259,7 +259,7 @@
           this.article.comment_count = article.comment_count
           this.formComment.articleid = ''
           this.formComment.content = ''
-          this.$refs.commentInput.style.height = '90px' // resize comment area
+          this.$refs['commentInput'].style.height = '90px' // resize comment area
           this.convertUTC()
           if (article.boardtype === 'QUESTION') {
             this.problemid = article.problemid
@@ -350,10 +350,14 @@
         let profile = ''
         api.getUserInfo(username).then(res => {
           profile = res.data.data
-          console.log(username + ' avatar source : ')
-          console.log(profile.avatar)
         })
         return profile.avatar
+      }
+    },
+    watch: {
+      '$route' (newVal, oldVal) {
+        this.articleID = newVal.params.articleID
+        this.init()
       }
     }
   }
