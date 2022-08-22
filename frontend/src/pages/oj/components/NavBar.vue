@@ -2,7 +2,7 @@
   <div id="header">
 
     <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
-      <!-- <div class="logo"> -->
+      <!-- <div class="logo"> v-click-outside="navToggle"-->
         
       <Menu-item class="home_bar" name="/" >COU</Menu-item>
         <!-- <span><a href="/">Online Judge Platform</a></span> -->
