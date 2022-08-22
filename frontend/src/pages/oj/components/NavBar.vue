@@ -1,33 +1,14 @@
 <template>
   <div id="header">
-
-        <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
-
-      <!-- <div class="logo"> v-click-outside="navToggle"-->
-        
+    <Menu v-show="screenWidth > 900" theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
       <Menu-item class="home_bar" name="/" >COU</Menu-item>
-        <!-- <span><a href="/">Online Judge Platform</a></span> -->
-        
-      <!-- </div> -->
-      <!-- <Menu-item name="/">
-        <Icon type="home"></Icon>
-        {{$t('m.Home')}}
-      </Menu-item> -->
-      
-      
-      
-      <Menu-item class="bar_list" name="/problem">
-        <!-- <Icon type="ios-keypad"></Icon>
-        {{$t('m.NavProblems')}} -->
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/problem">
         문제
       </Menu-item>
-      <Menu-item class="bar_list" name="/contest">
-        <!-- <Icon type="trophy"></Icon>
-        {{$t('m.Contests')}} -->
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/contest">
         대회
       </Menu-item>
-
-      <Submenu class="bar_list" name="/info">
+      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/info">
         <template slot="title">
           정보
         </template>
@@ -36,7 +17,6 @@
           <MenuItem name="/languages">언어별 도움말</MenuItem>
           <MenuItem name="/acm-rank">사용자 순위</MenuItem>
       </Submenu>
-
       <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/community">
         <template slot="title">
           커뮤니티
@@ -46,8 +26,6 @@
           <MenuItem name="/article-list?boardtype=2">질문 게시판</MenuItem>
           <MenuItem name="/article-list?boardtype=3">요청 게시판</MenuItem>
       </Submenu>
-
-
       <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/status">
         <!-- <Icon type="ios-pulse-strong"></Icon> -->
         {{$t('m.NavStatus')}}
@@ -61,7 +39,6 @@
       <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/logout">
         로그아웃
       </Menu-item>
-
       <template v-if="!isAuthenticated">
         <div class="login_menu">
           <Button type="text"
@@ -71,7 +48,6 @@
                   style="line-height:50%;">
                   <p>{{$t('m.Login')}}</p>
           </Button>
-
         </div>
       </template>
       <template v-else>
@@ -82,7 +58,6 @@
               <Button type="text" class="bell bells" size="large" @click="changeNoti" @mouseover.native="alarmHoverForActive" @mouseleave.native="alarmHoverForNoActive">
                 <i v-bind:class="AlarmHoverActive" style="padding-bottom:5px"></i>
               </Button>
-              <!-- <Icon type="ios-notifications" /> -->
             </Badge>
             
             <Badge v-else>
@@ -90,7 +65,6 @@
                 <i v-bind:class="AlarmHoverActive" style="padding-bottom:5px"></i>
               </Button>
             </Badge>
-            
             <div style="clear:both"></div>
             <div v-if="visibleDraw" class="notifications-tab" v-click-outside="closeNoti">
               <ul class="notifications-table">
@@ -129,12 +103,10 @@
           </div>
             <!--사용자 아이디 출력-->
           <div @click="viewModal" @blur="visibleAccount = false" class="account_tab"> <!--/setting/mypage-->
-
               <i v-if="getAvatar" class="small-avatar-container">
                 <img :src="profile.avatar"/>
               </i>
               <Icon v-else type="md-contact" size="30" color="#5030E5"/>
-
             <span class="username">{{ user.username }}</span>
           </div>
           <div style="clear:both"></div>
@@ -142,9 +114,7 @@
             <div class="profile">
               <div class="photo">
                 <div v-if="getAvatar" class="avatar-container">
-
                   <img :src="profile.avatar"/>
-
                 </div>
                 <Icon v-else type="md-contact" size="100" color="#5030E5"/>
               </div>
@@ -155,16 +125,55 @@
             <div class="line"></div>
             <div class="logout_btn" @click="goLogOut">로그아웃</div>
           </div>
-          
         </div>
-
-        <!-- <Button @click="changeNoti" type="primary">Open</Button> -->
-
       </template>
-      <button class="navbar_toggle-btn" @click="navToggle">
-        <Icon type="md-menu" />
-      </button>
     </Menu>
+
+
+    <!-- vertical navigation-bar -->
+    <Menu v-show="screenWidth <= 900" theme="light" width="100vw" mode="vertical" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
+      <Menu-item class="home_bar" name="/" >COU</Menu-item>
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/problem">
+        문제
+      </Menu-item>
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/contest">
+        대회
+      </Menu-item>
+      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/info">
+        <template slot="title">
+          정보
+        </template>
+          <MenuItem name="/announcement-list">공지사항</MenuItem>
+          <MenuItem name="/help">자주 묻는 질문</MenuItem>
+          <MenuItem name="/languages">언어별 도움말</MenuItem>
+          <MenuItem name="/acm-rank">사용자 순위</MenuItem>
+      </Submenu>
+      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/community">
+        <template slot="title">
+          커뮤니티
+        </template>
+          <MenuItem name="/article-list?boardtype=0">전체 게시판</MenuItem>
+          <MenuItem name="/article-list?boardtype=1">자유 게시판</MenuItem>
+          <MenuItem name="/article-list?boardtype=2">질문 게시판</MenuItem>
+          <MenuItem name="/article-list?boardtype=3">요청 게시판</MenuItem>
+      </Submenu>
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/status">
+        <!-- <Icon type="ios-pulse-strong"></Icon> -->
+        {{$t('m.NavStatus')}}
+      </Menu-item>
+      <Menu-item v-if="navOpen && !isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/login">
+        로그인
+      </Menu-item>
+      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/setting/mypage">
+        마이페이지
+      </Menu-item>
+      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/logout">
+        로그아웃
+      </Menu-item>
+    </Menu>
+    <button  v-show="screenWidth <= 900" class="navbar_toggle-btn" @click="navToggle">
+      <Icon type="md-menu" />
+    </button>
     <Modal v-model="modalVisible" :width="430">
       <div slot="header" class="modal-title">인증이 필요해요!</div>
       <component :is="modalStatus.mode" v-if="modalVisible"></component>
@@ -188,6 +197,7 @@
     },
     data () {
       return {
+        screenWidth: 0,
         navOpen: false,
         alarmHoverActive: false,
         init_notification_count: 0,
@@ -267,6 +277,8 @@
       this.init()
     },
     created () {
+      window.addEventListener('resize', this.handleResize)
+      this.handleResize()
       this.getOnlyNotificationsListLength()
       setInterval(() => {
         this.getOnlyNotificationsListLength()
@@ -278,6 +290,7 @@
         this.getProfile()
       },
       handleRoute (route) {
+        this.navOpen = false
         if (this.notification_checked) { // 변경될 때 마다 알림창을 닫음
           this.delete = false
           this.$Notice.destroy()
@@ -372,6 +385,9 @@
       },
       navToggle () {
         this.navOpen = !this.navOpen
+      },
+      handleResize (e) {
+        this.screenWidth = window.innerWidth
       }
     },
 
@@ -399,6 +415,9 @@
         return this.profile.avatar !== '/public/avatar/default.png'
       }
     },
+    destroyed () {
+      window.removeEventListener('resize', this.handleResize)
+    },
     watch: {
       init_notification_count: function (newVal, oldVal) {
         this.init_notification_count = newVal
@@ -407,6 +426,10 @@
         if (this.visibleAccount !== false) {
           this.visibleAccount = false
         }
+      },
+      'screenWidth': (newVal, oldVal) => {
+        console.log(newVal)
+        this.screenWidth = newVal
       }
     }
   }
@@ -445,15 +468,18 @@
       //background: #404040;
       position: relative;
       background: @white;
+      z-index: 2;
     }
     .navbar_toggle-btn {
-      position: absolute;
+      position: fixed;
       background: transparent;
       border: none;
       right: 32px;
+      top: 0;
       font-size: 24px;
       color: @purple;
       display: none;
+      z-index: 2;
     }
     .logo {
       margin-left: 2%;
@@ -808,7 +834,8 @@
 
   @media screen and (max-width : 900px) {
     .home_bar {
-      width: 20%;
+      width: 100vw;
+      height: 60px;
     }
     .bar_list {
       display: none;
@@ -818,6 +845,8 @@
       display: block;
     }
     .navbar_toggle-btn {
+      height: 60px;
+      line-height: 60px;
       display: block !important;
       &:hover {
         cursor: pointer;
