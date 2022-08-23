@@ -4,7 +4,6 @@
       <div class="category-name" v-bind:style="[typeof this.$route.query.category === 'undefined' ? {'display' : 'none'}:{}]"> {{ categoryName() }} </div>
       <div class="category" v-bind:style="[typeof this.$route.query.category !== 'undefined' ? {'display' : 'none'}:{}]" >
         <div class="title" @click="goCategoryList">문제 카테고리</div>
-        <hr style="color: gray;">
         <div class="box_container">
           <div class="item_box">
             <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id, category.title)">
@@ -547,7 +546,7 @@
     border-radius: @size-border-radius;
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
     .title {
-      background-color: @purple;
+      background-color: @dark-orange;
       border-radius: 5px 5px 0 0;
       padding: 10px;
       color: @white;
@@ -593,7 +592,7 @@
     height: 150px;
     font-size: 12px;
     /* background: salmon; */
-    border: 2px solid #DDD7FA;
+    border: 2px solid @light-orange;
     background-color: @white;
     border-radius: 0px 20px;
     // box-shadow: 0px 4px 20px #DDD7FA;
@@ -602,7 +601,7 @@
     padding: 24px;
     cursor: pointer;
     &:hover {
-      box-shadow: 0px 4px 20px @purple;
+      box-shadow: 0px 4px 20px @orange;
       transition-duration: @animation-duration;
     }
     h3, div {
