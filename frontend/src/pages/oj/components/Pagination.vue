@@ -50,10 +50,8 @@
 
 <style scoped lang="less">
   .page {
-    display: inline-block;
-    text-align: center;
-    width: 100%;
-    margin: 20px 0 0 40px;
+    margin: 20px;
+    float: right;
   }
 </style>
 

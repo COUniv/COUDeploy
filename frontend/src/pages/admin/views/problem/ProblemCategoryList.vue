@@ -118,7 +118,6 @@
             problem.isEditing = false
           }
           this.problemCategoryList = res.data.data.results
-          console.log(this.problemCategoryList)
         }, res => {
           this.loading = false
         })

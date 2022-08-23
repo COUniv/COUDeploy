@@ -35,7 +35,7 @@
           </li>
           <li>
             <Input id="keyword" @on-enter="changeRoute" @on-click="changeRoute" v-model="query.keyword"
-            icon="ios-search-strong" placeholder="Keyword"/>
+                   icon="ios-search-strong" placeholder="Keyword"/>
           </li>
         </ul>
       </div>
@@ -43,7 +43,7 @@
       <ol id="contest-list">
         <li v-for="contest in contests" :key="contest.title">
           <Row type="flex" justify="space-between" align="middle">
-            <img class="trophy" src="../../../../assets/trophy.png"/>
+            <img class="trophy" src="../../../../assets/Cup.png"/>
             <Col :span="18" class="contest-main">
             <p class="title">
               <a class="entry" @click.stop="goContest(contest)">
@@ -76,7 +76,7 @@
         </li>
       </ol>
     </Panel>
-    <Pagination :total="total" :page-size.sync="limit" @on-change="changeRoute" :current.sync="page" :show-sizer="true" @on-page-size-change="changeRoute" style="float:"></Pagination>
+    <Pagination :total="total" :page-size.sync="limit" @on-change="changeRoute" :current.sync="page" :show-sizer="true" @on-page-size-change="changeRoute"></Pagination>
     </Col>
   </Row>
 
@@ -189,16 +189,9 @@
   }
 </script>
 <style lang="less" scoped>
-@import '../../../../styles/common.less';
   #contest-card {
-    .filter {
-      li:hover {
-        cursor: pointer;
-        color: @dark-orange;
-      }
-    }
     #keyword {
-      width: 100%;
+      width: 80%;
       margin-right: 30px;
     }
     #no-contest {
@@ -214,16 +207,17 @@
 
         .trophy {
           height: 40px;
-          margin: 0px -20px 10px 10px;
+          margin-left: 10px;
+          margin-right: -20px;
         }
         .contest-main {
           .title {
             font-size: 18px;
             a.entry {
-              color: @black;
+              color: #495060;
               &:hover {
-                color: @dark-orange;
-                //border-bottom: 1px solid @purple;
+                color: #2d8cf0;
+                border-bottom: 1px solid #2d8cf0;
               }
             }
           }

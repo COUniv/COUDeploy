@@ -335,7 +335,6 @@
         this.formFilter.searchtype = query.searchtype || ''
         this.formFilter.language = query.language || ''
         this.page = parseInt(query.page) || 1
-        console.log(this.formFilter)
         if (this.page < 1) {
           this.page = 1
         }
@@ -411,7 +410,6 @@
         this.changeRoute()
       },
       handleSortChange (sorttype) { // 게시글 정렬 변경
-        console.log(this.sort)
         if (this.sort === sorttype) {
           return
         }
@@ -575,6 +573,7 @@
     //     /* background-color: rgb(255, 234, 239); */
     // }
     .submenu_list {
+      cursor: pointer;
       display: inline-block;
       //margin-right: 10px;
     }
