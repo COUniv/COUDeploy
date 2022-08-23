@@ -417,6 +417,9 @@
         if (this.visibleAccount !== false) {
           this.visibleAccount = false
         }
+        if (this.visibleDraw !== false) {
+          this.visibleDraw = false
+        }
       },
       'screenWidth': (newVal, oldVal) => {
         console.log(newVal)

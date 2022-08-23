@@ -495,6 +495,7 @@
     border-collapse: collapse;
     width: 80vw !important; 
     table-layout: fixed;
+    text-align: left;
     margin: auto;
     td {
       padding: 8px;
