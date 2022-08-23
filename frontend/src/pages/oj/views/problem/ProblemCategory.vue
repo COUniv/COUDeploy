@@ -4,7 +4,7 @@
     <hr style="color: gray;">
     <div class="box_container">
       <div class="item_box">
-        <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id)">
+        <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id, category.title)">
           <h3>{{ category.title }}</h3>
           <!-- <Icon color="#858585" type="ios-arrow-forward" /> -->
           <div class="description" v-katex v-html="category.description"></div>
@@ -54,12 +54,13 @@
           searchtype: this.formFilter.searchtype
         }
       },
-      goProblemList (id) {
+      goProblemList (id, title) {
         let query = {
           keyword: '',
           difficulty: '',
           tag: '',
           category: id,
+          title: title,
           page: 1,
           limit: 10
         }

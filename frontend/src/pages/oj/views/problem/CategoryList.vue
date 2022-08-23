@@ -40,7 +40,7 @@
               <ul class="article-entry">
                 <div>
                   <div>
-                    <li><a @click="goProblemList(item.id)"> {{item.title}} </a></li>
+                    <li><a @click="goProblemList(item.id, item.title)"> {{item.title}} </a></li>
                   </div>
                   <div>
                     <li><p v-katex v-html="item.description"></p></li>
@@ -126,12 +126,13 @@
         }
         this.getCategoryList() // 쿼리로 설정한 데이터(필터)를 통해 게시글 데이터를 가져옴
       },
-      goProblemList (id) {
+      goProblemList (id, title) {
         let query = {
           keyword: '',
           difficulty: '',
           tag: '',
           category: id,
+          title: title,
           page: 1,
           limit: 10
         }
