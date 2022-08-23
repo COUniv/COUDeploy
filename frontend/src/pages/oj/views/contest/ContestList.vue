@@ -5,7 +5,7 @@
       <div slot="title">{{query.rule_type === '' ? '' : query.rule_type}} {{$t('m.Contests')}}</div>
       <div slot="extra">
         <ul class="filter">
-          <li>
+          <li class="list">
             <Dropdown @on-click="onRuleChange">
               <span>{{query.rule_type === '' ? this.$i18n.t('m.Rule') : this.$i18n.t('m.' + query.rule_type)}}
                 <!-- <Icon type="arrow-down-b"></Icon> -->
@@ -19,7 +19,7 @@
               </Dropdown-menu>
             </Dropdown>
           </li>
-          <li>
+          <li class="list">
             <Dropdown @on-click="onStatusChange">
               <span>{{query.status === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[query.status].name.replace(/ /g,"_"))}}
                 <!-- <Icon type="arrow-down-b"></Icon> -->
@@ -35,7 +35,7 @@
           </li>
           <li>
             <Input id="keyword" @on-enter="changeRoute" @on-click="changeRoute" v-model="query.keyword"
-                   icon="ios-search-strong" placeholder="Keyword"/>
+                  icon="ios-search-strong" placeholder="Keyword"/>
           </li>
         </ul>
       </div>
@@ -189,7 +189,16 @@
   }
 </script>
 <style lang="less" scoped>
+@import '../../../../styles/common.less';
+
   #contest-card {
+    .filter .list {
+      color: @black;
+      &:hover {
+        cursor: pointer;
+        color: @gray;
+      }
+    }
     #keyword {
       width: 80%;
       margin-right: 30px;
@@ -214,10 +223,10 @@
           .title {
             font-size: 18px;
             a.entry {
-              color: #495060;
+              color: @black;
               &:hover {
-                color: #2d8cf0;
-                border-bottom: 1px solid #2d8cf0;
+                color: @purple;
+                //border-bottom: 1px solid #2d8cf0;
               }
             }
           }
