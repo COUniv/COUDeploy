@@ -1,31 +1,13 @@
 <template>
   <div id="header">
-
-    <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
-      <!-- <div class="logo"> v-click-outside="navToggle"-->
-        
+    <Menu v-show="screenWidth > 900" theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
       <Menu-item class="home_bar" name="/" >COU</Menu-item>
-        <!-- <span><a href="/">Online Judge Platform</a></span> -->
-        
-      <!-- </div> -->
-      <!-- <Menu-item name="/">
-        <Icon type="home"></Icon>
-        {{$t('m.Home')}}
-      </Menu-item> -->
-      
-      
-      
       <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/problem">
-        <!-- <Icon type="ios-keypad"></Icon>
-        {{$t('m.NavProblems')}} -->
         문제
       </Menu-item>
       <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/contest">
-        <!-- <Icon type="trophy"></Icon>
-        {{$t('m.Contests')}} -->
         대회
       </Menu-item>
-
       <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/info">
         <template slot="title">
           정보
@@ -35,7 +17,6 @@
           <MenuItem name="/languages">언어별 도움말</MenuItem>
           <MenuItem name="/acm-rank">사용자 순위</MenuItem>
       </Submenu>
-
       <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/community">
         <template slot="title">
           커뮤니티
@@ -45,82 +26,10 @@
           <MenuItem name="/article-list?boardtype=2">질문 게시판</MenuItem>
           <MenuItem name="/article-list?boardtype=3">요청 게시판</MenuItem>
       </Submenu>
-
-
       <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/status">
         <!-- <Icon type="ios-pulse-strong"></Icon> -->
         {{$t('m.NavStatus')}}
       </Menu-item>
-      <!-- <Menu-item class="bar_list" name="/about">
-        커뮤니티
-      </Menu-item> -->
-      <!-- <Menu-item class="bar_list" name="/acm-rank">
-        랭킹
-      </Menu-item> -->
-      <Menu-item v-if="navOpen && !isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/login">
-        로그인
-      </Menu-item>
-      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/setting/mypage">
-        마이페이지
-      </Menu-item>
-      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/logout">
-        로그아웃
-      </Menu-item>
-
-      <!-- <Menu-item class="bar_list" name="/about"> -->
-      <!-- <Menu-item class="bar_list">
-        <div class="dropdown">
-          <button class="dropbtn">Dropdown 
-            <i class="fa fa-caret-down"></i>
-          </button>
-          <div class="dropdown-content">
-            <a href="#">Link 1</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
-          </div>
-        </div>
-
-      </Menu-item> -->
-
-
-
-      <!-- <Menu-item class="bar_list" name="/about">
-        도움말
-      </Menu-item> -->
-
-      <!-- <Submenu name="rank">
-        <template slot="title">
-          <Icon type="podium"></Icon>
-          {{$t('m.Rank')}}
-        </template>
-        <Menu-item name="/acm-rank">
-          {{$t('m.ACM_Rank')}}
-        </Menu-item>
-        <Menu-item name="/oi-rank">
-          {{$t('m.OI_Rank')}}
-        </Menu-item>
-      </Submenu> -->
-      <!-- <Submenu name="about">
-        <template slot="title">
-          <Icon type="information-circled"></Icon>
-          {{$t('m.About')}}
-        </template>
-        <Menu-item name="/about">
-          {{$t('m.Judger')}}
-        </Menu-item>
-        <Menu-item name="/FAQ">
-          {{$t('m.FAQ')}}
-        </Menu-item>
-      </Submenu> -->
-      <!-- <Submenu name="about">
-        <template slot="title">
-          <Icon type="information-circled"></Icon>
-          {{$t('m.About')}}
-        </template> -->
-        <!-- <Menu-item name="/FAQ">
-          {{$t('m.FAQ')}}
-        </Menu-item> -->
-      <!-- </Submenu> -->
       <template v-if="!isAuthenticated">
         <div class="login_menu">
           <Button type="text"
@@ -130,36 +39,16 @@
                   style="line-height:50%;">
                   <p>{{$t('m.Login')}}</p>
           </Button>
-          <!-- <Button v-if="website.allow_register"
-                  type="text"
-                  shape="circle"
-                  @click="handleBtnClick('register')"
-                  style="margin-left: 5px;">
-                  <p>{{$t('m.Register')}}</p>
-          </Button> -->
         </div>
       </template>
       <template v-else>
-        <!-- <Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
-          <Button type="text" class="drop-menu-title">{{ user.username }}
-            <Icon type="arrow-down-b"></Icon>
-          </Button>
-          <Dropdown-menu slot="list">
-            <Dropdown-item name="/user-home">{{$t('m.MyHome')}}</Dropdown-item>
-            <Dropdown-item name="/status?myself=1">{{$t('m.MySubmissions')}}</Dropdown-item>
-            <Dropdown-item name="/setting/profile">{{$t('m.Settings')}}</Dropdown-item>
-            <Dropdown-item v-if="isAdminRole" name="/admin">{{$t('m.Management')}}</Dropdown-item>
-            <Dropdown-item divided name="/logout">{{$t('m.Logout')}}</Dropdown-item>
-          </Dropdown-menu>
-        </Dropdown> -->
         <div class="right_menu">
           <!-- 알림 출력 버튼 -->
           <div class="alarm">
-            <Badge dot v-if="init_notification_count > 0" class="alram-box">
+            <Badge dot v-if="init_notification_count > 0" class="alarm-box">
               <Button type="text" class="bell bells" size="large" @click="changeNoti" @mouseover.native="alarmHoverForActive" @mouseleave.native="alarmHoverForNoActive">
                 <i v-bind:class="AlarmHoverActive" style="padding-bottom:5px"></i>
               </Button>
-              <!-- <Icon type="ios-notifications" /> -->
             </Badge>
             
             <Badge v-else>
@@ -167,17 +56,58 @@
                 <i v-bind:class="AlarmHoverActive" style="padding-bottom:5px"></i>
               </Button>
             </Badge>
+            <div style="clear:both"></div>
+            <div v-if="visibleDraw" class="notifications-tab" v-click-outside="closeNoti">
+              <ul class="notifications-table">
+                <li v-for="(item, index) in vNotifications">
+                  <ul v-bind:style="[!item.is_read ?{'background-color' : '#e0dafc4d'}:{}]" class="notifications-entry"  @click="redirectToArticle(item)">
+                    <div>
+                      <div>
+                        <div>
+                          <div id="icon-container">
+                            <Icon v-if="item.notificationtype === 'COMMENT'" class="icon" size=12 type="ios-chatboxes" />
+                            <Icon v-if="item.notificationtype === 'LIKE'" class="icon" size=12 type="md-heart" />
+                          </div>
+                          <div id="notification-type">
+                              <li>{{ item.notificationtype }}</li>
+                          </div>
+                        </div>
+                        <div id="notification-date">
+                          <li> {{ convertDate(item.create_time) }}</li>
+                        </div>
+                      </div>
+                      <div>
+                        <div id="notification-content">
+                          <li> {{item.content}} </li>
+                        </div>
+                      </div>
+                    </div>
+                  </ul>
+                  <hr v-if="index < vNotifications.length - 1">
+                </li>
+              </ul>
+              <div id="all-notifications">
+                <hr>
+                <a @click="goAllNotificationList">알람 전체 보기</a>
+              </div>
+            </div>
           </div>
             <!--사용자 아이디 출력-->
           <div @click="viewModal" @blur="visibleAccount = false" class="account_tab"> <!--/setting/mypage-->
-            <Icon type="md-contact" size="30" color="#5030E5"/>
+              <i v-if="getAvatar" class="small-avatar-container">
+                <img :src="profile.avatar"/>
+              </i>
+              <Icon v-else type="md-contact" size="30" color="#5030E5"/>
             <span class="username">{{ user.username }}</span>
           </div>
           <div style="clear:both"></div>
           <div v-if="visibleAccount" class="account_modal" v-click-outside="closeModal">
             <div class="profile">
               <div class="photo">
-                <Icon type="md-contact" size="100" color="#5030E5"/>
+                <div v-if="getAvatar" class="avatar-container">
+                  <img :src="profile.avatar"/>
+                </div>
+                <Icon v-else type="md-contact" size="100" color="#5030E5"/>
               </div>
               <div class="name">{{ user.username }}</div>
               <div class="email">root@gmail.com</div>
@@ -186,21 +116,55 @@
             <div class="line"></div>
             <div class="logout_btn" @click="goLogOut">로그아웃</div>
           </div>
-          
         </div>
-
-        <!-- <Button @click="changeNoti" type="primary">Open</Button> -->
-        <Drawer title="알림창" :width="300" :closable="true" v-model="visivleDraw">
-          <div style="float:right; margin-bottom:15px" @click="goAllNotificationList"><a>알람 전체 보기</a></div>
-          <div style="clear:both;"></div>
-          <Table :border="dishovering" :no-data-text="emptyChar" :columns="colums" :data="vNotifications" :show-header="showHeaderandborder" :disabled-hover="dishovering"></Table>
-        </Drawer>
       </template>
-        <button class="navbar_toggle-btn" @click="navToggle">
-          <Icon type="md-menu" />
-        </button>
     </Menu>
-    
+
+
+    <!-- vertical navigation-bar -->
+    <Menu v-show="screenWidth <= 900" theme="light" width="100vw" mode="vertical" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
+      <Menu-item class="home_bar" name="/" >COU</Menu-item>
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/problem">
+        문제
+      </Menu-item>
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/contest">
+        대회
+      </Menu-item>
+      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/info">
+        <template slot="title">
+          정보
+        </template>
+          <MenuItem name="/announcement-list">공지사항</MenuItem>
+          <MenuItem name="/help">자주 묻는 질문</MenuItem>
+          <MenuItem name="/languages">언어별 도움말</MenuItem>
+          <MenuItem name="/acm-rank">사용자 순위</MenuItem>
+      </Submenu>
+      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/community">
+        <template slot="title">
+          커뮤니티
+        </template>
+          <MenuItem name="/article-list?boardtype=0">전체 게시판</MenuItem>
+          <MenuItem name="/article-list?boardtype=1">자유 게시판</MenuItem>
+          <MenuItem name="/article-list?boardtype=2">질문 게시판</MenuItem>
+          <MenuItem name="/article-list?boardtype=3">요청 게시판</MenuItem>
+      </Submenu>
+      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/status">
+        <!-- <Icon type="ios-pulse-strong"></Icon> -->
+        {{$t('m.NavStatus')}}
+      </Menu-item>
+      <Menu-item v-if="navOpen && !isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/login">
+        로그인
+      </Menu-item>
+      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/setting/mypage">
+        마이페이지
+      </Menu-item>
+      <Menu-item v-if="navOpen && isAuthenticated" class="bar_list" :class="{'open': navOpen === true}" name="/logout">
+        로그아웃
+      </Menu-item>
+    </Menu>
+    <button  v-show="screenWidth <= 900" class="navbar_toggle-btn" @click="navToggle">
+      <Icon type="md-menu" />
+    </button>
     <Modal v-model="modalVisible" :width="430">
       <div slot="header" class="modal-title">인증이 필요해요!</div>
       <component :is="modalStatus.mode" v-if="modalVisible"></component>
@@ -213,6 +177,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import GuardMessage from '@oj/views/user/GuardMessage.vue'
   import api from '@oj/api'
+  import time from '@/utils/time'
   import vClickOutside from 'v-click-outside'
   export default {
     directives: {
@@ -223,13 +188,14 @@
     },
     data () {
       return {
+        screenWidth: 0,
         navOpen: false,
         alarmHoverActive: false,
         init_notification_count: 0,
         emptyChar: '알람이 존재하지 않습니다.',
         showHeaderandborder: false,
         dishovering: true,
-        visivleDraw: false,
+        visibleDraw: false,
         visibleAccount: false,
         vNotifications: [],
         colums: [
@@ -301,13 +267,21 @@
     mounted () {
       this.init()
     },
+    created () {
+      window.addEventListener('resize', this.handleResize)
+      this.handleResize()
+      this.getOnlyNotificationsListLength()
+      setInterval(() => {
+        this.getOnlyNotificationsListLength()
+      }, 5000)
+    },
     methods: {
       ...mapActions(['getProfile', 'changeModalStatus']),
       init () {
         this.getProfile()
-        this.getOnlyNotificationsListLength()
       },
       handleRoute (route) {
+        this.navOpen = false
         if (this.notification_checked) { // 변경될 때 마다 알림창을 닫음
           this.delete = false
           this.$Notice.destroy()
@@ -336,15 +310,6 @@
         this.$router.push({path: '/login'}).catch(() => {})
       },
       getOnlyNotificationsListLength () {
-        // let li = []
-        // api.getNotificationList().then(res => {
-        //   li = res.data.data
-        //   if (li === undefined || li === null || li.length <= 0) {
-        //     this.init_notification_count = 0
-        //   } else {
-        //     this.init_notification_count = li.length
-        //   }
-        // })
         let li = []
         api.getReadNotification().then(res => { // 현재 접속한 유저의 알림을 전송 받음
           li = res.data.data
@@ -357,7 +322,7 @@
       },
       changeNoti () {
         this.vGetNotifications()
-        this.visivleDraw = true
+        this.visibleDraw = !this.visibleDraw
       },
       viewModal () {
         this.visibleAccount = !this.visibleAccount
@@ -366,6 +331,14 @@
         if (this.visibleAccount === true) {
           this.visibleAccount = false
         }
+      },
+      closeNoti () {
+        if (this.visibleDraw === true) {
+          this.visibleDraw = false
+        }
+      },
+      convertDate (date) {
+        return time.utcToLocal(date, 'YYYY-MM-DD HH:mm')
       },
       vGetNotifications () {
         api.getNotificationList().then(res => {
@@ -381,7 +354,7 @@
         }
       },
       goAllNotificationList () {
-        this.visivleDraw = false
+        this.visibleDraw = false
         this.$router.push({
           path: '/notification-list'
         }).catch(() => {})
@@ -392,13 +365,25 @@
       alarmHoverForNoActive () {
         this.alarmHoverActive = false
       },
+      redirectToArticle (notification) {
+        let noti = notification.url.split('/')
+        let articleId = noti[noti.length - 1]
+        api.checkNotification(notification.id).then(res => {
+          this.$router.push({name: 'article-details', params: {articleID: articleId}}).catch(() => {})
+        })
+        this.visibleDraw = false
+        this.init_notification_count -= 1
+      },
       navToggle () {
         this.navOpen = !this.navOpen
+      },
+      handleResize (e) {
+        this.screenWidth = window.innerWidth
       }
     },
 
     computed: {
-      ...mapGetters(['website', 'modalStatus', 'user', 'isAuthenticated', 'isAdminRole', 'isVerifiedEmail']),
+      ...mapGetters(['website', 'modalStatus', 'user', 'isAuthenticated', 'isAdminRole', 'isVerifiedEmail', 'profile']),
       AlarmHoverActive () {
         if (this.alarmHoverActive) {
           return 'ivu-icon ivu-icon-ios-notifications'
@@ -416,7 +401,13 @@
         set (value) {
           this.changeModalStatus({visible: value})
         }
+      },
+      getAvatar () {
+        return this.profile.avatar !== '/public/avatar/default.png'
       }
+    },
+    destroyed () {
+      window.removeEventListener('resize', this.handleResize)
     },
     watch: {
       init_notification_count: function (newVal, oldVal) {
@@ -426,15 +417,16 @@
         if (this.visibleAccount !== false) {
           this.visibleAccount = false
         }
-        if (this.navOpen !== false) {
-          this.navOpen = false
-        }
+      },
+      'screenWidth': (newVal, oldVal) => {
+        console.log(newVal)
+        this.screenWidth = newVal
       }
     }
   }
 </script>
 <style lang="less">
-  .alram-box {
+  .alarm-box {
     .ivu-badge-dot {
       top: 5px !important;
       right: 5px !important;
@@ -444,11 +436,15 @@
     &.ivu-btn:hover {
       border-color: #fff;
     }
+    &.ivu-btn:focus {
+      border-color: transparent;
+      box-shadow: none;
+    }
   }
 </style>
 <style lang="less" scoped>
 @import '../../../styles/common.less';
-  
+@avatar-radius: 50%;
   #header {
     min-width: 300px;
     position: fixed;
@@ -463,15 +459,18 @@
       //background: #404040;
       position: relative;
       background: @white;
+      z-index: 2;
     }
     .navbar_toggle-btn {
-      position: absolute;
+      position: fixed;
       background: transparent;
       border: none;
       right: 32px;
+      top: 0;
       font-size: 24px;
       color: @purple;
       display: none;
+      z-index: 2;
     }
     .logo {
       margin-left: 2%;
@@ -491,7 +490,6 @@
         -webkit-text-stroke: 1.5px;
     }
 
-    
     .bar_list {
       padding-right: 30px;
       padding-left: 30px;
@@ -525,8 +523,6 @@
     }
   }
   .alarm {
-    // top: 0;
-    // height: 40px;
     line-height: 50%;
     float: right;
     margin-right: 10px;
@@ -573,9 +569,7 @@
       float: right;
       line-height: 50%;
       height: 45px;
-      // vertical-align: middle;
-      // top: 8px;
-      // right: 20px;
+
       color: @purple;
       font-weight: 600;
       padding: 5px 7px 5px 5px;
@@ -682,9 +676,157 @@
     line-height:30px;
   }
 
+  .avatar-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+
+  .small-avatar-container {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    img {
+      width: 30px;
+      max-width: 30px;
+    }
+  }
+
+  img {
+    display: inline-block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    display: block;
+    border-radius: @avatar-radius;
+    box-shadow: 0px 0px 1px 0px;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  .notifications-tab {
+    transition: background-color .3s;
+    font-size: 70%;
+    position: absolute;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: @size-border-radius;
+    top: 60px;
+    right: 60px;
+    min-height: 100px;
+    max-height: 400px;
+    width: 400px;
+    background-color: @white;
+    color: @black;
+    box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
+    .notifications-table {
+      width: inherit;
+      overflow-x: hidden;
+      // scrollbar
+      overflow-y:scroll;
+      &::-webkit-scrollbar {
+        background-color: transparent;
+      }
+      &:hover {
+        &::-webkit-scrollbar {
+          width: 15px;
+          height: 20px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background-color: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: #d6dee1;
+          border-radius: 20px;
+          border: 6px solid transparent;
+          background-clip: content-box;
+        }
+      }
+    }
+    .notifications-entry {
+      padding: 10px 10px 10px 20px;
+      cursor: pointer;
+      &:hover {
+        background: rgb(0,0,0);
+        background: linear-gradient(0deg, rgba(240, 240, 240, 0.3) 0%, rgba(255,255,255,0.6) 100%);
+      }
+      div:first-child {
+        display: flex;
+        flex-direction: column;
+        div:first-child {
+          color: @dark-white;
+          line-height: 20px;
+          display: flex;
+          justify-content: space-between;
+          flex-direction: row;
+          div:first-child {
+            display: flex;  
+          }
+          #icon-container {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: @orange;
+
+            .icon {
+              margin: auto;
+              color: @white;
+            }
+          }
+        }
+      }
+      #notification-content {
+        color: @black;
+      }
+      #notification-type {
+        -webkit-text-stroke: .3px;
+      }
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #dfdfdf;
+      margin-left: 20px;
+    }
+
+    #all-notifications {
+      width: inherit;
+      hr {
+        border: 0;
+        border-top: 1px solid #dfdfdf;
+        margin: 0;
+      }
+      a {
+        color: @light-purple;
+        padding-right: 15px;
+        -webkit-text-stroke: .3px;
+        &:hover {
+          color: @purple;
+          transition: color .3s ease-in;
+        }
+      }
+      height: 50px;
+      line-height: 50px;
+      text-align: right;
+      //color: #e0dafc4d;
+    }
+  }
+
+
   @media screen and (max-width : 900px) {
     .home_bar {
-      width: 20%;
+      width: 100vw;
+      height: 60px;
     }
     .bar_list {
       display: none;
@@ -694,6 +836,8 @@
       display: block;
     }
     .navbar_toggle-btn {
+      height: 60px;
+      line-height: 60px;
       display: block !important;
       &:hover {
         cursor: pointer;
@@ -707,55 +851,5 @@
       display: none;
     }
   }
-
-
-// .dropdown {
-//   float: left;
-//   overflow: hidden;
-// }
-
-// .dropdown .dropbtn {
-//   // font-size: 16px;  
-//   border: none;
-//   outline: none;
-//   color: white;
-//   // padding: 14px 16px;
-//   background-color: #404040;
-//   // font-family: inherit;
-//   margin: 0;
-// }
-
-// // .navbar a:hover, .dropdown:hover .dropbtn {
-// //   background-color: red;
-// // }
-
-// .dropdown-content {
-//   display: none;
-//   position: absolute;
-  
-//   background-color: #f9f9f9;
-//   min-width: 160px;
-//   // box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-//   z-index: 1;
-// }
-
-// .dropdown-content a {
-//   float: none;
-//   color: black;
-//   padding-left: 10px;
-//   // padding: 5px 7px;
-//   text-decoration: none;
-//   display: block;
-//   text-align: left;
-// }
-
-// .dropdown-content a:hover {
-//   background-color: #ddd;
-// }
-
-// .dropdown:hover .dropdown-content {
-//   display: block;
-// }
-
 
 </style>
