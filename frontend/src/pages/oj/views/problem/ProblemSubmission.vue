@@ -5,7 +5,7 @@
       <div id="undo-icon">
         <Icon type="ios-undo" size="24" @click="undoPage" />
       </div>  
-      <div class="logo" style="color:white" @click="goHome">Online Judge Platform</div>
+      <div class="logo" style="color:white" @click="goHome">COU</div>
       <div style="float: right">
         <div class="help-btn">
           <Button type="text" size="large" style="z-index: '1' " @click="help_btn">도움말</Button>
@@ -667,8 +667,9 @@
       }
       &:hover {
         cursor: pointer;
+        color: #5030E5;
         * {
-          color: #3091f2;
+          color: #5030E5;
         }
       }
     }
@@ -721,11 +722,11 @@
   .ss_footer {
     background-color: rgb(51, 51, 51);
     position: absolute;
-    left: 0px;
+    left: 0;
     bottom: 0;
     width: 100%;
-    height: 59px;
-    line-height: 59px;
+    height: 60px;
+    line-height: 60px;
     /* text-align: center; */
   }  
 
@@ -850,7 +851,7 @@
 
     &:hover * {
       background-color: #ffffff00;
-      color: #2d8cf0;
+      color: #5030E5;;
     }
   }
 </style>
