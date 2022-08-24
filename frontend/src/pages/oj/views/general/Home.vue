@@ -498,9 +498,9 @@
       margin-bottom: 15px;
       li.tab-item {
         margin-right: 10px;
-        padding: 10px 30px;
+        padding: 10px 24px;
         border-radius: 25px;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: @weight-bold;
         background-color: @light-gray;
         // transition: all 0.2s ease-in-out;
