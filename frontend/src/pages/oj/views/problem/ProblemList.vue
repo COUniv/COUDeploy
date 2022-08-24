@@ -475,6 +475,7 @@
       padding: 15px;
       margin-right: 15px;
       border-radius: 4px;
+      min-width: 200px;
       box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
       .taglist-title {
         line-height: 30px;
@@ -493,7 +494,7 @@
   // }
   .problem-list {
     border-collapse: collapse;
-    width: 80vw !important; 
+    width: 100% !important; 
     table-layout: fixed;
     text-align: left;
     margin: auto;
