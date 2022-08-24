@@ -661,6 +661,7 @@
       color: @black;
       border-color: transparent;
       box-shadow: 0 0 0 transparent;
+      background-color: transparent;
     }
   }
 </style>
