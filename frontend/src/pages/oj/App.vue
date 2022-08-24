@@ -104,7 +104,7 @@
   @media screen and (max-width: 1200px) {
     .content-app {
       margin-top: 80px;
-      min-height: 100%;
+      min-height: 100vh;
       position: relative;
     }
   }
@@ -112,7 +112,7 @@
   @media screen and (min-width: 1200px) {
     .content-app {
       margin-top: 80px;
-      min-height: 100%;
+      min-height: 100vh;
       position: relative;
     }
   }

@@ -2,9 +2,9 @@
 <template>
   <div class="demo-split">
     <div class="ss_header">
-      <div id="undo-icon">
+      <!-- <div id="undo-icon">
         <Icon type="ios-undo" size="24" @click="undoPage" />
-      </div>  
+      </div>   -->
       <div class="logo" @click="goHome">COU</div>
       <div style="float: right">
         <div class="help-btn">
@@ -681,6 +681,7 @@
       color: @purple;
       font-size: 24px;
       font-weight: bold;
+      margin-left: 20px;
       &:hover {
         cursor: pointer;
       }
@@ -731,6 +732,7 @@
     width: 100%;
     height: 60px;
     line-height: 60px;
+    z-index: 99;
     /* text-align: center; */
   }  
 
