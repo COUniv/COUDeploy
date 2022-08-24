@@ -57,7 +57,6 @@
       getGrassList () {
         api.getGrassList().then(res => {
           this.grassList = res.data.data.grass
-          console.log(this.grassList)
         })
       },
       getPositionX (x) {

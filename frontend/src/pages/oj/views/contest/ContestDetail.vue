@@ -1,12 +1,13 @@
 <template>
-  <div class="flex-container">
+<div class="container">
+  <div class="flex-container ">
     <div id="contest-main">
       <!--children-->
       <transition name="fadeInUp">
         <router-view></router-view>
       </transition>
       <!--children end-->
-      <div class="flex-container" v-if="route_name === 'contest-details'">
+      <div class="flex-item" v-if="route_name === 'contest-details'">
         <template>
           <div id="contest-desc">
             <Panel :padding="20" shadow>
@@ -34,45 +35,50 @@
     </div>
     <div v-show="showMenu" id="contest-menu">
       <VerticalMenu @on-click="handleRoute">
-        <VerticalMenu-item :route="{name: 'contest-details', params: {contestID: contestID}}">
-          <Icon type="home"></Icon>
+        <VerticalMenu-item class="list" :route="{name: 'contest-details', params: {contestID: contestID}}">
+          <Icon type="md-eye" />
+          <!-- <Icon type="home"></Icon> -->
           {{$t('m.Overview')}}
         </VerticalMenu-item>
 
-        <VerticalMenu-item :disabled="contestMenuDisabled"
+        <VerticalMenu-item class="list" :disabled="contestMenuDisabled"
                            :route="{name: 'contest-announcement-list', params: {contestID: contestID}}">
-          <Icon type="chatbubble-working"></Icon>
+          <Icon type="ios-chatbubbles" />
+          <!-- <Icon type="chatbubble-working"></Icon> -->
           {{$t('m.Announcements')}}
         </VerticalMenu-item>
 
-        <VerticalMenu-item :disabled="contestMenuDisabled"
+        <VerticalMenu-item class="list" :disabled="contestMenuDisabled"
                            :route="{name: 'contest-problem-list', params: {contestID: contestID}}">
           <Icon type="ios-photos"></Icon>
           {{$t('m.Problems')}}
         </VerticalMenu-item>
 
         <VerticalMenu-item v-if="OIContestRealTimePermission"
-                           :disabled="contestMenuDisabled"
+                           class="list" :disabled="contestMenuDisabled"
                            :route="{name: 'contest-submission-list'}">
-          <Icon type="navicon-round"></Icon>
+          <Icon type="md-arrow-round-up" />
+          <!-- <Icon type="navicon-round"></Icon> -->
           {{$t('m.Submissions')}}
         </VerticalMenu-item>
 
         <VerticalMenu-item v-if="OIContestRealTimePermission"
-                           :disabled="contestMenuDisabled"
+                           class="list" :disabled="contestMenuDisabled"
                            :route="{name: 'contest-rank', params: {contestID: contestID}}">
-          <Icon type="stats-bars"></Icon>
+          <Icon type="ios-stats" />
+          <!-- <Icon type="stats-bars"></Icon> -->
           {{$t('m.Rankings')}}
         </VerticalMenu-item>
 
         <VerticalMenu-item v-if="showAdminHelper && isContestAdmin"
-                           :route="{name: 'acm-helper', params: {contestID: contestID}}">
+                           class="list" :route="{name: 'acm-helper', params: {contestID: contestID}}">
           <Icon type="ios-paw"></Icon>
           {{$t('m.Admin_Helper')}}
         </VerticalMenu-item>
       </VerticalMenu>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -206,20 +212,28 @@
   #countdown {
     font-size: 16px;
   }
-
+  .container {
+    width: 100%;
+    padding: 0 40px;
+  }
   .flex-container {
     #contest-main {
       flex: 1 1;
       width: 0;
-      #contest-desc {
-        flex: auto;
-      }
+      
+    }
+    #contest-desc {
+      flex: auto;
     }
     #contest-menu {
       flex: none;
       width: 210px;
       margin-left: 20px;
+      .list {
+        cursor: pointer;
+      }
     }
+
     .contest-password {
       margin-top: 20px;
       margin-bottom: -10px;
