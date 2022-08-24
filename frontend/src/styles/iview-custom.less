@@ -31,6 +31,23 @@
     color: #5030E5;;
   }
 }
+
+.ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab {
+  color: #5030E5;
+}
+
+.ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
+  color: #5030E5;
+  background: #f0edff;
+  &:after {
+    background: #5030E5;
+  }
+}
+
+.ivu-menu-vertical .ivu-menu-item:hover {
+  color: #5030E5;
+}
+
 .ivu-btn-primary {
   background-color: #5030E5;
   border: solid 1px #5030E5;
@@ -70,10 +87,17 @@ table {
   color: @purple;
 }
 
-.ivu-btn:hover {
-  color: @purple;
-  background-color: #fff;
-  border-color: @purple;
+.ivu-btn {
+  &:hover {
+    color: @purple;
+    background-color: @white;
+    border-color: @purple;
+  }
+  &.show:hover {
+    color: #f16643;
+    background-color: @white;
+    border-color: #f16643;
+  }
 }
 
 .ivu-btn:focus {
@@ -199,6 +223,12 @@ table {
 
 .ivu-card-body {
   padding: 16px 65px;
+  ul .list {
+    &:hover {
+      color: #5030E5;
+      border-left: 2px solid #5030E5;
+    }
+  }
 }
 
 .ivu-modal-footer {
@@ -207,4 +237,8 @@ table {
 
 .ivu-modal-header {
   border-color: #C4C4C4;
+}
+
+.ivu-page-options-sizer {
+  margin-right: 0px;
 }

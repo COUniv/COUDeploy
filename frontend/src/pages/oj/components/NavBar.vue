@@ -375,11 +375,11 @@
       redirectToArticle (notification) {
         let noti = notification.url.split('/')
         let articleId = noti[noti.length - 1]
+        if (!notification.is_read) this.init_notification_count -= 1
         api.checkNotification(notification.id).then(res => {
           this.$router.push({name: 'article-details', params: {articleID: articleId}}).catch(() => {})
         })
         this.visibleDraw = false
-        this.init_notification_count -= 1
       },
       navToggle () {
         this.navOpen = !this.navOpen
@@ -423,6 +423,9 @@
       '$route' (to, from) {
         if (this.visibleAccount !== false) {
           this.visibleAccount = false
+        }
+        if (this.visibleDraw !== false) {
+          this.visibleDraw = false
         }
       },
       'screenWidth': (newVal, oldVal) => {
