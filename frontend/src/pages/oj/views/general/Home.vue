@@ -387,6 +387,23 @@
     font-size: 14px;
     color: @gray;
   }
+  .color-red {
+    color: #ed4014;
+    font-size: 1rem;
+    transition: all 0.1s ease-in-out;
+    height: 34px;
+    line-height: 34px;
+    float: left;
+    padding-left: 10px;
+    width: calc(95% - 170px); // default size - left button size(90px) - times(80px)
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+      cursor: pointer;
+      font-weight: 700;
+      color: #ed4014;
+    }
+  }
 
   .color-green {
     color: rgba(2, 148, 2, 0.722);
