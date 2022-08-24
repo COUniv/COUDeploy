@@ -81,8 +81,14 @@
                   </div>
                   <div style="clear:both"></div>
                 </div>
+                <div v-else>
+                  <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
+                  <div class="color-red"> {{contest.title}} </div>
+                  <div class="contest-time"> {{contest.start_time | localtime('YYYY.MM.DD')}}</div>
+                  <div style="clear:both"></div>
+                </div>
                 <div style="clear:both;"></div>
-                    </div>
+                </div>
             </div>
           </div>
           <!-- <Row :gutter="32"> -->
@@ -480,6 +486,23 @@
     line-height: 34px;
     font-size: 14px;
     color: @gray;
+  }
+  .color-red {
+    color: #ed4014;
+    font-size: 1rem;
+    transition: all 0.1s ease-in-out;
+    height: 34px;
+    line-height: 34px;
+    float: left;
+    padding-left: 10px;
+    width: calc(95% - 170px); // default size - left button size(90px) - times(80px)
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+      cursor: pointer;
+      font-weight: 700;
+      color: #ed4014;
+    }
   }
 
   .color-green {
