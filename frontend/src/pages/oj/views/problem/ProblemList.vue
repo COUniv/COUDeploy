@@ -1,5 +1,102 @@
 <template>
-  <Row type="flex" :gutter="18" style="margin-left:50px; margin-right:50px">
+  <div>
+    <div slot="extra">
+      <div class="category-name" v-bind:style="[typeof this.$route.query.category === 'undefined' ? {'display' : 'none'}:{}]"> {{ categoryName() }} </div>
+      <div class="category" v-bind:style="[typeof this.$route.query.category !== 'undefined' ? {'display' : 'none'}:{}]" >
+        <div class="title" @click="goCategoryList">문제 카테고리</div>
+        <div class="box_container">
+          <div class="item_box">
+            <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id, category.title)">
+            <h3>{{ category.title }}</h3>
+            <!-- <Icon color="#858585" type="ios-arrow-forward" /> -->
+            <div class="description" v-katex v-html="category.description"></div>
+            <div class="progress">
+              <p class="percent">달성률: {{ category.percent }}%</p>
+              <progress max="100" :value="category.percent"></progress>
+            </div>
+            <!-- <div class="progress"><Progress :percent="category.percent" /></div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="main-list">
+        <div class="left-menu">
+          <div class="top-menu" v-bind:style="[typeof this.$route.query.category !== 'undefined' ? {'display' : 'none'}:{}]">
+            <div>
+              <div class="search-bar">
+                <Input @on-search="filterByKeyword" v-model="query.keyword" search placeholder="검색어를 입력하세요."></Input>
+              </div>
+              <div class="filter-difficulty">
+                <Dropdown @on-click="filterByDifficulty">
+                  <span>{{query.difficulty === '' ? this.$i18n.t('m.Difficulty') : this.$i18n.t('m.' + query.difficulty)}}
+                    <Icon type="arrow-down-b"></Icon> 
+                    <Icon type="md-arrow-dropdown" />
+                  </span>
+                  <Dropdown-menu slot="list">
+                    <Dropdown-item name="">{{$t('m.All')}}</Dropdown-item>
+                    <Dropdown-item class="green" name="Low">{{$t('m.Low')}}</Dropdown-item>
+                    <Dropdown-item class="orange" name="Mid" >{{$t('m.Mid')}}</Dropdown-item>
+                    <Dropdown-item class="red" name="High">{{$t('m.High')}}</Dropdown-item>
+                  </Dropdown-menu>
+                </Dropdown>
+              </div>
+                                  <!-- <li>
+                                    <i-switch size="large" @on-change="handleTagsVisible">
+                                      <span slot="open">{{$t('m.Tags')}}</span>
+                                      <span slot="close">{{$t('m.Tags')}}</span>
+                                    </i-switch>
+                                  </li> -->
+            </div>
+            <div class="pick-random">
+              <Button long id="pick-one" @click="pickone" type="primary">
+                <Icon type="ios-shuffle" size="15" />
+                {{$t('m.Pick_One')}}
+              </Button>
+            </div>
+          </div>
+          <table class="problem-list">
+            <thead>
+              <tr>
+                <th style="width:17%">문제 번호</th>
+                <th style="width:40%">제목</th>
+                <th style="width:13%">난이도</th>
+                <th style="width:15%">제출</th>
+                <th style="width:15%">정답 비율</th>
+              </tr>
+            </thead>
+            <tbody v-for="problem in problemList">
+              <tr @click="redirectToProblem(problem)">
+                <td id="problem-id">{{ problem._id }}</td>
+                <td id="problem-title">{{ problem.title }}</td>
+                <td :class="[(problem.difficulty === 'Low' ? 'green' : ''), (problem.difficulty === 'Mid' ? 'orange' : ''), (problem.difficulty === 'High' ? 'red' : '')]">{{ problem.difficulty }}</td>
+                <td>{{ problem.submission_number }}</td>
+                <td> {{ convertToACRate(problem) }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <Pagination
+          :total="total" 
+          :page-size.sync="query.limit" 
+          @on-change="pushRouter" 
+          @on-page-size-change="pushRouter" 
+          :current.sync="query.page" 
+          :show-sizer="true"
+          style="display: flex; justify-content:flex-end; margin: 10px 0 0 0"></Pagination>
+        </div>
+        <div class="right-menu" v-bind:style="[typeof this.$route.query.category !== 'undefined' ? {'display' : 'none'}:{}]">
+          <div slot="title" class="taglist-title">{{$t('m.Tags')}}</div>
+          <Button v-for="tag in tagList"
+              :key="tag.name"
+              @click="filterByTag(tag.name)"
+              :disabled="query.tag === tag.name"
+              shape="circle"
+              class="tag-btn">{{tag.name}}
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <Row type="flex" :gutter="18" style="margin-left:50px; margin-right:50px">
     <Col :span="19">
       <Panel shadow>
         <div slot="title">{{$t('m.Problem_List')}}</div>
@@ -8,7 +105,7 @@
             <li>
               <Dropdown @on-click="filterByDifficulty">
                 <span>{{query.difficulty === '' ? this.$i18n.t('m.Difficulty') : this.$i18n.t('m.' + query.difficulty)}}
-                <!-- <Icon type="arrow-down-b"></Icon> -->
+                 <Icon type="arrow-down-b"></Icon> 
                   <Icon type="md-arrow-dropdown" />
                 </span>
                 <Dropdown-menu slot="list">
@@ -18,14 +115,14 @@
                   <Dropdown-item name="High">{{$t('m.High')}}</Dropdown-item>
                 </Dropdown-menu>
               </Dropdown>
-            </li>
-          <!-- <li>
-            <i-switch size="large" @on-change="handleTagsVisible">
-              <span slot="open">{{$t('m.Tags')}}</span>
-              <span slot="close">{{$t('m.Tags')}}</span>
-            </i-switch>
-          </li> -->
-            <li>
+            </li> -->
+                                <!-- <li>
+                                  <i-switch size="large" @on-change="handleTagsVisible">
+                                    <span slot="open">{{$t('m.Tags')}}</span>
+                                    <span slot="close">{{$t('m.Tags')}}</span>
+                                  </i-switch>
+                                </li> -->
+            <!-- <li>
               <Input v-model="query.keyword"
                    @on-enter="filterByKeyword"
                    @on-click="filterByKeyword"
@@ -50,9 +147,9 @@
       <Pagination
           :total="total" :page-size.sync="query.limit" @on-change="pushRouter" @on-page-size-change="pushRouter" :current.sync="query.page" :show-sizer="true"></Pagination>
 
-    </Col>
+    </Col> -->
 
-    <Col :span="5">
+    <!-- <Col :span="5">
       <Panel :padding="10">
         <div slot="title" class="taglist-title">{{$t('m.Tags')}}</div>
         <Button v-for="tag in tagList"
@@ -69,7 +166,7 @@
       </Panel>
       <Spin v-if="loadings.tag" fix size="large"></Spin>
     </Col>
-  </Row>
+  </Row>-->
 </template>
 
 <script>
@@ -87,6 +184,7 @@
     },
     data () {
       return {
+        problemCategoryList: {},
         tagList: [],
         problemTableColumns: [
           {
@@ -182,6 +280,10 @@
           category: '',
           page: 1,
           limit: 10
+        },
+        formFilter: { // 카테고리를 불러올 때 필터 설정용 데이터
+          search: '', // 카테고리 검색 시 검색할 내용
+          searchtype: '' // 카테고리 검색 시 검색할 카테고리 - 전체 = 0, 제목 = 1, 댓글 = 2
         }
       }
     },
@@ -205,12 +307,27 @@
           this.getTagList()
         }
         this.getProblemList()
+        let params = this.buildQuery()
+        let offset = (this.page - 1) * this.limit
+        api.getProblemCategoryList(offset, this.limit, params).then(res => {
+          this.problemCategoryList = res.data.data.result
+        })
       },
       pushRouter () {
         this.$router.push({
           name: 'problem-list',
           query: utils.filterEmptyValue(this.query)
         }).catch(() => {})
+      },
+      buildQuery () { // 쿼리로 설정한 필터값을 전송용 데이터로 빌드
+        return {
+          page: this.page,
+          search: this.formFilter.search,
+          searchtype: this.formFilter.searchtype
+        }
+      },
+      categoryName () {
+        return this.$route.query.title
       },
       getProblemList () {
         let offset = (this.query.page - 1) * this.query.limit
@@ -230,6 +347,24 @@
         }, res => {
           this.loadings.tag = false
         })
+      },
+      goProblemList (id, title) {
+        let query = {
+          keyword: '',
+          difficulty: '',
+          tag: '',
+          category: id,
+          title: title,
+          page: 1,
+          limit: 10
+        }
+        this.$router.push({
+          name: 'problem-list',
+          query: utils.filterEmptyValue(query)
+        }).catch(() => {})
+      },
+      goCategoryList () {
+        this.$router.push({path: 'category-list'}).catch(() => {})
       },
       filterByTag (tagName) {
         this.query.tag = tagName
@@ -275,6 +410,12 @@
           this.$success('Good Luck')
           this.$router.push({name: 'problem-details', params: {problemID: res.data.data}}).catch(() => {})
         })
+      },
+      redirectToProblem (problem) {
+        this.$router.push({name: 'problem-details', params: {problemID: problem._id}}).catch(() => {})
+      },
+      convertToACRate (item) {
+        return this.getACRate(item.accepted_number, item.submission_number)
       }
     },
     computed: {
@@ -296,17 +437,216 @@
 </script>
 
 <style scoped lang="less">
-  .taglist-title {
-    margin-left: -10px;
-    margin-bottom: -10px;
+  @import '../../../../styles/common.less';
+  .main-list {
+    display: flex;
+    margin: 15px;
+    .left-menu {
+      display: flex;
+      flex-direction: column;
+      padding: 15px 15px 0 15px;
+      .top-menu {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        div:first-child {
+          display: flex;
+          justify-content:start;
+          .search-bar {
+            margin-right: 15px;
+            
+          }
+          .filter-difficulty {
+            line-height: 30px;
+            background-color: @light-gray;
+            border-radius: 4px;
+            padding-top: 1px;
+            padding-left: 7px;
+            padding-right: 7px;
+            &:hover {
+              background-color: #e8e8e8;
+              transition: background-color .3s ease-in-out;
+            }
+          }
+        }
+      }
+    }
+    .right-menu {
+      padding: 15px;
+      margin-right: 15px;
+      border-radius: 4px;
+      box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+      .taglist-title {
+        line-height: 30px;
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .tag-btn {
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+    }
+  }
+  // .right-menu {
+  //   float: right;
+  // }
+  .problem-list {
+    border-collapse: collapse;
+    width: 80vw !important; 
+    table-layout: fixed;
+    text-align: left;
+    margin: auto;
+    td {
+      padding: 8px;
+    }
+    th {
+      border-bottom: 1px solid #c4c4c4;
+      padding: 8px;
+    }
+
+    tbody {
+      color: @gray;
+      -webkit-text-stroke: .3px;
+      &:nth-child(even){
+        background-color: #f5f5f5;
+      }
+
+      &:hover {
+        #problem-title {
+          transition: color .3s ease-in;
+          color: @purple;
+        }
+      }
+    }
   }
 
-  .tag-btn {
-    margin-right: 5px;
-    margin-bottom: 10px;
+  .green {
+    color: @green;
+  } 
+  .orange {
+    color: @dark-orange;
+  }
+  .red {
+    color: @red;
+  }
+  .progress{
+    display: absolute;
+    bottom: 0;
   }
 
-  #pick-one {
-    margin-top: 10px;
+  .category-name {
+    font-size: 30px;
+    -webkit-text-stroke: 1px;
+    margin: 0 30px;
+  }
+
+  .category{
+    margin: 30px;
+    //background-color: @white;
+    border-radius: @size-border-radius;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+    .title {
+      background-color: @dark-orange;
+      border-radius: 5px 5px 0 0;
+      padding: 10px;
+      color: @white;
+      font-size: 16px;
+      text-align: center;
+      font-weight: @weight-bold;
+      cursor: pointer;
+    }
+  }
+
+
+  .box_container {
+    padding: 0px 30px;
+  }
+
+  .item_box{
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    //white-space: nowrap;
+    align-content: flex-start;
+    margin-top: 20px;
+    padding: 0 0 10px 0;
+    &::-webkit-scrollbar {
+      height: 12px;
+      background-color: transparent;
+      width: 15px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: @gray;
+      border-radius: 25px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: @light-gray;
+      border-radius: 25px;
+    }
+    .item{
+    position: relative;
+    flex: 0 0 auto;
+    /* width: 37vh;
+    height: 20vh; */
+    width: 150px;
+    height: 150px;
+    font-size: 12px;
+    /* background: salmon; */
+    border: 2px solid @light-orange;
+    background-color: @white;
+    border-radius: 0px 20px;
+    // box-shadow: 0px 4px 20px #DDD7FA;
+    box-shadow: none;
+    margin: 0 1.5% 20px 1.5%;
+    padding: 24px;
+    cursor: pointer;
+    &:hover {
+      box-shadow: 0px 4px 20px @orange;
+      transition-duration: @animation-duration;
+    }
+    h3, div {
+      padding-bottom: 10px;
+    }
+    h3 {
+      font-size: 16px;
+      color: @black;
+    }
+    .description {
+      font-weight: @weight-bold;
+      color: @gray;
+      font-size: 12px;
+      height: 40%;
+      overflow: hidden;
+    }
+    p {
+      width: 100%;
+      padding-top: 10px;
+    }
+  }
+  }
+  .progress{
+    position: absolute;
+    bottom: 0;
+    width: 80%;
+    //padding: 10px 0 0 10px;
+    .percent {
+      color: @gray;
+      font-size: 8px;
+      font-weight: 600;
+    }
+    progress {
+      width: 80%;
+      height: 10px;
+      border: none;
+      &::-webkit-progress-bar {
+        background-color: @light-gray;
+        border-radius: 25px;
+      }
+      &::-webkit-progress-value {
+        background-color: #6EEE03;
+        border-radius: 25px;
+      }
+    }
   }
 </style>
