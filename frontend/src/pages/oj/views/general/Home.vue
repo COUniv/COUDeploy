@@ -28,10 +28,10 @@
       <div class="list_container" style="display: block">
         <div class="left_announcement" style="float:left">
           <ul class="tab-menu">
-            <li v-for="(tab, index) in tabs" :key="index" class="tab-item" :class="{ active: currentTab===index }">
-              <a @click="currentTab = index">{{tab}}</a>
+            <li v-for="(tab, index) in tabs" :key="index" class="tab-item" @click="currentTab = index" :class="{ active: currentTab===index }">
+              <p>{{tab}}</p>
             </li>
-            <Dropdown v-show="currentTab == 1" @on-click="onStatusChange" :transfer="true" class="contest-status-list">
+            <Dropdown v-show="currentTab == 1" @on-click="onStatusChange" :transfer="true" class="contest-status-list" trigger="click">
                 <span>{{contest_stat === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[contest_stat].name.replace(/ /g,"_"))}}
                 </span>
                 <Icon type="ios-arrow-down" />
@@ -81,81 +81,21 @@
                   </div>
                   <div style="clear:both"></div>
                 </div>
-                <div style="clear:both;"></div>
+                <!-- 해당 부분은 종료된 contest를 표시하지만 실제로는 사전 필터링으로 인해 사용되지 않습니다
+                추후 종료된 컨텐츠를 사용하고자 할 때 쓰일 수 있도록 두었습니다. -->
+                <div v-else-if="contest.status == '-1'">
+                  <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
+                  <div class="color-red"> {{contest.title}} </div>
+                  <div class="contest-time"> {{contest.start_time | localtime('YYYY.MM.DD')}}
+                  </div>
+                  <div style="clear:both"></div>
                 </div>
+                <div style="clear:both;"></div>
+              </div>
             </div>
           </div>
-          <!-- <Row :gutter="32"> -->
-            <!-- <Col span="12" class="demo-tabs-style1" style="background: #ebebeb;"> -->
 
-              <!-- <Tabs value="name1" type="card" :animated="false">
-                <div v-if="!announcements.length" key="no-announcement">
-                  <TabPane :index=0 label="공지사항" name="name1" class="tabpan_padding">
-                    <p class="announcement_title">{{$t('m.No_Announcements')}}</p>
-                  </TabPane>
-                </div>
-                <div v-else>
-                  <TabPane :index=1 label="공지사항" name="name1" class="tabpan_padding">
-                    <div v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)">
-                      <div class="announcement-title-box">
-                        <a>
-                          ▶︎ {{announcement.title}}
-                        </a>
-                      </div>
-                      <div class="announcement-time"> {{announcement.create_time | localtime('YY/M/D') }} </div>
-                      <div style="clear:both;"></div>
-                    </div>
-                    <div style="clear:both;"></div>
-                  </TabPane>
-                </div>
-                <div>
-                  <TabPane v-model="contest_idx" :index=1 label="대회일정" name="name2" class="tabpan_padding-s">
-                    <Dropdown @on-click="onStatusChange" :transfer="true" class="contest-status-list">
-                      <span>{{contest_stat === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[contest_stat].name.replace(/ /g,"_"))}} -->
-                        <!-- <Icon type="arrow-down-b"></Icon> -->
-                        <!-- <Icon type="md-arrow-dropdown" />
-                      </span>
-                      <Dropdown-menu slot="list">
-                        <Dropdown-item name="">모든 대회</Dropdown-item>
-                        <Dropdown-item name="0">진행 중인 대회</Dropdown-item>
-                        <Dropdown-item name="1">개최 예정인 대회</Dropdown-item>
-                      </Dropdown-menu>
-                    </Dropdown>
-
-                    <div class="contest_title" v-for="(contest, contest_idx) in contests" :key="contest_idx" @click="goContest">
-                      <div v-if="contest.status == '1'">
-                        <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
-                        <div class="color-yellow"> {{contest.title}} </div>
-                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}} -->
-                          <!-- ~ {{contest.end_time | localtime('YY/M/D')}}  -->
-                        <!-- </div>
-                        <div style="clear:both"></div>
-                      </div>
-                      <div v-else-if="contest.status == '0'">
-                        <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
-                        <div class="color-green"> {{contest.title}} </div>
-                        <div class="contest-time"> {{contest.start_time | localtime('YY/M/D')}} -->
-                          <!-- ~ {{contest.end_time | localtime('YY/M/D')}}  -->
-                        <!-- </div>
-                        <div style="clear:both"></div>
-                      </div>
-                      <div style="clear:both;"></div>
-                    </div>
-                  </TabPane>
-                </div>
-              </Tabs> -->
-            <!-- </Col> -->
-          <!-- </Row> -->
         </div>
-        <!-- <table class="right_rankings">
-          <thead>
-            <tr>
-              <th>순위</th>
-              <th>아이디</th>
-              <th>점수</th>
-            </tr>
-          </thead>
-        </table> -->
         <div class="right_rankings">
           <table>
             <!-- 제목 -->
@@ -210,52 +150,11 @@
               </tr>
             </tbody>
           </table>
-          
-          <!-- <div class="rankings_title">
-            <div class="title_rank">순위</div>
-            <div class="title_id">아이디</div>
-            <div class="title_score">점수</div>
-          </div>
-          <div class="rankings">
-            <div class="rankings_user" v-for="(data, index) in dataRank" :key="data.user.username" @click="goUser(data.user)">
-              <a v-if="index == 0" class="ranker first">
-                <div class="image">
-                  <img class="rankings-img" src="../../../../assets/gold crown.png"/>
-                  <span class="no">1</span>
-                </div>
-                <span class="name">{{data.user.username}}</span>
-                <span class="score">2000</span>
-              </a>
-              <a v-else-if="index == 1" class="ranker second">
-                <div class="image">
-                  <img class="rankings-img" src="../../../../assets/silver crown.png"/>
-                  <span class="no">2</span>
-                </div>
-                <span class="name">{{data.user.username}}</span>
-                <span class="score">1000</span>
-              </a>
-              <a v-else-if="index == 2" class="ranker third">
-                <div class="image">
-                  <img class="rankings-img" src="../../../../assets/bronse crown.png"/>
-                  <span class="no">3</span>
-                </div>
-                <span class="name">{{data.user.username}}</span>
-                <span class="score">0</span>
-              </a>
-              <a v-else class="ranker defa">
-                <span v-if="index == 3" class="image rankings-img">4</span>
-                <span v-if="index == 4" class="image rankings-img">5</span>
-                {{data.user.username}}
-              </a>
-            </div>
-          </div> -->
         </div>
       </div>
       <ProblemCategory style="margin: 20px 0 0 0"></ProblemCategory>
     </div>
-    <!-- <Announcements class="announcement"></Announcements> -->
-    <!-- </Col>
-  </Row> -->
+
   </div>
   <div v-else>
     <Panel shadow :padding="10">
@@ -325,7 +224,14 @@
     methods: {
       getContestList (page = 1) {
         api.getContestList(0, this.limit, this.query).then((res) => {
-          this.contests = res.data.data.results
+          let notfiltercontests = res.data.data.results
+          // 종료된 contest는 필터링
+          for (let v in notfiltercontests) {
+            if (notfiltercontests[v].status === undefined || notfiltercontests[v].status === null || notfiltercontests[v].status === -1 || notfiltercontests[v].status === '-1') {
+              continue
+            }
+            this.contests.push(notfiltercontests[v])
+          }
         })
       },
       getRankData (page = 1) {
@@ -535,6 +441,23 @@
     }
   }
 
+  .color-red {
+    color: rgba(208, 49, 0, 0.922);
+    font-size: 1rem;
+    transition:all 0.1s ease-in-out;
+    height: 34px;
+    line-height: 34px;
+    float: left;
+    padding-left: 10px;
+    width: calc(95% - 170px); // default size - left button size(90px) - times(80px)
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+      cursor: pointer;
+      font-weight: 700;
+      color: rgba(230, 54, 0, 0.922);
+    }
+  }
   .announcement {
     margin-top: 20px;
   }
@@ -580,12 +503,17 @@
         font-size: 20px;
         font-weight: @weight-bold;
         background-color: @light-gray;
-        a {
+        // transition: all 0.2s ease-in-out;
+        &:hover {
+          cursor: pointer;
+        }
+        p {
           color: @gray;
         }
         &.active {
+          transition: all 0.3s ease-in;
           background-color: @dark-orange;
-          a {
+          p {
             color: @white;
           }
         }
