@@ -81,12 +81,6 @@
                   </div>
                   <div style="clear:both"></div>
                 </div>
-                <div v-else>
-                  <div style="float:left"><Tag style="margin-top:0px" type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag></div>
-                  <div class="color-red"> {{contest.title}} </div>
-                  <div class="contest-time"> {{contest.start_time | localtime('YYYY.MM.DD')}}</div>
-                  <div style="clear:both"></div>
-                </div>
                 <div style="clear:both;"></div>
                 </div>
             </div>
