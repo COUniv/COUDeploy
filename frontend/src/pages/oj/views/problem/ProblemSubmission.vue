@@ -5,7 +5,7 @@
       <div id="undo-icon">
         <Icon type="ios-undo" size="24" @click="undoPage" />
       </div>  
-      <div class="logo" style="color:white" @click="goHome">COU</div>
+      <div class="logo" @click="goHome">COU</div>
       <div style="float: right">
         <div class="help-btn">
           <Button type="text" size="large" style="z-index: '1' " @click="help_btn">도움말</Button>
@@ -113,7 +113,7 @@
       <div style="float: right">
         <div v-if="!isAfterSubmit" class="footer_btn" style="color:white">
           <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" :loading="submitted" @click="toggle(false)">공개</Button>
-          <Button v-else type="error" size="large" style="z-index: '1'" :loading="submitted" @click="toggle(true)">비공개</Button>
+          <Button v-else type="error" size="large" style="z-index: '1'" :loading="submitted" class="show" @click="toggle(true)">비공개</Button>
         </div>
         <div v-else="isAfterSubmit" class="footer_btn" style="color:white">
           <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" disabled>공개로 제출 됨</Button>
@@ -506,6 +506,7 @@
 </script>
 
 <style lang="less" scoped>
+  @import '../../../../styles/common.less';
   .card-title {
     margin-left: 8px;
   }
@@ -537,7 +538,7 @@
       font-size: 17px;
       font-weight: 400;
       margin: 50px 0 20px 0;
-      color: #3091f2;
+      color: @purple;
       .copy {
         padding-left: 8px;
       }
@@ -648,35 +649,38 @@
     /* border: 1px solid #dcdee2; */
   }
   .ss_header{
-    background: #404040;
-    color: white;
+    background: @white;
+    color: @black;
     position: relative;
     left: 0px;
     top: 0px;
     width: 100%;
     height: 60px;
     line-height: 60px;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
 
     #undo-icon {
       float: left;
       width: 40px;
       text-align: center;
       line-height: 60px;
+      color: @purple;
       * {
         transition: all 0.1s ease-in-out;
       }
       &:hover {
         cursor: pointer;
-        color: #5030E5;
+        color: @purple;
         * {
-          color: #5030E5;
+          color: @purple;
         }
       }
     }
     .logo{
       float: left;
-      color: white;
-      font-size: 20px;
+      color: @purple;
+      font-size: 24px;
+      font-weight: bold;
       &:hover {
         cursor: pointer;
       }
@@ -841,11 +845,11 @@
   }
   .help-btn{
     float: left;
-    color: white;
+    color: #222222;
     font-size: 16px;
     padding: 0 10px;
     * {
-      color: white;
+      color: black;
       transition: all 0.1s ease-in-out;
     }
 

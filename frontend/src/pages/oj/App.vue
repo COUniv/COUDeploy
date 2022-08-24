@@ -104,7 +104,7 @@
   @media screen and (max-width: 1200px) {
     .content-app {
       margin-top: 80px;
-      min-height: 100vh;
+      min-height: 100%;
       position: relative;
     }
   }

@@ -13,6 +13,11 @@
     color: #5030E5;;
   }
 }
+
+.ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab-active {
+  color: #5030E5;
+}
+
 .ivu-btn-primary {
   background-color: #5030E5;
   border: solid 1px #5030E5;
@@ -52,10 +57,17 @@ table {
   color: @purple;
 }
 
-.ivu-btn:hover {
-  color: @purple;
-  background-color: #fff;
-  border-color: @purple;
+.ivu-btn {
+  &:hover {
+    color: @purple;
+    background-color: @white;
+    border-color: @purple;
+  }
+  &.show:hover {
+    color: #f16643;
+    background-color: @white;
+    border-color: #f16643;
+  }
 }
 
 .ivu-btn:focus {
