@@ -25,8 +25,8 @@
         <!-- <Button @click="value1 = 2">change</Button> -->
     </div>
     <div class="main_container">
-      <div class="list_container" style="display: block">
-        <div class="left_announcement" style="float:left">
+      <div class="list_container">
+        <div class="left_announcement">
           <ul class="tab-menu">
             <li v-for="(tab, index) in tabs" :key="index" class="tab-item" @click="currentTab = index" :class="{ active: currentTab===index }">
               <p>{{tab}}</p>
@@ -152,7 +152,9 @@
           </table>
         </div>
       </div>
-      <ProblemCategory style="margin: 20px 0 0 0"></ProblemCategory>
+      <div class="problem-category-container">
+        <ProblemCategory></ProblemCategory>
+      </div>
     </div>
 
   </div>
@@ -225,13 +227,15 @@
       getContestList (page = 1) {
         api.getContestList(0, this.limit, this.query).then((res) => {
           let notfiltercontests = res.data.data.results
+          let contestlist = []
           // 종료된 contest는 필터링
           for (let v in notfiltercontests) {
             if (notfiltercontests[v].status === undefined || notfiltercontests[v].status === null || notfiltercontests[v].status === -1 || notfiltercontests[v].status === '-1') {
               continue
             }
-            this.contests.push(notfiltercontests[v])
+            contestlist.push(notfiltercontests[v])
           }
+          this.contests = contestlist
         })
       },
       getRankData (page = 1) {
@@ -471,11 +475,12 @@
   }
 
   .list_container{
-    display: block;
+    display: flex;
     // margin: 10px 0 0 0;
     // padding: 0 20%;
     width: 100%;
-    height: 450px;
+    height: auto;
+    flex-wrap: wrap;
     margin-bottom: 50px;
     // background: #506b9e;
   }
@@ -483,9 +488,12 @@
   .left_announcement{
     display: inline-block;
     vertical-align: top;
-    width: 60%;
+    width: calc(~"60% - 30px");
+    min-width: 470px;
+    flex-grow: 1;
     height: 450px;
     padding: 20px;
+    margin: 15px 15px;
     background: #ffffff;
     border-radius: 5px;
     box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
@@ -579,11 +587,13 @@
   .right_rankings{
     display: inline-block;
     vertical-align: top;
-    float: right;
+    margin: 15px 15px;
     border: 1px solid rgb(226, 226, 226);
     border-radius: 5px;
     padding: 30px 20px;
-    width: 37%;
+    width: calc(~"37% - 30px");
+    min-width: 300px;
+    flex-grow: 1;
     height: 450px;
     background: white;
     box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
@@ -664,6 +674,9 @@
   }
   .content-container {
     padding: 0 20px 20px 20px;
+  }
+  .problem-category-container {
+    margin: 20px 15px;
   }
   .announcement-animate-enter-active {
     animation: fadeIn 1s;
