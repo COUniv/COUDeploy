@@ -28,6 +28,15 @@ class UserAdminAPI(APIView):
 
         user_list = []
         for user_data in data:
+          # id password email real_name school major
+            try: 
+                school = user_data[4]
+            except IndexError:
+                user_data.append('')
+            try: 
+                major = user_data[5]
+            except IndexError:
+                user_data.append('')
             if len(user_data[0]) < 1:
                 return self.error('닉네임이 빈 데이터가 존재합니다.')
             if len(user_data[1]) < 1:
@@ -45,7 +54,7 @@ class UserAdminAPI(APIView):
         try:
             with transaction.atomic():
                 ret = User.objects.bulk_create(user_list)
-                UserProfile.objects.bulk_create([UserProfile(user=ret[i], real_name=data[i][3]) for i in range(len(ret))])
+                UserProfile.objects.bulk_create([UserProfile(user=ret[i], real_name=data[i][3], school=data[i][4], major=data[i][5]) for i in range(len(ret))])
             return self.success()
         except IntegrityError as e:
             # Extract detail from exception message
