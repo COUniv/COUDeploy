@@ -70,8 +70,9 @@
     <Panel>
       <span slot="title">{{$t('m.Import_User')}}
         <el-popover placement="right" trigger="hover">
-          <p>Only support csv file without headers, check the <a
-            href="http://docs.onlinejudge.me/#/onlinejudge/guide/import_users">link</a> for details</p>
+          <p>csv파일만 지원합니다. csv 파일에는 헤더가 없어야 하며 <b>사용자 아이디, 비밀번호, 이메일, </b></p>
+          <p> <b>실명, 학교, 학과</b> 순으로 총 6개의 열이 있어야 합니다. </p>
+          <p> 이 중 <b>아이디, 비밀번호, 실명</b>은 반드시 기입되어야하며 나머지 열은 공백이 허용됩니다.</p>
           <i slot="reference" class="el-icon-fa-question-circle import-user-icon"></i>
         </el-popover>
       </span>
@@ -102,6 +103,16 @@
           <el-table-column label="RealName">
             <template slot-scope="{row}">
               {{row[3]}}
+            </template>
+          </el-table-column>
+          <el-table-column label="School">
+            <template slot-scope="{row}">
+              {{row[4]}}
+            </template>
+          </el-table-column>
+          <el-table-column label="Major">
+            <template slot-scope="{row}">
+              {{row[5]}}
             </template>
           </el-table-column>
         </el-table>
