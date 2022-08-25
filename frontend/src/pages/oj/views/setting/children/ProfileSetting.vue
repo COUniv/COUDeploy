@@ -55,7 +55,7 @@
                   </div>
                 </div>
                 
-                <Modal v-model="reselectModalVisible" class-name="vertical-center-modal" width="400" footer-hide="true" :closable="false" >
+                <Modal v-model="reselectModalVisible" class-name="vertical-center-modal" width="400" :footer-hide="footerhide" :closable="false" >
                     <div class="icon-header-box">
                       <i class="mdi mdi-alert-circle-outline warning-icon" aria-hidden="true"></i>
                     </div>
@@ -71,7 +71,7 @@
               </div>
             </template>
             <Modal v-model="uploadModalVisible"
-                  class-name="vertical-center-modal" footer-hide="true" :closable="false" title="프로필 업로드">
+                  class-name="vertical-center-modal" :footer-hide="footerhide" :closable="false" title="프로필 업로드">
               <div class="modal-text">
                 <p>프로필 사진이 다음과 같이 보여지게 됩니다</p>
                 <img class="modal-img" :src="uploadImgSrc"/>
@@ -96,18 +96,20 @@
           </div>
 
           <div class="mypage_info">
-            <FormItem class="mypage_info_input" label="이름"> 
-              <!-- <Input v-model="formProfile.real_name"/> -->
-            </FormItem>
-            <Form-item class="mypage_info_input" label="학과">
-              <!-- <Input v-model="formProfile.major"/> -->
-            </Form-item>
-            <Form-item class="mypage_info_input" label="회원분류">
+            <div class="mypage_info_input" label="이름"> 
+              <div>이름</div>
+            </div>
+            <div class="mypage_info_input" label="학과">
+              <div>학과</div>
+            </div>
+            <div class="mypage_info_input" label="회원분류">
+              <div>등급</div>
               <!-- <Input v-model="formProfile.classification"/> -->
-            </Form-item>
-            <Form-item class="mypage_info_input" label="이메일">
+            </div>
+            <div class="mypage_info_input" label="이메일">
+              <div>이메일</div>
               <!-- <Input v-model="formProfile.email"/> -->
-            </Form-item>
+            </div>
             <!-- <Form-item class="mypage_info_submit">
               <Button type="primary" @click="updateProfile" :loading="loadingSaveBtn">수정하기</Button>
             </Form-item> -->
@@ -280,7 +282,9 @@
     },
     computed: {
       ...mapGetters(['website', 'modalStatus', 'user', 'isVerifiedEmail']),
-
+      footerhide () {
+        return true
+      },
       previewStyle () {
         return {
           'width': this.preview.w + 'px',
