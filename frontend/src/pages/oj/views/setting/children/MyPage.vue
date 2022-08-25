@@ -59,7 +59,8 @@
         </div>
       </div>
 
-      <Grass></Grass>
+      <!-- github같은 잔디 (현재 비활성화) -->
+      <!-- <Grass></Grass> -->
 
       <!-- account setting, profile setting button -->
       <div class="flex-container">

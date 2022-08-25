@@ -55,7 +55,7 @@
                   </div>
                 </div>
                 
-                <Modal v-model="reselectModalVisible" class-name="vertical-center-modal" width="400" footer-hide="true" :closable="false" >
+                <Modal v-model="reselectModalVisible" class-name="vertical-center-modal" width="400" :footer-hide="footerhide" :closable="false" >
                     <div class="icon-header-box">
                       <i class="mdi mdi-alert-circle-outline warning-icon" aria-hidden="true"></i>
                     </div>
@@ -71,7 +71,7 @@
               </div>
             </template>
             <Modal v-model="uploadModalVisible"
-                  class-name="vertical-center-modal" footer-hide="true" :closable="false" title="프로필 업로드">
+                  class-name="vertical-center-modal" :footer-hide="footerhide" :closable="false" title="프로필 업로드">
               <div class="modal-text">
                 <p>프로필 사진이 다음과 같이 보여지게 됩니다</p>
                 <img class="modal-img" :src="uploadImgSrc"/>
@@ -96,21 +96,64 @@
           </div>
 
           <div class="mypage_info">
-            <FormItem class="mypage_info_input" label="이름"> 
-              <!-- <Input v-model="formProfile.real_name"/> -->
-            </FormItem>
-            <Form-item class="mypage_info_input" label="학과">
-              <!-- <Input v-model="formProfile.major"/> -->
-            </Form-item>
-            <Form-item class="mypage_info_input" label="회원분류">
+            <div class="mypage_info_input" label="이름"> 
+              <div>이름</div>
+              <div>{{profile.real_name}}</div>
+            </div>
+            <div class="mypage_info_input" label="학교">
+              <div>학교</div>
+              <div>{{profile.school}}</div>
+            </div>
+            <div class="mypage_info_input" label="전공">
+              <div>전공</div>
+              <div>{{profile.major}}</div>
+            </div>
+            <div class="mypage_info_input" label="회원분류">
+              <div>회원 등급</div>
+              <div>{{user.admin_type}}</div>
               <!-- <Input v-model="formProfile.classification"/> -->
-            </Form-item>
-            <Form-item class="mypage_info_input" label="이메일">
+            </div>
+            <div class="mypage_info_input" label="이메일">
+              <div>이메일</div>
+              <div>{{user.email}}</div>
               <!-- <Input v-model="formProfile.email"/> -->
-            </Form-item>
-            <!-- <Form-item class="mypage_info_submit">
-              <Button type="primary" @click="updateProfile" :loading="loadingSaveBtn">수정하기</Button>
-            </Form-item> -->
+            </div>
+            <div class="mypage_info_input" label="Github">
+              <div class="div-inline">
+                <div class="text">GitHub</div>
+                <div class="edit-btn">
+                  <Button @click="changeGithubEditMode">수정하기</Button>
+                </div>
+              </div>
+              <div>{{profile.github}}</div>
+              <transition name="slide-fade" mode="out-in">
+                <div class="edit-input" v-show="githubEditMode">
+                  <Input v-model="viewgithub">
+                    <span slot="prepend">https://github.com/</span>
+                  </Input>
+                  <div style="float:right"><Button @click="updateGithub">확인</Button></div>
+                  <div style="clear: both;"></div>
+                </div>
+              </transition>
+            </div>
+            <div class="mypage_info_input" label="Github">
+              <div class="div-inline">
+                <div class="text">블로그</div>
+                <div class="edit-btn">
+                  <Button @click="changeBlogEditMode">수정하기</Button>
+                </div>
+              </div>
+              <div>{{profile.blog}}</div>
+              <transition name="slide-fade" mode="out-in">
+                <div class="edit-input" v-show="blogEditMode">
+                  <Input v-model="viewblog">
+                    <span slot="prepend">https://</span>
+                  </Input>
+                  <div style="float:right"><Button @click="updateBlog">확인</Button></div>
+                  <div style="clear: both;"></div>
+                </div>
+              </transition>
+            </div>
           </div>
         </div>
       </Form>
@@ -134,6 +177,8 @@
     },
     data () {
       return {
+        githubEditMode: false,
+        blogEditMode: false,
         loadingSaveBtn: false,
         loadingUploadBtn: false,
         uploadModalVisible: false,
@@ -156,19 +201,32 @@
           school: '',
           github: '',
           language: ''
-        }
+        },
+        viewgithub: '',
+        viewblog: ''
       }
     },
     mounted () {
-      let profile = this.$store.state.user.profile
-      Object.keys(this.formProfile).forEach(element => {
-        if (profile[element] !== undefined) {
-          this.formProfile[element] = profile[element]
-        }
-      })
+      this.init()
     },
     methods: {
       ...mapActions(['getProfile', 'changeModalStatus']),
+      init () {
+        let profile = this.$store.state.user.profile
+        new Promise((resolve, reject) => {
+          Object.keys(this.formProfile).forEach(element => {
+            if (profile[element] !== undefined) {
+              this.formProfile[element] = profile[element]
+            }
+          })
+          resolve()
+        }).then(res => {
+          this.viewgithub = this.formProfile.github
+          this.viewgithub = this.viewgithub.replace('https://github.com/', '')
+          this.viewblog = this.formProfile.blog
+          this.viewblog = this.viewblog.replace('https://', '')
+        })
+      },
       checkFileType (file) {
         if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(file.name)) {
           this.$Notice.warning({
@@ -266,21 +324,51 @@
           })
         })
       },
+      updateGithub () {
+        if (this.viewgithub === '' || this.viewgithub === ' ' || this.viewgithub === null || this.viewgithub === undefined) {
+          this.formProfile.github = ' '
+        } else {
+          this.formProfile.github = 'https://github.com/' + this.viewgithub
+        }
+        this.updateProfile()
+      },
+      updateBlog () {
+        if (this.viewblog === '' || this.viewblog === ' ' || this.viewblog === null || this.viewblog === undefined) {
+          this.formProfile.blog = ' '
+        } else {
+          this.formProfile.blog = 'https://' + this.viewblog
+        }
+        this.updateProfile()
+      },
       updateProfile () {
         this.loadingSaveBtn = true
         let updateData = utils.filterEmptyValue(Object.assign({}, this.formProfile))
-        api.updateProfile(updateData).then(res => {
+        api.updateProfile(updateData).then(_ => {
           this.$success('Success')
-          this.$store.commit(types.CHANGE_PROFILE, {profile: res.data.data})
-          this.loadingSaveBtn = false
+          api.getUserInfo(this.$store.state.user.username).then(res => {
+            setTimeout(() => {
+              this.$store.commit(types.CHANGE_PROFILE, {profile: res.data.data})
+            }, 100)
+            this.loadingSaveBtn = false
+            this.githubEditMode = false
+            this.blogEditMode = false
+          })
         }, _ => {
           this.loadingSaveBtn = false
         })
+      },
+      changeGithubEditMode () {
+        this.githubEditMode = !this.githubEditMode
+      },
+      changeBlogEditMode () {
+        this.blogEditMode = !this.blogEditMode
       }
     },
     computed: {
-      ...mapGetters(['website', 'modalStatus', 'user', 'isVerifiedEmail']),
-
+      ...mapGetters(['website', 'modalStatus', 'user', 'isVerifiedEmail', 'profile']),
+      footerhide () {
+        return true
+      },
       previewStyle () {
         return {
           'width': this.preview.w + 'px',
@@ -449,6 +537,71 @@
     margin-top: 20px;
     box-shadow: 0 0 1px 0;
     border-radius: 50%;
+  }
+  .mypage_info_input {
+    width: 300px;
+    margin: 20px;
+    border-bottom: solid 1px @pale-purple;
+    span {
+      height: 33px;
+    }
+    & div:first-child {
+      height: 33px;
+    }
+    & div:nth-child(2) {
+      font-weight: @weight-semi-bold;
+      height: 24px;
+    }
+    .div-inline {
+      display: inline-block;
+      height: 33px;
+      line-height: 33px;
+      & .text {
+        float: left;
+        margin-right: 20px;
+      }
+      & .edit-btn {
+        width:fit-content;
+        float: right;
+      }
+    }
+    .edit-btn {
+      width:fit-content;
+    }
+  }
+  .edit-input {
+    margin-top:10px;
+    margin-bottom:10px;
+  }
+
+
+  // transition mode 
+    .fade-enter {
+    opacity: 0;
+  }
+  
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.5s ease-out;
+  }
+  
+  .fade-leave-to {
+    opacity: 0;
+  }
+  
+  .slide-fade-enter {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  
+  .slide-fade-enter-active,
+  .slide-fade-leave-active {
+    transition: all 0.5s ease;
+  }
+  
+  .slide-fade-leave-to {
+    transform: translateY(-10px);
+    opacity: 0;
   }
 
 </style>
