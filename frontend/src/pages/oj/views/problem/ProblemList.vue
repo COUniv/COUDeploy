@@ -65,9 +65,9 @@
               </tr>
             </thead>
             <tbody v-for="problem in problemList">
-              <tr @click="redirectToProblem(problem)">
+              <tr>
                 <td id="problem-id">{{ problem._id }}</td>
-                <td id="problem-title">{{ problem.title }}</td>
+                <td id="problem-title" @click="redirectToProblem(problem)">{{ problem.title }}</td>
                 <td :class="[(problem.difficulty === 'Low' ? 'green' : ''), (problem.difficulty === 'Mid' ? 'orange' : ''), (problem.difficulty === 'High' ? 'red' : '')]">{{ problem.difficulty }}</td>
                 <td>{{ problem.submission_number }}</td>
                 <td> {{ convertToACRate(problem) }}</td>
@@ -515,8 +515,10 @@
 
       &:hover {
         #problem-title {
-          transition: color .3s ease-in;
+          cursor: pointer;
+          transition: color .2s ease-in;
           color: @purple;
+          font-weight: 500;
         }
       }
     }
