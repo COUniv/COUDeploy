@@ -2,20 +2,20 @@
   <div class="flex-container">
     <div id="problem-main">
       <!--problem main-->
-      <Panel :padding="40" shadow>
+      <Panel :padding='40' shadow>
         <div slot="title">{{problem.title}}</div>
         <div id="problem-content" class="markdown-body" v-katex>
           <p class="title">문제 설명</p>
           <p class="content" v-html="problem.description"></p>
-          <!-- {{$t('m.music')}} -->
-          <p class="title">입력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></p>
-          <p class="content" v-html="problem.input_description"></p>
-          <p class="title">출력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
+          <!-- {{$t("m.music")}} -->
+          <p class="title">입력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t("m.FromFile")}}: {{ problem.io_mode.input }})</span></p>
+          <p class="content" v-html='problem.input_description'></p>
+          <p class="title">출력 <span v-if="problem.io_mode.io_mode=='File IO'">({{$t("m.ToFile")}}: {{ problem.io_mode.output }})</span></p>
           <p class="content" v-html="problem.output_description"></p>
           <div v-for="(sample, index) of problem.samples" :key="index">
             <div class="in-out-container sample">
               <div class="sample-input">
-                <p class="title">{{$t('m.Sample_Input')}} {{index + 1}}
+                <p class="title">{{$t("m.Sample_Input")}} {{index + 1}}
                   <a class="copy"
                       v-clipboard:copy="sample.input"
                       v-clipboard:success="onCopy"
@@ -26,19 +26,19 @@
                 <pre class="input-for-pre">{{sample.input}}</pre>
               </div>
               <div class="sample-output">
-                <p class="title">{{$t('m.Sample_Output')}} {{index + 1}}</p>
+                <p class="title">{{$t("m.Sample_Output")}} {{index + 1}}</p>
                 <pre class="input-for-pre">{{sample.output}}</pre>
               </div>
             </div>
           </div>
           <div v-if="problem.hint">
-            <p class="title">{{$t('m.Hint')}}</p>
+            <p class="title">{{$t("m.Hint")}}</p>
             <Card dis-hover>
               <div class="content" v-html="problem.hint"></div>
             </Card>
           </div>
           <div v-if="problem.source">
-            <p class="title">{{$t('m.Source')}}</p>
+            <p class="title">{{$t("m.Source")}}</p>
             <p class="content">{{problem.source}}</p>
           </div>
         </div>
@@ -47,7 +47,7 @@
     <div id="right-column">
       <!-- 제출 버튼 -->
       <VerticalMenu style="margin-bottom: 20px;">
-        <!-- <VerticalMenu-item :route="{name: 'contest-problem-list', params: {contestID: contestID}}"> -->
+        <!-- <VerticalMenu-item :route="{name: "contest-problem-list", params: {contestID: contestID}}"> -->
           <Button v-if="isAuthenticated && isVerifiedEmail" type="primary" size="large" @click="goSubmitView" long>제출하기</Button>
           <Button v-else type="primary" size="large" disabled long>제출하기</Button>
         <!-- </VerticalMenu-item> -->
@@ -56,66 +56,66 @@
         <template v-if="this.contestID">
           <VerticalMenu-item :route="{name: 'contest-problem-list', params: {contestID: contestID}}">
             <Icon type="ios-photos"></Icon>
-            {{$t('m.Problems')}}
+            {{$t("m.Problems")}}
           </VerticalMenu-item>
           <VerticalMenu-item :route="{name: 'contest-announcement-list', params: {contestID: contestID}}">
             <Icon type="chatbubble-working"></Icon>
-            {{$t('m.Announcements')}}
+            {{$t("m.Announcements")}}
           </VerticalMenu-item>
         </template>
         <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission" :route="submissionRoute">
           <Icon type="navicon-round"></Icon>
-          {{$t('m.Submissions')}}
+          {{$t("m.Submissions")}}
         </VerticalMenu-item>
         <template v-if="this.contestID">
           <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission"
             :route="{name: 'contest-rank', params: {contestID: contestID}}">
             <Icon type="stats-bars"></Icon>
-            {{$t('m.Rankings')}}
+            {{$t("m.Rankings")}}
           </VerticalMenu-item>
           <VerticalMenu-item :route="{name: 'contest-details', params: {contestID: contestID}}">
             <Icon type="home"></Icon>
-            {{$t('m.View_Contest')}}
+            {{$t("m.View_Contest")}}
           </VerticalMenu-item>
         </template>
       </VerticalMenu>
       <Card id="info" class="tag-card">
         <div slot="title" class="header">
           <Icon type="information-circled"></Icon>
-          <span class="card-title">{{$t('m.Information')}}</span>
+          <span class="card-title">{{$t("m.Information")}}</span>
         </div>
         <ul>
           <li><p>문제 번호</p>
             <p>{{problem._id}}</p></li>
           <li>
-            <p>{{$t('m.Time_Limit')}}</p>
+            <p>{{$t("m.Time_Limit")}}</p>
             <p>{{problem.time_limit}}MS</p></li>
           <li>
-            <p>{{$t('m.Memory_Limit')}}</p>
+            <p>{{$t("m.Memory_Limit")}}</p>
             <p>{{problem.memory_limit}}MB</p>
           </li>
           <!-- <li> -->
           <li>
-            <p>{{$t('m.IOMode')}}</p>
+            <p>{{$t("m.IOMode")}}</p>
             <p>{{problem.io_mode.io_mode}}</p>
           </li>
           <li>
-            <p>{{$t('m.Created')}}</p>
+            <p>{{$t("m.Created")}}</p>
             <p>{{problem.created_by.username}}</p>
           </li>
           <li v-if="problem.difficulty">
-            <p>{{$t('m.Level')}}</p>
-            <p>{{$t('m.' + problem.difficulty)}}</p>
+            <p>{{$t("m.Level")}}</p>
+            <p>{{$t("m." + problem.difficulty)}}</p>
           </li>
           <li v-if="problem.total_score">
-            <p>{{$t('m.Score')}}</p>
+            <p>{{$t("m.Score")}}</p>
             <p>{{problem.total_score}}</p>
           </li>
           <li>
-            <p>{{$t('m.Tags')}}</p>
+            <p>{{$t("m.Tags")}}</p>
             <p>
               <Poptip trigger="hover" placement="left-end">
-                <a>{{$t('m.Show')}}</a>
+                <a>{{$t("m.Show")}}</a>
                 <div slot="content">
                   <Tag v-for="tag in problem.tags" :key="tag">{{tag}}</Tag>
                 </div>
@@ -135,6 +135,7 @@
   import {types} from '../../../../store'
   import {FormMixin} from '@oj/components/mixins'
   import api from '@oj/api'
+  import ProblemCategory from './ProblemCategory.vue'
 
   export default {
     name: 'Problem',
@@ -157,18 +158,17 @@
             username: ''
           },
           tags: [],
-          io_mode: {'io_mode': 'Standard IO'}
+          io_mode: { 'io_mode': 'Standard IO' }
         }
       }
     },
     mounted () {
-      this.$store.commit(types.CHANGE_CONTEST_ITEM_VISIBLE, {menu: false})
+      this.$store.commit(types.CHANGE_CONTEST_ITEM_VISIBLE, { menu: false })
       this.init()
       this.getWebsiteConfig()
     },
     methods: {
       ...mapActions(['changeDomTitle', 'getWebsiteConfig']),
-
       init () {
         this.$Loading.start()
         // routes.js에 정의 된 params
@@ -178,7 +178,7 @@
         api[func](this.problemID, this.contestID).then(res => {
           this.$Loading.finish()
           let problem = res.data.data
-          this.changeDomTitle({title: problem.title})
+          this.changeDomTitle({ title: problem.title })
           problem.languages = problem.languages.sort()
           this.problem = problem
           // 로컬에 코드가 있고 템플릿을 로드할 필요가 없음을 나타내는 beforeRouteEnter에서 수정됨
@@ -187,13 +187,13 @@
         })
       },
       handleRoute (route) {
-        this.$router.push(route).catch(() => {})
+        this.$router.push(route).catch(() => { })
       },
       goSubmitView () {
         if (this.contestID) {
-          this.$router.push({name: 'contest-problem-submission'}).catch(() => {})
+          this.$router.push({ name: 'contest-problem-submission' }).catch(() => {})
         } else {
-          this.$router.push({name: 'problem-submission'}).catch(() => {})
+          this.$router.push({ name: 'problem-submission' }).catch(() => {})
         }
       },
       onCopy (event) {
@@ -203,13 +203,13 @@
         this.$error('Failed to copy code')
       },
       goHome () {
-        this.$router.push('/').catch(() => {})
+        this.$router.push('/').catch(() => { })
       },
       goSubmissionList () {
         if (this.contestID) {
-          this.$router.push({name: 'contest-submission-list', query: {problemID: this.problemID}}).catch(() => {})
+          this.$router.push({ name: 'contest-submission-list', query: { problemID: this.problemID } }).catch(() => {})
         } else {
-          this.$router.push({name: 'submission-list', query: {problemID: this.problemID}}).catch(() => {})
+          this.$router.push({ name: 'submission-list', query: { problemID: this.problemID } }).catch(() => { })
         }
       }
     },
@@ -220,9 +220,19 @@
       },
       submissionRoute () {
         if (this.contestID) {
-          return {name: 'contest-submission-list', query: {problemID: this.problemID}}
+          return {
+            name: 'contest-submission-list',
+            query: {
+              problemID: this.problemID
+            }
+          }
         } else {
-          return {name: 'submission-list', query: {problemID: this.problemID}}
+          return {
+            name: 'submission-list',
+            query: {
+              problemID: this.problemID
+            }
+          }
         }
       }
     },
@@ -234,10 +244,10 @@
         this.changeDomTitle()
       }
     }
-  }
+}
 </script>
 
-<style lang="less" scoped>
+<style lang='less' scoped>
   .card-title {
     margin-left: 8px;
   }
@@ -245,7 +255,7 @@
   .in-out-container {
     display: flex;
     left: 0;
-    max-width: calc(~"100vw - 100px");
+    max-width: calc(~'100vw - 100px');
     justify-content: flex-start;
     flex-wrap: wrap;
     .sample {
@@ -267,7 +277,7 @@
     }
   }
   .flex-container {
-    max-width: calc(~"100vw - 100px");
+    max-width: calc(~'100vw - 100px');
     justify-content: center;
     min-width: 725px; // left-item min width + right-item min width
     #problem-main {
@@ -340,7 +350,7 @@
   }
 
 </style>
-<style lang="less">
+<style lang='less'>
   .tag-card {
     & > .ivu-card-body {
       padding-left: 20px;

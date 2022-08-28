@@ -2,13 +2,13 @@
   <div id="header">
     <Menu v-show="screenWidth > 900" theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
       <Menu-item class="home_bar" name="/" >COU</Menu-item>
-      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/problem">
+      <Menu-item class="bar_list" name="/problem">
         문제
       </Menu-item>
-      <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/contest">
+      <Menu-item class="bar_list" name="/contest">
         대회
       </Menu-item>
-      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/info">
+      <Submenu class="bar_list" name="/info">
         <template slot="title">
           정보
         </template>
@@ -17,7 +17,7 @@
           <MenuItem name="/languages">언어별 도움말</MenuItem>
           <MenuItem name="/acm-rank">사용자 순위</MenuItem>
       </Submenu>
-      <Submenu class="bar_list" :class="{'open': navOpen === true}" name="/community">
+      <Submenu class="bar_list" name="/community" trigger="click">
         <template slot="title">
           커뮤니티
         </template>
@@ -101,21 +101,23 @@
             <span class="username">{{ user.username }}</span>
           </div>
           <div style="clear:both"></div>
-          <div v-if="visibleAccount" class="account_modal" v-click-outside="closeModal">
-            <div class="profile">
-              <div class="photo">
-                <div v-if="getAvatar" class="avatar-container">
-                  <img :src="profile.avatar"/>
+          <transition name="fade">
+            <div v-if="visibleAccount" class="account_modal" v-click-outside="closeModal">
+              <div class="profile">
+                <div class="photo">
+                  <div v-if="getAvatar" class="avatar-container">
+                    <img :src="profile.avatar"/>
+                  </div>
+                  <Icon v-else type="md-contact" size="100" color="#5030E5"/>
                 </div>
-                <Icon v-else type="md-contact" size="100" color="#5030E5"/>
+                <div class="name">{{ user.username }}</div>
+                <div class="email">root@gmail.com</div>
               </div>
-              <div class="name">{{ user.username }}</div>
-              <div class="email">root@gmail.com</div>
+              <div class="mypage_btn" @click="goMySettingPage">계정관리</div>
+              <div class="line"></div>
+              <div class="logout_btn" @click="goLogOut">로그아웃</div>
             </div>
-            <div class="mypage_btn" @click="goMySettingPage">계정관리</div>
-            <div class="line"></div>
-            <div class="logout_btn" @click="goLogOut">로그아웃</div>
-          </div>
+          </transition>
         </div>
       </template>
     </Menu>
@@ -123,7 +125,9 @@
 
     <!-- vertical navigation-bar -->
     <Menu v-show="screenWidth <= 900" theme="light" width="100vw" mode="vertical" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
-      <Menu-item class="home_bar" name="/" >COU</Menu-item>
+      <Menu-item class="home_bar" name="/ff" >
+        <div class="logo-name" @click="handleRoute('/')">COU</div>
+      </Menu-item>
       <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/problem">
         문제
       </Menu-item>
@@ -281,6 +285,9 @@
         this.getProfile()
       },
       handleRoute (route) {
+        if (route === '/ff') {  // vertical-nav-bar 상단전체 클릭 방지용
+          return
+        }
         this.navOpen = false
         if (this.notification_checked) { // 변경될 때 마다 알림창을 닫음
           this.delete = false
@@ -368,11 +375,11 @@
       redirectToArticle (notification) {
         let noti = notification.url.split('/')
         let articleId = noti[noti.length - 1]
+        if (!notification.is_read) this.init_notification_count -= 1
         api.checkNotification(notification.id).then(res => {
           this.$router.push({name: 'article-details', params: {articleID: articleId}}).catch(() => {})
         })
         this.visibleDraw = false
-        this.init_notification_count -= 1
       },
       navToggle () {
         this.navOpen = !this.navOpen
@@ -417,9 +424,11 @@
         if (this.visibleAccount !== false) {
           this.visibleAccount = false
         }
+        if (this.visibleDraw !== false) {
+          this.visibleDraw = false
+        }
       },
       'screenWidth': (newVal, oldVal) => {
-        console.log(newVal)
         this.screenWidth = newVal
       }
     }
@@ -482,17 +491,27 @@
     .logo > span > a, .bar_list{
       color: @black;
       font-weight: @weight-regular;
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        color: @purple;
+      }
     }
     .home_bar{
         color: @purple;
         font-size: @font-medium;
         font-weight: @weight-bold;
         -webkit-text-stroke: 1.5px;
+        .logo-name {
+          width: fit-content;
+          height: 32px;
+          line-height: 32px;
+          &:hover {
+            cursor: pointer;
+          }
+        }
     }
 
     .bar_list {
-      padding-right: 30px;
-      padding-left: 30px;
       text-align: center;
     }
     .drop-menu {
@@ -601,6 +620,7 @@
       background-color: @white;
       color: @black;
       box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
+
       .profile {
         display: flex;
         flex-direction: column;
@@ -821,19 +841,47 @@
       //color: #e0dafc4d;
     }
   }
-
+  @media screen and (min-width: 901px) {
+    .bar_list {
+      padding-right: 30px;
+      padding-left: 30px;
+    }
+  }
 
   @media screen and (max-width : 900px) {
+    .bar_list .ivu-menu-submenu {
+      &:hover {
+        pointer-events: none;
+      }
+    }
     .home_bar {
       width: 100vw;
       height: 60px;
+      background-color: @white;
+      //  vertical nav일시 상단 전체가 커서가 되는 것을 방지
+      &:hover {
+        cursor: default;
+      }
     }
     .bar_list {
+      padding-left: 0;
+      padding-right: 0;
       display: none;
       background-color: @white;
+      border: solid 1px @white;
+      transition: all 2s ease-in;
+      &:hover {
+        color: @purple;
+        border-bottom-color: @purple;
+      }
+      &:last-child {
+        border-bottom: solid 2px;
+        border-bottom-color: @purple;
+      }
     }
     .bar_list.open {
       display: block;
+      // transition: all 2s ease-in;
     }
     .navbar_toggle-btn {
       height: 60px;
@@ -851,5 +899,42 @@
       display: none;
     }
   }
+  
+  /** transition group */
+  .fade-enter-active, .fade-leave-active {
+      transition: opacity .2s ease-in-out
+  }
+  .fade-enter,.fade-leave-to {
+      opacity: 0
+  }
+</style>
 
+<style lang="less">
+@import '../../../styles/common.less';
+  @media screen and (max-width : 900px) {
+    .ivu-menu-light.ivu-menu-vertical &.ivu-menu-item-active:not(.ivu-menu-submenu) {
+        background:white;
+    }
+    .bar_list {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+  .bar_list .ivu-menu-vertical .ivu-menu-item:hover, .ivu-menu-vertical .ivu-menu-submenu-title:hover {
+    color: @purple;
+  }
+  .ivu-menu-vertical .ivu-menu-item:hover, .ivu-menu-vertical .ivu-menu-submenu-title:hover {
+    color: @purple;
+  }
+  .bar_list  {
+    & .ivu-menu {
+      background-color: @pale-purple;
+      color: #20242c;
+      text-align: center;
+      & .ivu-menu-item {  // ivue commponent에서 padding-left가 48px로 되어있어 강제로 가운데 맞춤
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+      }
+    }
+  }
 </style>
