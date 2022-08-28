@@ -3,7 +3,7 @@ import Logout from './user/Logout.vue'
 import UserHome from './user/UserHome.vue'
 import GuardMessage from './user/GuardMessage.vue'
 import About from './help/About.vue'
-import Languages from './help/Languages.vue'
+// import Languages from './help/Languages.vue'
 import NotFound from './general/404.vue'
 import Home from './general/Home.vue'
 import Announcements from './general/Announcements.vue'
@@ -27,7 +27,7 @@ const CreateArticle = () => import('@oj/views/article/CreateArticle.vue')
 const Article = () => import('@oj/views/article/ArticleDetails.vue')
 const Notification = () => import('@oj/views/article/Notification.vue')
 const Join = () => import('@oj/views/preHome/Join.vue')
-
+const Languages = () => import('@oj/views/help/Languages.vue')
 const CategoryList = () => import('@oj/views/problem/CategoryList.vue')
 
 export {
