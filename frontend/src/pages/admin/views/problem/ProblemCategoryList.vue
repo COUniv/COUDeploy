@@ -97,7 +97,7 @@
         row.isEditing = true
       },
       goCreateProblemCategory () {
-        this.$router.push({name: 'problem-category'})
+        this.$router.push({name: 'problem-category'}).catch(() => {})
       },
       // 切换页码回调
       currentChange (page) {
@@ -118,13 +118,12 @@
             problem.isEditing = false
           }
           this.problemCategoryList = res.data.data.results
-          console.log(this.problemCategoryList)
         }, res => {
           this.loading = false
         })
       },
       editProblemCategory (categoryId) {
-        this.$router.push({name: 'edit-problem-category', params: {categoryId}})
+        this.$router.push({name: 'edit-problem-category', params: {categoryId}}).catch(() => {})
       },
       deleteProblemCategory (id) {
         api.deleteProblemCategory(id).then(res => {

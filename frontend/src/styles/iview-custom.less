@@ -1,3 +1,61 @@
+.ivu-menu-light.ivu-menu-horizontal .ivu-menu-item-active, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item:hover {
+  border-bottom: 2px solid #937ef1;
+}
+.ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu {
+  border-bottom: 2px solid rgba(255, 255, 255, 0);
+}
+.ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item {
+  border-bottom: 2px solid rgba(255, 255, 255, 0);
+}
+.ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item:last-child {
+  // navigation bar의 dropdown item 의 마지막 아이템의 border 조절
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0);
+}
+.ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item:hover {
+  border-bottom-color: #937ef1;
+}
+.ivu-select-dropdown {
+  padding-bottom: 0;
+}
+.ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu:hover {
+  border-bottom: 2px solid #937ef1;
+}
+.ivu-menu-light.ivu-menu-horizontal .ivu-menu-item-active {
+  border-bottom: 2px solid #5030E5;
+}
+.ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item-selected {
+  color: #5030E5;
+  &:hover {
+    color: #5030E5;;
+  }
+}
+
+.ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab {
+  color: #5030E5;
+}
+
+.ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
+  color: #5030E5;
+  background: #f0edff;
+  &:after {
+    background: #5030E5;
+  }
+}
+
+.ivu-menu-vertical .ivu-menu-item:hover {
+  color: #5030E5;
+}
+
+.ivu-btn-primary {
+  background-color: #5030E5;
+  border: solid 1px #5030E5;
+  &:hover {
+    background-color: #937ef1;
+  }
+}
+
 table {
   width: 100% !important;
 }
@@ -6,6 +64,118 @@ table {
     table-layout: auto !important;
   }
 }
+
+.ivu-select-visible .ivu-select-selection {
+  border-color: @purple;
+  box-shadow: 0 0 0 2px rgba(81, 48, 229, 0.2);
+}
+
+.ivu-select-selection-focused {
+  border-color: @purple;
+}
+
+.ivu-input:hover, .ivu-select-selection:hover {
+  border-color: @purple;
+}
+
+.ivu-input:focus, .ivu-select-visible:focus {
+  border-color: @purple;
+  box-shadow: 0 0 0 2px rgba(81, 48, 229, 0.2);
+}
+
+.ivu-select-item-selected, .ivu-select-item-selected:hover {
+  color: @purple;
+}
+
+.ivu-btn {
+  &:hover {
+    color: @purple;
+    background-color: @white;
+    border-color: @purple;
+  }
+  &.show:hover {
+    color: #f16643;
+    background-color: @white;
+    border-color: #f16643;
+  }
+}
+
+.ivu-btn:focus {
+  color: @purple;
+  background-color: #fff;
+  border-color: @purple;
+  box-shadow: 0 0 0 2px rgba(81, 48, 229, 0.2);
+}
+
+.ivu-btn-primary {
+  border-color: @purple;
+  background-color: @purple;
+}
+
+.ivu-btn-primary:hover {
+  border-color: @dark-purple;
+  color: @white;
+  background-color: @dark-purple;
+}
+
+.ivu-page-item {
+  border-color: @light-gray;
+  a {
+    color: @black;
+  }
+  background-color: @light-gray;
+}
+
+.ivu-page-item:hover {
+  background-color: @dark-white;
+  a {
+    color: @black;
+  }
+  border-color: @dark-white;
+}
+
+.ivu-page-item-active {
+  background-color: @gray;
+  a {
+    color: @white;
+  }
+  border-color: @gray;
+}
+
+.ivu-page-item-active:hover {
+  background-color: @gray;
+  a {
+    color: @white;
+  }
+  border-color: @gray;
+}
+
+.ivu-page-next, .ivu-page-prev {
+  background-color: @light-gray;
+  border-color: @light-gray;
+}
+
+.ivu-page-next:hover, .ivu-page-prev:hover {
+  border-color: @dark-white;
+  background-color: @dark-white;
+  a {
+    color: @black;
+  }
+}
+
+.ivu-page-disabled {
+  background-color: @light-gray;
+  border-color: @light-gray;
+}
+
+.ivu-page-disabled:hover {
+  background-color: @light-gray;
+  border-color: @light-gray;
+  a {
+    color: #ccc;
+  }
+}
+
 .ivu-table-wrapper {
   border: none;
 }
@@ -49,4 +219,26 @@ table {
   font-size: 20px;
   height: 35px;
   padding-top: 0px;
+}
+
+.ivu-card-body {
+  padding: 16px 65px;
+  ul .list {
+    &:hover {
+      color: #5030E5;
+      border-left: 2px solid #5030E5;
+    }
+  }
+}
+
+.ivu-modal-footer {
+  padding: 12px 18px;
+}
+
+.ivu-modal-header {
+  border-color: #C4C4C4;
+}
+
+.ivu-page-options-sizer {
+  margin-right: 0px;
 }

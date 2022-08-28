@@ -12,7 +12,7 @@ const debug = process.env.NODE_ENV !== 'production'
 const rootState = {
   website: {},
   modalStatus: {
-    mode: 'register', // or 'register',
+    mode: 'GuardMessage', // or 'register',
     visible: false
   }
 }
@@ -65,7 +65,9 @@ export default new Vuex.Store({
     user,
     contest
   },
-  plugins: [createPersistedState()],
+  plugins: [createPersistedState({
+    storage: window.sessionStorage
+  })],
   state: rootState,
   getters: rootGetters,
   mutations: rootMutations,

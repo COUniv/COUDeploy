@@ -83,7 +83,6 @@
         api.getUserInfo(this.username).then(res => {
           this.changeDomTitle({title: res.data.data.user.username})
           this.profile = res.data.data
-          console.log(this.profile)
           this.getSolvedProblems()
         })
       },
@@ -103,7 +102,7 @@
         this.problems = ACProblems
       },
       goProblem (problemID) {
-        this.$router.push({name: 'problem-details', params: {problemID: problemID}})
+        this.$router.push({name: 'problem-details', params: {problemID: problemID}}).catch(() => {})
       },
       freshProblemDisplayID () {
         api.freshDisplayID().then(res => {

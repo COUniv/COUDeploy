@@ -76,7 +76,7 @@ class ArticleCreateAPI(APIView):
         elif (boardtype == "3"): # 요청 게시판인 경우
             boardtype = BoardType.REQUEST_BOARD
         else: # 선택을 안한 경우
-            return self.error("Board Type is not selected")
+            return self.error("게시판 타입을 선택하지 않았습니다")
             
         if Article.objects.exists(): # 게시글이 존재하는 경우
             latest_id = Article.objects.order_by('-id')[0].id + 1 # 생성 게시글 ID = 현재 존재하는 가장 높은 ID + 1
@@ -126,7 +126,7 @@ class ArticleAPI(APIView):
             return self.success(article_data) # username, title, content, create_time, is_writer, comments 데이터 전송
             
         else:
-            return self.error("Wrong Article")
+            return self.error("게시글이 존재하지 않습니다")
         
 
 class ArticleDeleteAPI(APIView):
@@ -143,9 +143,9 @@ class ArticleDeleteAPI(APIView):
                 article.delete() # 게시글 삭제
                 return self.success()
             else: # 게시글 작성자가 아닌 경우
-                return self.error("Not your article")
+                return self.error("권한이 없습니다")
         else:
-            return self.error("Wrong Article")
+            return self.error("게시글이 존재하지 않습니다")
 
 class ArticleModifyAPI(APIView):
     """
@@ -166,7 +166,7 @@ class ArticleModifyAPI(APIView):
             article.save()
             return self.success()
         else:
-            return self.error("Wrong Article")
+            return self.error("게시글이 존재하지 않습니다")
 
 
 class CommentCreateAPI(APIView):
@@ -198,7 +198,7 @@ class CommentCreateAPI(APIView):
             return self.success()
             
         else:
-            return self.error("Please Input Content")
+            return self.error("내용이 비어있습니다")
 
 class CommentDeleteAPI(APIView):
     """
@@ -214,7 +214,7 @@ class CommentDeleteAPI(APIView):
             comment.delete() # 댓글 삭제
             return self.success()
         else:
-            return self.error("Wrong Comment")
+            return self.error("해당 댓글이 존재하지 않습니다")
 
 class CommentModifyAPI(APIView):
     """
@@ -232,7 +232,7 @@ class CommentModifyAPI(APIView):
             comment.save() # 저장
             return self.success()
         else:
-            return self.error("Wrong Comment")
+            return self.error("해당 댓글이 존재하지 않습니다")
 
 class ArticleLikeAPI(APIView):
     """
@@ -251,7 +251,7 @@ class ArticleLikeAPI(APIView):
                 url = "/article/" + str(article.id)
                 Notification.objects.filter(Q (target_username=article.username) & Q (action_username=request.user.username) & Q (url=url) & Q (notificationtype=NotificationType.LIKE)).delete()
 
-                return self.success("like canceled")
+                return self.success()
             else: # 현재 접속한 유저가 해당 게시글의 좋아요를 아직 안 한 경우
                 article.like.add(request.user) # 좋아요 추가
                 article.like_count += 1 # 좋아요 수 1 증가
@@ -266,9 +266,9 @@ class ArticleLikeAPI(APIView):
                                     content=content,
                                     url=url)
 
-                return self.success("like successed")
+                return self.success()
         else:
-            return self.error("Wrong Article")
+            return self.error("해당 게시글이 존재하지 않습니다")
 
 class NotificationListAPI(APIView):
     """
@@ -290,7 +290,7 @@ class NotificationDeleteAPI(APIView):
             notification.delete()
             return self.success()
         else:
-            return self.error("Wrong Notification")
+            return self.error("해당 알림이 존재하지 않습니다")
 
 class NotificationCheckAPI(APIView):
     """
@@ -305,7 +305,7 @@ class NotificationCheckAPI(APIView):
             notification.save()
             return self.success()
         else:
-            return self.error("Wrong Notification")
+            return self.error("해당 알림이 존재하지 않습니다")
 
 class ReadNotificationAPI(APIView):
     def get(self, request):
