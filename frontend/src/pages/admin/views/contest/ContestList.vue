@@ -157,13 +157,13 @@
         utils.downloadFile(url)
       },
       goEdit (contestId) {
-        this.$router.push({name: 'edit-contest', params: {contestId}})
+        this.$router.push({name: 'edit-contest', params: {contestId}}).catch(() => {})
       },
       goContestAnnouncement (contestId) {
-        this.$router.push({name: 'contest-announcement', params: {contestId}})
+        this.$router.push({name: 'contest-announcement', params: {contestId}}).catch(() => {})
       },
       goContestProblemList (contestId) {
-        this.$router.push({name: 'contest-problem-list', params: {contestId}})
+        this.$router.push({name: 'contest-problem-list', params: {contestId}}).catch(() => {})
       },
       handleVisibleSwitch (row) {
         api.editContest(row)

@@ -2,48 +2,50 @@
   <div>
     <div class="main_contents">
       <el-form ref="form" :model="formArticle" :rules="rules" label-position="top" label-width="70px">
-        <div class="selectform">
-          <Select v-if="mode !== 'modify'" v-model="formArticle.boardtype" placeholder="카테고리" clearable style="width=200px">
-            <Option v-for="type in typeList" :value="type.value" :key="type.value">
-              {{ type.label }}
-            </Option>
-          </Select>
-        </div>
+        <div class="category">
+          <div class="selectform">
+            <Select v-if="mode !== 'modify'" v-model="formArticle.boardtype" placeholder="카테고리" clearable style="width=200px" size="large">
+              <Option v-for="type in typeList" :value="type.value" :key="type.value">
+                {{ type.label }}
+              </Option>
+            </Select>
+          </div>
 
-        <!-- 게시판 타입 선택 dropdown 버튼 -->
-        <!-- <div>
-          <Dropdown @on-click="handleTypeChange">
-            게시판
-            <Icon type="arrow-down-b"></Icon>
-            <Dropdown-menu slot="list">
-              <Dropdown-item name="1">자유</Dropdown-item>
-              <Dropdown-item name="2">질문</Dropdown-item>
-              <Dropdown-item name="3">요청</Dropdown-item>
-            </Dropdown-menu>
-          </Dropdown>
-        </div> -->
-        
-        <!-- 질문 게시판의 경우 질문 관련 언어 설정 -->
-        <div v-if="formArticle.boardtype === '2'" class="selectform">
-          <Select v-model="formArticle.problemtype" placeholder="언어" clearable>
-            <Option v-for="type in problemtypeList" :value="type.value" :key="type.value">
-              {{ type.value }}
-            </Option>
-          </Select>
-        </div>
+          <!-- 게시판 타입 선택 dropdown 버튼 -->
+          <!-- <div>
+            <Dropdown @on-click="handleTypeChange">
+              게시판
+              <Icon type="arrow-down-b"></Icon>
+              <Dropdown-menu slot="list">
+                <Dropdown-item name="1">자유</Dropdown-item>
+                <Dropdown-item name="2">질문</Dropdown-item>
+                <Dropdown-item name="3">요청</Dropdown-item>
+              </Dropdown-menu>
+            </Dropdown>
+          </div> -->
+          
+          <!-- 질문 게시판의 경우 질문 관련 언어 설정 -->
+          <div id="language" v-if="formArticle.boardtype === '2'" class="selectform">
+            <Select v-model="formArticle.problemtype" placeholder="언어" clearable size="large">
+              <Option v-for="type in problemtypeList" :value="type.value" :key="type.value">
+                {{ type.value }}
+              </Option>
+            </Select>
+          </div>
 
-        <!-- 질문 게시판의 경우 질문 관련 문제 번호 설정 -->
-        <div v-if="formArticle.boardtype === '2'" style="padding-top: 15px; width: 10%;">
-            <el-form-item prop="problemid" label="ProblemId" required>
-              <!-- 문제 번호 입력 - formArticle.problemid -->
-              <Input type="text" v-model="formArticle.problemid" placeholder="문제 번호" size="large"></Input>
-            </el-form-item>
+          <!-- 질문 게시판의 경우 질문 관련 문제 번호 설정 -->
+          <div v-if="formArticle.boardtype === '2'" style="padding-top: 15px; width: 10%;">
+              <el-form-item prop="problemid" required>
+                <!-- 문제 번호 입력 - formArticle.problemid -->
+                <Input v-model="formArticle.problemid" :border="true" placeholder="문제 번호" size="large"></Input>
+              </el-form-item>
+          </div>
         </div>
 
         <div class="title_form">
             <el-form-item prop="title" required>
               <!-- 게시글 제목 입력 - formArticle.title -->
-              <Input type="text" v-model="formArticle.title" placeholder="제목" size="large"></Input>
+              <Input v-model="formArticle.title" :border="true" placeholder="제목" size="large"></Input>
             </el-form-item>
         </div>
         
@@ -56,7 +58,8 @@
 
         <!-- 게시글 제출 버튼 - submit -->
         <div class="submit_btn">
-          <Button type="primary" @click="submit">Submit</Button>
+          <Button type="primary" size="large" @click="submit">제출 <Icon id="submit-icon" size="17" type="ios-paper-plane"/> </Button>
+          <Button size="large" onclick="history.back()">취소</Button>
         </div>
       </el-form>
     </div>
@@ -141,12 +144,12 @@
         if (this.mode === 'modify') { // 게시글 수정인 경우
           api.modifyArticle(data.title, data.content, this.articleID).then(res => {
             this.$success('success!!')
-            this.$router.push({name: 'article-list'}) // 작성 완료 후 게시글 목록으로 돌아감
+            this.$router.push({name: 'article-list'}).catch(() => {}) // 작성 완료 후 게시글 목록으로 돌아감
           })
         } else { // 게시글 신규 작성인 경우
           api.createArticle(data).then(res => {
             this.$success('success!!')
-            this.$router.push({name: 'article-list'}) // 작성 완료 후 게시글 목록으로 돌아감
+            this.$router.push({name: 'article-list'}).catch(() => {}) // 작성 완료 후 게시글 목록으로 돌아감
           })
         }
       }
@@ -158,9 +161,18 @@
   margin: 0 10% 0 10%;
   padding-top: 15px;
 }
+
 .selectform {
   padding-top: 15px;
   width: 150px;
+}
+
+.category {
+  display: flex;
+}
+
+#language {
+  margin: 0 10px;
 }
 .title_form {
   padding-top: 15px;
@@ -174,4 +186,12 @@
 .submit_btn {
   padding-top: 15px;
 }
+
+#submit-icon {
+  position: relative;
+  bottom: 2px;
+  left: 2px;
+}
+
+
 </style>

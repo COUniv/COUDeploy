@@ -31,13 +31,39 @@
               <Input v-model="formFilter.username" :placeholder="$t('m.Search_Author')" @on-enter="handleQueryChange"/>
             </li>
 
-            <li>
+            <!-- <li>
               <Button type="info" icon="md-refresh" @click="getSubmissions">{{$t('m.Refresh')}}</Button>
-            </li>
+            </li> -->
           </ul>
         </div>
-        <Table stripe :disabled-hover="true" :columns="columns" :data="submissions" :key="renderKey" :loading="loadingTable" size="small"></Table>
-        <Pagination :total="total" :page-size="limit" @on-change="changeRoute" :current.sync="page"></Pagination>
+        <!-- <Table stripe :disabled-hover="true" :columns="columns" :data="submissions" :key="renderKey" :loading="loadingTable" size="small"></Table> -->
+        <div class="submission-container">
+          <table class="submission-list">
+            <thead>
+              <tr>
+                <th style="width:20%">아이디</th>
+                <th style="width:20%">문제 번호</th>
+                <th style="width:15%">채점 결과</th>
+                <th style="width:10%">시간</th>
+                <th style="width:10%">메모리</th>
+                <th style="width:10%">언어</th>
+                <th style="width:15%">제출일</th>
+              </tr>
+            </thead>
+            <tbody v-for="submission in submissions">
+              <tr>
+                <td id="user-id" @click="redirectToUser(submission)">{{ submission.username }}</td>
+                <td id="problem-id" @click="redirectToProblem(submission)">{{ submission.problem }}</td>
+                <td><Tag :color=toColor(submission) :checkable="checkIfAvailable(submission)" v-bind:style="[checkIfAvailable(submission) ? {'cursor' : 'pointer'}:{'cursor' : 'default'}]" @on-change="redirectToDetails(submission)"> {{ toResult(submission) }} </Tag></td>
+                <td>{{ toTime(submission) }}</td>
+                <td>{{ toMemory(submission) }}</td>
+                <td>{{ submission.language }}</td>
+                <td>{{ toDate(submission) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <Pagination :total="total" :page-size="limit" @on-change="changeRoute" :current.sync="page" style="margin: 20px 0 10px; display: flex; justify-content: center; float: none;"></Pagination>
       </Panel>
     </div>
   </div>
@@ -73,7 +99,7 @@
             }
           },
           {
-            title: '채점 번호',
+            title: '채점 해시섬',
             align: 'center',
             render: (h, params) => {
               if (params.row.show_link) {
@@ -84,7 +110,7 @@
                   },
                   on: {
                     click: () => {
-                      this.$router.push('/status/' + params.row.id)
+                      this.$router.push('/status/' + params.row.id).catch(() => {})
                     }
                   }
                 }, params.row.id.slice(0, 12))
@@ -122,9 +148,9 @@
                           {
                             name: 'contest-problem-details',
                             params: {problemID: params.row.problem, contestID: this.contestID}
-                          })
+                          }).catch(() => {})
                       } else {
-                        this.$router.push({name: 'problem-details', params: {problemID: params.row.problem}})
+                        this.$router.push({name: 'problem-details', params: {problemID: params.row.problem}}).catch(() => {})
                       }
                     }
                   }
@@ -166,7 +192,7 @@
                       {
                         name: 'user-home',
                         query: {username: params.row.username}
-                      })
+                      }).catch(() => {})
                   }
                 }
               }, params.row.username)
@@ -230,6 +256,7 @@
           this.adjustRejudgeColumn()
           this.loadingTable = false
           this.submissions = data.results
+          console.log(this.submissions)
           this.total = data.total
         }).catch(() => {
           this.loadingTable = false
@@ -247,10 +274,32 @@
         this.$router.push({
           name: routeName,
           query: utils.filterEmptyValue(query)
-        })
+        }).catch(() => {})
+      },
+      checkIfAvailable (submission) {
+        if (submission.show_link) {
+          return true
+        } else {
+          return false
+        }
       },
       goRoute (route) {
-        this.$router.push(route)
+        this.$router.push(route).catch(() => {})
+      },
+      toTime (submission) {
+        return utils.submissionTimeFormat(submission.statistic_info.time_cost)
+      },
+      toMemory (submission) {
+        return utils.submissionMemoryFormat(submission.statistic_info.memory_cost)
+      },
+      toDate (submission) {
+        return time.utcToLocal(submission.create_time)
+      },
+      toColor (submission) {
+        return JUDGE_STATUS[submission.result].color
+      },
+      toResult (submission) {
+        return this.$i18n.t('m.' + JUDGE_STATUS[submission.result].name.replace(/ /g, '_'))
       },
       adjustRejudgeColumn () {
         if (!this.rejudgeColumnVisible || this.rejudge_column) {
@@ -295,6 +344,29 @@
         }, () => {
           this.submissions[index].loading = false
         })
+      },
+      redirectToProblem (submission) {
+        if (this.contestID) {
+          this.$router.push(
+            {
+              name: 'contest-problem-details',
+              params: {problemID: submission.problem, contestID: this.contestID}
+            }).catch(() => {})
+        } else {
+          this.$router.push({name: 'problem-details', params: {problemID: submission.problem}}).catch(() => {})
+        }
+      },
+      redirectToDetails (submission) {
+        if (submission.show_link) {
+          this.$router.push('/status/' + submission.id).catch(() => {})
+        }
+      },
+      redirectToUser (submission) {
+        this.$router.push(
+          {
+            name: 'user-home',
+            query: {username: submission.username}
+          }).catch(() => {})
       }
     },
     computed: {
@@ -332,21 +404,45 @@
 </script>
 
 <style scoped lang="less">
+  @import '../../../../styles/common.less';
   .ivu-btn-text {
-    color: #57a3f3;
+    color: @purple;
   }
 
-  .flex-container {
-    #main {
-      flex: auto;
-      margin-right: 18px;
-      .filter {
-        margin-right: -10px;
-      }
+  .ivu-card {
+    padding: 0 15px 15px 15px;
+    margin: 0 25px;
+  }
+  .submission-container {
+    margin-top: 20px;
+    padding: 0 20px;
+  }
+  .submission-list {
+    border-collapse: collapse;
+    width: 100% !important; 
+    table-layout: fixed;
+    text-align: left;
+    padding: 8px;
+    margin: auto;
+    td {
+      padding: 8px;
+      border-bottom: 1px solid @light-gray;
     }
-    #contest-menu {
-      flex: none;
-      width: 210px;
+    th {
+      border-bottom: 1px solid #c4c4c4;
+      padding: 8px;
+    }
+
+    tbody {
+      color: @gray;
+      -webkit-text-stroke: .3px;
+
+      #problem-id:hover, #user-id:hover {
+        cursor: pointer;
+        transition: color .2s ease-in;
+        color: @purple;
+        font-weight: 500;
+      }
     }
   }
 </style>

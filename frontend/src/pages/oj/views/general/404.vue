@@ -23,7 +23,7 @@
       goHome () {
         this.$router.push({
           name: 'home'
-        })
+        }).catch(() => {})
       }
     }
   }

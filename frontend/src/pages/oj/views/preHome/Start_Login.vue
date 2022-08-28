@@ -1,74 +1,49 @@
 <template>
   <div class="start_login">
-    <!-- <div class="nav">
-      <NavBar></NavBar>
-    </div> -->
-    <div class="image">
-        <!-- <div>Image</div> -->
-        <img src="../../../../assets/main03.jpg" class="image"/>
-    </div>
-    <!-- <div class="contents" style="height:70vh;"> -->
+
       <div class="form">
         <Form ref="formLogin" :model="formLogin" :rules="ruleLogin">
           <!-- 로그인 박스 title-->
-          <div class="login_title">회원 로그인</div>
+          <div class="login_title"><p @click="goRoute('/')">COU</p></div>
                   
           <div class = "login_edge">
           <!-- 로그인 username textbox -->
             <FormItem prop="username">
-              <Input class ="login_input" type="text" v-model="formLogin.username" placeholder="아이디" size="large" @on-enter="handleLogin">
-                <Icon type="ios-person-outline" slot="prepend"></Icon>
+              <p class="form_title">아이디</p>
+              <Input class ="login_input" type="text" v-model="formLogin.username" placeholder="아이디를 입력해주세요" size="large" @on-enter="handleLogin">
               </Input>
             </FormItem>
             <!-- 로그인 password textbox -->
+            <!-- <input type="password" v-model="formLogin.password" @on-enter="handleLogin" placeholder="비밀번호를 입력하세요"/> -->
             <FormItem prop="password">
-              <Input class ="login_input" type="password" v-model="formLogin.password" placeholder="비밀번호" size="large" @on-enter="handleLogin">
-                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+              <p class="form_title">비밀번호</p>
+              <Input class ="login_input" type="password" v-model="formLogin.password" placeholder="비밀번호를 입력해주세요" size="large" @on-enter="handleLogin">
+                <!-- <Icon type="ios-lock-outline" slot="prepend"></Icon> -->
               </Input>
+              <div class = "login_foot">
+              <a class="foot_password" @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
+            </div>
             </FormItem>
             <!-- 로그인 상태 체크박스 -->
-            <!-- <FormItem prop="login_status">
-              <Checkbox class="login_check"  v-model="formLogin.LoginStaus" >로그인 상태 유지하기</Checkbox>
-            </FormItem> -->
-
+            
             <FormItem>
               <div class="login_btn">
                 <Button 
                   type="primary"
                   @click="handleLogin"
-                  class="btn" long
+                  class="primary btn" long
                   :loading="btnLoginLoading">
                   {{$t('m.UserLogin')}}
                 </Button>
               </div>
+              <div class="register_btn">
+                <Button @click="$router.push('/join').catch(() => {})" class="second btn" long
+                  :loading="btnLoginLoading">{{$t('m.No_Account')}} </Button>
+              </div>
             </FormItem>
-            <div class = "login_foot">
-              <a v-if="website.allow_register" @click.stop="handleBtnClick('register')">{{$t('m.No_Account')}}</a>
-              <a @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
-            </div>
           </div>
         </Form>
-        
-        <!-- </div>
-          <div class="last"> -->
-        <!-- <Button
-            type="primary"
-            @click="handleLogin"
-            class="btn" long
-            :loading="btnLoginLoading">
-            {{$t('m.UserLogin')}}
-            </Button>
-            <a v-if="website.allow_register" @click.stop="handleBtnClick('register')">{{$t('m.No_Account')}}</a>
-            <a @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>
-          </div> -->
       </div>
-      <!-- <div class="footer" >
-        <p v-html="website.website_footer"></p>
-        <p>Powered by <a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge</a>
-          <span v-if="version">&nbsp; Version: {{ version }}</span>
-        </p>
-      </div> -->
-    <!-- </div>     -->
   </div>
   
 </template>
@@ -95,6 +70,7 @@ export default {
     }
 
     return {
+      lastURL: '',
       tfaRequired: false,
       btnLoginLoading: false,
       formLogin: {
@@ -106,11 +82,11 @@ export default {
       },
       ruleLogin: {
         username: [
-          {required: true, trigger: 'blur'},
+          {required: true, trigger: 'blur', message: '아이디를 입력해주세요'},
           {validator: CheckRequiredTFA, trigger: 'blur'}
         ],
         password: [
-          {required: true, trigger: 'change', min: 6, max: 20}
+          {required: true, trigger: 'change', message: '6~20자 사이로 입력해주세요', min: 6, max: 20}
         ]
       }
     }
@@ -143,27 +119,47 @@ export default {
           this.getProfile()
           this.$success(this.$i18n.t('m.Welcome_back'))
           setTimeout(() => {
-            this.goRoute('/')
+            this.afterlogin(this.lastURL)
           }, 500)
         }, _ => {
           this.btnLoginLoading = false
         })
       })
     },
+    afterlogin (route) {
+      if (route) {
+        if (route.path === '/logout' || route.path === '/join') {
+          this.$router.push({path: '/'}).catch(() => {})
+        } else {
+          this.$router.push({path: route.path}).catch(() => {})
+        }
+      } else {
+        this.$router.push({path: '/'}).catch(() => {})
+      }
+    },
     goRoute (route) {
-      this.$router.push({path: route})
+      if (route) {
+        this.$router.push({path: route}).catch(() => {})
+      } else {
+        this.$router.push({path: '/'}).catch(() => {})
+      }
     },
     goResetPassword () {
       this.changeModalStatus({visible: false})
-      this.$router.push({name: 'apply-reset-password'})
+      this.$router.push({name: 'apply-reset-password'}).catch(() => {})
     },
     isAlreadyLoggedin () {
       if (this.$store.getters.isAuthenticated === true) {
         this.$router.push({
           name: 'home'
-        })
+        }).catch(() => {})
       }
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.lastURL = from
+    })
   },
   computed: {
     ...mapGetters(['website', 'modalStatus']),
@@ -183,6 +179,14 @@ export default {
 </script>
 
 <style scoped lang="less">
+@import '../../../../styles/common.less';
+
+.start_login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(~"100vh - 80px");
+}
 // .form {
 //   position: absolute;
 //   left: 50%;
@@ -228,7 +232,7 @@ export default {
   .start_login {
     margin: -80px -50px -190px -50px;
     // margin-top: 160px;
-    height: calc(~"100vh - 80px");
+    // height: calc(~"100vh - 80px");
     // min-height: 100%;
     position: relative;
     // padding-bottom: 80px;
@@ -252,10 +256,11 @@ export default {
     margin: -80px -50px -190px -50px;
     // padding-bottom: 96px;
     // margin-top: 80px;calc(28.125vw + 262.84px - 80px)
-    height: calc(~"100vh - 80px");
+    // height: 100vh;
+    // height: calc(~"100vh - 80px");
     // height: calc(~"28.125vw + 262.84px");
     // min-height: 100%;
-    position: relative;
+    // position: relative;
     // padding-bottom: 90px;
   }
 }
@@ -283,18 +288,20 @@ export default {
   font-weight: bold;
 }
 .form {
-  border-radius: 5px;
+  display: inline-block;
+  background-color: @white;
+  box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
+  border-radius: @size-border-radius;
+  width: 30%;
+  max-width: 500px;
   overflow: auto;
   // position: fixed;
-  display: inline-block;
   // margin-top: 500px;
-  background-color: rgb(230, 230, 230);
   // margin-bottom: -15px;
   // margin: 25px 0 50px 35%;
-  margin: 3vh 0 3vh 35%;
-  top: 500px;
-  left: 35%;
-  width: 30%;
+  // margin: 3vh 0 3vh 35%;
+  // top: 500px;
+  // left: 35%;
   // height: 33vh;
   // padding: 0 0 0 10px;
   // text-align: left;
@@ -333,19 +340,32 @@ export default {
 .login_title{
   width: 100%;
   height: 13%;
-  background: #8497B0;
+  margin: 30px 0;
+  background: @white;
   padding: 0px;
   text-align: center;
-  font-size: 24px;
-  font-weight: 500;
+  font-size: @font-large;
+  font-weight: @weight-bold;
   line-height: 50px;
-  color: white;
+  color: @purple;
+  p {
+    display:inline-block;
+    cursor: pointer;
+    margin: 0 auto;
+    -webkit-text-stroke: 2px;
+  }
 }
 
 /* 로그인 입력 박스 css */
 .login_edge{
   // margin-top: 10px;
-  padding: 15px 15px 15px 15px;
+  padding: 0px 60px 30px;
+  background-color: @white;
+  .form_title {
+    font-size: @font-micro;
+    font-weight: bold;
+    color: @purple;
+  }
 }
 
 
@@ -373,32 +393,42 @@ export default {
   // font-size: 12px;
 }
 
-.login_btn{
+.register_btn{
   // background: aqua;
-  padding-top: 20px;
-  // margin-bottom: -15px;
+  margin-top: 20px;
 }
 
 .btn {
   // position: relative;
   // width: 580px;
   // height: 38px;
-  background: #8497B0;
-  border: solid 1px black;
-  border-radius: 7px;
-  // margin-left : 10px;
+  border: none;
+  border-radius: @size-border-radius;
   text-justify: center;
+  padding: 12px 0;
   color: white;
-  font-size: 18px;
+  font-size: @font-small;
+  font-weight: bold;
+  &.primary {
+    background: @purple;
+  }
+  &.second {
+    background: @light-gray;
+    color: @gray;
+  }
 }
 
 /* 로그인 회원가입하기 & 아이디/비밀번호 찾기 */
-// .login_foot{
+.login_foot{
+  .foot_password {
+    color: @gray;
+    font-weight: @weight-bold;
+  }
   // margin: 5px 0 5px 0;
-// }
+}
 
 .footer {
-    background-color: rgb(41, 41, 41);
+    background-color: @black;
     position: relative;
     left: 0;
     bottom: 0;

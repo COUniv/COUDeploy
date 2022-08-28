@@ -4,7 +4,6 @@ from utils.api import serializers, UsernameSerializer
 
 from .models import AdminType, ProblemPermission, User, UserProfile
 
-
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
@@ -45,9 +44,14 @@ class GenerateUserSerializer(serializers.Serializer):
 
 class ImportUserSeralizer(serializers.Serializer):
     users = serializers.ListField(
-        child=serializers.ListField(child=serializers.CharField(max_length=64)))
+        child=serializers.ListField(child=serializers.CharField(max_length=64, allow_blank=True)))
 
 
+class UserGrassDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "problem_sequence", "grass"]
+    
 class UserAdminSerializer(serializers.ModelSerializer):
     real_name = serializers.SerializerMethodField()
 
@@ -88,7 +92,7 @@ class EditUserSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=32)
     real_name = serializers.CharField(max_length=32, allow_blank=True, allow_null=True)
     password = serializers.CharField(min_length=6, allow_blank=True, required=False, default=None)
-    email = serializers.EmailField(max_length=64)
+    email = serializers.EmailField(max_length=64, allow_blank=True, allow_null=True)
     admin_type = serializers.ChoiceField(choices=(AdminType.REGULAR_USER, AdminType.ADMIN, AdminType.SUPER_ADMIN))
     problem_permission = serializers.ChoiceField(choices=(ProblemPermission.NONE, ProblemPermission.OWN,
                                                           ProblemPermission.ALL))
