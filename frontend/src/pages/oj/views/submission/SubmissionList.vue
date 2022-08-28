@@ -256,7 +256,6 @@
           this.adjustRejudgeColumn()
           this.loadingTable = false
           this.submissions = data.results
-          console.log(this.submissions)
           this.total = data.total
         }).catch(() => {
           this.loadingTable = false
