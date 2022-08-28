@@ -679,9 +679,10 @@
     .logo{
       float: left;
       color: @purple;
-      font-size: 24px;
-      font-weight: bold;
+      font-size: 28px;
+      font-weight: 900;
       margin-left: 20px;
+      -webkit-text-stroke: 1.5px;
       &:hover {
         cursor: pointer;
       }
