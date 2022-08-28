@@ -13,65 +13,67 @@
                 @on-page-size-change="getRankData(1)"></Pagination>
     </Col>
   </Row> -->
-  <div class="ranking-container">
-    <h3>사용자 순위</h3>
-    <table class="ranking-list">
-      <!-- 제목 -->
-      <thead>
-        <tr class="ranking_title">
-          <td style="width: 20%">순위</td>
-          <td style="width: 20%">아이디</td>
-          <td style="width: 20%">맞은 문제</td>
-          <td style="width: 20%">제출</td>
-          <td style="width: 20%">정답 비율</td>
-        </tr>
-      </thead>
-      <!-- 내용 -->
-      <tbody v-for="(data, index) in dataRank" @click="goUser(data.user)">
-        <tr v-if="index == 0">
-          <td  class="image">
-            <img class="rankings-img" src="../../../../assets/gold crown.png">
-            <span class="no top">1</span>
-          </td>
-          <td class="name">{{data.user.username}}</td>
-          <td>{{data.accepted_number}}</td>
-          <td>{{data.submission_number}}</td>
-          <td>{{toPercent(data)}}</td>
-        </tr>
-        <tr v-else-if="index == 1">
-          <td class="image">
-            <img class="rankings-img" src="../../../../assets/silver crown.png"/>
-            <span class="no top">2</span>
-          </td>
-          <td class="name">{{data.user.username}}</td>
-          <td>{{data.accepted_number}}</td>
-          <td>{{data.submission_number}}</td>
-          <td>{{toPercent(data)}}</td>
-        </tr>
-        
-        <tr v-else-if="index == 2" class="ranker">
-          <td class="image">
-            <img class="rankings-img" src="../../../../assets/bronse crown.png"/>
-            <span class="no top third" style="color: white">3</span>
-          </td>
-          <td class="name">{{data.user.username}}</td>
-          <td>{{data.accepted_number}}</td>
-          <td>{{data.submission_number}}</td>
-          <td>{{toPercent(data)}}</td>
-        </tr>
-        <tr v-else-if="index > 2">
-          <td class="no"> {{index + 1}} </td>
-          <td class="name">{{data.user.username}}</td>
-          <td>{{data.accepted_number}}</td>
-          <td>{{data.submission_number}}</td>
-          <td>{{toPercent(data)}}</td>
-        </tr>
-      </tbody>
-    </table>
-    <Pagination :total="total" :page-size.sync="limit" :current.sync="page"
-                @on-change="getRankData" show-sizer
-                @on-page-size-change="getRankData(1)"
-                style="margin: 20px 0 10px; display: flex; justify-content:center; float: none;"></Pagination>
+  <div class="main">
+    <div class="ranking-container">
+      <h3>사용자 순위</h3>
+      <table class="ranking-list">
+        <!-- 제목 -->
+        <thead>
+          <tr class="ranking_title">
+            <td style="width: 20%">순위</td>
+            <td style="width: 20%">아이디</td>
+            <td style="width: 20%">맞은 문제</td>
+            <td style="width: 20%">제출</td>
+            <td style="width: 20%">정답 비율</td>
+          </tr>
+        </thead>
+        <!-- 내용 -->
+        <tbody v-for="(data, index) in dataRank" @click="goUser(data.user)">
+          <tr v-if="index == 0">
+            <td  class="image">
+              <img class="rankings-img" src="../../../../assets/gold crown.png">
+              <span class="no top">1</span>
+            </td>
+            <td class="name">{{data.user.username}}</td>
+            <td>{{data.accepted_number}}</td>
+            <td>{{data.submission_number}}</td>
+            <td>{{toPercent(data)}}</td>
+          </tr>
+          <tr v-else-if="index == 1">
+            <td class="image">
+              <img class="rankings-img" src="../../../../assets/silver crown.png"/>
+              <span class="no top">2</span>
+            </td>
+            <td class="name">{{data.user.username}}</td>
+            <td>{{data.accepted_number}}</td>
+            <td>{{data.submission_number}}</td>
+            <td>{{toPercent(data)}}</td>
+          </tr>
+          
+          <tr v-else-if="index == 2" class="ranker">
+            <td class="image">
+              <img class="rankings-img" src="../../../../assets/bronse crown.png"/>
+              <span class="no top third" style="color: white">3</span>
+            </td>
+            <td class="name">{{data.user.username}}</td>
+            <td>{{data.accepted_number}}</td>
+            <td>{{data.submission_number}}</td>
+            <td>{{toPercent(data)}}</td>
+          </tr>
+          <tr v-else-if="index > 2">
+            <td class="no"> {{index + 1}} </td>
+            <td class="name">{{data.user.username}}</td>
+            <td>{{data.accepted_number}}</td>
+            <td>{{data.submission_number}}</td>
+            <td>{{toPercent(data)}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <Pagination :total="total" :page-size.sync="limit" :current.sync="page"
+                  @on-change="getRankData" show-sizer
+                  @on-page-size-change="getRankData(1)"
+                  style="margin: 20px 0 10px; display: flex; justify-content:center; float: none;"></Pagination>
+      </div>
   </div>
 </template>
 
@@ -263,18 +265,22 @@
   h3 {
     font-size: @font-medium;
     text-align: left;
-    margin-bottom: 30px;
-    margin-left: 15px;
-    color: @black;
+    margin-bottom: 20px;
+    color: @default-font-color;
   }
 
-  .ranking-container {
-    margin: 20px;
+  .main {
+    margin: auto;
     padding: 30px 20px;
     background-color: @white;
     border-radius: 5px;
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
     text-align: center;
+    width: 95vw;
+  }
+  .ranking-container {
+    width: 75vw;
+    margin: auto;
   }
   .ranking-list {
     -webkit-text-stroke: .5px;
@@ -285,9 +291,9 @@
     padding: 8px;
     margin: auto;
     thead {
-      font-size: @font-micro;
       border-bottom: 1px solid #c4c4c4;
       color: @gray;
+      background-color: @light-gray;
     }
     td {
       padding: 8px;
@@ -298,8 +304,8 @@
     tbody {
       color: @black;
       -webkit-text-stroke: .3px;
-      font-size: @font-small;
-      height: 70px;
+      height: 60px;
+      font-size: @font-micro;
       tr {
         cursor: pointer;
       }
@@ -312,12 +318,17 @@
 
       .image {
         position: relative;
+        img {
+          width: 30px;
+          height: 30px;
+        }
         .top {
           position:absolute;
           transform: translate( -50%, -50% );
-          top: 50%;
+          top: 55%;
           left: 50%;
           color: @black;
+          -webkit-text-stroke: .5px;
         }
         .third {
           color: @white;
