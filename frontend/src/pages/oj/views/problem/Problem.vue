@@ -295,8 +295,8 @@
     margin-top: -50px;
     margin-left: 10px;
     .title {
-      font-size: 17px;
-      font-weight: 400;
+      font-size: 18px;
+      font-weight: 600;
       margin: 50px 0 20px 0;
       color: @purple;
       .copy {
