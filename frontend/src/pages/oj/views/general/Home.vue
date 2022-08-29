@@ -489,7 +489,7 @@
     display: inline-block;
     vertical-align: top;
     width: calc(~"60% - 30px");
-    min-width: 470px;
+    min-width: 440px;
     flex-grow: 1;
     height: 450px;
     padding: 20px;
@@ -508,7 +508,7 @@
         margin-right: 10px;
         padding: 10px 30px;
         border-radius: 25px;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: @weight-bold;
         background-color: @light-gray;
         // transition: all 0.2s ease-in-out;
@@ -592,7 +592,7 @@
     border-radius: 5px;
     padding: 30px 20px;
     width: calc(~"37% - 30px");
-    min-width: 300px;
+    min-width: 270px;
     flex-grow: 1;
     height: 450px;
     background: white;
