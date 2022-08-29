@@ -9,10 +9,6 @@
       <div style="float: right">
         <div class="help-btn">
           <Button type="text" size="large" style="z-index: '1' " @click="help_btn">도움말</Button>
-          <Notice v-model="openHelpModal" :footer-hide="true">
-             <p slot="header">도움말</p>
-             <div>hello</div>
-          </Notice>
         </div>
       </div>  
     </div>
@@ -240,10 +236,14 @@
         // this.openHelpModal = true
         this.$Notice.open({
           title: '도움말',
-          desc: ' ',
           duration: 0,
           render: h => {
-            return h('p', [
+            return h('p', {
+              style: {
+                'font-size': '12px',
+                'line-height': '18px'
+              }
+            }, [
               '입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. 해당 문서는 ',
               h('a', {
                 on: {
@@ -258,13 +258,6 @@
               '을 참고해주세요'
             ])
           }
-        })
-      },
-      compile_opt () {
-        this.$Notice.open({
-          title: 'Compile Option title',
-          desc: 'This Compile Option does not automatically close, and you need to click the close button to close.',
-          duration: 0
         })
       },
       toggle (shared) {
