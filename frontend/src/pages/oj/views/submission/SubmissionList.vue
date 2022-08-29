@@ -137,6 +137,7 @@
     },
     methods: {
       init () {
+        clearTimeout(this.refreshStatus)
         this.contestID = this.$route.params.contestID
         let query = this.$route.query
         this.problemID = query.problemID
@@ -174,9 +175,13 @@
           this.adjustRejudgeColumn()
           this.loadingTable = false
           this.submissions = data.results
+          for (let idx = 0; this.submissions.length; idx++) {
+            this.getRealtimeStatus(this.submissions[idx].id, idx)
+          }
           this.total = data.total
         }).catch(() => {
           this.loadingTable = false
+          clearTimeout(this.refreshStatus)
         })
       },
       forceRender () {
@@ -184,14 +189,43 @@
       },
       getRejudgeAccess () {
         if (!this.rejudgeColumnVisible || this.rejudge_column) {
-          console.log('false')
           return false
         } else {
-          console.log('true')
           return true
         }
       },
+      getRealtimeStatus (id, index) {
+        if (this.refreshSatus) {
+          clearTimeout(this.refreshSatus)
+        }
+        if (this.submissions.length === 0) {
+          clearTimeout(this.refreshStatus)
+        }
+        const checkStatus = () => {
+          api.getSubmissionStatus(id).then(res => {
+            let status = res.data.data.result
+            if (this.submissions[index] === undefined || this.submissions[index].result === undefined) {
+              clearTimeout(this.refreshStatus)
+              return
+            }
+            if (this.submissions[index].id !== res.data.data.id) {
+              this.refreshStatus = setTimeout(checkStatus, 3000)
+              return
+            }
+            // 이미 체점 된 경우 3초마다 탐지 및 갱신
+            if (Object.keys(res.data.data.statistic_info).length !== 0) {
+              this.refreshStatus = setTimeout(checkStatus, 3000)
+            }
+            this.submissions[index].result = status
+            this.refreshStatus = setTimeout(checkStatus, 1000)
+          }, _ => {
+            clearTimeout(this.refreshStatus)
+          })
+        }
+        this.refreshStatus = setTimeout(checkStatus, 1000)
+      },
       changeRoute () {
+        clearTimeout(this.refreshStatus)
         let query = utils.filterEmptyValue(this.buildQuery())
         query.contestID = this.contestID
         query.problemID = this.problemID
@@ -245,7 +279,6 @@
         this.submissions[index].loading = true
         api.submissionRejudge(id).then(async () => {
           this.submissions[index].loading = false
-          this.$success('Succeeded')
         }, () => {
           this.submissions[index].loading = false
         })
@@ -292,9 +325,18 @@
         return !this.contestID && this.user.admin_type === USER_TYPE.SUPER_ADMIN
       }
     },
+    beforeRouteLeave (to, from, next) {
+      // 구성 요소 전환 후 지속적인 요청 방지
+      clearTimeout(this.refreshStatus)
+      next()
+    },
+    unmounted () {
+      clearTimeout(this.refreshStatus)
+    },
     watch: {
       '$route' (newVal, oldVal) {
         if (newVal !== oldVal) {
+          clearTimeout(this.refreshStatus)
           this.init()
         }
       },
