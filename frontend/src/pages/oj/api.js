@@ -363,6 +363,13 @@ export default {
       }
     })
   },
+  getSubmissionStatus (id) {
+    return ajax('submission_status', 'get', {
+      params: {
+        id
+      }
+    })
+  },
   submissionExists (problemID) {
     return ajax('submission_exists', 'get', {
       params: {

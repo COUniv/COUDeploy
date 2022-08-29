@@ -202,7 +202,7 @@
           clearTimeout(this.refreshStatus)
         }
         const checkStatus = () => {
-          api.getSubmission(id).then(res => {
+          api.getSubmissionStatus(id).then(res => {
             let status = res.data.data.result
             if (this.submissions[index] === undefined || this.submissions[index].result === undefined) {
               clearTimeout(this.refreshStatus)
@@ -215,11 +215,9 @@
             // 이미 체점 된 경우 3초마다 탐지 및 갱신
             if (Object.keys(res.data.data.statistic_info).length !== 0) {
               this.refreshStatus = setTimeout(checkStatus, 3000)
-            } else {
-              // status가 바뀌었을 경우 1초마다 탐지
-              this.submissions[index].result = status
-              this.refreshStatus = setTimeout(checkStatus, 1000)
             }
+            this.submissions[index].result = status
+            this.refreshStatus = setTimeout(checkStatus, 1000)
           }, _ => {
             clearTimeout(this.refreshStatus)
           })
