@@ -1,18 +1,80 @@
 <template>
-  <Row type="flex" justify="space-around">
-    <Col :span="22">
+  <!-- <Row type="flex" justify="space-around">
+    <Col :span="22"> -->
     <!-- <Panel :padding="10">
       <div slot="title">{{$t('m.ACM_Ranklist')}}</div>
       <div class="echarts">
         <ECharts :options="options" ref="chart" auto-resize></ECharts>
       </div>
     </Panel> -->
-    <Table :data="dataRank" :columns="columns" :loading="loadingTable" size="small"></Table>
+    <!-- <Table :data="dataRank" :columns="columns" :loading="loadingTable" size="small"></Table>
     <Pagination :total="total" :page-size.sync="limit" :current.sync="page"
                 @on-change="getRankData" show-sizer
                 @on-page-size-change="getRankData(1)"></Pagination>
     </Col>
-  </Row>
+  </Row> -->
+  <div class="main">
+    <div class="ranking-container">
+      <h3>사용자 순위</h3>
+      <table class="ranking-list">
+        <!-- 제목 -->
+        <thead>
+          <tr class="ranking_title">
+            <td style="width: 20%">순위</td>
+            <td style="width: 20%">아이디</td>
+            <td style="width: 20%">맞은 문제</td>
+            <td style="width: 20%">제출</td>
+            <td style="width: 20%">정답 비율</td>
+          </tr>
+        </thead>
+        <!-- 내용 -->
+        <tbody v-for="(data, index) in dataRank" @click="goUser(data.user)">
+          <tr v-if="index == 0">
+            <td  class="image">
+              <img class="rankings-img" src="../../../../assets/gold crown.png">
+              <span class="no top">1</span>
+            </td>
+            <td class="name">{{data.user.username}}</td>
+            <td>{{data.accepted_number}}</td>
+            <td>{{data.submission_number}}</td>
+            <td>{{toPercent(data)}}</td>
+          </tr>
+          <tr v-else-if="index == 1">
+            <td class="image">
+              <img class="rankings-img" src="../../../../assets/silver crown.png"/>
+              <span class="no top">2</span>
+            </td>
+            <td class="name">{{data.user.username}}</td>
+            <td>{{data.accepted_number}}</td>
+            <td>{{data.submission_number}}</td>
+            <td>{{toPercent(data)}}</td>
+          </tr>
+          
+          <tr v-else-if="index == 2" class="ranker">
+            <td class="image">
+              <img class="rankings-img" src="../../../../assets/bronse crown.png"/>
+              <span class="no top third" style="color: white">3</span>
+            </td>
+            <td class="name">{{data.user.username}}</td>
+            <td>{{data.accepted_number}}</td>
+            <td>{{data.submission_number}}</td>
+            <td>{{toPercent(data)}}</td>
+          </tr>
+          <tr v-else-if="index > 2">
+            <td class="no"> {{index + 1}} </td>
+            <td class="name">{{data.user.username}}</td>
+            <td>{{data.accepted_number}}</td>
+            <td>{{data.submission_number}}</td>
+            <td>{{toPercent(data)}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <Pagination :total="total" :page-size.sync="limit" :current.sync="page"
+                  @on-change="getRankData" show-sizer
+                  @on-page-size-change="getRankData(1)"
+                  style="margin: 20px 0 10px; display: flex; justify-content:center; float: none;"></Pagination>
+      </div>
+  </div>
 </template>
 
 <script>
@@ -184,15 +246,94 @@
         this.options.xAxis[0].data = usernames
         this.options.series[0].data = acData
         this.options.series[1].data = totalData
+      },
+      goUser (user) {
+        this.$router.push({
+          name: 'user-home',
+          query: {username: user.username}
+        }).catch(() => {})
+      },
+      toPercent (rank) {
+        return utils.getACRate(rank.accepted_of_all_submission_number, rank.submission_number)
       }
     }
   }
 </script>
 
 <style scoped lang="less">
-  .echarts {
-    margin: 0 auto;
-    width: 95%;
-    height: 400px;
+@import '../../../../styles/common.less';
+  h3 {
+    font-size: @font-medium;
+    text-align: left;
+    margin-bottom: 20px;
+    color: @default-font-color;
+  }
+
+  .main {
+    margin: auto;
+    padding: 30px 20px;
+    background-color: @white;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 95vw;
+  }
+  .ranking-container {
+    width: 75vw;
+    margin: auto;
+  }
+  .ranking-list {
+    -webkit-text-stroke: .5px;
+    border-collapse: collapse;
+    width: 100% !important; 
+    table-layout: fixed;
+    text-align: center;
+    padding: 8px;
+    margin: auto;
+    thead {
+      border-bottom: 1px solid #c4c4c4;
+      color: @gray;
+      background-color: @light-gray;
+    }
+    td {
+      padding: 8px;
+    }
+    th {
+      padding: 8px;
+    }
+    tbody {
+      color: @black;
+      -webkit-text-stroke: .3px;
+      height: 60px;
+      font-size: @font-micro;
+      tr {
+        cursor: pointer;
+      }
+      &:hover {
+        .name {
+          color: @orange;
+          transition: color .3s ease-in-out;
+        }
+      }
+
+      .image {
+        position: relative;
+        img {
+          width: 30px;
+          height: 30px;
+        }
+        .top {
+          position:absolute;
+          transform: translate( -50%, -50% );
+          top: 55%;
+          left: 50%;
+          color: @black;
+          -webkit-text-stroke: .5px;
+        }
+        .third {
+          color: @white;
+        }
+      }
+    }
   }
 </style>

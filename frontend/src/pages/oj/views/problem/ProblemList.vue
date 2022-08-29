@@ -1,7 +1,9 @@
 <template>
   <div>
     <div slot="extra">
-      <div class="category-name" v-bind:style="[typeof this.$route.query.category === 'undefined' ? {'display' : 'none'}:{}]"> {{ categoryName() }} </div>
+      <div class="category-name" v-bind:style="[typeof this.$route.query.category === 'undefined' ? {'display' : 'none'}:{}]">
+        <Button id="back-button" icon="md-arrow-back" size="large" onclick="history.back()" type="text"></Button>
+        {{ categoryName() }} </div>
       <div class="category" v-bind:style="[typeof this.$route.query.category !== 'undefined' ? {'display' : 'none'}:{}]" >
         <div class="title" @click="goCategoryList">문제 카테고리</div>
         <div class="box_container">
@@ -650,6 +652,18 @@
         background-color: #6EEE03;
         border-radius: 25px;
       }
+    }
+  }
+
+  #back-button {
+    font-size: 90%;
+    padding: 0px 8px;
+    color: @gray;
+    &:hover, &:focus {
+      color: @black;
+      border-color: transparent;
+      box-shadow: 0 0 0 transparent;
+      background-color: transparent;
     }
   }
 </style>
