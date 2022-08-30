@@ -125,7 +125,8 @@
         problemID: '',
         routeName: '',
         JUDGE_STATUS: '',
-        rejudge_column: false
+        rejudge_column: false,
+        refreshStatus: null
       }
     },
     mounted () {
@@ -224,7 +225,11 @@
                     this.submissions[index].result = res.data.data.result
                     this.submissions[index].username = res.data.data.username
                     this.submissions[index].statistic_info = res.data.data.statistic_info
-                    this.refreshStatus = setTimeout(checkStatus, 2000)
+                    if (this.submissions[index].result === '7' || this.submissions[index].result === 7) {
+                      this.refreshStatus = setTimeout(checkStatus, 1000)
+                    } else {
+                      this.refreshStatus = setTimeout(checkStatus, 3500)
+                    }
                   }
                 }
               }, ___ => {
@@ -235,7 +240,7 @@
             clearTimeout(this.refreshStatus)
           })
         }
-        this.refreshStatus = setTimeout(checkStatus, 2000)
+        this.refreshStatus = setTimeout(checkStatus, 3500)
       },
       changeRoute () {
         clearTimeout(this.refreshStatus)
@@ -345,6 +350,11 @@
     },
     unmounted () {
       clearTimeout(this.refreshStatus)
+    },
+    beforeDestroy () {
+      if (this.refreshStatus) {
+        clearTimeout(this.refreshStatus)
+      }
     },
     watch: {
       '$route' (newVal, oldVal) {
