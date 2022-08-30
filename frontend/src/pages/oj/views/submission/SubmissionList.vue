@@ -176,9 +176,12 @@
           this.adjustRejudgeColumn()
           this.loadingTable = false
           this.submissions = data.results
-          for (let idx = 0; this.submissions.length; idx++) {
-            this.getRealtimeStatus(this.submissions[idx].id, idx)
-          }
+          try {
+            // settimeout api call router 변경시 exception 추출
+            for (let idx = 0; this.submissions.length; idx++) {
+              this.getRealtimeStatus(this.submissions[idx].id, idx)
+            }
+          } catch (e) { }
           this.total = data.total
         }).catch(() => {
           this.loadingTable = false
@@ -213,7 +216,7 @@
             } else if (this.submissions[index].id !== __.data.data.id) {
               clearTimeout(this.refreshStatus)
             } else {
-              api.getSubmission(id).then(res => {
+              api.getSafeSubmissionStatus(id).then(res => {
                 if (res.data.data.result === undefined) {
                   clearTimeout(this.refreshStatus)
                 } else if (this.submissions[index] === undefined) {
@@ -228,7 +231,7 @@
                     if (this.submissions[index].result === '7' || this.submissions[index].result === 7) {
                       this.refreshStatus = setTimeout(checkStatus, 1000)
                     } else {
-                      this.refreshStatus = setTimeout(checkStatus, 3500)
+                      this.refreshStatus = setTimeout(checkStatus, 2500)
                     }
                   }
                 }
@@ -240,7 +243,7 @@
             clearTimeout(this.refreshStatus)
           })
         }
-        this.refreshStatus = setTimeout(checkStatus, 3500)
+        this.refreshStatus = setTimeout(checkStatus, 1000)
       },
       changeRoute () {
         clearTimeout(this.refreshStatus)
