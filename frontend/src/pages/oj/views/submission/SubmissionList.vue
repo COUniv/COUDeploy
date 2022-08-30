@@ -195,34 +195,47 @@
         }
       },
       getRealtimeStatus (id, index) {
+        if (id === undefined) {
+          clearTimeout(this.refreshSatus)
+        }
         if (this.refreshSatus) {
           clearTimeout(this.refreshSatus)
+          return
         }
         if (this.submissions.length === 0) {
           clearTimeout(this.refreshStatus)
         }
         const checkStatus = () => {
-          api.getSubmissionStatus(id).then(res => {
-            let status = res.data.data.result
+          api.getSubmissionStatus(id).then(__ => {
             if (this.submissions[index] === undefined || this.submissions[index].result === undefined) {
               clearTimeout(this.refreshStatus)
-              return
+            } else if (this.submissions[index].id !== __.data.data.id) {
+              clearTimeout(this.refreshStatus)
+            } else {
+              api.getSubmission(id).then(res => {
+                if (res.data.data.result === undefined) {
+                  clearTimeout(this.refreshStatus)
+                } else if (this.submissions[index] === undefined) {
+                  clearTimeout(this.refreshStatus)
+                } else {
+                  if (this.submissions[index].id !== res.data.data.id) {
+                    clearTimeout(this.refreshStatus)
+                  } else {
+                    this.submissions[index].result = res.data.data.result
+                    this.submissions[index].username = res.data.data.username
+                    this.submissions[index].statistic_info = res.data.data.statistic_info
+                    this.refreshStatus = setTimeout(checkStatus, 2000)
+                  }
+                }
+              }, ___ => {
+                clearTimeout(this.refreshStatus)
+              })
             }
-            if (this.submissions[index].id !== res.data.data.id) {
-              this.refreshStatus = setTimeout(checkStatus, 3000)
-              return
-            }
-            // 이미 체점 된 경우 3초마다 탐지 및 갱신
-            if (Object.keys(res.data.data.statistic_info).length !== 0) {
-              this.refreshStatus = setTimeout(checkStatus, 3000)
-            }
-            this.submissions[index].result = status
-            this.refreshStatus = setTimeout(checkStatus, 1000)
           }, _ => {
             clearTimeout(this.refreshStatus)
           })
         }
-        this.refreshStatus = setTimeout(checkStatus, 1000)
+        this.refreshStatus = setTimeout(checkStatus, 2000)
       },
       changeRoute () {
         clearTimeout(this.refreshStatus)
