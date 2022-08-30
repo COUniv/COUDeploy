@@ -4,7 +4,8 @@
       <NavBar v-show="$route.name !== 'start-login' && $route.name !== 'contest-problem-submission' && $route.name !== 'problem-submission' && $route.name !== 'join'"></NavBar>
     </div>
     <div class="content-app">
-      <SessionExpire v-if="isIdle && $route.name !== 'start-login'  && $route.name !== 'join'"/>
+      <!-- disabled SessionExpire -->
+      <!-- <SessionExpire v-if="isIdle && $route.name !== 'start-login'  && $route.name !== 'join'"/> -->
       <transition name="fadeInUp" mode="out-in">
         <router-view></router-view>
       </transition>
