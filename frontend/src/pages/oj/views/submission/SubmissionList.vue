@@ -264,9 +264,6 @@
       forceRender () {
         this.renderKey += 1
       },
-<<<<<<< HEAD
-      // 改变route， 通过监听route变化请求数据，这样可以产生route history， 用户返回时就会保存之前的状态
-=======
       getRejudgeAccess () {
         if (!this.rejudgeColumnVisible || this.rejudge_column) {
           return false
@@ -321,7 +318,6 @@
         }
         this.refreshStatus = setTimeout(checkStatus, 1000)
       },
->>>>>>> b28225ce7ee0be8d593da59a2fe8ef2a189c1a40
       changeRoute () {
         let query = utils.filterEmptyValue(this.buildQuery())
         query.contestID = this.contestID
