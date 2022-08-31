@@ -231,7 +231,7 @@
                     if (this.submissions[index].result === '7' || this.submissions[index].result === 7) {
                       this.refreshStatus = setTimeout(checkStatus, 1000)
                     } else {
-                      this.refreshStatus = setTimeout(checkStatus, 2500)
+                      this.refreshStatus = setTimeout(checkStatus, 1000)
                     }
                   }
                 }
