@@ -38,7 +38,7 @@
         </div>
         <!-- <Table stripe :disabled-hover="true" :columns="columns" :data="submissions" :key="renderKey" :loading="loadingTable" size="small"></Table> -->
         <div class="submission-container">
-          <table v-if="!getRejudgeAccess" class="submission-list">
+          <table class="submission-list">
             <thead>
               <tr>
                 <th style="width:20%">아이디</th>
@@ -59,32 +59,6 @@
                 <td>{{ toMemory(submission) }}</td>
                 <td>{{ submission.language }}</td>
                 <td>{{ toDate(submission) }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <table v-else class="submission-list">
-            <thead>
-              <tr>
-                <th style="width:15%">아이디</th>
-                <th style="width:15%">문제 번호</th>
-                <th style="width:15%">채점 결과</th>
-                <th style="width:10%">시간</th>
-                <th style="width:10%">메모리</th>
-                <th style="width:10%">언어</th>
-                <th style="width:15%">제출일</th>
-                <th style="width:10%; text-align: center;">재체점</th>
-              </tr>
-            </thead>
-            <tbody v-for="(submission, idx) in submissions">
-              <tr>
-                <td id="user-id" @click="redirectToUser(submission)">{{ submission.username }}</td>
-                <td id="problem-id" @click="redirectToProblem(submission)">{{ submission.problem }}</td>
-                <td><Tag :color=toColor(submission) :checkable="checkIfAvailable(submission)" v-bind:style="[checkIfAvailable(submission) ? {'cursor' : 'pointer'}:{'cursor' : 'default'}]" @on-change="redirectToDetails(submission)"> {{ toResult(submission) }} </Tag></td>
-                <td>{{ toTime(submission) }}</td>
-                <td>{{ toMemory(submission) }}</td>
-                <td>{{ submission.language }}</td>
-                <td>{{ toDate(submission) }}</td>
-                <td style="text-align: center;"><Icon type="md-refresh" size="18" class="icon-hv" @click="handleRejudge(submission.id, idx)"></Icon></td>
               </tr>
             </tbody>
           </table>
@@ -116,6 +90,115 @@
           result: '',
           username: ''
         },
+        columns: [
+          {
+            title: this.$i18n.t('m.When'),
+            align: 'center',
+            render: (h, params) => {
+              return h('span', time.utcToLocal(params.row.create_time))
+            }
+          },
+          {
+            title: '채점 해시섬',
+            align: 'center',
+            render: (h, params) => {
+              if (params.row.show_link) {
+                return h('span', {
+                  style: {
+                    color: '#57a3f3',
+                    cursor: 'pointer'
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push('/status/' + params.row.id).catch(() => {})
+                    }
+                  }
+                }, params.row.id.slice(0, 12))
+              } else {
+                return h('span', params.row.id.slice(0, 12))
+              }
+            }
+          },
+          {
+            title: '채점 결과',
+            align: 'center',
+            render: (h, params) => {
+              return h('Tag', {
+                props: {
+                  color: JUDGE_STATUS[params.row.result].color,
+                  key: params.row.result
+                }
+              }, this.$i18n.t('m.' + JUDGE_STATUS[params.row.result].name.replace(/ /g, '_')))
+            }
+          },
+          {
+            title: '문제 번호',
+            align: 'center',
+            render: (h, params) => {
+              return h('span',
+                {
+                  style: {
+                    color: '#57a3f3',
+                    cursor: 'pointer'
+                  },
+                  on: {
+                    click: () => {
+                      if (this.contestID) {
+                        this.$router.push(
+                          {
+                            name: 'contest-problem-details',
+                            params: {problemID: params.row.problem, contestID: this.contestID}
+                          }).catch(() => {})
+                      } else {
+                        this.$router.push({name: 'problem-details', params: {problemID: params.row.problem}}).catch(() => {})
+                      }
+                    }
+                  }
+                },
+                params.row.problem)
+            }
+          },
+          {
+            title: this.$i18n.t('m.Time'),
+            align: 'center',
+            render: (h, params) => {
+              return h('span', utils.submissionTimeFormat(params.row.statistic_info.time_cost))
+            }
+          },
+          {
+            title: this.$i18n.t('m.Memory'),
+            align: 'center',
+            render: (h, params) => {
+              return h('span', utils.submissionMemoryFormat(params.row.statistic_info.memory_cost))
+            }
+          },
+          {
+            title: this.$i18n.t('m.Language'),
+            align: 'center',
+            key: 'language'
+          },
+          {
+            title: this.$i18n.t('m.Author'),
+            align: 'center',
+            render: (h, params) => {
+              return h('a', {
+                style: {
+                  'display': 'inline-block',
+                  'max-width': '150px'
+                },
+                on: {
+                  click: () => {
+                    this.$router.push(
+                      {
+                        name: 'user-home',
+                        query: {username: params.row.username}
+                      }).catch(() => {})
+                  }
+                }
+              }, params.row.username)
+            }
+          }
+        ],
         loadingTable: false,
         submissions: [],
         total: 30,
@@ -125,8 +208,7 @@
         problemID: '',
         routeName: '',
         JUDGE_STATUS: '',
-        rejudge_column: false,
-        refreshStatus: null
+        rejudge_column: false
       }
     },
     mounted () {
@@ -138,7 +220,6 @@
     },
     methods: {
       init () {
-        clearTimeout(this.refreshStatus)
         this.contestID = this.$route.params.contestID
         let query = this.$route.query
         this.problemID = query.problemID
@@ -151,7 +232,6 @@
         }
         this.routeName = this.$route.name
         this.getSubmissions()
-        this.getRejudgeAccess()
       },
       buildQuery () {
         return {
@@ -176,77 +256,16 @@
           this.adjustRejudgeColumn()
           this.loadingTable = false
           this.submissions = data.results
-          try {
-            // settimeout api call router 변경시 exception 추출
-            for (let idx = 0; this.submissions.length; idx++) {
-              this.getRealtimeStatus(this.submissions[idx].id, idx)
-            }
-          } catch (e) { }
           this.total = data.total
         }).catch(() => {
           this.loadingTable = false
-          clearTimeout(this.refreshStatus)
         })
       },
       forceRender () {
         this.renderKey += 1
       },
-      getRejudgeAccess () {
-        if (!this.rejudgeColumnVisible || this.rejudge_column) {
-          return false
-        } else {
-          return true
-        }
-      },
-      getRealtimeStatus (id, index) {
-        if (id === undefined) {
-          clearTimeout(this.refreshSatus)
-        }
-        if (this.refreshSatus) {
-          clearTimeout(this.refreshSatus)
-          return
-        }
-        if (this.submissions.length === 0) {
-          clearTimeout(this.refreshStatus)
-        }
-        const checkStatus = () => {
-          api.getSubmissionStatus(id).then(__ => {
-            if (this.submissions[index] === undefined || this.submissions[index].result === undefined) {
-              clearTimeout(this.refreshStatus)
-            } else if (this.submissions[index].id !== __.data.data.id) {
-              clearTimeout(this.refreshStatus)
-            } else {
-              api.getSafeSubmissionStatus(id).then(res => {
-                if (res.data.data.result === undefined) {
-                  clearTimeout(this.refreshStatus)
-                } else if (this.submissions[index] === undefined) {
-                  clearTimeout(this.refreshStatus)
-                } else {
-                  if (this.submissions[index].id !== res.data.data.id) {
-                    clearTimeout(this.refreshStatus)
-                  } else {
-                    this.submissions[index].result = res.data.data.result
-                    this.submissions[index].username = res.data.data.username
-                    this.submissions[index].statistic_info = res.data.data.statistic_info
-                    if (this.submissions[index].result === '7' || this.submissions[index].result === 7) {
-                      this.refreshStatus = setTimeout(checkStatus, 1000)
-                    } else {
-                      this.refreshStatus = setTimeout(checkStatus, 2500)
-                    }
-                  }
-                }
-              }, ___ => {
-                clearTimeout(this.refreshStatus)
-              })
-            }
-          }, _ => {
-            clearTimeout(this.refreshStatus)
-          })
-        }
-        this.refreshStatus = setTimeout(checkStatus, 1000)
-      },
+      // 改变route， 通过监听route变化请求数据，这样可以产生route history， 用户返回时就会保存之前的状态
       changeRoute () {
-        clearTimeout(this.refreshStatus)
         let query = utils.filterEmptyValue(this.buildQuery())
         query.contestID = this.contestID
         query.problemID = this.problemID
@@ -285,6 +304,26 @@
         if (!this.rejudgeColumnVisible || this.rejudge_column) {
           return
         }
+        const judgeColumn = {
+          title: this.$i18n.t('m.Option'),
+          align: 'center',
+          width: 120,
+          render: (h, params) => {
+            return h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small',
+                loading: params.row.loading
+              },
+              on: {
+                click: () => {
+                  this.handleRejudge(params.row.id, params.index)
+                }
+              }
+            }, this.$i18n.t('m.Rejudge'))
+          }
+        }
+        this.columns.push(judgeColumn)
         this.rejudge_column = true
       },
       handleResultChange (status) {
@@ -300,6 +339,7 @@
         this.submissions[index].loading = true
         api.submissionRejudge(id).then(async () => {
           this.submissions[index].loading = false
+          this.$success('Succeeded')
         }, () => {
           this.submissions[index].loading = false
         })
@@ -346,23 +386,9 @@
         return !this.contestID && this.user.admin_type === USER_TYPE.SUPER_ADMIN
       }
     },
-    beforeRouteLeave (to, from, next) {
-      // 구성 요소 전환 후 지속적인 요청 방지
-      clearTimeout(this.refreshStatus)
-      next()
-    },
-    unmounted () {
-      clearTimeout(this.refreshStatus)
-    },
-    beforeDestroy () {
-      if (this.refreshStatus) {
-        clearTimeout(this.refreshStatus)
-      }
-    },
     watch: {
       '$route' (newVal, oldVal) {
         if (newVal !== oldVal) {
-          clearTimeout(this.refreshStatus)
           this.init()
         }
       },
@@ -396,7 +422,6 @@
     table-layout: fixed;
     text-align: left;
     padding: 8px;
-    font-size: 12px;
     margin: auto;
     td {
       padding: 8px;
@@ -417,20 +442,6 @@
         color: @purple;
         font-weight: 500;
       }
-    }
-  }
-  .icon-hv {
-      transition: all 0;
-      cursor: pointer;
-      color: @gray;
-    &:hover {
-      transition: all 0.3s;
-      -webkit-transform: rotate(360deg);
-      -moz-transform: rotate(360deg);
-      -ms-transform: rotate(360deg);
-      -o-transform: rotate(360deg);
-      transform: rotate(360deg);
-      color: @dark-purple;
     }
   }
 </style>

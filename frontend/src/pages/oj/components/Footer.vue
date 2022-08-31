@@ -1,11 +1,9 @@
 <template>
   <footer>
-    <div>
-      <p v-html="website.website_footer"></p>
-      <p>Powered by <a href="https://github.com/OnlineJudgePlatformDev">COU</a>
-        <span v-if="version">&nbsp; Version: {{ version }}</span>
-      </p>
-    </div>
+    <p v-html="website.website_footer"></p>
+    <p>Powered by <a href="https://github.com/OnlineJudgePlatformDev">COU</a>
+      <span v-if="version">&nbsp; Version: {{ version }}</span>
+    </p>
   </footer>
 <!-- <footer>
   <p v-html="website.website_footer></p>
@@ -49,19 +47,12 @@ export default {
     position: absolute;
     bottom: 0;
     left: 0;
-    // background-color: @black;
-    // color: @light-gray;
-    opacity: 1;
-    color: @gray;
+    background-color: @black;
+    color: @light-gray;
     padding: 5px 0 0 0;
     font-size: @font-micro;
     width: 100vw;
-    height: 100px;
+    height: 60px;
     text-align: center;
-    display: flex;
-    align-items: center;
-    & div {
-      margin: 0 auto;
-    }
   }
 </style>

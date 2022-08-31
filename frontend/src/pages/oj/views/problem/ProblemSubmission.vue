@@ -164,7 +164,6 @@
     mixins: [FormMixin],
     data () {
       return {
-        openHelpModal: false,
         lastURL: '',
         version: process.env.VERSION,
         // submit 화면 여부
@@ -233,31 +232,17 @@
     methods: {
       ...mapActions(['changeDomTitle', 'getWebsiteConfig']),
       help_btn () {
-        // this.openHelpModal = true
         this.$Notice.open({
-          title: '도움말',
-          duration: 0,
-          render: h => {
-            return h('p', {
-              style: {
-                'font-size': '12px',
-                'line-height': '18px'
-              }
-            }, [
-              '입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. 해당 문서는 ',
-              h('a', {
-                on: {
-                  click: () => {
-                    let routeData = this.$router.resolve({
-                      name: 'languages'
-                    })
-                    window.open(routeData.href, '_blank')
-                  }
-                }
-              }, '언어별 도움말'),
-              '을 참고해주세요'
-            ])
-          }
+          title: 'Notification title',
+          desc: 'This notification does not automatically close, and you need to click the close button to close.',
+          duration: 0
+        })
+      },
+      compile_opt () {
+        this.$Notice.open({
+          title: 'Compile Option title',
+          desc: 'This Compile Option does not automatically close, and you need to click the close button to close.',
+          duration: 0
         })
       },
       toggle (shared) {

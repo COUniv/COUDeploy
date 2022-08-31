@@ -14,33 +14,7 @@ from utils.throttling import TokenBucket
 from ..models import Submission
 from ..serializers import (CreateSubmissionSerializer, SubmissionModelSerializer,
                            ShareSubmissionSerializer)
-from ..serializers import SubmissionSafeModelSerializer, SubmissionListSerializer, SubmissionStatusSerializer
-
-class SafeSubmissionStatusAPI(APIView):
-    def get(self, request):
-        submission_id = request.GET.get("id")
-        if not submission_id:
-            return self.error("해당 제출 아이디가 존재하지 않습니다")
-        try:
-            submission = Submission.objects.select_related("problem").get(id=submission_id)
-        except Submission.DoesNotExist:
-            return self.error("제출한 문제가 존재하지 않습니다")
-        submission_data = SubmissionSafeModelSerializer(submission).data
-        # 공유 해제 권한이 있는지 여부
-        submission_data["can_unshare"] = False
-        return self.success(submission_data)
-
-class SubmissionStatusAPI(APIView):
-    def get(self, request):
-        submission_id = request.GET.get("id")
-        if not submission_id:
-            return self.error("해당 제출 아이디가 존재하지 않습니다")
-        try:
-            submission = Submission.objects.select_related("problem").get(id=submission_id)
-        except Submission.DoesNotExist:
-            return self.error("제출한 코드가 존재하지 않습니다")
-        submission_status = SubmissionStatusSerializer(submission).data
-        return self.success(submission_status)
+from ..serializers import SubmissionSafeModelSerializer, SubmissionListSerializer
 
 
 class SubmissionAPI(APIView):
