@@ -59,7 +59,7 @@
             <div style="clear:both"></div>
             <div v-if="visibleDraw" class="notifications-tab" v-click-outside="closeNoti">
               <ul class="notifications-table">
-                <li v-for="(item, index) in vNotifications">
+                <li v-for="(item, index) in vNotifications" :key="index">
                   <ul v-bind:style="[!item.is_read ?{'background-color' : '#e0dafc4d'}:{}]" class="notifications-entry"  @click="redirectToArticle(item)">
                     <div>
                       <div>

@@ -63,7 +63,7 @@
             {{$t("m.Announcements")}}
           </VerticalMenu-item>
         </template>
-        <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission" :route="submissionRoute">
+        <VerticalMenu-item class="list" v-if="!this.contestID || OIContestRealTimePermission" :route="submissionRoute">
           <Icon type="navicon-round"></Icon>
           {{$t("m.Submissions")}}
         </VerticalMenu-item>
@@ -115,7 +115,7 @@
             <p>{{$t("m.Tags")}}</p>
             <p>
               <Poptip trigger="hover" placement="left-end">
-                <a>{{$t("m.Show")}}</a>
+                <a class="show">{{$t("m.Show")}}</a>
                 <div slot="content">
                   <Tag v-for="tag in problem.tags" :key="tag">{{tag}}</Tag>
                 </div>
@@ -248,6 +248,7 @@
 </script>
 
 <style lang='less' scoped>
+@import '../../../../styles/common.less';
   .card-title {
     margin-left: 8px;
   }
@@ -294,12 +295,15 @@
     margin-top: -50px;
     margin-left: 10px;
     .title {
-      font-size: 17px;
-      font-weight: 400;
+      font-size: 18px;
+      font-weight: 600;
       margin: 50px 0 20px 0;
-      color: #3091f2;
+      color: @purple;
       .copy {
         padding-left: 8px;
+        i {
+          color: @purple;
+        }
       }
     }
     p.content {
@@ -324,6 +328,9 @@
         margin-bottom: 10px;
         p {
           display: inline-block;
+          .show {
+            color: @purple;
+          }
         }
         p:first-child {
           width: 90px;
@@ -351,6 +358,7 @@
 
 </style>
 <style lang='less'>
+@import '../../../../styles/common.less';
   .tag-card {
     & > .ivu-card-body {
       padding-left: 20px;
@@ -369,7 +377,7 @@
 
     &:hover * {
       background-color: #ffffff00;
-      color: #2d8cf0;
+      color: @purple;
     }
   }
 </style>
