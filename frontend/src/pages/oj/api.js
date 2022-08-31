@@ -8,6 +8,9 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  getInactiveTime () {
+    return ajax('get_inactive_time', 'get')
+  },
   getGrassList () {
     return ajax('get_grass_data', 'get')
   },
@@ -358,6 +361,20 @@ export default {
   },
   getSubmission (id) {
     return ajax('submission', 'get', {
+      params: {
+        id
+      }
+    })
+  },
+  getSafeSubmissionStatus (id) {
+    return ajax('safe_submission_status', 'get', {
+      params: {
+        id
+      }
+    })
+  },
+  getSubmissionStatus (id) {
+    return ajax('submission_status', 'get', {
       params: {
         id
       }

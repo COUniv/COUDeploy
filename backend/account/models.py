@@ -52,7 +52,9 @@ class User(AbstractBaseUser):
     
     problem_sequence = grass = ArrayField(models.TextField(null=True), blank=True, default=list)
     grass = ArrayField(models.DateTimeField(), blank=True, default=list)
-    
+
+    last_activity = models.DateTimeField(null=True)
+
     objects = UserManager()
 
     def is_admin(self):

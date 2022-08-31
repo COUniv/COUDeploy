@@ -41,7 +41,7 @@
                   <Dropdown-item name="1">개최 예정인 대회</Dropdown-item>
                 </Dropdown-menu>
               </Dropdown>
-            <div class="plus" @click="addPage"><Icon type="md-add" size="30" color="#858585"/></div>
+            <div class="plus" @click="addPage"><Icon type="ios-arrow-forward" size="40"/></div>
           </ul>
           
           <div class="tab-content">
@@ -481,7 +481,7 @@
     width: 100%;
     height: auto;
     flex-wrap: wrap;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     // background: #506b9e;
   }
 
@@ -489,7 +489,7 @@
     display: inline-block;
     vertical-align: top;
     width: calc(~"60% - 30px");
-    min-width: 470px;
+    min-width: 440px;
     flex-grow: 1;
     height: 450px;
     padding: 20px;
@@ -508,7 +508,7 @@
         margin-right: 10px;
         padding: 10px 30px;
         border-radius: 25px;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: @weight-bold;
         background-color: @light-gray;
         // transition: all 0.2s ease-in-out;
@@ -517,6 +517,9 @@
         }
         p {
           color: @gray;
+          &:hover {
+            text-decoration:underline;
+          }
         }
         &.active {
           transition: all 0.3s ease-in;
@@ -527,12 +530,20 @@
         }
       }
       .plus {
-        border: 2px solid @light-gray;
         position: absolute;
         padding: 5px;
-        top: 5px;
         right: 0;
         cursor: pointer;
+        & i {
+          transition: all 0.2s ease-in-out;
+          border: 2px solid @light-gray;
+          color: #858585 !important;
+        }
+        &:hover i {
+          transform: rotate( 360deg );
+          border: 2px solid @light-purple;
+          color: @purple !important;
+        }
       }
     }
   }
@@ -592,7 +603,7 @@
     border-radius: 5px;
     padding: 30px 20px;
     width: calc(~"37% - 30px");
-    min-width: 300px;
+    min-width: 270px;
     flex-grow: 1;
     height: 450px;
     background: white;
@@ -676,7 +687,7 @@
     padding: 0 20px 20px 20px;
   }
   .problem-category-container {
-    margin: 20px 15px;
+    margin: 10px 15px;
   }
   .announcement-animate-enter-active {
     animation: fadeIn 1s;
