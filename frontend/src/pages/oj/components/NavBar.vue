@@ -1,34 +1,34 @@
 <template>
   <div id="header">
     <Menu v-show="screenWidth > 900" theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
-      <Menu-item class="home_bar" name="/" >COU</Menu-item>
+      <Menu-item class="home_bar" name="/" ><router-link to="/">COU</router-link></Menu-item>
       <Menu-item class="bar_list" name="/problem">
-        문제
+        <router-link to="/problem">문제</router-link>
       </Menu-item>
       <Menu-item class="bar_list" name="/contest">
-        대회
+        <router-link to="/contest">대회</router-link>
       </Menu-item>
       <Submenu class="bar_list" name="/info">
         <template slot="title">
-          정보
+            정보
         </template>
-          <MenuItem name="/announcement-list">공지사항</MenuItem>
-          <MenuItem name="/help">자주 묻는 질문</MenuItem>
-          <MenuItem name="/languages">언어별 도움말</MenuItem>
-          <MenuItem name="/acm-rank">사용자 순위</MenuItem>
+          <MenuItem name="/announcement-list"><router-link to="/announcement-list">공지사항</router-link></MenuItem>
+          <MenuItem name="/help"><router-link to="/help">자주 묻는 질문</router-link></MenuItem>
+          <MenuItem name="/languages"><router-link to="/languages">언어별 도움말</router-link></MenuItem>
+          <MenuItem name="/acm-rank"><router-link to="/acm-rank">사용자 순위</router-link></MenuItem>
       </Submenu>
       <Submenu class="bar_list" name="/community" trigger="click">
         <template slot="title">
           커뮤니티
         </template>
-          <MenuItem name="/article-list?boardtype=0">전체 게시판</MenuItem>
-          <MenuItem name="/article-list?boardtype=1">자유 게시판</MenuItem>
-          <MenuItem name="/article-list?boardtype=2">질문 게시판</MenuItem>
-          <MenuItem name="/article-list?boardtype=3">요청 게시판</MenuItem>
+          <MenuItem name="/article-list?boardtype=0"><router-link to="/article-list?boardtype=0">전체 게시판</router-link></MenuItem>
+          <MenuItem name="/article-list?boardtype=1"><router-link to="/article-list?boardtype=1">자유 게시판</router-link></MenuItem>
+          <MenuItem name="/article-list?boardtype=2"><router-link to="/article-list?boardtype=2">질문 게시판</router-link></MenuItem>
+          <MenuItem name="/article-list?boardtype=3"><router-link to="/article-list?boardtype=3">요청 게시판</router-link></MenuItem>
       </Submenu>
       <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/status">
         <!-- <Icon type="ios-pulse-strong"></Icon> -->
-        {{$t('m.NavStatus')}}
+       <router-link to="/status">{{$t('m.NavStatus')}}</router-link>
       </Menu-item>
       <template v-if="!isAuthenticated">
         <div class="login_menu">
@@ -59,7 +59,7 @@
             <div style="clear:both"></div>
             <div v-if="visibleDraw" class="notifications-tab" v-click-outside="closeNoti">
               <ul class="notifications-table">
-                <li v-for="(item, index) in vNotifications">
+                <li v-for="(item, index) in vNotifications" :key="index">
                   <ul v-bind:style="[!item.is_read ?{'background-color' : '#e0dafc4d'}:{}]" class="notifications-entry"  @click="redirectToArticle(item)">
                     <div>
                       <div>
@@ -488,15 +488,18 @@
       float: left;
       line-height: 60px;
     }
-    .logo > span > a, .bar_list{
+    .logo > span > a, .bar_list, a, .bar_list a {
       color: @black;
       font-weight: @weight-regular;
       transition: all 0.2s ease-in-out;
       &:hover {
         color: @purple;
+        & a {
+          color:@purple;
+        }
       }
     }
-    .home_bar{
+    .home_bar, .home_bar a {
         color: @purple;
         font-size: @font-medium;
         font-weight: @weight-bold;
@@ -925,6 +928,15 @@
   }
   .ivu-menu-vertical .ivu-menu-item:hover, .ivu-menu-vertical .ivu-menu-submenu-title:hover {
     color: @purple;
+  }
+  .ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item a {
+    color: @default-font-color !important;
+  }
+  .ivu-menu-item ivu-menu-item-active ivu-menu-item-selected {
+    color: @purple !important;
+  }
+  .ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item-selected  a {
+    color: @purple !important;
   }
   .bar_list  {
     & .ivu-menu {
