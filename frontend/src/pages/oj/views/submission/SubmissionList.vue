@@ -264,7 +264,64 @@
       forceRender () {
         this.renderKey += 1
       },
+<<<<<<< HEAD
       // 改变route， 通过监听route变化请求数据，这样可以产生route history， 用户返回时就会保存之前的状态
+=======
+      getRejudgeAccess () {
+        if (!this.rejudgeColumnVisible || this.rejudge_column) {
+          return false
+        } else {
+          return true
+        }
+      },
+      getRealtimeStatus (id, index) {
+        if (id === undefined) {
+          clearTimeout(this.refreshSatus)
+        }
+        if (this.refreshSatus) {
+          clearTimeout(this.refreshSatus)
+          return
+        }
+        if (this.submissions.length === 0) {
+          clearTimeout(this.refreshStatus)
+        }
+        const checkStatus = () => {
+          api.getSubmissionStatus(id).then(__ => {
+            if (this.submissions[index] === undefined || this.submissions[index].result === undefined) {
+              clearTimeout(this.refreshStatus)
+            } else if (this.submissions[index].id !== __.data.data.id) {
+              clearTimeout(this.refreshStatus)
+            } else {
+              api.getSafeSubmissionStatus(id).then(res => {
+                if (res.data.data.result === undefined) {
+                  clearTimeout(this.refreshStatus)
+                } else if (this.submissions[index] === undefined) {
+                  clearTimeout(this.refreshStatus)
+                } else {
+                  if (this.submissions[index].id !== res.data.data.id) {
+                    clearTimeout(this.refreshStatus)
+                  } else {
+                    this.submissions[index].result = res.data.data.result
+                    this.submissions[index].username = res.data.data.username
+                    this.submissions[index].statistic_info = res.data.data.statistic_info
+                    if (this.submissions[index].result === '7' || this.submissions[index].result === 7) {
+                      this.refreshStatus = setTimeout(checkStatus, 1000)
+                    } else {
+                      this.refreshStatus = setTimeout(checkStatus, 1000)
+                    }
+                  }
+                }
+              }, ___ => {
+                clearTimeout(this.refreshStatus)
+              })
+            }
+          }, _ => {
+            clearTimeout(this.refreshStatus)
+          })
+        }
+        this.refreshStatus = setTimeout(checkStatus, 1000)
+      },
+>>>>>>> b28225ce7ee0be8d593da59a2fe8ef2a189c1a40
       changeRoute () {
         let query = utils.filterEmptyValue(this.buildQuery())
         query.contestID = this.contestID
