@@ -1,3 +1,5 @@
+@import '../styles/common.less';
+
 .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item-active, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item:hover {
   border-bottom: 2px solid #937ef1;
 }
@@ -186,11 +188,13 @@ table {
 
 .ivu-card-head {
   border-bottom-width: 0;
+
   .panel-title {
     padding: 15px;
     color: #222222;
     font-size: 28px;
   }
+  -webkit-text-stroke: 0.5px;
 }
 
 .ivu-table td {
@@ -246,4 +250,14 @@ table {
 
 .ivu-page-options-sizer {
   margin-right: 0px;
+}
+
+.ivu-switch-checked {
+  border-color: @purple;
+  background-color: @purple;
+}
+
+.ivu-switch:focus {
+  box-shadow: 0 0 0 2px #5130e55d;
+  outline: 0;
 }

@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import timedelta
 from importlib import import_module
@@ -27,8 +28,27 @@ from ..serializers import (ApplyResetPasswordSerializer, ResetPasswordSerializer
                            RankInfoSerializer, UserChangeEmailSerializer, SSOSerializer)
 from ..serializers import (TwoFactorAuthCodeSerializer, UserProfileSerializer,
                            EditUserProfileSerializer, ImageUploadForm, ApplyVerifyEmailSerializer, VerifyEmailSerializer,
-                           UserGrassDataSerializer)
+                           UserGrassDataSerializer, UserLastActivitySerializer)
 from ..tasks import send_email_async
+
+class LastActivityAPI(APIView):
+    @validate_serializer(UserLastActivitySerializer)
+    def get(self, request):
+        # 비로그인시 pass
+        user = request.user
+        if not user.is_authenticated:
+            return self.success()
+        # 세션 갱신 때마다 시간 저장
+        now_time = now()
+        if not user.last_activity: 
+            user.last_activity = now_time
+            user.save()
+            return self.success(json.dumps(0, default=str))
+
+        inactive_time =  now_time - user.last_activity
+        user.last_activity = now_time
+        user.save()
+        return self.success(json.dumps(inactive_time.total_seconds(), default=str))
 
 # JG 02.15
 class UserDeleteAPI(APIView):

@@ -1,7 +1,10 @@
 <template>
   <div class="category">
-    <div class="title" @click="goCategoryList">문제 카테고리</div>
-    <hr style="color: gray;">
+    <div class="title">
+      <p @click="goCategoryList">문제 카테고리</p>
+    <div class="next" @click="goCategoryList"><Icon type="ios-arrow-forward" size="40"/></div>
+    </div>
+    <!-- <hr style="color: gray;"> -->
     <div class="box_container">
       <div class="item_box">
         <div class="item" v-for="category in problemCategoryList" :key="category.title" @click="goProblemList(category.id, category.title)">
@@ -84,20 +87,43 @@
     bottom: 0;
   }
   .category{
+    position: relative;
     width:100%;
-    margin: 80px 0 120px !important;
+    margin: 20px 0 120px !important;
     background-color: @white;
     border-radius: @size-border-radius;
     box-shadow: 2px 5px 20px 2px rgba(90, 82, 128, 0.31);
     .title {
-      background-color: @purple;
+      .next {
+        padding: 5px;
+        position: absolute;
+        top: 0;
+        right : 15px;
+        & i {
+          transition: all 0.3s ease-in-out;
+          color: @white !important;
+        }
+        &:hover i {
+          transform: rotate( 360deg );
+          color: @purple !important;
+        }
+      }
+      background-color: @dark-orange;
       border-radius: 5px 5px 0 0;
       padding: 10px;
       color: @white;
       font-size: 20px;
       text-align: center;
       font-weight: @weight-bold;
-      cursor: pointer;
+      & p {
+        cursor: pointer;
+        width: fit-content;
+        text-align: center;
+        margin: 0 auto;
+      }
+      & p:hover {
+        text-decoration:underline;
+      }
     }
   }
 
@@ -135,15 +161,15 @@
     height: 180px;
     font-size: 16px;
     /* background: salmon; */
-    border: 2px solid #DDD7FA;
+    border: 2px solid @light-orange;
     background-color: @white;
     border-radius: 0px 20px;
-    box-shadow: 0px 4px 20px #DDD7FA;
+    box-shadow: 0px 4px 20px @light-orange;
     margin: 0 1.5% 20px 1.5%;
     padding: 24px;
     cursor: pointer;
     &:hover {
-      box-shadow: 0px 4px 20px @purple;
+      box-shadow: 0px 4px 20px @dark-orange;
       transition-duration: @animation-duration;
     }
     h3, div {
@@ -185,7 +211,7 @@
         border-radius: 15px;
       }
       &::-webkit-progress-value {
-        background: @green; /* Old browsers */
+        background: #7556fc; /* Old browsers */
         // background: -moz-linear-gradient(left,  #e52759 0%, #f5a547 60%, #f8c07f 99%); /* FF3.6-15 */
         // background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e52759), color-stop(60%,#f5a547), color-stop(99%,#f8c07f)); /* Chrome4-9,Safari4-5 */
         // background: -webkit-linear-gradient(left,  #e52759 0%,#f5a547 60%,#f8c07f 99%); /* Chrome10-25,Safari5.1-6 */
