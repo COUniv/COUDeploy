@@ -139,8 +139,9 @@ export const m = {
   Reset_to_default_code_definition: 'Reset to default code definition',
   Upload_file: 'Upload file',
   Monokai: 'Monokai',
-  Solarized_Light: 'Solarized Light',
+  // Solarized_Light: 'Solarized Light',
   Material: 'Material',
+  Eclipse: 'Eclipse',
   // KatexEditor.vue
   Latex_Editor: 'Latex Editor',
   // NavBar.vue
