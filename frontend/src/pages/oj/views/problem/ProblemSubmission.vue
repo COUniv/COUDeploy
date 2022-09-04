@@ -60,14 +60,14 @@
                             v-clipboard:copy="sample.input"
                             v-clipboard:success="onCopy"
                             v-clipboard:error="onCopyError">
-                          <Icon type="clipboard"></Icon>
+                          <Icon type="md-clipboard"></Icon>
                         </a>
                       </p>
-                      <p class="input-for-pre">{{sample.input}}</p>
+                      <div style="white-space: pre;" class="input-for-pre">{{sample.input}}</div>
                     </div>
                     <div class="sample-output">
                       <p class="title">{{$t('m.Sample_Output')}} {{index + 1}}</p>
-                      <p class="input-for-pre">{{sample.output}}</p>
+                      <div style="white-space: pre;" class="input-for-pre">{{sample.output}}</div>
                     </div>
                   </div>
                 </div>
@@ -198,7 +198,7 @@
         isAfterSubmit: false,
         isActive: false,
         split3: 0.4,
-        min1: '200px',
+        min1: '270px',
         max1: '97vw',
         statusVisible: false,
         captchaRequired: false,
@@ -292,6 +292,7 @@
           })
           problem.languages = problem.languages.sort()
           this.problem = problem
+          console.log(problem)
           this.changePie(problem)
           // 로컬에 코드가 있고 템플릿을 로드할 필요가 없음을 나타내는 beforeRouteEnter에서 수정됨
           if (this.code !== '') {
@@ -574,11 +575,14 @@
       color: @purple;
       .copy {
         padding-left: 8px;
+        i {
+          color: @purple;
+        }
       }
     }
     p.content {
-      margin-right: 20px;
-      font-size: 15px
+      margin: 0 20px 0 0;
+      font-size: 15px;
     }
     .sample {
       align-items: stretch;
@@ -722,14 +726,14 @@
       display: flex;
       
       .hide-btn {
-        background-color: @pale-purple;
+        background-color: @light-purple;
         border-radius: 5px;
 
         &:focus {
           color: @white;
         }
         &:hover {
-          background-color: @light-purple;
+          background-color: @dark-purple;
         }
       }
     }
@@ -963,6 +967,11 @@
       background-color: @red;
       transition: background-color .3s ease-in-out;
     }
+  }
+
+  p {
+    padding: 0;
+    margin: 0;
   }
   
 </style>
