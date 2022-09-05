@@ -45,7 +45,7 @@ export const m = {
   Password: 'Password',
   Website_Config: 'Web 설정',
   Base_Url: '기본 URL',
-  Name: 'Namde',
+  Name: 'Name',
   Shortcut: 'Shortcut',
   Footer: 'Footer',
   Allow_Register: '사용자 가입 활성화',
