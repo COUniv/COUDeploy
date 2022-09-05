@@ -225,7 +225,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item :label="$t('m.Two_Factor_Auth')">
               <el-switch
                 v-model="user.two_factor_auth"
@@ -243,7 +243,7 @@
                 inactive-color="#ff4949">
               </el-switch>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="12">
             <el-form-item label="Email Verification">
               <el-switch
@@ -254,7 +254,9 @@
           <el-col :span="12">
             <el-form-item :label="$t('m.Is_Disabled')">
               <el-switch
-                v-model="user.is_disabled">
+                v-model="user.is_disabled"
+                active-color="#ff4949"
+                >
               </el-switch>
             </el-form-item>
           </el-col>
