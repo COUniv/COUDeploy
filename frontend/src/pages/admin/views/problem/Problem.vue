@@ -216,8 +216,13 @@
             <el-form-item :label="$t('m.IOMode')">
               <el-radio-group v-model="problem.io_mode.io_mode">
                 <el-radio label="Standard IO">Standard IO</el-radio>
-                <el-radio v-show="isSuperAdmin" label="File IO">File IO</el-radio>
+                <!-- file io 비활성화 -->
+                <el-radio v-show="isSuperAdmin" label="File IO" disabled>File IO</el-radio>
               </el-radio-group>
+              <el-popover v-show="isSuperAdmin" placement="right" trigger="hover">
+                <i slot="reference" class="el-icon-fa-question-circle import-user-icon"></i>
+                <p>추후 추가 될 기능입니다.</p>
+              </el-popover>
             </el-form-item>
           </el-col>
 
