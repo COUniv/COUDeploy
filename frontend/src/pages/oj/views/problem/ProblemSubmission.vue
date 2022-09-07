@@ -11,8 +11,8 @@
         <div class="problem-name"> {{ problem.title }}</div>
       </div>
       <div class="header-right">
-        <div class="help-btn">
-          <Button type="text" size="large" style="z-index: '1' " @click="help_btn">도움말</Button>
+        <div class="help">
+          <Button type="text" size="large" style="z-index: '1' " @click="help_btn" class="help-btn">도움말</Button>
         </div>
         <div v-if="!isAfterSubmit">
           <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" :loading="submitted" class="hide-btn" @click="toggle(false)">공개
@@ -923,16 +923,21 @@
       padding-right: 20px;
     }
   }
-  .help-btn{
+  .help {
     font-size: 16px;
     * {
       color: @white;
       background-color: transparent !important;
       border-color: transparent;
       transition: all 0.1s ease-in-out;
+    }
+
+    .help-btn {
+      color: @white;
+      background-color: transparent;
+      border-color: transparent;
+      transition: all 0.1s ease-in-out;
       &:hover {
-        background-color: transparent;
-        border-color: transparent;
         color: @light-purple;
       }
     }
