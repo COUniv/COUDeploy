@@ -934,11 +934,11 @@
     }
   }
   .help {
-    font-size: 14px;
-    font-weight: 400;
     cursor: pointer;
     margin-right: 10px;
     .help-btn {
+      font-size: 14px;
+      font-weight: 400;
       line-height: 65px;
       color: @white;
       background-color: transparent;
