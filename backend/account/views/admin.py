@@ -75,8 +75,11 @@ class UserAdminAPI(APIView):
             return self.error("존재하지 않는 유저입니다")
         if User.objects.filter(username=data["username"].lower()).exclude(id=user.id).exists():
             return self.error("Username already exists")
-        if User.objects.filter(email=data["email"].lower()).exclude(id=user.id).exists():
-            return self.error("Email already exists")
+        if data["email"]:
+            if User.objects.filter(email=data["email"].lower()).exclude(id=user.id).exists():
+                return self.error("Email already exists")
+        else:
+            data["email"] = ""
 
         pre_username = user.username
         user.username = data["username"].lower()

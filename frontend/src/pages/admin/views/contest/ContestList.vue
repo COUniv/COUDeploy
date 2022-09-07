@@ -95,9 +95,9 @@
     <el-dialog title="Download Contest Submissions"
                width="30%"
                :visible.sync="downloadDialogVisible">
-      <el-switch v-model="excludeAdmin" active-text="Exclude admin submissions"></el-switch>
+      <el-switch v-model="excludeAdmin" active-text="관리자 제출 제외"></el-switch>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="downloadSubmissions">确 定</el-button>
+        <el-button type="primary" @click="downloadSubmissions">다운로드</el-button>
       </span>
     </el-dialog>
   </div>

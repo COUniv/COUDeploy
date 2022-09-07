@@ -1,5 +1,5 @@
 export const m = {
-  Add_Problem: '문재 생성',
+  Add_Problem: '문제 생성',
   // SideMenu.vue
   Dashboard: '대시보드',
   General: '일반',
@@ -45,7 +45,7 @@ export const m = {
   Password: 'Password',
   Website_Config: 'Web 설정',
   Base_Url: '기본 URL',
-  Name: 'Namde',
+  Name: 'Name',
   Shortcut: 'Shortcut',
   Footer: 'Footer',
   Allow_Register: '사용자 가입 활성화',
