@@ -924,23 +924,17 @@
     }
   }
   .help-btn{
-    color: @white;
-    background-color: transparent !important;
     font-size: 16px;
     * {
       color: @white;
-      transition: all 0.1s ease-in-out;
-    }
-
-    &:hover * {
-      background-color: transparent;
-      color: @light-purple;
-    }
-
-    &:focus {
       background-color: transparent !important;
-      color: @light-purple !important;
-      border-color: transparent !important;
+      border-color: transparent;
+      transition: all 0.1s ease-in-out;
+      &:hover {
+        background-color: transparent;
+        border-color: transparent;
+        color: @light-purple;
+      }
     }
   }
   .hide {

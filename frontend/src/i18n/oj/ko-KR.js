@@ -138,10 +138,10 @@ export const m = {
   Theme: '테마',
   Reset_to_default_code_definition: '작성한 코드 초기화',
   Upload_file: '파일 업로드',
-  Monokai: 'Monokai',
+  Monokai: 'Mono',
   // Solarized_Light: 'Solarized Light',
-  Material: 'Material',
-  Eclipse: 'Eclipse',
+  Material: 'Dark',
+  Eclipse: 'Light',
   // KatexEditor.vue
   Latex_Editor: 'Latex Editor',
   // NavBar.vue

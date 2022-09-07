@@ -177,7 +177,7 @@
       margin-bottom: 15px;
     }
     .adjust {
-      width: 150px;
+      width: 100px;
       margin-left: 10px;
     }
     .fl-right {
