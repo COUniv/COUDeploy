@@ -1,5 +1,5 @@
 export const m = {
-  Add_Problem: '문재 생성',
+  Add_Problem: '문제 생성',
   // SideMenu.vue
   Dashboard: '대시보드',
   General: '일반',
