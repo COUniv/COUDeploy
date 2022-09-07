@@ -23,19 +23,21 @@
                     <Icon type="md-clipboard"></Icon>
                   </a>
                 </p>
-                <pre class="input-for-pre">{{sample.input}}</pre>
+                <p style="white-space: pre;" class="input-for-pre">{{sample.input}}</p>
               </div>
               <div class="sample-output">
                 <p class="title">{{$t("m.Sample_Output")}} {{index + 1}}</p>
-                <pre class="input-for-pre">{{sample.output}}</pre>
+                <p style="white-space: pre;" class="input-for-pre">{{sample.output}}</p>
               </div>
             </div>
           </div>
           <div v-if="problem.hint">
-            <p class="title">{{$t("m.Hint")}}</p>
-            <Card dis-hover>
-              <div class="content" v-html="problem.hint"></div>
-            </Card>
+            <div class="hide" @click="hintHide()">
+              <p class="title">{{$t('m.Hint')}}</p>
+              <Button v-if="!hintHidden" size="large" class="hint-hide-btn"><Icon type="md-eye" /></Button>
+              <Button v-else size="large" class="hint-hide-btn"><Icon type="md-eye-off" /></Button>
+            </div>
+            <p v-html="problem.hint" v-bind:style="[hintHidden ?{'visibility' : 'hidden'}:{'display' : 'block'}]"></p>
           </div>
           <div v-if="problem.source">
             <p class="title">{{$t("m.Source")}}</p>
@@ -147,6 +149,7 @@
         contestID: '',
         problemID: '',
         submissionId: '',
+        hintHidden: true,
         problem: {
           title: '',
           description: '',
@@ -211,6 +214,9 @@
         } else {
           this.$router.push({ name: 'submission-list', query: { problemID: this.problemID } }).catch(() => { })
         }
+      },
+      hintHide () {
+        this.hintHidden = !this.hintHidden
       }
     },
     computed: {
@@ -307,7 +313,6 @@
       }
     }
     p.content {
-      margin-left: 25px;
       margin-right: 20px;
       font-size: 15px
     }
@@ -351,9 +356,24 @@
 
   .input-for-pre {
     min-width: 90px;
-    overflow: scroll;
-    text-overflow: ellipsis;
 
+  }
+
+  .hint-hide-btn {
+    padding: 0px;
+    margin-left: 10px;
+    margin-top: 25px;
+    border-color: transparent;
+    color: @purple;
+    &:hover, &:focus {
+      border-color: transparent;
+      box-shadow: none;
+    }
+  }
+
+  .hide {
+    display: flex;
+    cursor: pointer;
   }
 
 </style>

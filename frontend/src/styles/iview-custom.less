@@ -104,7 +104,7 @@ table {
 
 .ivu-btn:focus {
   color: @purple;
-  background-color: #fff;
+  background-color: transparent;
   border-color: @purple;
   box-shadow: 0 0 0 2px rgba(81, 48, 229, 0.2);
 }
@@ -260,4 +260,46 @@ table {
 .ivu-switch:focus {
   box-shadow: 0 0 0 2px #5130e55d;
   outline: 0;
+}
+
+.ivu-tabs-nav .ivu-tabs-tab-active {
+  color: @purple;
+  -webkit-text-stroke: 1px;
+}
+
+.ivu-tabs-nav .ivu-tabs-tab:hover {
+  color: @purple;
+}
+
+.ivu-tabs-ink-bar {
+  background-color: @purple;
+}
+
+.ivu-tabs-nav {
+  width: 66px;
+  text-align: center;
+  padding: 2px 0;
+  font-size: 120%;
+}
+
+.ivu-split-trigger-vertical {
+  height: 100vh;
+  width: 10px;
+  &:hover, &:focus, &:active {
+    background-color: @pale-purple;
+    transition: background-color 0.3s ease-in-out;
+  }
+}
+
+.ivu-split-trigger-bar-con.vertical {
+  top: 50vh;
+  left: 3px;
+}
+
+.ivu-split-trigger {
+  border-color: transparent;
+}
+
+.ivu-tabs-bar {
+  margin-bottom: 10px;
 }

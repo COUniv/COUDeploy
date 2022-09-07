@@ -5,16 +5,44 @@
       <!-- <div id="undo-icon">
         <Icon type="ios-undo" size="24" @click="undoPage" />
       </div>   -->
-      <div class="logo" @click="goHome">COU</div>
-      <div style="float: right">
-        <div class="help-btn">
-          <Button type="text" size="large" style="z-index: '1' " @click="help_btn">도움말</Button>
+      <div class="header-left">
+        <div class="logo" @click="goHome">COU</div>
+        <div class="problem-name" style="color: #bdbdbd" >[2022년 3월 코딩 테스트]</div>
+        <div class="problem-name"> {{ problem.title }}</div>
+      </div>
+      <div class="header-right">
+        <div class="help">
+          <Button type="text" size="large" style="z-index: '1' " @click="help_btn" class="help-btn">도움말</Button>
+        </div>
+        <div v-if="!isAfterSubmit">
+          <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" :loading="submitted" class="hide-btn" @click="toggle(false)">공개
+            <Icon type="md-eye" />
+          </Button>
+          <Button v-else type="primary" size="large" style="z-index: '1'" :loading="submitted" class="hide-btn" @click="toggle(true)">비공개
+            <Icon type="md-eye-off" />
+          </Button>
+        </div>
+        <div v-else="isAfterSubmit">
+          <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" disabled>공개로 제출 됨</Button>
+          <Button v-else type="error" size="large" style="z-index: '1'" disabled>비공개로 제출 됨</Button>
+        </div>
+        <div>
+          <!-- 제출 오남용을 방지하기 위해 제출 한 번으로 제한 -->
+          <Button v-if="!isAfterSubmit" type="primary" size="large" style="z-index: '4'" :loading="submitted" @click="submitCode"
+                  :disabled="problemSubmitDisabled" class="submit-btn">
+            <span v-if="submitted">채점중</span>
+            <span v-else>{{$t('m.Submit')}}</span>
+          </Button>
+          <Button v-else type="primary" size="large" @click="goSubmissionList" class="submit-btn">
+            채점 현황 보러가기
+            <Icon type="ios-arrow-forward"></Icon>
+          </Button>
         </div>
       </div>  
     </div>
-    <Split v-model="split3" v-bind:min="min1" v-bind:max="max1" style="overflow: hidden!important;">
+    <Split v-model="split3" v-bind:min="min1" v-bind:max="max1">
       <div slot="left" class="left-split-pane" >
-        <Tabs value="name1" type="card" :animated="false">
+        <Tabs value="name1" :animated="false">
           <TabPane :label="problem.title" name="name1" >   <!-- style="padding: 0 30px 10px 30px" -->
             <div class="problem_contents">
               <div id="problem-content" class="markdown-body" v-katex>
@@ -32,22 +60,24 @@
                             v-clipboard:copy="sample.input"
                             v-clipboard:success="onCopy"
                             v-clipboard:error="onCopyError">
-                          <Icon type="clipboard"></Icon>
+                          <Icon type="md-clipboard"></Icon>
                         </a>
                       </p>
-                      <pre class="input-for-pre">{{sample.input}}</pre>
+                      <div style="white-space: pre;" class="input-for-pre">{{sample.input}}</div>
                     </div>
                     <div class="sample-output">
                       <p class="title">{{$t('m.Sample_Output')}} {{index + 1}}</p>
-                      <pre class="input-for-pre">{{sample.output}}</pre>
+                      <div style="white-space: pre;" class="input-for-pre">{{sample.output}}</div>
                     </div>
                   </div>
                 </div>
                 <div v-if="problem.hint">
-                  <p class="title">{{$t('m.Hint')}}</p>
-                  <Card dis-hover>
-                    <div class="content" v-html="problem.hint"></div>
-                  </Card>
+                  <div class="hide" @click="hintHide()">
+                    <p class="title">{{$t('m.Hint')}}</p>
+                    <Button v-if="!hintHidden" size="large" class="hint-hide-btn"><Icon type="md-eye" /></Button>
+                    <Button v-else size="large" class="hint-hide-btn"><Icon type="md-eye-off" /></Button>
+                  </div>
+                  <p v-html="problem.hint" v-bind:style="[hintHidden ?{'visibility' : 'hidden'}:{'display' : 'block'}]"></p>
                 </div>
               </div>
             </div>
@@ -59,56 +89,54 @@
         <!-- Right Padding -->
         <div class="problem_input">
           <!-- <Problem></Problem> -->
-          <Card :padding="20" id="submit-codes" style="margin: 0;" dis-hover>
             <!-- height는 SubmitCodeMirror랑 같게 할 것 -->
-            <SubmitCodeMirror :value.sync="code"
-                        :languages="problem.languages"
-                        :language="language"
-                        :theme="theme"
-                        @resetCode="onResetToTemplate"
-                        @changeTheme="onChangeTheme"
-                        @changeLang="onChangeLang"></SubmitCodeMirror>
-            <Row type="flex" justify="space-between">
-              <!-- 제출 상태 icon -->
-              <Col :span="10">
-                <div class="status" v-if="statusVisible">
-                  <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
-                    <span>{{$t('m.Status')}}</span>
-                    <Tag type="dot" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
-                      {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
-                    </Tag>
-                  </template>
-                  <template v-else-if="this.contestID && !OIContestRealTimePermission">
-                    <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
-                  </template>
-                </div>
-                <div v-else-if="problem.my_status === 0">
-                  <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
-                </div>
-                <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists">
-                  <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
-                </div>
-                <div v-if="contestEnded">
-                  <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
-                </div>
-              </Col>
-              <Col :span="12">
-                <template v-if="captchaRequired">
-                  <div class="captcha-containers">
-                    <Tooltip v-if="captchaRequired" content="Click to refresh" placement="top">
-                      <img :src="captchaSrc" @click="getCaptchaSrc"/>
-                    </Tooltip>
-                    <Input v-model="captchaCode" class="captcha-codes"/>
-                  </div>
+          <SubmitCodeMirror :value.sync="code"
+                      :languages="problem.languages"
+                      :language="language"
+                      :theme="theme"
+                      @resetCode="onResetToTemplate"
+                      @changeTheme="onChangeTheme"
+                      @changeLang="onChangeLang"></SubmitCodeMirror>
+          <Row type="flex" justify="space-between">
+            <!-- 제출 상태 icon -->
+            <Col :span="10">
+              <div class="status" v-if="statusVisible">
+                <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
+                  <span>{{$t('m.Status')}}</span>
+                  <Tag type="dot" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
+                    {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
+                  </Tag>
                 </template>
-              </Col>
-            </Row>
-          </Card>
+                <template v-else-if="this.contestID && !OIContestRealTimePermission">
+                  <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
+                </template>
+              </div>
+              <div v-else-if="problem.my_status === 0">
+                <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
+              </div>
+              <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists">
+                <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
+              </div>
+              <div v-if="contestEnded">
+                <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
+              </div>
+            </Col>
+            <Col :span="12">
+              <template v-if="captchaRequired">
+                <div class="captcha-containers">
+                  <Tooltip v-if="captchaRequired" content="Click to refresh" placement="top">
+                    <img :src="captchaSrc" @click="getCaptchaSrc"/>
+                  </Tooltip>
+                  <Input v-model="captchaCode" class="captcha-codes"/>
+                </div>
+              </template>
+            </Col>
+          </Row>
         </div>
       </div>
     </Split>
     <!-- </div> -->
-    <div class="ss_footer">
+    <!-- <div class="ss_footer">
       <div class="footer_title" style="color:white" >2022년 3월 코딩 테스트</div>
       <div style="float: right">
         <div v-if="!isAfterSubmit" class="footer_btn" style="color:white">
@@ -120,8 +148,8 @@
           <Button v-else type="error" size="large" style="z-index: '1'" disabled>비공개로 제출 됨</Button>
         </div>
         <div class="footer_btn" style="color:white">
-          <!-- 제출 오남용을 방지하기 위해 제출 한 번으로 제한 -->
-          <Button v-if="!isAfterSubmit" type="primary" size="large" style="z-index: '4'" :loading="submitted" @click="submitCode"
+          제출 오남용을 방지하기 위해 제출 한 번으로 제한 -->
+          <!-- <Button v-if="!isAfterSubmit" type="primary" size="large" style="z-index: '4'" :loading="submitted" @click="submitCode"
                   :disabled="problemSubmitDisabled">
             <span v-if="submitted">채점중</span>
             <span v-else>{{$t('m.Submit')}}</span>
@@ -132,7 +160,7 @@
           </Button>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -171,7 +199,7 @@
         isAfterSubmit: false,
         isActive: false,
         split3: 0.4,
-        min1: '200px',
+        min1: '270px',
         max1: '97vw',
         statusVisible: false,
         captchaRequired: false,
@@ -184,9 +212,10 @@
         submitting: false,
         code: '',
         language: 'C++',
-        theme: 'solarized',
+        theme: 'base16-light',
         submissionId: '',
         submitted: false,
+        hintHidden: true,
         result: {
           result: 9
         },
@@ -278,6 +307,7 @@
           })
           problem.languages = problem.languages.sort()
           this.problem = problem
+          console.log(problem)
           this.changePie(problem)
           // 로컬에 코드가 있고 템플릿을 로드할 필요가 없음을 나타내는 beforeRouteEnter에서 수정됨
           if (this.code !== '') {
@@ -473,6 +503,9 @@
         } else {
           this.$router.push({name: 'submission-list', query: {problemID: this.problemID}}).catch(() => {})
         }
+      },
+      hintHide () {
+        this.hintHidden = !this.hintHidden
       }
     },
     computed: {
@@ -552,16 +585,19 @@
     .title {
       font-size: 17px;
       font-weight: 400;
+      -webkit-text-stroke: .5px;
       margin: 50px 0 20px 0;
       color: @purple;
       .copy {
         padding-left: 8px;
+        i {
+          color: @purple;
+        }
       }
     }
     p.content {
-      margin-left: 25px;
-      margin-right: 20px;
-      font-size: 15px
+      margin: 0 20px 0 0;
+      font-size: 15px;
     }
     .sample {
       align-items: stretch;
@@ -639,20 +675,35 @@
     height: 480px;
   }
   .problem_contents{
-    overflow: auto;
     /* width: ; */
-    height: 79vh;
+    height: 75vh;
     font-size: 16px;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      width: 20px;
+      height: 20px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: @dark-white;
+      border-radius: 20px;
+      border: 6px solid transparent;
+      background-clip: content-box;
+    }
   }
 
   .problem_input{
     padding: 0 20px 0 20px;
+    background-color: @white;
+    height: 100%;
   }
 
   .input-for-pre {
     min-width: 90px;
-    overflow: scroll;
-    text-overflow: ellipsis;
 
   }
 
@@ -664,15 +715,43 @@
     /* border: 1px solid #dcdee2; */
   }
   .ss_header{
-    background: @white;
+    background: @purple;
     color: @black;
     position: relative;
+    display: flex;
+    justify-content: space-between;
     left: 0px;
     top: 0px;
     width: 100%;
     height: 60px;
     line-height: 60px;
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+
+    .header-left {
+      display: flex;
+      .problem-name {
+        font-size: 120%;
+        -webkit-text-stroke: .5px;
+        color: @white;
+        padding: 0 4px;
+      }
+    }
+
+    .header-right {
+      display: flex;
+      
+      .hide-btn {
+        background-color: @light-purple;
+        border-radius: 5px;
+
+        &:focus {
+          color: @white;
+        }
+        &:hover {
+          background-color: @dark-purple;
+        }
+      }
+    }
 
     #undo-icon {
       float: left;
@@ -691,13 +770,13 @@
         }
       }
     }
-    .logo{
+    .logo {
       float: left;
-      color: @purple;
+      color: @white;
       font-size: 28px;
       font-weight: 900;
-      margin-left: 20px;
-      -webkit-text-stroke: 1.5px;
+      margin: 0 20px;
+      -webkit-text-stroke: 1px;
       &:hover {
         cursor: pointer;
       }
@@ -769,8 +848,8 @@
   .left-split-pane{
 
     padding: 10px;
-    /* height: 100vh; */
-    /* background: sandybrown; */
+    height: 100%;
+    background: @white;
   }
 
   .right-split-pane{
@@ -853,27 +932,60 @@
   .problem-animate-enter-active {
     animation: fadeIn 1s;
   }
-</style>
-<style lang="less">
   .tag-card {
     & > .ivu-card-body {
       padding-left: 20px;
       padding-right: 20px;
     }
   }
-  .help-btn{
-    float: left;
-    color: #222222;
+  .help {
     font-size: 16px;
-    padding: 0 10px;
     * {
-      color: black;
+      color: @white;
+      background-color: transparent !important;
+      border-color: transparent;
       transition: all 0.1s ease-in-out;
     }
 
-    &:hover * {
-      background-color: #ffffff00;
-      color: #5030E5;;
+    .help-btn {
+      color: @white;
+      background-color: transparent;
+      border-color: transparent;
+      transition: all 0.1s ease-in-out;
+      &:hover {
+        color: @light-purple;
+      }
     }
   }
+  .hide {
+    display: flex;
+    cursor: pointer;
+  }
+  .hint-hide-btn {
+    padding: 0px;
+    margin-left: 10px;
+    margin-top: 25px;
+    border-color: transparent;
+    color: @purple;
+    &:hover, &:focus {
+      border-color: transparent;
+      box-shadow: none;
+    }
+  }
+
+  .submit-btn {
+    background-color: #E05252;
+    margin: 0 35px 0 10px;
+    color: @white;
+    &:hover {
+      background-color: @red;
+      transition: background-color .3s ease-in-out;
+    }
+  }
+
+  p {
+    padding: 0;
+    margin: 0;
+  }
+  
 </style>
