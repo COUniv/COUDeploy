@@ -180,11 +180,6 @@
       width: 100px;
       margin-left: 10px;
     }
-    .fl-right {
-      // left: 40%;
-      // right: 3%;
-      // float: right;
-    }
   }
 
   .reset-btn {

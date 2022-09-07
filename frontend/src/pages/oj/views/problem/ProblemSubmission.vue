@@ -940,13 +940,6 @@
   }
   .help {
     font-size: 16px;
-    * {
-      color: @white;
-      background-color: transparent !important;
-      border-color: transparent;
-      transition: all 0.1s ease-in-out;
-    }
-
     .help-btn {
       color: @white;
       background-color: transparent;
