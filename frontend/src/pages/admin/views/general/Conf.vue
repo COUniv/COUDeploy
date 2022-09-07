@@ -26,7 +26,7 @@
           <el-col :span="24">
             <el-form-item label="TLS">
               <el-switch
-                v-model="smtp.tls">
+                v-model="smtp.tls" disabled>
               </el-switch>
             </el-form-item>
           </el-col>
