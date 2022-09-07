@@ -12,7 +12,7 @@
       </div>
       <div class="header-right">
         <div class="help">
-          <Button type="text" size="large" style="z-index: '1' " @click="help_btn" class="help-btn">도움말</Button>
+          <p @click="help_btn" class="help-btn">도움말</p>
         </div>
         <div v-if="!isAfterSubmit">
           <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" :loading="submitted" class="hide-btn" @click="toggle(false)">공개
@@ -267,12 +267,7 @@
           title: '도움말',
           duration: 0,
           render: h => {
-            return h('p', {
-              style: {
-                'font-size': '12px',
-                'line-height': '18px'
-              }
-            }, [
+            return h('p', [
               '입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. 해당 문서는 ',
               h('a', {
                 on: {
@@ -743,12 +738,12 @@
       .hide-btn {
         background-color: @light-purple;
         border-radius: 5px;
-
+        -webkit-text-stroke: .3px;
         &:focus {
           color: @white;
         }
         &:hover {
-          background-color: @dark-purple;
+          background-color: #947dff;
         }
       }
     }
@@ -939,12 +934,16 @@
     }
   }
   .help {
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    margin-right: 10px;
     .help-btn {
+      line-height: 65px;
       color: @white;
       background-color: transparent;
       border-color: transparent;
-      transition: all 0.1s ease-in-out;
+      transition: all 0.3s ease-in-out;
       &:hover {
         color: @light-purple;
       }
@@ -970,6 +969,7 @@
     background-color: #E05252;
     margin: 0 35px 0 10px;
     color: @white;
+    -webkit-text-stroke: .3px;
     &:hover {
       background-color: @red;
       transition: background-color .3s ease-in-out;
