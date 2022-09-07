@@ -35,7 +35,7 @@ import 'echarts/lib/component/markPoint'
 import Element from 'element-ui'
 // import 'element-ui/lib/theme-chalk/index.css'
 // auto logout
-// import IdleVue from 'idle-vue-3'
+import IdleVue from 'idle-vue-3'
 import '@mdi/font/css/materialdesignicons.css'
 
 // register global utility filters.
@@ -55,15 +55,13 @@ Vue.use(VueAnalytics, {
   id: GOOGLE_ANALYTICS_ID,
   router
 })
-
-// disable session expire
-// const eventsHub = new Vue()
-// Vue.use(IdleVue, {
-//   eventEmitter: eventsHub,
-//   store,
-//   idleTime: 10000, // 10 seconds
-//   startAtIdle: false
-// })
+const eventsHub = new Vue()
+Vue.use(IdleVue, {
+  eventEmitter: eventsHub,
+  store,
+  idleTime: 10000, // 10 seconds
+  startAtIdle: false
+})
 
 Vue.component('ECharts', ECharts)
 Vue.component(VerticalMenu.name, VerticalMenu)

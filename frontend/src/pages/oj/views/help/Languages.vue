@@ -124,7 +124,6 @@
   import utils from '@/utils/utils'
   import BlockedCursorCodeMirror from '@oj/components/BlockedCursorCodeMirror.vue'
   export default {
-    name: 'Languages',
     components: {
       BlockedCursorCodeMirror
     },

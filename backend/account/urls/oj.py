@@ -8,12 +8,11 @@ from ..views.oj import (ApplyResetPasswordAPI, ResetPasswordAPI,
                         ProfileProblemDisplayIDRefreshAPI, OpenAPIAppkeyAPI, SSOAPI, UserDeleteAPI,
                         GrassAPI)
 
-from ..views.oj import (ApplyVerifyEmailAPI, VerifyEmailAPI, LastActivityAPI)
+from ..views.oj import (ApplyVerifyEmailAPI, VerifyEmailAPI)
 
 from utils.captcha.views import CaptchaAPIView
 
 urlpatterns = [
-    url(r"^get_inactive_time/?$", LastActivityAPI.as_view(), name="get_inactive_time_api"),
     url(r"^apply_verify_email/?$", ApplyVerifyEmailAPI.as_view(), name="apply_verify_email_api"),
     url(r"^verify_email/?$", VerifyEmailAPI.as_view(), name="verify_email_api"),
     url(r"^login/?$", UserLoginAPI.as_view(), name="user_login_api"),

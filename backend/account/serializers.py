@@ -58,7 +58,7 @@ class UserAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "email", "admin_type", "problem_permission", "real_name",
-                  "create_time", "last_login", "two_factor_auth", "open_api", "is_disabled", "is_email_verify", "last_activity"]
+                  "create_time", "last_login", "two_factor_auth", "open_api", "is_disabled", "is_email_verify"]
 
     def get_real_name(self, obj):
         return obj.userprofile.real_name
@@ -68,7 +68,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "email", "admin_type", "problem_permission",
-                  "create_time", "last_login", "two_factor_auth", "open_api", "is_disabled", "is_email_verify", "last_activity"]
+                  "create_time", "last_login", "two_factor_auth", "open_api", "is_disabled", "is_email_verify"]
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -111,9 +111,6 @@ class EditUserProfileSerializer(serializers.Serializer):
     school = serializers.CharField(max_length=64, allow_blank=True, required=False)
     major = serializers.CharField(max_length=64, allow_blank=True, required=False)
     language = serializers.CharField(max_length=32, allow_blank=True, required=False)
-
-class UserLastActivitySerializer(serializers.Serializer):
-    last_activity = serializers.DateTimeField(read_only=True)
 
 class ApplyVerifyEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()

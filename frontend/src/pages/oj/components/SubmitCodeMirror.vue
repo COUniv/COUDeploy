@@ -1,40 +1,35 @@
 <template>
   <div style="margin: 0px 0px 15px 0px;">
-    <Row type="flex" justify="space-between" class="header">
-      <Col :span=12>
-      <div>
-        <span>{{$t('m.Language')}}:</span>
-        <Select :value="language" @on-change="onLangChange" class="adjust">
-          <Option v-for="item in languages" :key="item" :value="item">{{item}}
+    <div class="header">
+      <div class="options">
+        
+        <Tooltip :content="this.$i18n.t('m.Reset_to_default_code_definition')" placement="bottom" style="margin-left: 10px">
+            <Button icon="md-refresh" @click="onResetClick" class="reset-btn"></Button>
+          </Tooltip>
+        <Select :value="theme" @on-change="onThemeChange" class="adjust">
+          <Option v-for="item in themes" :key="item.label" :value="item.value">{{item.label}}
           </Option>
         </Select>
-
-        <Tooltip :content="this.$i18n.t('m.Reset_to_default_code_definition')" placement="bottom" style="margin-left: 10px">
-          <Button icon="md-refresh" @click="onResetClick"></Button>
-        </Tooltip>
-<!-- 
+        <!-- <span>{{$t('m.Language')}}:</span> -->
+        <!-- 
         <Tooltip :content="this.$i18n.t('m.Upload_file')" placement="top" style="margin-left: 10px">
           <Button icon="ios-cloud-upload-outline" @click="onUploadFile"></Button>
         </Tooltip> -->
 
         <!-- <input type="file" id="file-uploader" style="display: none" @change="onUploadFileDone"> -->
 
+          <!-- <span>{{$t('m.Theme')}}:</span> -->
+
+          <Select :value="language" @on-change="onLangChange" class="adjust">
+            <Option v-for="item in languages" :key="item" :value="item">{{item}}
+            </Option>
+          </Select>
       </div>
-      </Col>
-      <Col :span=12>
-      <div class="fl-right">
-        <span>{{$t('m.Theme')}}:</span>
-        <Select :value="theme" @on-change="onThemeChange" class="adjust">
-          <Option v-for="item in themes" :key="item.label" :value="item.value">{{item.label}}
-          </Option>
-        </Select>
+      <div>
+        <codemirror :value="value" :options="options" @change="onEditorCodeChange" ref="myEditor">
+        </codemirror>
       </div>
-      </Col>
-    </Row>
-    <Row>
-      <codemirror :value="value" :options="options" @change="onEditorCodeChange" ref="myEditor">
-      </codemirror>
-    </Row>
+    </div>
   </div>
 </template>
 <script>
@@ -43,7 +38,7 @@
 
   // theme
   import 'codemirror/theme/monokai.css'
-  import 'codemirror/theme/solarized.css'
+  import 'codemirror/theme/base16-light.css'
   import 'codemirror/theme/material.css'
 
   // mode
@@ -83,7 +78,7 @@
       },
       theme: {
         type: String,
-        default: 'solarized'
+        default: 'base16-light'
       }
     },
     data () {
@@ -92,7 +87,7 @@
           // codemirror options
           tabSize: 2,
           mode: 'text/x-csrc',
-          theme: 'solarized',
+          theme: 'base16-light',
           lineNumbers: true,
           line: true,
           // 코드 접기
@@ -108,7 +103,7 @@
         },
         themes: [
           {label: this.$i18n.t('m.Monokai'), value: 'monokai'},
-          {label: this.$i18n.t('m.Solarized_Light'), value: 'solarized'},
+          {label: this.$i18n.t('m.Eclipse'), value: 'base16-light'},
           {label: this.$i18n.t('m.Material'), value: 'material'}
         ]
       }
@@ -121,7 +116,7 @@
         })
         this.mode = mode
         this.editor.setOption('mode', this.mode[this.language])
-        this.editor.setSize('100%', '65vh')
+        this.editor.setSize('100%', '76vh')
       })
       this.editor.focus()
     },
@@ -173,16 +168,33 @@
 </script>
 
 <style lang="less" scoped>
+  @import "../../../styles/common.less";
   .header {
-    margin: 5px 5px 15px 5px;
+    padding: 15px;
+    .options {
+      display: flex;
+      justify-content: end;
+      margin-bottom: 15px;
+    }
     .adjust {
-      width: 150px;
+      width: 100px;
       margin-left: 10px;
     }
     .fl-right {
       // left: 40%;
-      right: 3%;
-      float: right;
+      // right: 3%;
+      // float: right;
+    }
+  }
+
+  .reset-btn {
+    background-color: @light-purple;
+    color: @white;
+    border-color: transparent;
+    &:hover, &:focus {
+      background-color: @purple;
+      transition: background-color .3s ease-in-out;
+      box-shadow: none;
     }
   }
 </style>
