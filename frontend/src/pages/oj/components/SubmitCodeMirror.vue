@@ -26,7 +26,7 @@
           </Select>
       </div>
       <div>
-        <codemirror :value="value" :options="options" @change="onEditorCodeChange" ref="myEditor">
+        <codemirror v-model.lazy="value" :options="options" @change="onEditorCodeChange" ref="myEditor">
         </codemirror>
       </div>
     </div>
@@ -55,6 +55,9 @@
   import 'codemirror/addon/fold/foldgutter.js'
   import 'codemirror/addon/fold/brace-fold.js'
   import 'codemirror/addon/fold/indent-fold.js'
+
+  import 'codemirror/addon/scroll/simplescrollbars.js'
+  import 'codemirror/addon/scroll/simplescrollbars.css'
 
   export default {
     name: 'SubmitCodeMirror',
@@ -96,7 +99,8 @@
           // 선택한 텍스트가 자동으로 강조 표시되고 강조 표시됩니다.
           styleSelectedText: true,
           lineWrapping: true,
-          highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true}
+          highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
+          scrollbarStyle: 'overlay'
         },
         mode: {
           'C++': 'text/x-csrc'
@@ -180,11 +184,6 @@
       width: 100px;
       margin-left: 10px;
     }
-    .fl-right {
-      // left: 40%;
-      // right: 3%;
-      // float: right;
-    }
   }
 
   .reset-btn {
@@ -199,7 +198,8 @@
   }
 </style>
 
-<style>
+<style lang="less" scoped>
+  @import '../../../styles/common.less';
   /* @media screen and (max-width: 1200px) {
     .CodeMirror-scroll {
       max-height: 67vh;
