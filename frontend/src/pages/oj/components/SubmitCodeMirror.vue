@@ -26,7 +26,7 @@
           </Select>
       </div>
       <div>
-        <codemirror :value="value" :options="options" @change="onEditorCodeChange" ref="myEditor">
+        <codemirror v-model.lazy="value" :options="options" @change="onEditorCodeChange" ref="myEditor">
         </codemirror>
       </div>
     </div>
