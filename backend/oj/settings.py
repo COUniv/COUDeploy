@@ -53,6 +53,7 @@ LOCAL_APPS = [
     'judge',
     'article',
     'emailauthentication',
+    'banner',
 ]
 
 INSTALLED_APPS = VENDOR_APPS + LOCAL_APPS
@@ -138,6 +139,8 @@ UPLOAD_DIR = f"{DATA_DIR}{UPLOAD_PREFIX}"
 
 STATICFILES_DIRS = [os.path.join(DATA_DIR, "public")]
 
+BANNER_URI_PREFIX = "/public/banner"
+BANNER_UPLOAD_DIR = f"{DATA_DIR}{BANNER_URI_PREFIX}"
 
 LOGGING_HANDLERS = ['console', 'sentry'] if production_env else ['console']
 LOGGING = {
