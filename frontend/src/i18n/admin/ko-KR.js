@@ -1,5 +1,5 @@
 export const m = {
-  Add_Problem: '문재 생성',
+  Add_Problem: '문제 생성',
   // SideMenu.vue
   Dashboard: '대시보드',
   General: '일반',
@@ -21,15 +21,15 @@ export const m = {
   // User.vue
   User_User: 'User',
   Import_User: 'Import User',
-  Generate_User: 'User 생성',
+  Generate_User: '사용자 생성',
   // User.vue-dialog
-  User_Info: 'User',
-  User_Username: 'Username',
-  User_Real_Name: 'Real Name',
-  User_Email: 'Email',
-  User_New_Password: 'New Password',
-  User_Type: 'User Type',
-  Problem_Permission: 'Problem Permission',
+  User_Info: '사용자',
+  User_Username: '닉네임',
+  User_Real_Name: '이름',
+  User_Email: '이메일',
+  User_New_Password: '새 비밀번호',
+  User_Type: '사용자 권한',
+  Problem_Permission: '문제 권한',
   Two_Factor_Auth: 'Two Factor Auth',
   Is_Disabled: '계정 비활성화',
   // Announcement.vue
@@ -45,7 +45,7 @@ export const m = {
   Password: 'Password',
   Website_Config: 'Web 설정',
   Base_Url: '기본 URL',
-  Name: 'Namde',
+  Name: 'Name',
   Shortcut: 'Shortcut',
   Footer: 'Footer',
   Allow_Register: '사용자 가입 활성화',

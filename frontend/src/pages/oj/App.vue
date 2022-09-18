@@ -1,10 +1,11 @@
 <template>
   <div class="content_container">
     <div class="blockingdrag">
-      <NavBar v-show="$route.name !== 'start-login' && $route.name !== 'problem-details'"></NavBar>
+      <NavBar v-show="$route.name !== 'start-login' && $route.name !== 'contest-problem-submission' && $route.name !== 'problem-submission' && $route.name !== 'join'"></NavBar>
     </div>
     <div class="content-app">
-      <SessionExpire v-if="isIdle && $route.name !== 'start-login'"/>
+      <!-- disabled SessionExpire -->
+      <!-- <SessionExpire v-if="isIdle && $route.name !== 'start-login'  && $route.name !== 'join'"/> -->
       <transition name="fadeInUp" mode="out-in">
         <router-view></router-view>
       </transition>
@@ -16,7 +17,7 @@
       </div> -->
     </div>
     <BackTop></BackTop>
-    <Footer v-show="$route.name !== 'problem-details'"></Footer>
+    <Footer v-show="$route.name !== 'contest-problem-submission' && $route.name !== 'problem-submission'"></Footer>
   </div>
   <!-- <div class="footer" c>
     <p v-html="website.website_footer"></p>
@@ -94,25 +95,25 @@
     // min-height: calc(~"100vh - 80px - 80px - 20px");
     min-height: 100%;
     position: relative;
+    overflow-x: hidden;
   }
 
   .content-app {
     margin-top: 100px;
-    padding-bottom: 200px;
+    padding-bottom: 280px;
   }
   @media screen and (max-width: 1200px) {
     .content-app {
       margin-top: 80px;
-      min-height: 100%;
+      min-height: 100vh;
       position: relative;
-      padding-bottom: 90px;
     }
   }
 
   @media screen and (min-width: 1200px) {
     .content-app {
       margin-top: 80px;
-      min-height: 100%;
+      min-height: 100vh;
       position: relative;
     }
   }

@@ -189,8 +189,13 @@
             <el-form-item :label="$t('m.Type')">
               <el-radio-group v-model="problem.rule_type" :disabled="disableRuleType">
                 <el-radio label="ACM">ACM</el-radio>
-                <el-radio v-show="isSuperAdmin" label="OI">OI</el-radio>
+                <!-- io-mode 비활성화 -->
+                <el-radio v-show="isSuperAdmin" label="OI" disabled>OI</el-radio>
               </el-radio-group>
+              <el-popover v-show="isSuperAdmin" placement="right" trigger="hover">
+                <i slot="reference" class="el-icon-fa-question-circle import-user-icon"></i>
+                <p>추후 추가 될 기능입니다.</p>
+              </el-popover>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -211,8 +216,13 @@
             <el-form-item :label="$t('m.IOMode')">
               <el-radio-group v-model="problem.io_mode.io_mode">
                 <el-radio label="Standard IO">Standard IO</el-radio>
-                <el-radio v-show="isSuperAdmin" label="File IO">File IO</el-radio>
+                <!-- file io 비활성화 -->
+                <el-radio v-show="isSuperAdmin" label="File IO" disabled>File IO</el-radio>
               </el-radio-group>
+              <el-popover v-show="isSuperAdmin" placement="right" trigger="hover">
+                <i slot="reference" class="el-icon-fa-question-circle import-user-icon"></i>
+                <p>추후 추가 될 기능입니다.</p>
+              </el-popover>
             </el-form-item>
           </el-col>
 
@@ -226,7 +236,6 @@
               <el-input type="text" v-model="problem.io_mode.output"></el-input>
             </el-form-item>
           </el-col>
-
           <el-col :span="24">
             <el-table
               :data="problem.test_case_score"
@@ -616,9 +625,9 @@
         }
         api[funcName](this.problem).then(res => {
           if (this.routeName === 'create-contest-problem' || this.routeName === 'edit-contest-problem') {
-            this.$router.push({name: 'contest-problem-list', params: {contestId: this.$route.params.contestId}})
+            this.$router.push({name: 'contest-problem-list', params: {contestId: this.$route.params.contestId}}).catch(() => {})
           } else {
-            this.$router.push({name: 'problem-list'})
+            this.$router.push({name: 'problem-list'}).catch(() => {})
           }
         }).catch(() => {
         })

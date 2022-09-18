@@ -2,14 +2,28 @@
 <template>
   <div class="header">
     <div class="title">언어별 도움말</div>
+    <!-- General -->
+    <Card :padding="50">
+      <div class="content markdown-body">
+        <ul>
+          <li><b>공통</b>
+            <p>입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. C언어를 예로들어 입력에서 Standard Input 으로 <code>stdin</code>을 통해 입력 받게 되며, 대표적으로 <code>scanf</code>가 있습니다.
+              마찬가지로 출력 Standard Output으로는 <code>stdout</code>을 통해 출력을 하게 되며, 대표적으로 <code>printf</code>가 있습니다. 언어별 예제는 아래 예제 코드를 참고하시기를 바랍니다.
+            </p>
+          </li>
+        </ul>
+      </div>
+      <div class="exampletext">{{exampleProblem}}</div>
+                   <BlockedCursorCodeMirror
+                :value="examplesource[0].source"
+                :language="langopt[1]"
+                :theme="theme"></BlockedCursorCodeMirror>
+    </Card>
     <!-- C -->
     <Card :padding="50">
       <div class="content markdown-body">
         <ul>
           <li><b>{{examplesource[0].lang}}</b>
-            <p>입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. C언어를 예로들어 입력에서 Standard Input 으로 <code>stdin</code>을 통해 입력 받게 되며, 대표적으로 <code>scanf</code>이 있습니다.
-              마찬가지로 출력 Standard Output으로는 <code>stdout</code>을 통해 출력을 하게 되며, 대표적으로 <code>printf</code>가 있습니다. 언어별 예제는 위 언어별 채점 방식을 참고하시기를 바랍니다.
-            </p>
           </li>
         </ul>
       </div>
@@ -24,9 +38,6 @@
       <div class="content markdown-body">
         <ul>
           <li><b>{{examplesource[1].lang}}</b>
-            <p>입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. C언어를 예로들어 입력에서 Standard Input 으로 <code>stdin</code>을 통해 입력 받게 되며, 대표적으로 <code>scanf</code>이 있습니다.
-              마찬가지로 출력 Standard Output으로는 <code>stdout</code>을 통해 출력을 하게 되며, 대표적으로 <code>printf</code>가 있습니다. 언어별 예제는 위 언어별 채점 방식을 참고하시기를 바랍니다.
-            </p>
           </li>
         </ul>
       </div>
@@ -41,9 +52,6 @@
       <div class="content markdown-body">
         <ul>
           <li><b>{{examplesource[2].lang}}</b>
-            <p>입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. C언어를 예로들어 입력에서 Standard Input 으로 <code>stdin</code>을 통해 입력 받게 되며, 대표적으로 <code>scanf</code>이 있습니다.
-              마찬가지로 출력 Standard Output으로는 <code>stdout</code>을 통해 출력을 하게 되며, 대표적으로 <code>printf</code>가 있습니다. 언어별 예제는 위 언어별 채점 방식을 참고하시기를 바랍니다.
-            </p>
           </li>
         </ul>
       </div>
@@ -58,9 +66,6 @@
       <div class="content markdown-body">
         <ul>
           <li><b>{{examplesource[3].lang}}</b>
-            <p>입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. C언어를 예로들어 입력에서 Standard Input 으로 <code>stdin</code>을 통해 입력 받게 되며, 대표적으로 <code>scanf</code>이 있습니다.
-              마찬가지로 출력 Standard Output으로는 <code>stdout</code>을 통해 출력을 하게 되며, 대표적으로 <code>printf</code>가 있습니다. 언어별 예제는 위 언어별 채점 방식을 참고하시기를 바랍니다.
-            </p>
           </li>
         </ul>
       </div>
@@ -75,9 +80,6 @@
       <div class="content markdown-body">
         <ul>
           <li><b>{{examplesource[4].lang}}</b>
-            <p>입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. C언어를 예로들어 입력에서 Standard Input 으로 <code>stdin</code>을 통해 입력 받게 되며, 대표적으로 <code>scanf</code>이 있습니다.
-              마찬가지로 출력 Standard Output으로는 <code>stdout</code>을 통해 출력을 하게 되며, 대표적으로 <code>printf</code>가 있습니다. 언어별 예제는 위 언어별 채점 방식을 참고하시기를 바랍니다.
-            </p>
           </li>
         </ul>
       </div>
@@ -92,9 +94,6 @@
       <div class="content markdown-body">
         <ul>
           <li><b>{{examplesource[5].lang}}</b>
-            <p>입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. C언어를 예로들어 입력에서 Standard Input 으로 <code>stdin</code>을 통해 입력 받게 되며, 대표적으로 <code>scanf</code>이 있습니다.
-              마찬가지로 출력 Standard Output으로는 <code>stdout</code>을 통해 출력을 하게 되며, 대표적으로 <code>printf</code>가 있습니다. 언어별 예제는 위 언어별 채점 방식을 참고하시기를 바랍니다.
-            </p>
           </li>
         </ul>
       </div>
@@ -109,9 +108,6 @@
       <div class="content markdown-body">
         <ul>
           <li><b>{{examplesource[6].lang}}</b>
-            <p>입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. C언어를 예로들어 입력에서 Standard Input 으로 <code>stdin</code>을 통해 입력 받게 되며, 대표적으로 <code>scanf</code>이 있습니다.
-              마찬가지로 출력 Standard Output으로는 <code>stdout</code>을 통해 출력을 하게 되며, 대표적으로 <code>printf</code>가 있습니다. 언어별 예제는 위 언어별 채점 방식을 참고하시기를 바랍니다.
-            </p>
           </li>
         </ul>
       </div>
@@ -128,6 +124,7 @@
   import utils from '@/utils/utils'
   import BlockedCursorCodeMirror from '@oj/components/BlockedCursorCodeMirror.vue'
   export default {
+    name: 'Languages',
     components: {
       BlockedCursorCodeMirror
     },

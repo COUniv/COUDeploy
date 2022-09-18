@@ -95,9 +95,9 @@
     <el-dialog title="Download Contest Submissions"
                width="30%"
                :visible.sync="downloadDialogVisible">
-      <el-switch v-model="excludeAdmin" active-text="Exclude admin submissions"></el-switch>
+      <el-switch v-model="excludeAdmin" active-text="관리자 제출 제외"></el-switch>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="downloadSubmissions">确 定</el-button>
+        <el-button type="primary" @click="downloadSubmissions">다운로드</el-button>
       </span>
     </el-dialog>
   </div>
@@ -157,13 +157,13 @@
         utils.downloadFile(url)
       },
       goEdit (contestId) {
-        this.$router.push({name: 'edit-contest', params: {contestId}})
+        this.$router.push({name: 'edit-contest', params: {contestId}}).catch(() => {})
       },
       goContestAnnouncement (contestId) {
-        this.$router.push({name: 'contest-announcement', params: {contestId}})
+        this.$router.push({name: 'contest-announcement', params: {contestId}}).catch(() => {})
       },
       goContestProblemList (contestId) {
-        this.$router.push({name: 'contest-problem-list', params: {contestId}})
+        this.$router.push({name: 'contest-problem-list', params: {contestId}}).catch(() => {})
       },
       handleVisibleSwitch (row) {
         api.editContest(row)

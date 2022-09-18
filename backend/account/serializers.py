@@ -4,7 +4,6 @@ from utils.api import serializers, UsernameSerializer
 
 from .models import AdminType, ProblemPermission, User, UserProfile
 
-
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
@@ -45,16 +44,21 @@ class GenerateUserSerializer(serializers.Serializer):
 
 class ImportUserSeralizer(serializers.Serializer):
     users = serializers.ListField(
-        child=serializers.ListField(child=serializers.CharField(max_length=64)))
+        child=serializers.ListField(child=serializers.CharField(max_length=64, allow_blank=True)))
 
 
+class UserGrassDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "problem_sequence", "grass"]
+    
 class UserAdminSerializer(serializers.ModelSerializer):
     real_name = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ["id", "username", "email", "admin_type", "problem_permission", "real_name",
-                  "create_time", "last_login", "two_factor_auth", "open_api", "is_disabled", "is_email_verify"]
+                  "create_time", "last_login", "two_factor_auth", "open_api", "is_disabled", "is_email_verify", "last_activity"]
 
     def get_real_name(self, obj):
         return obj.userprofile.real_name
@@ -64,7 +68,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "email", "admin_type", "problem_permission",
-                  "create_time", "last_login", "two_factor_auth", "open_api", "is_disabled", "is_email_verify"]
+                  "create_time", "last_login", "two_factor_auth", "open_api", "is_disabled", "is_email_verify", "last_activity"]
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -88,7 +92,7 @@ class EditUserSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=32)
     real_name = serializers.CharField(max_length=32, allow_blank=True, allow_null=True)
     password = serializers.CharField(min_length=6, allow_blank=True, required=False, default=None)
-    email = serializers.EmailField(max_length=64)
+    email = serializers.EmailField(max_length=64, allow_blank=True, allow_null=True)
     admin_type = serializers.ChoiceField(choices=(AdminType.REGULAR_USER, AdminType.ADMIN, AdminType.SUPER_ADMIN))
     problem_permission = serializers.ChoiceField(choices=(ProblemPermission.NONE, ProblemPermission.OWN,
                                                           ProblemPermission.ALL))
@@ -107,6 +111,9 @@ class EditUserProfileSerializer(serializers.Serializer):
     school = serializers.CharField(max_length=64, allow_blank=True, required=False)
     major = serializers.CharField(max_length=64, allow_blank=True, required=False)
     language = serializers.CharField(max_length=32, allow_blank=True, required=False)
+
+class UserLastActivitySerializer(serializers.Serializer):
+    last_activity = serializers.DateTimeField(read_only=True)
 
 class ApplyVerifyEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()

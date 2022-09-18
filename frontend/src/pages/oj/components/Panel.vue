@@ -45,7 +45,8 @@
 
   .panel-title {
     .section-title;
-    padding: 5px 15px;
+    padding: 0;
+    color: @black;
   }
 
   .panel-extra {
@@ -61,7 +62,7 @@
     }
   }
   .panel-body {
-    word-break: break-all;
+    //word-break: break-all;
     word-wrap: break-word;
   }
 </style>

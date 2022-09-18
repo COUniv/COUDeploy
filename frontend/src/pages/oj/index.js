@@ -8,6 +8,7 @@ import VueClipboard from 'vue-clipboard2'
 import VueAnalytics from 'vue-analytics'
 import { GOOGLE_ANALYTICS_ID } from '@/utils/constants'
 
+// iview
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 
@@ -34,7 +35,8 @@ import 'echarts/lib/component/markPoint'
 import Element from 'element-ui'
 // import 'element-ui/lib/theme-chalk/index.css'
 // auto logout
-import IdleVue from 'idle-vue-3'
+// import IdleVue from 'idle-vue-3'
+import '@mdi/font/css/materialdesignicons.css'
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {
@@ -53,13 +55,15 @@ Vue.use(VueAnalytics, {
   id: GOOGLE_ANALYTICS_ID,
   router
 })
-const eventsHub = new Vue()
-Vue.use(IdleVue, {
-  eventEmitter: eventsHub,
-  store,
-  idleTime: 10000, // 10 seconds
-  startAtIdle: false
-})
+
+// disable session expire
+// const eventsHub = new Vue()
+// Vue.use(IdleVue, {
+//   eventEmitter: eventsHub,
+//   store,
+//   idleTime: 10000, // 10 seconds
+//   startAtIdle: false
+// })
 
 Vue.component('ECharts', ECharts)
 Vue.component(VerticalMenu.name, VerticalMenu)

@@ -43,11 +43,11 @@
     name: 'profile',
     methods: {
       chanAvt (routePath) {
-        this.$router.push(routePath)
+        this.$router.push(routePath).catch(() => {})
       },
       goRoute (routePath) {
         if (routePath && routePath.indexOf('admin') < 0) {
-          this.$router.push(routePath)
+          this.$router.push(routePath).catch(() => {})
         } else {
           window.open('/admin/')
         }
@@ -97,6 +97,10 @@
             box-shadow: 0px 0px 1px 0px;
           }
           .avatar-mask {
+            -webkit-transition: opacity .2s ease-in;
+            -moz-transition: opacity .2s ease-in;
+            -ms-transition: opacity .2s ease-in;
+            -o-transition: opacity .2s ease-in;
             transition: opacity .2s ease-in;
             z-index: 1;
             border-radius: @avatar-radius;

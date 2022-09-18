@@ -4,14 +4,19 @@
 @white: #ffffff;
 @light-white: #eeeeee;
 @dark-white: #bdbdbd;
-@purple: #5030E5;
-@light-purple: #DDD7FA;
+@purple: #5030e5;
+@dark-purple: #4227b9;
+@light-purple: #bfb1fc;
+@pale-purple: #DDD7FA;
+@deep-dark-orange: #c76a00;
 @dark-orange: #F5A547;
 @orange: #F8C07F;
 @light-orange: #FDECD9;
 @gray: #858585;
-@light-gray: #EBECF0;
-
+@light-gray: #f0f0f0;
+@red: #EE2E03;
+@green: #6EEE03;
+@default-font-color: #515a6e;
 /* Font size */
 @font-large: 48px;
 @font-medium: 28px;
@@ -20,7 +25,7 @@
 @font-micro: 14px;
 
 /* Font weight */
-@weight-bold: 800;
+@weight-bold: 900;
 @weight-semi-bold: 600;
 @weight-regular: 400;
 
@@ -40,7 +45,8 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  //font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-family: 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;
   // background-color: #eee;
   background-color: rgb(250, 250, 250);
@@ -48,7 +54,10 @@ body {
   min-height: calc(~"100vh - 80px");
 }
 
-
+img {
+  max-width: 70% !important;
+  height: auto !important;
+}
 .flex-container {
   display: flex;
   width: 100%;
@@ -98,7 +107,7 @@ body {
 a.emphasis{
   color: #495060;
   &:hover {
-    color: #2d8cf0;
+    color: @purple;
   }
 }
 
@@ -114,6 +123,12 @@ a.emphasis{
 
 .markdown-body {
   @import './markdown.less';
+}
+
+
+.CodeMirror-overlayscroll-horizontal div, .CodeMirror-overlayscroll-vertical div {
+  background: @dark-white !important;
+  margin-right: 5px;
 }
 
 @keyframes fadeInUp {

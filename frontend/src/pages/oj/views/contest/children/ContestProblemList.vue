@@ -82,7 +82,7 @@
             contestID: this.$route.params.contestID,
             problemID: row._id
           }
-        })
+        }).catch(() => {})
       }
     },
     computed: {

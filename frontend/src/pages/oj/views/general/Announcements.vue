@@ -1,11 +1,12 @@
 <template>
   <Panel shadow :padding="10">
-    <div slot="title">
-      {{title}}
+    <div style="line-height: 50px; display: flex;" slot="title">
+      <Button v-if="!listVisible" id="back-button" icon="md-arrow-back" size="large" @click="goBack" type="text"></Button>
+      <div>{{title}}</div>
     </div>
     <div slot="extra">
-      <Button v-if="listVisible" type="info" @click="init" :loading="btnLoading">{{$t('m.Refresh')}}</Button>
-      <Button v-else icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button>
+      <!-- <Button v-if="listVisible" type="info" @click="init" :loading="btnLoading">{{$t('m.Refresh')}}</Button> -->
+      <!-- <Button v-if="!listVisible" icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button> -->
     </div>
 
     <transition-group name="announcement-animate" mode="in-out">
@@ -15,11 +16,15 @@
       <template v-if="listVisible">
         <ul class="announcements-container" key="list">
           <li v-for="announcement in announcements" :key="announcement.title">
-            <div class="flex-container">
-              <div class="title"><a class="entry" @click="goAnnouncement(announcement)">
+            <div class="entry">
+              <div v-if="isAuthenticated" class="title"><a @click="goAnnouncement(announcement)">
                 {{announcement.title}}</a></div>
-              <div class="date">{{announcement.create_time | localtime }}</div>
-              <div class="creator"> {{$t('m.By')}} {{announcement.created_by.username}}</div>
+              <div v-else class="title"><span class="non-a-tag">
+                {{announcement.title}}</span></div>
+              <div class="date-creator">
+                <div class="creator"> {{announcement.created_by.username}} |</div>
+                <div class="date">{{ convertDate(announcement.create_time) }}</div>
+              </div>
             </div>
           </li>
         </ul>
@@ -32,6 +37,7 @@
       </template>
 
       <template v-else>
+        
         <div v-katex v-html="announcement.content" key="content" class="content-container markdown-body"></div>
       </template>
     </transition-group>
@@ -40,8 +46,9 @@
 
 <script>
   import api from '@oj/api'
+  import time from '@/utils/time'
   import Pagination from '@oj/components/Pagination'
-
+  import { mapGetters } from 'vuex'
   export default {
     name: 'Announcement',
     components: {
@@ -94,9 +101,13 @@
       goBack () {
         this.listVisible = true
         this.announcement = ''
+      },
+      convertDate (item) {
+        return time.utcToLocal(item, 'YYYY-MM-DD HH:mm')
       }
     },
     computed: {
+      ...mapGetters(['isAuthenticated']),
       title () {
         if (this.listVisible) {
           return this.isContest ? this.$i18n.t('m.Contest_Announcements') : this.$i18n.t('m.Announcements')
@@ -112,41 +123,50 @@
 </script>
 
 <style scoped lang="less">
+@import '../../../../styles/common.less';
   .announcements-container {
     margin-top: -10px;
     margin-bottom: 10px;
     li {
-      padding-top: 15px;
+      padding-top: 10px;
       list-style: none;
-      padding-bottom: 15px;
+      padding-bottom: 10px;
       margin-left: 20px;
-      font-size: 16px;
-      border-bottom: 1px solid rgba(187, 187, 187, 0.5);
+      font-size: @font-micro;
+      border-bottom: 1px solid #C4C4C4;
       &:last-child {
         border-bottom: none;
       }
-      .flex-container {
+      .entry {
+        display: flex;
+        flex-direction: column;
         .title {
-          flex: 1 1;
           text-align: left;
-          padding-left: 10px;
-          a.entry {
-            color: #495060;
+          a {
+            color: @black;
+            font-size: @font-regular;
             &:hover {
-              color: #2d8cf0;
-              border-bottom: 1px solid #2d8cf0;
+              color: @purple;
             }
           }
+          span.non-a-tag {
+            color: @black;
+            font-size: @font-regular;
+          }
         }
-        .creator {
-          flex: none;
-          width: 200px;
-          text-align: center;
-        }
-        .date {
-          flex: none;
-          width: 200px;
-          text-align: center;
+        .date-creator {
+          display: flex;
+          flex-direction: row;
+          color: @gray;
+          .creator {
+            flex: none;
+            text-align: center;
+            margin-right: 5px;
+          }
+          .date {
+            flex: none;
+            text-align: center;
+          }
         }
       }
     }
@@ -159,9 +179,20 @@
   .no-announcement {
     text-align: center;
     font-size: 16px;
-  }changeLocale
+  }
 
   .announcement-animate-enter-active {
     animation: fadeIn 1s;
+  }
+
+  #back-button {
+    font-size: 120%;
+    padding: 0px 8px;
+    color: @gray;
+    &:hover, &:focus {
+      color: @black;
+      border-color: transparent;
+      box-shadow: 0 0 0 transparent;
+    }
   }
 </style>

@@ -5,7 +5,7 @@ import storage from '@/utils/storage'
 import {STORAGE_KEY} from '@/utils/constants'
 import {sync} from 'vuex-router-sync'
 import {types, default as store} from '../../../store'
-
+import api from '@oj/api'
 Vue.use(VueRouter, store)
 
 const router = new VueRouter({
@@ -26,20 +26,25 @@ router.beforeEach(async(to, from, next) => {
   // if(storage === undefined) {
   //   storage = await import('../../../store/index')
   // }
-  if (to.matched.some(record => record.meta.requiresAuth) && from.path.substring(0, 13) !== '/verify-email') {
+  let inactivetime = (await api.getInactiveTime()).data.data
+  // limit inactive time(sec)
+  const limitTime = 60 * 60 * 24
+
+  if (inactivetime !== undefined && inactivetime !== null && inactivetime > limitTime && from.path !== '/login') {
+    next({
+      path: '/logout'
+    })
+  } else if (to.matched.some(record => record.meta.requiresAuth) && from.path.substring(0, 13) !== '/verify-email') {
     if (!storage.get(STORAGE_KEY.AUTHED)) {
-      Vue.prototype.$error('Please login first')
+      Vue.prototype.$error('로그인을 해주세요')
       // store.commit(types.CHANGE_MODAL_STATUS, {mode: 'login', visible: true})
       next({
         path: '/login'
       })
     } else if (to.matched.some(record => record.meta.isEmailVerify)) {
       if (!store.getters['isVerifiedEmail'] && !store.getters['isAdminRole'] && !(from.path === '/logout')) {
-        Vue.prototype.$error('Please verifying email')
-        // store.commit(types.CHANGE_MODAL_STATUS, {mode: 'login', visible: true})
-        next({
-          path: '/apply-verify-email'
-        })
+        store.commit(types.CHANGE_MODAL_STATUS, {mode: 'GuardMessage', visible: true})
+        next(false)
       } else {
         next()
       }

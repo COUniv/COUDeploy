@@ -8,6 +8,25 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  getInactiveTime () {
+    return ajax('get_inactive_time', 'get')
+  },
+  getGrassList () {
+    return ajax('get_grass_data', 'get')
+  },
+  callAuthEmail (data) {
+    return ajax('auth_email_call', 'post', {
+      data
+    })
+  },
+  authEmail (email, token) {
+    return ajax('authed_email', 'post', {
+      data: {
+        email,
+        token
+      }
+    })
+  },
   getProblemPercent (categoryId) {
     return ajax('percent', 'get', {
       params: {
@@ -15,8 +34,12 @@ export default {
       }
     })
   },
-  getProblemCategoryList () {
-    return ajax('categories', 'get')
+  getProblemCategoryList (offset, limit, params) {
+    params.limit = limit
+    params.offset = offset
+    return ajax('categories', 'get', {
+      params
+    })
   },
   getReadNotification () {
     return ajax('read_notification', 'get')
@@ -343,6 +366,20 @@ export default {
       }
     })
   },
+  getSafeSubmissionStatus (id) {
+    return ajax('safe_submission_status', 'get', {
+      params: {
+        id
+      }
+    })
+  },
+  getSubmissionStatus (id) {
+    return ajax('submission_status', 'get', {
+      params: {
+        id
+      }
+    })
+  },
   submissionExists (problemID) {
     return ajax('submission_exists', 'get', {
       params: {
@@ -415,7 +452,7 @@ function ajax (url, method, options) {
         reject(res)
         // 백엔드가 로그인으로 반환되면 세션이 유효하지 않으며 현재 로그인한 사용자는 로그아웃해야 함
         if (res.data.data.startsWith('Please login')) {
-          store.dispatch('changeModalStatus', {'mode': 'login', 'visible': true})
+          this.$router.push({path: '/login'}).catch(() => {})
         }
       } else {
         resolve(res)

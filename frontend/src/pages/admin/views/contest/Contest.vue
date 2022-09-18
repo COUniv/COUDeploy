@@ -39,7 +39,12 @@
           <el-col :span="8">
             <el-form-item :label="$t('m.Contest_Rule_Type')">
               <el-radio class="radio" v-model="contest.rule_type" label="ACM" :disabled="disableRuleType">ACM</el-radio>
-              <el-radio class="radio" v-model="contest.rule_type" label="OI" :disabled="disableRuleType">OI</el-radio>
+              <!-- disabled OI mode -->
+              <el-radio class="radio" v-model="contest.rule_type" label="OI" :disabled="true">OI</el-radio>
+              <el-popover placement="right" trigger="hover">
+                <i slot="reference" class="el-icon-fa-question-circle import-user-icon"></i>
+                <p>추후 추가 될 기능입니다.</p>
+              </el-popover>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -122,7 +127,7 @@
         }
         data.allowed_ip_ranges = ranges
         api[funcName](data).then(res => {
-          this.$router.push({name: 'contest-list', query: {refresh: 'true'}})
+          this.$router.push({name: 'contest-list', query: {refresh: 'true'}}).catch(() => {})
         }).catch(() => {
         })
       },

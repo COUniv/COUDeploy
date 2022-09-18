@@ -23,36 +23,36 @@
         style="width: 100%">
         <el-table-column type="selection" width="55"></el-table-column>
 
-        <el-table-column prop="id" label="ID"></el-table-column>
+        <el-table-column prop="id" label="고유 ID"></el-table-column>
 
-        <el-table-column prop="username" label="Username"></el-table-column>
+        <el-table-column prop="username" label="닉네임"></el-table-column>
 
-        <el-table-column prop="create_time" label="Create Time">
+        <el-table-column prop="create_time" label="생성일자">
           <template slot-scope="scope">
             {{scope.row.create_time | localtime }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="last_login" label="Last Login">
+        <el-table-column prop="last_login" label="마지막 로그인">
           <template slot-scope="scope">
             {{scope.row.last_login | localtime }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="real_name" label="Real Name"></el-table-column>
+        <el-table-column prop="real_name" label="이름"></el-table-column>
 
-        <el-table-column prop="email" label="Email"></el-table-column>
+        <el-table-column prop="email" label="이메일"></el-table-column>
 
-        <el-table-column prop="admin_type" label="User Type">
+        <el-table-column prop="admin_type" label="사용자 권한">
           <template slot-scope="scope">
             {{ scope.row.admin_type }}
           </template>
         </el-table-column>
 
-        <el-table-column fixed="right" label="Option" width="200">
+        <el-table-column fixed="right" label="옵션" width="200">
           <template slot-scope="{row}">
-            <icon-btn name="Edit" icon="edit" @click.native="openUserDialog(row.id)"></icon-btn>
-            <icon-btn name="Delete" icon="trash" @click.native="deleteUsers([row.id])"></icon-btn>
+            <icon-btn name="수정" icon="edit" @click.native="openUserDialog(row.id)"></icon-btn>
+            <icon-btn name="삭제" icon="trash" @click.native="deleteUsers([row.id])"></icon-btn>
           </template>
         </el-table-column>
       </el-table>
@@ -70,8 +70,9 @@
     <Panel>
       <span slot="title">{{$t('m.Import_User')}}
         <el-popover placement="right" trigger="hover">
-          <p>Only support csv file without headers, check the <a
-            href="http://docs.onlinejudge.me/#/onlinejudge/guide/import_users">link</a> for details</p>
+          <p>csv파일만 지원합니다. csv 파일에는 헤더가 없어야 하며 <b>사용자 아이디, 비밀번호, 이메일, </b></p>
+          <p> <b>실명, 학교, 학과</b> 순으로 총 6개의 열이 있어야 합니다. </p>
+          <p> 이 중 <b>아이디, 비밀번호, 실명</b>은 반드시 기입되어야하며 나머지 열은 공백이 허용됩니다.</p>
           <i slot="reference" class="el-icon-fa-question-circle import-user-icon"></i>
         </el-popover>
       </span>
@@ -102,6 +103,16 @@
           <el-table-column label="RealName">
             <template slot-scope="{row}">
               {{row[3]}}
+            </template>
+          </el-table-column>
+          <el-table-column label="School">
+            <template slot-scope="{row}">
+              {{row[4]}}
+            </template>
+          </el-table-column>
+          <el-table-column label="Major">
+            <template slot-scope="{row}">
+              {{row[5]}}
             </template>
           </el-table-column>
         </el-table>
@@ -172,7 +183,7 @@
         </el-form-item>
       </el-form>
     </Panel>
-    <!--对话框-->
+    <!--유저 수정-->
     <el-dialog :title="$t('m.User_Info')" class="dialogView" :visible.sync="showUserDialog" :close-on-click-modal="false">
       <el-form :model="user" label-width="140px" label-position="left">
         <el-row :gutter="20">
@@ -187,7 +198,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('m.User_Email')" required>
+            <el-form-item :label="$t('m.User_Email')">
               <el-input v-model="user.email"></el-input>
             </el-form-item>
           </el-col>
@@ -208,13 +219,13 @@
           <el-col :span="12">
             <el-form-item :label="$t('m.Problem_Permission')">
               <el-select v-model="user.problem_permission" :disabled="user.admin_type!=='Admin'">
-                <el-option label="None" value="None"></el-option>
-                <el-option label="Own" value="Own"></el-option>
-                <el-option label="All" value="All"></el-option>
+                <el-option label="권한 없음" value="None"></el-option>
+                <el-option label="본인 권한" value="Own"></el-option>
+                <el-option label="모든 권한" value="All"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item :label="$t('m.Two_Factor_Auth')">
               <el-switch
                 v-model="user.two_factor_auth"
@@ -232,7 +243,7 @@
                 inactive-color="#ff4949">
               </el-switch>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="12">
             <el-form-item label="Email Verification">
               <el-switch
@@ -243,7 +254,9 @@
           <el-col :span="12">
             <el-form-item :label="$t('m.Is_Disabled')">
               <el-switch
-                v-model="user.is_disabled">
+                v-model="user.is_disabled"
+                active-color="#ff4949"
+                >
               </el-switch>
             </el-form-item>
           </el-col>
@@ -374,7 +387,11 @@
         papa.parse(file, {
           complete: (results) => {
             let data = results.data.filter(user => {
-              return user[0] && user[1] && user[2] && user[3]
+              if (user[2]) {
+                return user[0] && user[1] && user[2] && user[3]
+              } else {
+                return user[0] && user[1] && `""` && user[3]
+              }
             })
             let delta = results.data.length - data.length
             if (delta > 0) {
