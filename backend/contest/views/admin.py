@@ -43,6 +43,9 @@ class ContestImageUploadAPI(APIView):
             return self.error("지원하지 않는 포맷입니다")
 
         name = rand_str(10) + suffix
+        while os.path.exists(os.path.join(settings.CONTEST_IMG_UPLOAD_DIR, name)) == True:
+            name = rand_str(10) + suffix
+            
         with open(os.path.join(settings.CONTEST_IMG_UPLOAD_DIR, name), "wb") as img:
             for chunk in avatar:
                 img.write(chunk)
