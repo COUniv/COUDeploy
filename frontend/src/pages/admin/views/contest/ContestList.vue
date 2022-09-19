@@ -70,13 +70,15 @@
         </el-table-column>
         <el-table-column
           fixed="right"
-          width="250"
+          width="280"
           label="Operation">
           <div slot-scope="scope">
             <icon-btn name="Edit" icon="edit" @click.native="goEdit(scope.row.id)"></icon-btn>
             <icon-btn name="Problem" icon="list-ol" @click.native="goContestProblemList(scope.row.id)"></icon-btn>
             <icon-btn name="Announcement" icon="info-circle"
                       @click.native="goContestAnnouncement(scope.row.id)"></icon-btn>
+            <icon-btn icon="upload" name="Upload Main Image"
+                      @click.native="goUploadImg(scope.row.id)"></icon-btn>
             <icon-btn icon="download" name="Download Accepted Submissions"
                       @click.native="openDownloadOptions(scope.row.id)"></icon-btn>
           </div>
@@ -158,6 +160,9 @@
       },
       goEdit (contestId) {
         this.$router.push({name: 'edit-contest', params: {contestId}}).catch(() => {})
+      },
+      goUploadImg (contestId) {
+        this.$router.push({name: 'upload-img-contest', params: {contestId}}).catch(() => {})
       },
       goContestAnnouncement (contestId) {
         this.$router.push({name: 'contest-announcement', params: {contestId}}).catch(() => {})
