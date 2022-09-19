@@ -1,5 +1,5 @@
 from datetime import timezone
-from ..models import Article, BoardType, Comment, NotificationType, Notification
+from ..models import Article, BoardType, Comment, NotificationType, Notification, User
 from utils.api import APIView, validate_serializer
 from ..serializers import ArticleListSerializer, ArticleSerializer, ArticleCreateSerializer, ArticleModifySerializer, CommentListSerializer, CommentCreateSerializer, CommentModifySerializer, NotificationListSerializer
 from account.decorators import login_required
@@ -120,6 +120,8 @@ class ArticleAPI(APIView):
                 comments = Comment.objects.filter(articleid=article_id).order_by('id') # 댓글을 가져옴
                 for comment in comments:
                     comment.is_comment_writer = (request.user.username == comment.username) # 현재 접속한 유저가 해당 게시글에 달린 댓글의 작성자인지 확인하기 위한 데이터
+                    user = User.objects.get(username=request.user.username)
+                    comment.avatar = user.userprofile.avatar
                 article_data["comments"] = CommentListSerializer(comments, many=True).data
             except Comment.DoesNotExist: # 해당 ID를 가진 댓글이 하나도 없는 경우
                 article_data["comments"] = []
@@ -183,7 +185,10 @@ class CommentCreateAPI(APIView):
             article = Article.objects.get(id=articleid)
             article.comment_count += 1 # 댓글을 작성할 게시글의 댓글 수 1 증가
             article.save() # 저장
+            user = User.objects.get(username=request.user.username)
+            avatar = user.userprofile.avatar
             Comment.objects.create(articleid=articleid,
+                                   avatar=avatar,
                                    username=request.user.username,
                                    content=content)
             
