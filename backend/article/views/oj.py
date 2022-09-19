@@ -1,5 +1,5 @@
 from datetime import timezone
-from ..models import Article, BoardType, Comment, NotificationType, Notification
+from ..models import Article, BoardType, Comment, NotificationType, Notification, User
 from utils.api import APIView, validate_serializer
 from ..serializers import ArticleListSerializer, ArticleSerializer, ArticleCreateSerializer, ArticleModifySerializer, CommentListSerializer, CommentCreateSerializer, CommentModifySerializer, NotificationListSerializer
 from account.decorators import login_required
@@ -183,7 +183,10 @@ class CommentCreateAPI(APIView):
             article = Article.objects.get(id=articleid)
             article.comment_count += 1 # 댓글을 작성할 게시글의 댓글 수 1 증가
             article.save() # 저장
+            user = User.objects.get(username=request.user.username)
+            avatar = user.userprofile.avatar
             Comment.objects.create(articleid=articleid,
+                                   avatar=avatar,
                                    username=request.user.username,
                                    content=content)
             
