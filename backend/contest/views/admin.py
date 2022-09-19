@@ -15,12 +15,59 @@ from utils.constants import CacheKey
 from utils.shortcuts import rand_str
 from utils.tasks import delete_files
 from ..models import Contest, ContestAnnouncement, ACMContestRank
+from django.conf import settings
 from ..serializers import (ContestAnnouncementSerializer, ContestAdminSerializer,
                            CreateConetestSeriaizer, CreateContestAnnouncementSerializer,
                            EditConetestSeriaizer, EditContestAnnouncementSerializer,
-                           ACMContesHelperSerializer, )
+                           ACMContesHelperSerializer, ImageUploadForm, ImageResetSerializer)
 
+class ContestImageUploadAPI(APIView):
+    request_parsers = ()
 
+    def post(self, request):
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            contest_id = form.cleaned_data["contest_id"]
+            avatar = form.cleaned_data["image"]
+            try:
+                contest = Contest.objects.get(id=contest_id)
+                ensure_created_by(contest, request.user)
+            except Contest.DoesNotExist:
+                return self.error("Contest does not exist")
+        else:
+            return self.error("올바른 형식이 아닙니다.")
+        if avatar.size > 2 * 1024 * 1024:
+            return self.error("이미지의 사이즈가 너무 큽니다")
+        suffix = os.path.splitext(avatar.name)[-1].lower()
+        if suffix not in [".gif", ".jpg", ".jpeg", ".bmp", ".png"]:
+            return self.error("지원하지 않는 포맷입니다")
+
+        name = rand_str(10) + suffix
+        with open(os.path.join(settings.CONTEST_IMG_UPLOAD_DIR, name), "wb") as img:
+            for chunk in avatar:
+                img.write(chunk)
+        contest.contest_title_img = f"{settings.CONTEST_IMG_URI_PREFIX}/{name}"
+        contest.save()
+        return self.success("성공하였습니다")
+
+    @validate_serializer(ImageResetSerializer)
+    def reset(self, request):
+        data = request.data
+        contest_id = data["id"]
+        if contest_id:
+            try:
+                contest = Contest.objects.get(id=contest_id)
+                ensure_created_by(contest, request.user)
+            except Contest.DoesNotExist:
+                return self.error("Contest does not exist")
+        if os.path.exists(contest.contest_title_img):
+            os.remove(contest.contest_title_img)
+        else:
+            self.error("존재하지 않는 이미지입니다")
+        contest.contest_title_img = f"{settings.CONTEST_IMG_URI_PREFIX}/default.png"
+        contest.save()
+        return self.success("성공하였습니다")
+        
 class ContestAPI(APIView):
     @validate_serializer(CreateConetestSeriaizer)
     def post(self, request):
