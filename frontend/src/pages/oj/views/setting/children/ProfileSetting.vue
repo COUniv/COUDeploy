@@ -1,7 +1,7 @@
 <template>
   <div class="mypage">
     <div class="section-title">{{$t('m.Profile_Setting')}}</div>  
-      <Form ref="formProfile" :model="formProfile">        
+      <!-- <Form ref="formProfile" :model="formProfile">         -->
 
         <div class="mypage_main">
           <div class="mypage_img" >
@@ -50,26 +50,25 @@
                   </Button>
                 </ButtonGroup>
                 <div class="cropper-preview" :style="previewStyle">
-                  <div :style=" preview.div">
+                  <div :style="preview.div">
                     <img :src="avatarOption.imgSrc" :style="preview.img">
                   </div>
                 </div>
-                
-                <Modal v-model="reselectModalVisible" class-name="vertical-center-modal" width="400" :footer-hide="footerhide" :closable="false" >
-                    <div class="icon-header-box">
-                      <i class="mdi mdi-alert-circle-outline warning-icon" aria-hidden="true"></i>
-                    </div>
-                    <div class="modal-text">
-                      <p>변경사항을 취소하시겠습니까?</p>
-                    </div>
-                    
-                    <div class="modal-footer">
-                      <Button @click="closeReselectModalVisible">아니요</Button>
-                      <Button @click="reselectOnOk">예</Button>
-                    </div>
-                </Modal>
               </div>
             </template>
+            <Modal v-model="reselectModalVisible" class-name="vertical-center-modal" width="400" :footer-hide="footerhide" :closable="false" >
+                <div class="icon-header-box">
+                  <i class="mdi mdi-alert-circle-outline warning-icon" :aria-hidden="true"></i>
+                </div>
+                <div class="modal-text">
+                  <p>변경사항을 취소하시겠습니까?</p>
+                </div>
+                
+                <div class="modal-footer">
+                  <Button @click="closeReselectModalVisible">아니요</Button>
+                  <Button @click="reselectOnOk">예</Button>
+                </div>
+            </Modal>
             <Modal v-model="uploadModalVisible"
                   class-name="vertical-center-modal" :footer-hide="footerhide" :closable="false" title="프로필 업로드">
               <div class="modal-text">
@@ -94,7 +93,7 @@
             </Modal> -->
 
           </div>
-
+          <Form ref="formProfile" :model="formProfile">
           <div class="mypage_info">
             <div class="mypage_info_input" label="이름"> 
               <div>이름</div>
@@ -155,8 +154,8 @@
               </transition>
             </div>
           </div>
+          </Form>
         </div>
-      </Form>
   </div>
 </template>
 
@@ -222,9 +221,15 @@
           resolve()
         }).then(res => {
           this.viewgithub = this.formProfile.github
-          this.viewgithub = this.viewgithub.replace('https://github.com/', '')
+          if (this.viewgithub != null) {
+            this.viewgithub = this.viewgithub.replace('https://github.com/', '')
+          } else {
+            this.viewgithub = ''
+          }
           this.viewblog = this.formProfile.blog
-          this.viewblog = this.viewblog.replace('https://', '')
+          if (this.viewblog != null) {
+            this.viewblog = this.viewblog.replace('https://', '')
+          }
         })
       },
       checkFileType (file) {
@@ -265,6 +270,7 @@
         return false
       },
       realTime (data) {
+        console.log(data)
         this.preview = data
       },
       rotate (direction) {
@@ -282,6 +288,7 @@
       },
       reselectOnOk () {
         this.avatarOption.imgSrc = ''
+        this.reselectModalVisible = false
       },
       reselect () {
         this.$Modal.confirm({
