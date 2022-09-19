@@ -8,6 +8,7 @@ import Problem from './problem/Problem.vue'
 import ProblemList from './problem/ProblemList.vue'
 import ContestList from './contest/ContestList.vue'
 import Contest from './contest/Contest.vue'
+import ContestImg from './contest/ContestImg.vue'
 import Login from './general/Login.vue'
 import Home from './Home.vue'
 import ProblemImportOrExport from './problem/ImportAndExport.vue'
@@ -18,5 +19,5 @@ import ProblemTagList from './problem/ProblemTagList.vue'
 export {
   Announcement, User, Conf, JudgeServer, Problem, ProblemList, Contest,
   ContestList, Login, Home, PruneTestCase, Dashboard, ProblemImportOrExport,
-  ProblemCategoryList, ProblemCategory, ProblemTagList
+  ProblemCategoryList, ProblemCategory, ProblemTagList, ContestImg
 }
