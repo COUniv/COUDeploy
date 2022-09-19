@@ -25,9 +25,12 @@
                   <vueCropper
                     ref="cropper"
                     autoCrop
-                    fixed
-                    :autoCropWidth="200"
-                    :autoCropHeight="200"
+                    :fixed="true"
+                    :fixedBox="false"
+                    :canMove="false"
+                    :canScale="false"
+                    :autoCropWidth="150"
+                    :autoCropHeight="150"
                     :img="avatarOption.imgSrc"
                     :outputSize="avatarOption.size"
                     :outputType="avatarOption.outputType"
@@ -49,11 +52,11 @@
                     <Icon type="md-checkmark-circle-outline" size="20"></Icon>
                   </Button>
                 </ButtonGroup>
-                <div class="cropper-preview" :style="previewStyle">
+                <!-- <div class="cropper-preview" :style="previewStyle">
                   <div :style="preview.div">
                     <img :src="avatarOption.imgSrc" :style="preview.img">
                   </div>
-                </div>
+                </div> -->
               </div>
             </template>
             <Modal v-model="reselectModalVisible" class-name="vertical-center-modal" width="400" :footer-hide="footerhide" :closable="false" >
@@ -413,6 +416,8 @@
     .cropper-main {
       flex: none;
       .copper-img;
+      margin: 0 auto;
+      padding: 0;
     }
     .cropper-btn {
       flex: none;
@@ -621,5 +626,15 @@
             padding-right: 0px;
           }
         }
+    }
+    .cropper-box-canvas {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+    }
+    .cropper-view-box {
+      img {
+        visibility: hidden;
+      }
     }
 </style>

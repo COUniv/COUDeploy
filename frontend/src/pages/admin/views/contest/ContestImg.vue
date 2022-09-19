@@ -50,11 +50,11 @@
                         <Icon type="md-checkmark-circle-outline" size="20"></Icon>
                       </Button>
                     </ButtonGroup>
-                    <div class="cropper-preview" :style="previewStyle">
+                    <!-- <div class="cropper-preview" :style="previewStyle">
                       <div :style=" preview.div">
                         <img :src="imgOption.imgSrc" :style="preview.img">
                       </div>
-                    </div>
+                    </div> -->
                   </div>
                 </template>
                 <Modal v-model="reselectModalVisible" class-name="vertical-center-modal" width="400" :footer-hide="footerhide" :closable="false" >
@@ -72,7 +72,7 @@
                 <Modal v-model="uploadModalVisible"
                       class-name="vertical-center-modal" :footer-hide="footerhide" :closable="false" title="프로필 업로드">
                   <div class="modal-text">
-                    <p>프로필 사진이 다음과 같이 보여지게 됩니다</p>
+                    <p>대회 메인 사진이 다음과 같이 보여지게 됩니다</p>
                     <img class="modal-img" :src="uploadImgSrc"/>
                   </div>
                   <div class="modal-footer">
@@ -388,71 +388,7 @@
     box-shadow: 0 0 1px 0;
     border-radius: 50%;
   }
-  .mypage_info_input {
-    width: 300px;
-    margin: 20px;
-    border-bottom: solid 1px @pale-purple;
-    span {
-      height: 33px;
-    }
-    & div:first-child {
-      height: 33px;
-    }
-    & div:nth-child(2) {
-      font-weight: @weight-semi-bold;
-      height: 24px;
-    }
-    .div-inline {
-      display: inline-block;
-      height: 33px;
-      line-height: 33px;
-      & .text {
-        float: left;
-        margin-right: 20px;
-      }
-      & .edit-btn {
-        width:fit-content;
-        float: right;
-      }
-    }
-    .edit-btn {
-      width:fit-content;
-    }
-  }
-  .edit-input {
-    margin-top:10px;
-    margin-bottom:10px;
-  }
 
-
-  // transition mode 
-    .fade-enter {
-    opacity: 0;
-  }
-  
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.5s ease-out;
-  }
-  
-  .fade-leave-to {
-    opacity: 0;
-  }
-  
-  .slide-fade-enter {
-    transform: translateY(-10px);
-    opacity: 0;
-  }
-  
-  .slide-fade-enter-active,
-  .slide-fade-leave-active {
-    transition: all 0.5s ease;
-  }
-  
-  .slide-fade-leave-to {
-    transform: translateY(-10px);
-    opacity: 0;
-  }
 
 </style>
 <style lang="less">
