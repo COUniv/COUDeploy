@@ -30,7 +30,7 @@
       <!-- 작성자명 및 작성 시간-->
       <div class="user-date">
         <div>
-          <img id="user-avatar" :src="getAvatarSource(username)"/>
+          <img id="user-avatar" :src="profile.avatar"/>
           <div>
             <a @click="goUser"><b>{{username}}</b></a>
             <div id="user-time">{{article.create_time}}</div>
@@ -72,29 +72,29 @@
       <div style="clear:both;"></div>
       
       <!-- 댓글 목록 -->
-      <div v-for="comment in comments" :key="comment.id">
+      <div v-for="(item, index) in comments" :key="comment.id">
 
             <!-- 사용자 정보영역 -->
               <div class="comment-user-time">
                 <div>
-                  <img id="user-avatar-2" :src="getAvatarSource(comment.username)"/>
-                  <div class="linkdiv" @click="goCommentUesr(comment.username)">
-                    <b>{{ comment.username }}</b>
+                  <img id="user-avatar-2" :src="comments_avatars[item.username]"/>
+                  <div class="linkdiv" @click="goCommentUesr(item.username)">
+                    <b>{{ item.username }}</b>
                   </div>
                 </div>
                 <div>
                   <!-- 수정 버튼 -->
-                  <Button v-if="comment.is_comment_writer" icon="md-create" @click="onModalComment(comment)" class="modify-button smaller"></Button>
+                  <Button v-if="item.is_comment_writer" icon="md-create" @click="onModalComment(item)" class="modify-button smaller"></Button>
                   <!-- 삭제 버튼 -->
-                  <Button v-if="comment.is_comment_writer" icon="md-trash"  @click="onDeleteModalComment(comment)" class="delete-button smaller"></Button>
+                  <Button v-if="item.is_comment_writer" icon="md-trash"  @click="onDeleteModalComment(item)" class="delete-button smaller"></Button>
               </div>
               </div>
 
 
-            <pre v-katex v-html="comment.content" style="overflow: auto;"></pre>
+            <pre v-katex v-html="item.content" style="overflow: auto;"></pre>
             
             <div id="comment-time">
-                {{ comment.create_time }}
+                {{ item.create_time }}
             </div>
 
             <Modal v-model="deletemodalcomment">
@@ -157,8 +157,8 @@
         comments: [], // 댓글 목록
         articleID: '', // 게시글 ID
         username: '', // 게시글 작성자 명
-        profile: '',
-        avatar: '',
+        profile: {},
+        comments_avatars: {},
         problemid: '',
         deleteComment_id: null, // 댓글 삭제를 위한 임시 value
         tempComment: {  // 댓글 수정을 위한 임시 value
@@ -167,6 +167,9 @@
         },
         is_liked: false
       }
+    },
+    created () {
+      this.init()
     },
     mounted () {
       this.init()
@@ -234,7 +237,11 @@
           this.article.create_time = time.utcToLocal(article.create_time, 'YYYY-MM-DD HH:mm')
           this.is_writer = article.is_writer
           this.username = article.username
+          api.getUserInfo(this.username).then(res => {
+            this.profile = res.data.data
+          })
           this.comments = article.comments
+          this.getAvatarSource(this.comments)
           this.is_liked = article.is_liked
           this.article.like_count = article.like_count
           this.article.comment_count = article.comment_count
@@ -254,6 +261,7 @@
           this.is_writer = article.is_writer
           this.username = article.username
           this.comments = article.comments
+          this.getAvatarSource(this.comments)
           this.is_liked = article.is_liked
           this.article.like_count = article.like_count
           this.article.comment_count = article.comment_count
@@ -346,12 +354,15 @@
           }
         ).catch(() => {})
       },
-      getAvatarSource (username) {
-        let profile = ''
-        api.getUserInfo(username).then(res => {
-          profile = res.data.data
+      getAvatarSource (comments) {
+        comments.forEach((item) => {
+          let avatar = ''
+          api.getUserInfo(item.username).then(res => {
+            avatar = res.data.data.avatar
+            this.comments_avatars[item.username] = avatar
+            console.log(this.comments_avatars[item.username])
+          })
         })
-        return profile.avatar
       }
     },
     watch: {
@@ -482,6 +493,7 @@
     //font-size:1.3em;
     margin-right: 15px;
     color: @black;
+    cursor: pointer;
   }
 
   #comment-time {

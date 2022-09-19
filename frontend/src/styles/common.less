@@ -55,7 +55,7 @@ body {
 }
 
 img {
-  max-width: 70% !important;
+  max-width: 100%;
   height: auto !important;
 }
 .flex-container {
@@ -123,6 +123,12 @@ a.emphasis{
 
 .markdown-body {
   @import './markdown.less';
+}
+
+
+.CodeMirror-overlayscroll-horizontal div, .CodeMirror-overlayscroll-vertical div {
+  background: @dark-white !important;
+  margin-right: 5px;
 }
 
 @keyframes fadeInUp {
