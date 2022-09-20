@@ -325,6 +325,8 @@
           } else {
             this.init_notification_count = li.length
           }
+        }, () => {
+          this.init_notification_count = 0
         })
       },
       changeNoti () {
