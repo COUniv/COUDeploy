@@ -157,7 +157,7 @@ class JudgeServerHeartbeatAPI(CSRFExemptAPIView):
                                        service_url=data["service_url"],
                                        last_heartbeat=timezone.now(),
                                        )
-        # 新server上线 处理队列中的，防止没有新的提交而导致一直waiting
+        # 새 서버는 대기열에 있는 항목을 처리하여 새 제출이 없을 때까지 기다리지 않도록 온라인 상태가 됨
         process_pending_task()
 
         return self.success()

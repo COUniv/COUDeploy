@@ -78,7 +78,6 @@ def check_contest_password(password, contest_password):
     if password == contest_password:
         return True
     else:
-        # sig#timestamp 这种形式的密码也可以，但是在界面上没提供支持
         # sig = sha256(contest_password + timestamp)[:8]
         if "#" in password:
             s = password.split("#")
@@ -100,8 +99,8 @@ def check_contest_password(password, contest_password):
 
 def check_contest_permission(check_type="details"):
     """
-    只供Class based view 使用，检查用户是否有权进入该contest, check_type 可选 details, problems, ranks, submissions
-    若通过验证，在view中可通过self.contest获得该contest
+    클래스 기반 보기 전용의 경우 사용자에게 콘테스트에 참가할 수 있는 권한이 있는지 확인하고 check_type 선택적 세부 정보, 문제, 순위, 제출
+    검증을 통과하면 뷰의 self.contest를 통해 테스트를 받을 수 있습니다.
     """
 
     def decorator(func):
