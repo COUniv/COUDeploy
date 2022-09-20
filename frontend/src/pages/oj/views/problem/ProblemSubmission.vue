@@ -12,7 +12,7 @@
       </div>
       <div class="header-right">
         <div class="help">
-          <Button type="text" size="large" style="z-index: '1' " @click="help_btn" class="help-btn">도움말</Button>
+          <p @click="help_btn" class="help-btn">도움말</p>
         </div>
         <div v-if="!isAfterSubmit">
           <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" :loading="submitted" class="hide-btn" @click="toggle(false)">공개
@@ -100,10 +100,10 @@
           <Row type="flex" justify="space-between">
             <!-- 제출 상태 icon -->
             <Col :span="10">
-              <div class="status" v-if="statusVisible">
+              <div class="status" v-if="statusVisible" style="margin-top: -615px; margin-left: 15px;">
                 <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
-                  <span>{{$t('m.Status')}}</span>
-                  <Tag type="dot" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
+                  <!-- <span>{{$t('m.Status')}}</span> -->
+                  <Tag class="result" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
                     {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
                   </Tag>
                 </template>
@@ -111,13 +111,13 @@
                   <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
                 </template>
               </div>
-              <div v-else-if="problem.my_status === 0">
+              <div v-else-if="problem.my_status === 0" style="margin-top: -620px; margin-left: 15px;">
                 <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
               </div>
-              <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists">
+              <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists" style="margin-top: -620px; margin-left: 15px;">
                 <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
               </div>
-              <div v-if="contestEnded">
+              <div v-if="contestEnded" style="margin-top: -620px; margin-left: 15px;">
                 <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
               </div>
             </Col>
@@ -267,12 +267,7 @@
           title: '도움말',
           duration: 0,
           render: h => {
-            return h('p', {
-              style: {
-                'font-size': '12px',
-                'line-height': '18px'
-              }
-            }, [
+            return h('p', [
               '입력과 출력은 모두 Standard IO를 통해 읽고 출력하게 됩니다. 해당 문서는 ',
               h('a', {
                 on: {
@@ -743,12 +738,12 @@
       .hide-btn {
         background-color: @light-purple;
         border-radius: 5px;
-
+        -webkit-text-stroke: .3px;
         &:focus {
           color: @white;
         }
         &:hover {
-          background-color: @dark-purple;
+          background-color: #947dff;
         }
       }
     }
@@ -939,19 +934,16 @@
     }
   }
   .help {
-    font-size: 16px;
-    * {
-      color: @white;
-      background-color: transparent !important;
-      border-color: transparent;
-      transition: all 0.1s ease-in-out;
-    }
-
+    cursor: pointer;
+    margin-right: 10px;
     .help-btn {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 65px;
       color: @white;
       background-color: transparent;
       border-color: transparent;
-      transition: all 0.1s ease-in-out;
+      transition: all 0.3s ease-in-out;
       &:hover {
         color: @light-purple;
       }
@@ -977,6 +969,7 @@
     background-color: #E05252;
     margin: 0 35px 0 10px;
     color: @white;
+    -webkit-text-stroke: .3px;
     &:hover {
       background-color: @red;
       transition: background-color .3s ease-in-out;
@@ -986,6 +979,12 @@
   p {
     padding: 0;
     margin: 0;
+  }
+
+  .result {
+    -webkit-text-stroke: .3px; 
+    font-size: 15px;
+    border-width: 2px;
   }
   
 </style>
