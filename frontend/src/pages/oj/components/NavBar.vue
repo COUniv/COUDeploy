@@ -112,7 +112,7 @@
                   <Icon v-else type="md-contact" size="100" color="#5030E5"/>
                 </div>
                 <div class="name">{{ user.username }}</div>
-                <div class="email">root@gmail.com</div>
+                <div class="email">{{ user.email || 'Unlocked Account' }}</div>
               </div>
               <div class="mypage_btn" @click="goMySettingPage">계정관리</div>
               <div class="line"></div>
@@ -326,6 +326,8 @@
           } else {
             this.init_notification_count = li.length
           }
+        }, () => {
+          this.init_notification_count = 0
         })
       },
       changeNoti () {

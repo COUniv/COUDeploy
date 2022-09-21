@@ -2,7 +2,7 @@ from utils.api import UsernameSerializer, serializers
 
 from .models import Contest, ContestAnnouncement, ContestRuleType
 from .models import ACMContestRank, OIContestRank
-
+from django import forms
 
 class CreateConetestSeriaizer(serializers.Serializer):
     title = serializers.CharField(max_length=128)
@@ -106,3 +106,10 @@ class ACMContesHelperSerializer(serializers.Serializer):
     problem_id = serializers.CharField()
     rank_id = serializers.IntegerField()
     checked = serializers.BooleanField()
+
+class ImageUploadForm(forms.Form):
+    contest_id = forms.IntegerField(required=True)
+    image = forms.FileField()
+
+class ImageResetSerializer(serializers.Serializer):
+    contest_id = serializers.IntegerField()

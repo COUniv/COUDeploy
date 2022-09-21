@@ -194,7 +194,7 @@ _go_lang_config = {
     "run": {
         "command": "{exe_path}",
         "seccomp_rule": "golang",
-        # 降低内存占用
+        # 메모리 사용량 줄이기
         "env": ["GODEBUG=madvdontneed=1", "GOMAXPROCS=1"] + default_env,
         "memory_limit_check_only": 1
     }
@@ -221,7 +221,7 @@ _node_lang_config = {
     "run": {
         "command": "/usr/bin/node {exe_path}",
         "seccomp_rule": "node",
-        # 降低内存占用
+        # 메모리 사용량 줄이기
         "env": default_env,
         "memory_limit_check_only": 1
     }

@@ -52,12 +52,12 @@ class JSONResponse(object):
 
 class APIView(View):
     """
-    Django view的父类, 和django-rest-framework的用法基本一致
-     - request.data获取解析之后的json或者urlencoded数据, dict类型
-     - self.success, self.error和self.invalid_serializer可以根据业需求修改,
-        写到父类中是为了不同的人开发写法统一,不再使用自己的success/error格式
-     - self.response 返回一个django HttpResponse, 具体在self.response_class中实现
-     - parse请求的类需要定义在request_parser中, 目前只支持json和urlencoded的类型, 用来解析请求的数据
+    기본적으로 django-rest-framework의 사용법과 동일한 Django 뷰의 부모 클래스임
+     - request.data는 구문 분석된 json 또는 urlencoded 데이터, dict 유형을 가져옵니다.
+     - self.success, self.error 및 self.invalid_serializer는 비즈니스 요구에 따라 수정할 수 있습니다.
+        부모 클래스에서 작성하는 것은 서로 다른 사람들이 통합된 작성 방법을 개발하고 더 이상 자신의 성공/오류 형식을 사용하지 않도록 하기 위한 것입니다.
+     - self.response는 self.response_class에 구현된 django HttpResponse를 반환합니다.
+     - 구문 분석 요청의 클래스는 request_parser에 정의되어야 합니다. 현재 요청된 데이터를 구문 분석하기 위해 json 및 urlencoded 유형만 지원됩니다.
     """
     request_parsers = (JSONParser, URLEncodedParser)
     response_class = JSONResponse

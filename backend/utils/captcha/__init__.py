@@ -21,19 +21,19 @@ from PIL import Image, ImageDraw, ImageFont
 class Captcha(object):
     def __init__(self, request):
         """
-        初始化,设置各种属性
+        초기화 및 속성 설정
         """
         self.django_request = request
         self.session_key = "_django_captcha_key"
         self.captcha_expires_time = "_django_captcha_expires_time"
 
-        # 验证码图片尺寸
+        # 인증 코드 이미지 크기
         self.img_width = 90
         self.img_height = 30
 
     def _get_font_size(self, code):
         """
-        将图片高度的80%作为字体大小
+        이미지 높이의 80%를 글꼴 크기로 사용
         """
         s1 = int(self.img_height * 0.8)
         s2 = int(self.img_width / len(code))
@@ -41,14 +41,14 @@ class Captcha(object):
 
     def _set_answer(self, answer):
         """
-        设置答案和过期时间
+        답변 및 만료 시간 설정
         """
         self.django_request.session[self.session_key] = str(answer)
-        self.django_request.session[self.captcha_expires_time] = time.time() + 60
+        self.django_request.session[self.captcha_expires_time] = time.time() + (5 * 60) # email 인증을 위한 시간 고려
 
     def _make_code(self):
         """
-        生成随机数或随机字符串
+        난수 또는 난수 문자열 생성
         """
         string = random.sample("abcdefghkmnpqrstuvwxyzABCDEFGHGKMNOPQRSTUVWXYZ23456789", 4)
         self._set_answer("".join(string))
@@ -56,7 +56,7 @@ class Captcha(object):
 
     def get(self):
         """
-        生成验证码图片,返回值为图片的bytes
+        인증 코드 이미지 생성, 반환 값은 이미지의 바이트
         """
         background = (random.randrange(200, 255), random.randrange(200, 255), random.randrange(200, 255))
         code_color = (random.randrange(0, 50), random.randrange(0, 50), random.randrange(0, 50), 255)
@@ -68,16 +68,16 @@ class Captcha(object):
         font_size = self._get_font_size(code)
         draw = ImageDraw.Draw(image)
 
-        # x是第一个字母的x坐标
+        # x는 첫 번째 문자의 x 좌표임
         x = random.randrange(int(font_size * 0.3), int(font_size * 0.5))
 
         for i in code:
-            # 字符y坐标
+            # 문자 y 좌표
             y = random.randrange(1, 7)
-            # 随机字符大小
+            # 임의의 문자 크기
             font = ImageFont.truetype(font_path.replace("\\", "/"), font_size + random.randrange(-3, 7))
             draw.text((x, y), i, font=font, fill=code_color)
-            # 随机化字符之间的距离 字符粘连可以降低识别率
+            # 문자 사이의 거리를 무작위화; 문자를 붙이면 인식률이 떨어질 수 있으니 주의
             x += font_size * random.randrange(6, 8) / 10
 
         self.django_request.session[self.session_key] = "".join(code)
@@ -91,7 +91,7 @@ class Captcha(object):
         if not _code:
             return False
         expires_time = self.django_request.session.get(self.captcha_expires_time) or 0
-        # 注意 如果验证之后不清除之前的验证码的话 可能会造成重复验证的现象
+        # 인증 후 이전 인증코드를 지우지 않으면 중복 인증이 발생할 수 있으니 유의
         del self.django_request.session[self.session_key]
         del self.django_request.session[self.captcha_expires_time]
         if _code.lower() == str(code).lower() and time.time() < expires_time:
