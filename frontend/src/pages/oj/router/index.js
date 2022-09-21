@@ -22,6 +22,9 @@ const router = new VueRouter({
 
 // 글로벌 신원 확인
 router.beforeEach(async(to, from, next) => {
+  Vue.prototype.$Loading.config({
+    color: '#5030e5'
+  })
   Vue.prototype.$Loading.start()
   // if(storage === undefined) {
   //   storage = await import('../../../store/index')

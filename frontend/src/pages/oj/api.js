@@ -171,7 +171,6 @@ export default {
       }
     })
   },
-  // 注册
   register (data) {
     return ajax('register', 'post', {
       data

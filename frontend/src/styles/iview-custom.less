@@ -308,14 +308,19 @@ table {
   max-height: 150px;
   &::-webkit-scrollbar {
     background-color: transparent;
-    width: 5px;
+    width: 8px;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: @dark-white;
-    border-radius: 10px;
+    background: @dark-white;
+    border-right: 4px transparent solid;
+    background-clip: padding-box;
   }
   &::-webkit-scrollbar-track {
-    background-color: @light-gray;
+    background-color: transparent;
     border-radius: 10px;
   }
+}
+
+.ivu-tag {
+  border-radius: 12px;
 }

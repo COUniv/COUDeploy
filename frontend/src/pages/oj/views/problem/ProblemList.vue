@@ -560,6 +560,9 @@
       text-align: center;
       font-weight: @weight-bold;
       cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 

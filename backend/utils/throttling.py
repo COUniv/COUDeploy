@@ -3,13 +3,13 @@ import time
 
 class TokenBucket:
     """
-    注意：对于单个key的操作不是线程安全的
+    참고: 단일 키에 대한 작업은 스레드로부터 안전하지 않음
     """
     def __init__(self, key, capacity, fill_rate, default_capacity, redis_conn):
         """
-        :param capacity: 最大容量
-        :param fill_rate: 填充速度/每秒
-        :param default_capacity: 初始容量
+        :param capacity: 최대용량
+        :param fill_rate: 채우기 속도/초
+        :param default_capacity: 초기 용량
         :param redis_conn: redis connection
         """
         self._key = key
@@ -53,7 +53,7 @@ class TokenBucket:
 
     def consume(self, num=1):
         """
-        消耗 num 个 token，返回是否成功
+        num 토큰을 소비하고 성공 여부를 반환합니다.
         :param num:
         :return: result: bool, wait_time: float
         """

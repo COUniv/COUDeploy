@@ -11,7 +11,8 @@
           </div> -->
 
           <!-- 알림 목록 -->
-          <ul class="notifications-table">
+          <p class="no-notifications" v-if="notifications.length == 0">알림이 없습니다.</p>
+          <ul v-else class="notifications-table">
             <li v-for="(item) in notifications">
               <ul v-bind:style="[!item.is_read ?{'background-color' : '#e0dafc4d'}:{}]" class="notifications-entry"  @click="redirectToArticle(item)">
                 <div>
@@ -268,6 +269,14 @@
           }
         }
       }
+    }
+
+    .no-notifications {
+      text-align: center;
+      line-height: 50px;
+      font-size: @font-small;
+      color: @black;
+      -webkit-text-stroke: .2px;
     }
 
     hr {

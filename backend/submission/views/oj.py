@@ -226,7 +226,7 @@ class ContestSubmissionListAPI(APIView):
         if contest.status != ContestStatus.CONTEST_NOT_START:
             submissions = submissions.filter(create_time__gte=contest.start_time)
 
-        # 封榜的时候只能看到自己的提交
+        # contest가 종료 될 때 혹은 실시간 rank가 활성화 될 때만 확인 가능
         if contest.rule_type == ContestRuleType.ACM:
             if not contest.real_time_rank and not request.user.is_contest_admin(contest):
                 submissions = submissions.filter(user_id=request.user.id)
