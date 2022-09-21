@@ -25,11 +25,18 @@ import {
 } from '../views'
 import Logout from '../views/user/Logout.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
+import Request from '../request.vue'
 
 import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
 
 export default [
+  {
+    name: 'test',
+    path: '/test',
+    meta: {title: 'test'},
+    component: Request
+  },
   {
     name: 'category-list',
     path: '/category-list',
