@@ -712,6 +712,7 @@
     width: 30px;
     height: 30px;
     font-size: 30px;
+    margin-right: 3px;
     img {
       width: 30px;
       max-width: 30px;
@@ -720,9 +721,9 @@
 
   img {
     display: inline-block;
-    width: 100%;
-    height: auto;
-    max-width: 100%;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
     display: block;
     border-radius: @avatar-radius;
     box-shadow: 0px 0px 1px 0px;
