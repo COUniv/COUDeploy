@@ -1,6 +1,6 @@
 from utils.api import serializers
 from django import forms
-from .models import *
+from .models import Banner, Using_banner
 
 class BannerListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,5 +14,3 @@ class UsingBannerListSerializer(serializers.ModelSerializer):
 
 class ImageUploadForm(forms.Form):
     image = forms.FileField()
-    #title = forms.CharField()
-

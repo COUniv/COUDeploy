@@ -10,42 +10,34 @@ from utils.shortcuts import rand_str
 
 
 class InputBannerAPI(APIView):
-    #@login_required
-    #@verify_required
-    def post(self, request):
-        #요청 -> 폼으로 변환해서 이미지 받기
-        form = ImageUploadForm(request.data,request.FILES)
-        #request.data? request.POST? request.body?
-        
-        #파일 유효설 검사
-        if form.is_valid():
-            banner = form.cleaned_data["image"]
-            #title = form.cleaned_data["title"]
-        else:
-            return self.error("파일이 유효하지 못해!")
-        
-        #사이즈 체크 
-        """if avatar.size > 2 * 1024 * 1024:
-            return self.error("파일 사이즈가 너무 커!")"""
-        
-        #확장자 검사
-        suffix = os.path.splitext(banner.name)[-1].lower()
-        if suffix not in [".gif", ".jpg", ".jpeg", ".bmp", ".png"]:
-            return self.error("파일 형식이 옳바르지 못헤!")
+    request_parsers = ()
 
-        #파일생성
+    def post(self, request):
+        form = ImageUploadForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            image = form.cleaned_data["image"]
+        else:
+            return self.error("올바른 형식이 아니야!")
+        if image.size > 2 * 1024 * 1024:
+            return self.error("이미지의 사이즈가 너무 커!")
+        suffix = os.path.splitext(image.name)[-1].lower()
+        if suffix not in [".gif", ".jpg", ".jpeg", ".bmp", ".png"]:
+            return self.error("지원하지 않는 포맷입니다")
+
         name = rand_str(10) + suffix
-        with open(os.path.join(settings.BANNER_UPLOAD_DIR, name), "wb") as img:
-            for chunk in banner:
-                img.write(chunk)
+        while os.path.exists(os.path.join(settings.BANNER_UPLOAD_DIR, name)) == True:
+            name = rand_str(10) + suffix
             
-        #주소 적용
+        with open(os.path.join(settings.BANNER_UPLOAD_DIR, name), "wb") as img:
+            for chunk in image:
+                img.write(chunk)
+                
         newBanner = Banner.objects.create()
         newBanner.banner = f"{settings.BANNER_URI_PREFIX}/{name}"
         #newBanner.title = title
         newBanner.save()
-        
-        return self.success("성공했어!")
+        return self.success("성공")
     
 class Test(APIView):
     def get(self,request):
