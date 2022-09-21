@@ -124,7 +124,7 @@
 
 
     <!-- vertical navigation-bar -->
-    <Menu v-show="screenWidth <= 900" theme="light" width="100vw" mode="vertical" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
+    <Menu v-show="screenWidth <= 900" theme="light" width="100%" mode="vertical" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
       <Menu-item class="home_bar" name="/ff" >
         <div class="logo-name" @click="handleRoute('/')">COU</div>
       </Menu-item>
@@ -854,6 +854,9 @@
   }
 
   @media screen and (max-width : 900px) {
+    #header {
+      max-width: 900px;
+    }
     .bar_list .ivu-menu-submenu {
       &:hover {
         pointer-events: none;
@@ -916,7 +919,10 @@
 
 <style lang="less">
 @import '../../../styles/common.less';
-  @media screen and (max-width : 900px) {
+  @media screen and (max-width : 767px) {
+    #header {
+      max-width: 767px;
+    }
     .ivu-menu-light.ivu-menu-vertical &.ivu-menu-item-active:not(.ivu-menu-submenu) {
         background:white;
     }

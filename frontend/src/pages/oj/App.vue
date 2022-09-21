@@ -117,6 +117,11 @@
       position: relative;
     }
   }
+  @media screen and (max-width: 767px) {
+    .content-app {
+      max-width: 767px;
+    }
+  }
   .blockingdrag {
     -webkit-user-select:none;
     -moz-user-select:none;

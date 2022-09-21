@@ -1,7 +1,7 @@
 <template>
   <div v-if="listVisible" class="home_container">
 
-    <div class="img_container" style="width: 100%;">
+    <div v-if="screenWidth > 900" class="img_container" style="width: 100%;">
         <Carousel autoplay v-model="value1" loop arrow="hover" @on-change="handleChange">
             <CarouselItem>
                 <div class="demo-carousel">
@@ -192,6 +192,7 @@
     },
     data () {
       return {
+        screenWidth: 0,
         tabfirstidx: 0,
         tabsecidx: 1,
         limit: 5,
@@ -293,6 +294,9 @@
         } else if (this.currentTab === 1) {
           this.$router.push('/contest').catch(() => {})
         }
+      },
+      handleResize (e) {
+        this.screenWidth = window.innerWidth
       }
     },
     computed: {
@@ -303,6 +307,22 @@
         } else {
           return this.announcement.title
         }
+      }
+    },
+    created () {
+      window.addEventListener('resize', this.handleResize)
+      this.handleResize()
+      this.getOnlyNotificationsListLength()
+      setInterval(() => {
+        this.getOnlyNotificationsListLength()
+      }, 5000)
+    },
+    destroyed () {
+      window.removeEventListener('resize', this.handleResize)
+    },
+    watch: {
+      'screenWidth': (newVal, oldVal) => {
+        this.screenWidth = newVal
       }
     }
   }
@@ -319,8 +339,11 @@
 
   @media screen and (max-width: 1200px) {
     .home_container{
-      margin: -40px -50px -100px -50px;
+      //margin: -40px -50px -100px -50px;
       padding-bottom: -80px;
+    }
+    .main_container {
+      margin-top: 40px;
     }
   }
   @media screen and (min-width: 1200px) {
@@ -328,6 +351,17 @@
       margin: -20px -50px -100px -50px;
       padding-bottom: -80px;
     }
+
+  }
+  @media screen and (max-width: 767px) {
+    .home_container {
+      width: 767px;
+      margin: 0;
+    }
+    .main_container {
+      margin: 140px auto 0 !important;
+    }
+
   }
   .img_container{
     // margin-right: 21%;
