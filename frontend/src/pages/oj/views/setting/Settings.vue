@@ -89,9 +89,9 @@
           }
           position: relative;
           .avatar {
-            width: 100%;
-            height: auto;
-            max-width: 100%;
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100% !important;
             display: block;
             border-radius: @avatar-radius;
             box-shadow: 0px 0px 1px 0px;
