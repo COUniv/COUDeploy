@@ -7,6 +7,11 @@ class BannerListSerializer(serializers.ModelSerializer):
         model = Banner
         fields = "__all__"
 
+class UsingBannerListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Using_banner
+        fields = "__all__"
+
 class ImageUploadForm(forms.Form):
     image = forms.FileField()
     #title = forms.CharField()
