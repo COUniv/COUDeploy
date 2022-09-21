@@ -124,7 +124,7 @@ class UserProfile(models.Model):
         self.submission_number = models.F("submission_number") + 1
         self.save()
 
-    # 计算总分时， 应先减掉上次该题所得分数， 然后再加上本次所得分数
+    # 총점을 계산할 때 먼저 문제의 이전 점수를 뺀 다음 현재 점수를 더해야 함.
     def add_score(self, this_time_score, last_time_score=None):
         last_time_score = last_time_score or 0
         self.total_score = models.F("total_score") - last_time_score + this_time_score

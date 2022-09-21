@@ -1,7 +1,7 @@
 from django.db import models
 
 from account.models import User
-
+from django.conf import settings
 
 class BoardType(object):
     """
@@ -45,6 +45,7 @@ class Comment(models.Model):
     """
     articleid = models.IntegerField() # 해당 댓글 객체가 작성된 게시글 ID
     username = models.TextField(null=False)
+    avatar = models.TextField(default=f"{settings.AVATAR_URI_PREFIX}/default.png")
     content = models.TextField(null=False)
     create_time = models.DateTimeField(auto_now_add=True)
     is_comment_writer = models.NullBooleanField()

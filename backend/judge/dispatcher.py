@@ -20,10 +20,10 @@ from utils.constants import CacheKey
 logger = logging.getLogger(__name__)
 
 
-# 继续处理在队列中的问题
+# 대기열의 문제에 대해 계속 작업
 def process_pending_task():
     if cache.llen(CacheKey.waiting_queue):
-        # 防止循环引入
+        # 루프 도입 방지
         from judge.tasks import judge_task
         tmp_data = cache.rpop(CacheKey.waiting_queue)
         if tmp_data:

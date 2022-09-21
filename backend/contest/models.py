@@ -6,7 +6,7 @@ from utils.models import JSONField
 from utils.constants import ContestStatus, ContestType
 from account.models import User
 from utils.models import RichTextField
-
+from django.conf import settings
 
 class Contest(models.Model):
     title = models.TextField()
@@ -21,20 +21,22 @@ class Contest(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     last_update_time = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    # 是否可见 false的话相当于删除
+    # 표시 여부: false는 삭제와 동일
     visible = models.BooleanField(default=True)
     allowed_ip_ranges = JSONField(default=list)
 
+    # contest main image
+    contest_title_img = models.TextField(default=f"{settings.CONTEST_IMG_URI_PREFIX}/default.png")
     @property
     def status(self):
         if self.start_time > now():
-            # 没有开始 返回1
+            # 시작되지 않음 : return 1
             return ContestStatus.CONTEST_NOT_START
         elif self.end_time < now():
-            # 已经结束 返回-1
+            # 종료됨 : return -1
             return ContestStatus.CONTEST_ENDED
         else:
-            # 正在进行 返回0
+            # 진행중 : return 0
             return ContestStatus.CONTEST_UNDERWAY
 
     @property
@@ -43,7 +45,7 @@ class Contest(models.Model):
             return ContestType.PASSWORD_PROTECTED_CONTEST
         return ContestType.PUBLIC_CONTEST
 
-    # 是否有权查看problem 的一些统计信息 诸如submission_number, accepted_number 等
+    # submit_number, Accepted_number 등과 같은 문제에 대한 일부 통계를 볼 수 있는 권한이 있는지 여부
     def problem_details_permission(self, user):
         return self.rule_type == ContestRuleType.ACM or \
                self.status == ContestStatus.CONTEST_ENDED or \

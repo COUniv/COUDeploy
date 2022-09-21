@@ -139,6 +139,8 @@
         height: 100%;
         background: #dddee1;
         position: absolute;
+        top: 0;
+        bottom: 0;
         z-index: 0;
       }
     }
