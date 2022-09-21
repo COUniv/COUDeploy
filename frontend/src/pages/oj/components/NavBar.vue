@@ -58,8 +58,9 @@
             </Badge>
             <div style="clear:both"></div>
             <div v-if="visibleDraw" class="notifications-tab" v-click-outside="closeNoti">
-              <ul class="notifications-table">
-                <li v-for="(item, index) in vNotifications" :key="index">
+              <ul class="notifications-table" v-bind:style="[vNotifications.length == 0 ?{'overflow-y' : 'visible'}:{'overflow-y' : 'scroll'}]">
+                <p class="no-notifications" v-if="vNotifications.length == 0">알람이 없습니다.</p>
+                <li v-else v-for="(item, index) in vNotifications" :key="index">
                   <ul v-bind:style="[!item.is_read ?{'background-color' : '#e0dafc4d'}:{}]" class="notifications-entry"  @click="redirectToArticle(item)">
                     <div>
                       <div>
@@ -88,7 +89,7 @@
               </ul>
               <div id="all-notifications">
                 <hr>
-                <a @click="goAllNotificationList">알람 전체 보기</a>
+                <a @click="goAllNotificationList">알림 전체 보기</a>
               </div>
             </div>
           </div>
@@ -714,6 +715,7 @@
     width: 30px;
     height: 30px;
     font-size: 30px;
+    margin-right: 3px;
     img {
       width: 30px;
       max-width: 30px;
@@ -722,9 +724,9 @@
 
   img {
     display: inline-block;
-    width: 100%;
-    height: auto;
-    max-width: 100%;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
     display: block;
     border-radius: @avatar-radius;
     box-shadow: 0px 0px 1px 0px;
@@ -755,11 +757,12 @@
       width: inherit;
       overflow-x: hidden;
       // scrollbar
-      overflow-y:scroll;
       &::-webkit-scrollbar {
         background-color: transparent;
+        width: 15px;
       }
       &:hover {
+
         &::-webkit-scrollbar {
           width: 15px;
           height: 20px;
@@ -846,6 +849,15 @@
       //color: #e0dafc4d;
     }
   }
+
+  .no-notifications {
+    line-height: 50px;
+    text-align: center;
+    font-size: 120%;
+    -webkit-text-stroke: .2px;
+    color: @black;
+  }
+
   @media screen and (min-width: 901px) {
     .bar_list {
       padding-right: 30px;
@@ -912,6 +924,8 @@
   .fade-enter,.fade-leave-to {
       opacity: 0
   }
+
+  
 </style>
 
 <style lang="less">
