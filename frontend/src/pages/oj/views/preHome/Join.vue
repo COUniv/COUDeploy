@@ -12,9 +12,17 @@
             </Input>
           </FormItem>
           <FormItem prop="password">
-            <p class="form_title">비밀번호</p>
-            <Input class ="login_input" type="password" v-model="formRegister.password" placeholder="비밀번호를 입력해주세요" size="large" @on-enter="handleRegister">
+            <p class="form_title">비밀번호 
+              <Poptip trigger="hover" content="영문 + 숫자 + 특수문자(@$!%*#?& 중 1개이상)로 구성되어야 합니다" :transfer="true" placement="right-start">
+                <i class="mdi mdi-help-circle-outline"></i>
+              </Poptip>
+              <span style="float:right">
+              <Checkbox v-model="showpassword">비밀번호 보기</Checkbox>
+              </span>
+            </p>
+            <Input v-if="showpassword" class ="login_input" type="text" v-model="formRegister.password" placeholder="비밀번호를 입력해주세요" size="large" @on-enter="handleRegister">
             </Input>
+            <Input v-else class ="login_input" type="password" v-model="formRegister.password" placeholder="비밀번호를 입력해주세요" size="large" @on-enter="handleRegister"></Input>
           </FormItem>
           <FormItem prop="passwordAgain">
             <p class="form_title">비밀번호 확인</p>
@@ -86,20 +94,34 @@
   import { mapGetters, mapActions } from 'vuex'
   import api from '@oj/api'
   import { FormMixin } from '@oj/components/mixins'
+  import InfoCard from '@admin/components/infoCard.vue'
   export default {
     mixins: [FormMixin],
+    components: {
+      InfoCard
+    },
     mounted () {
       this.getCaptchaSrc()
     },
     data () {
+      const regExp = /(?=^.{4,20}$)^[a-z]+[a-z0-9]$/
+      const blockAdminRegExp = /^(admin|user|root|gm|unknownuser|help)/i
+      const passregex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
       const CheckUsernameNotExist = (rule, value, callback) => {
-        api.checkUsernameOrEmail(value, undefined).then(res => {
-          if (res.data.data.username === true) {
-            callback(new Error(this.$i18n.t('m.The_username_already_exists')))
-          } else {
-            callback()
-          }
-        }, _ => callback())
+        if (!regExp.test(value)) {
+          callback(new Error('4 ~ 20자리 소문자 + 숫자 조합만 가능합니다'))
+        } else if (blockAdminRegExp.test(value)) {
+          callback(new Error('생성할 수 없는 이름입니다'))
+        } else {
+          api.checkUsernameOrEmail(value, undefined).then(res => {
+            if (res.data.data.username === true) {
+              callback(new Error('이미 존재하는 아이디입니다'))
+            } else {
+              callback()
+            }
+          }, _ => callback())
+          callback()
+        }
       }
       const CheckEmailNotExist = (rule, value, callback) => {
         api.checkUsernameOrEmail(undefined, value).then(res => {
@@ -112,8 +134,15 @@
       }
       const CheckPassword = (rule, value, callback) => {
         if (this.formRegister.password !== '') {
-          // 두 번째 비밀번호 상자를 다시 확인
-          this.$refs.formRegister.validateField('passwordAgain')
+          console.log(value)
+          console.log(passregex.test(value))
+          console.log(passregex.test(value))
+          if (passregex.test(value) === false) {
+            callback(new Error('영문 + 숫자 + 특수문자(@$!%*#?& 중 1개이상)로 구성되어야 합니다'))
+          } else {
+            // 두 번째 비밀번호 상자를 다시 확인
+            this.$refs.formRegister.validateField('passwordAgain')
+          }
         }
         callback()
       }
@@ -132,6 +161,7 @@
         authButtonLoading: false,
         authModal: false,
         isAuthed: false,
+        showpassword: false,
         formRegister: {
           username: '',
           password: '',
@@ -142,14 +172,14 @@
         ruleRegister: {
           username: [
             {required: true, trigger: 'blur', message: '아이디를 입력해주세요'},
-            {validator: CheckUsernameNotExist, trigger: 'blur', message: '이미 존재하는 아이디입니다'}
+            {validator: CheckUsernameNotExist, trigger: 'blur'}
           ],
           email: [
             {required: true, type: 'email', trigger: 'blur', message: '이메일을 입력해주세요'},
             {validator: CheckEmailNotExist, trigger: 'blur', message: '이미 사용 된 이메일입니다'}
           ],
           password: [
-            {required: true, trigger: 'blur', message: '6~20자 사이로 입력해주세요', min: 6, max: 20},
+            {required: true, trigger: 'blur', message: '8~20자 사이로 입력해주세요', min: 8, max: 20},
             {validator: CheckPassword, trigger: 'blur'}
           ],
           passwordAgain: [
@@ -163,6 +193,13 @@
     },
     methods: {
       ...mapActions(['getProfile']),
+      showpasswordBtn () {
+        if (this.showpassword) {
+          return 'text'
+        } else {
+          return 'password'
+        }
+      },
       handleRegister () {
         if (!this.isAuthed) {
           this.$error('이메일 인증을 진행해주세요.')
@@ -249,7 +286,7 @@
 </script>
 <style lang="less">
 .ivu-form-item {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .auth_form {
   display: -webkit-box; /* ios 6이하, 사파리 3.1 */
