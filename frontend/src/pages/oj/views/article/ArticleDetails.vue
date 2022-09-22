@@ -78,7 +78,10 @@
               <div class="comment-user-time">
                 <div>
                   <img id="user-avatar-2" :src="item.avatar"/>
-                  <div class="linkdiv" @click="goCommentUesr(item.username)">
+                  <div v-if="item.username === 'UnknownUser'" class="none-linkdiv">
+                    <b>알 수 없는 사용자</b>
+                  </div>
+                  <div v-else class="linkdiv" @click="goCommentUesr(item.username)">
                     <b>{{ item.username }}</b>
                   </div>
                 </div>
@@ -496,7 +499,12 @@
     color: @black;
     cursor: pointer;
   }
-
+  .none-linkdiv {
+    float: left;
+    //font-size:1.3em;
+    margin-right: 15px;
+    color: @black;
+  }
   #comment-time {
     color: @gray;
     font-size: 10px;
