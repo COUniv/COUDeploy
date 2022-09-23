@@ -33,7 +33,7 @@ import 'echarts/lib/component/tooltip'
 import 'echarts/lib/component/toolbox'
 import 'echarts/lib/component/markPoint'
 import Element from 'element-ui'
-// import 'element-ui/lib/theme-chalk/index.css'
+import 'element-ui/lib/theme-chalk/index.css'
 // auto logout
 // import IdleVue from 'idle-vue-3'
 import '@mdi/font/css/materialdesignicons.css'

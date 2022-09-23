@@ -31,7 +31,7 @@ class Submission(models.Model):
     username = models.TextField()
     code = models.TextField()
     result = models.IntegerField(db_index=True, default=JudgeStatus.PENDING)
-    # 从JudgeServer返回的判题详情
+    # JudgeServer에서 반환된 판단 세부 정보
     info = JSONField(default=dict)
     language = models.TextField()
     shared = models.BooleanField(default=False)

@@ -100,10 +100,10 @@
           <Row type="flex" justify="space-between">
             <!-- 제출 상태 icon -->
             <Col :span="10">
-              <div class="status" v-if="statusVisible">
+              <div class="status" v-if="statusVisible" style="margin-top: -615px; margin-left: 15px;">
                 <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
-                  <span>{{$t('m.Status')}}</span>
-                  <Tag type="dot" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
+                  <!-- <span>{{$t('m.Status')}}</span> -->
+                  <Tag class="result" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
                     {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
                   </Tag>
                 </template>
@@ -111,13 +111,13 @@
                   <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
                 </template>
               </div>
-              <div v-else-if="problem.my_status === 0">
+              <div v-else-if="problem.my_status === 0" style="margin-top: -620px; margin-left: 15px;">
                 <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
               </div>
-              <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists">
+              <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists" style="margin-top: -620px; margin-left: 15px;">
                 <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
               </div>
-              <div v-if="contestEnded">
+              <div v-if="contestEnded" style="margin-top: -620px; margin-left: 15px;">
                 <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
               </div>
             </Col>
@@ -979,6 +979,12 @@
   p {
     padding: 0;
     margin: 0;
+  }
+
+  .result {
+    -webkit-text-stroke: .3px; 
+    font-size: 15px;
+    border-width: 2px;
   }
   
 </style>
