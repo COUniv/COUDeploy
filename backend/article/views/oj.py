@@ -120,8 +120,11 @@ class ArticleAPI(APIView):
                 comments = Comment.objects.filter(articleid=article_id).order_by('id') # 댓글을 가져옴
                 for comment in comments:
                     comment.is_comment_writer = (request.user.username == comment.username) # 현재 접속한 유저가 해당 게시글에 달린 댓글의 작성자인지 확인하기 위한 데이터
-                    user = User.objects.get(username=request.user.username)
-                    comment.avatar = user.userprofile.avatar
+                    try:
+                      user = User.objects.get(username=comment.username)
+                      comment.avatar = user.userprofile.avatar
+                    except User.DoesNotExist:
+                      comment.username = 'UnknownUser' #가입할 수 없는 아이디로 해당 아이디로 반환하여 특정함
                 article_data["comments"] = CommentListSerializer(comments, many=True).data
             except Comment.DoesNotExist: # 해당 ID를 가진 댓글이 하나도 없는 경우
                 article_data["comments"] = []
