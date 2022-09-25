@@ -333,6 +333,7 @@
           min-height: 100px;
           background-color: @light-purple;
           margin-right: 10px;
+          margin-top: 5px;
         }
 
         .contest-title {

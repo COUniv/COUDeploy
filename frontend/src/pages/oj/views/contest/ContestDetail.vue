@@ -205,6 +205,10 @@
 </script>
 
 <style scoped lang="less">
+  body {
+    padding-bottom: 0 !important;
+    max-height: 100vh !important;
+  }
   pre {
     display: inline-block;
   }
@@ -214,7 +218,7 @@
   }
   .container {
     width: 100%;
-    padding: 0 40px;
+    //padding: 0 40px;
   }
   .flex-container {
     #contest-main {
