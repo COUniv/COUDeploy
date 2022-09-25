@@ -1,6 +1,6 @@
 <template>
   <div class="setting-main">
-    <div class="title">계정 설정</div>
+    <div class="title-setting">계정 설정</div>
       <div class="left">
         <p class="section-title">{{$t('m.ChangePassword')}}</p>
         <Form class="setting-content" ref="formPassword" :model="formPassword" :rules="rulePassword">
@@ -445,7 +445,7 @@
   .trans-container {
     margin-top: 10px
   }
-  .title {
+  .title-setting {
     font-size: 200%;
     font-weight: 500;
     -webkit-text-stroke: 1px;
