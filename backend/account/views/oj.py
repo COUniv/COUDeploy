@@ -181,7 +181,7 @@ class UserProfileAPI(APIView):
                 user = User.objects.get(username=username, is_disabled=False)
             else:
                 user = request.user
-                # api返回的是自己的信息，可以返real_name
+                # api는 자체 정보를 반환함. real_name을 반환 할 수도 있음
                 show_real_name = True
         except User.DoesNotExist:
             return self.error("존재하지 않는 유저입니다")

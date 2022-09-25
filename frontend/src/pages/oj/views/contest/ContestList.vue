@@ -37,7 +37,9 @@
         <li class="entry" v-for="contest in contests" :key="contest.title">
           <div>
             <div style="display:flex;">
-              <div class="trophy"></div>
+              <div class="trophy">
+                <img :src="contest.contest_title_img"/>
+              </div>
               <div class="contest-main" style="display: flex; flex-direction: column; justify-content:space-between;">
               <p>
                 <a class="contest-title" @click.stop="goContest(contest)">
@@ -321,6 +323,12 @@
         border: 1px solid @dark-white;
         padding: 15px;
         .trophy {
+          width: 100px;
+          height: 100px;
+          img {
+            width: 100%;
+            height: 100%;
+          }
           min-width: 100px;
           min-height: 100px;
           background-color: @light-purple;

@@ -77,8 +77,11 @@
             <!-- 사용자 정보영역 -->
               <div class="comment-user-time">
                 <div>
-                  <img id="user-avatar-2" :src="comments_avatars[item.username]"/>
-                  <div class="linkdiv" @click="goCommentUesr(item.username)">
+                  <img id="user-avatar-2" :src="item.avatar"/>
+                  <div v-if="item.username === 'UnknownUser'" class="none-linkdiv">
+                    <b>알 수 없는 사용자</b>
+                  </div>
+                  <div v-else class="linkdiv" @click="goCommentUesr(item.username)">
                     <b>{{ item.username }}</b>
                   </div>
                 </div>
@@ -158,7 +161,7 @@
         articleID: '', // 게시글 ID
         username: '', // 게시글 작성자 명
         profile: {},
-        comments_avatars: {},
+        comments_avatars: {}, // Deprecated
         problemid: '',
         deleteComment_id: null, // 댓글 삭제를 위한 임시 value
         tempComment: {  // 댓글 수정을 위한 임시 value
@@ -241,7 +244,6 @@
             this.profile = res.data.data
           })
           this.comments = article.comments
-          this.getAvatarSource(this.comments)
           this.is_liked = article.is_liked
           this.article.like_count = article.like_count
           this.article.comment_count = article.comment_count
@@ -261,7 +263,6 @@
           this.is_writer = article.is_writer
           this.username = article.username
           this.comments = article.comments
-          this.getAvatarSource(this.comments)
           this.is_liked = article.is_liked
           this.article.like_count = article.like_count
           this.article.comment_count = article.comment_count
@@ -354,6 +355,9 @@
           }
         ).catch(() => {})
       },
+      /**
+       * Deprecated
+       */
       getAvatarSource (comments) {
         comments.forEach((item) => {
           let avatar = ''
@@ -495,7 +499,12 @@
     color: @black;
     cursor: pointer;
   }
-
+  .none-linkdiv {
+    float: left;
+    //font-size:1.3em;
+    margin-right: 15px;
+    color: @black;
+  }
   #comment-time {
     color: @gray;
     font-size: 10px;

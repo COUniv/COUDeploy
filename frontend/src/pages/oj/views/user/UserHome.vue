@@ -145,8 +145,8 @@
       z-index: 1;
       top: -90px;
       .avatar {
-        width: 140px;
-        height: 140px;
+        width: 140px !important;
+        height: 140px !important;
         border-radius: 50%;
         box-shadow: 0 1px 1px 0;
       }
