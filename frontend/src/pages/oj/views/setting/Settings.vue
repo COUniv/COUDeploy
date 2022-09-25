@@ -24,7 +24,7 @@
                 {{$t('m.Management')}}
             </Menu-item>
             <!-- <Menu-item name="/setting/security">{{$t('m.Security')}}</Menu-item> -->
-            <Menu-item name="/logout">로그아웃</Menu-item>
+            <!-- <Menu-item name="/logout">로그아웃</Menu-item> -->
           </Menu>
         </div>
         <div class="panel">

@@ -186,6 +186,9 @@
           document.getElementById('file-uploader').value = ''
         }
         fileReader.readAsText(f, 'UTF-8')
+      },
+      handleRoute (route) {
+        this.$router.push(route).catch(() => {})
       }
     },
     computed: {
