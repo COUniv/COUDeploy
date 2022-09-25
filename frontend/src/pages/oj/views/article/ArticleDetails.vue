@@ -74,7 +74,7 @@
       
       <!-- 댓글 목록 -->
       <div v-for="(item, index) in comments" :key="comment.id" class="comment-list-box">
-
+        <a :id="'comment'+item.id" :name="'comment'+item.id"></a>
             <!-- 사용자 정보영역 -->
               <div class="comment-user-time">
                 <div>
@@ -100,7 +100,6 @@
             <div id="comment-time">
                 {{ item.create_time }}
             </div>
-
             <Modal v-model="deletemodalcomment">
               <p slot="header" style="color:#EE2E03">경고</p>
               <p style="font-size:14px">댓글을 삭제하시겠습니까?</p>

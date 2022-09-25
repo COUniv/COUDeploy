@@ -380,9 +380,13 @@
         let articleId = noti[noti.length - 1]
         if (!notification.is_read) this.init_notification_count -= 1
         api.checkNotification(notification.id).then(res => {
-          this.$router.push({name: 'article-details', params: {articleID: articleId}}).catch(() => {})
+          console.log(res)
+          this.$router.push({name: 'article-details', params: {articleID: articleId}, hash: this.getHashtag(notification)}).catch(() => {})
         })
         this.visibleDraw = false
+      },
+      getHashtag (notification) {
+        return '#comment' + notification.id
       },
       navToggle () {
         this.navOpen = !this.navOpen
