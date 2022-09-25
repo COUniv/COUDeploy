@@ -52,7 +52,8 @@
             <div class="pick-random">
               <Button long id="pick-one" @click="pickone" type="primary">
                 <Icon type="ios-shuffle" size="15" />
-                {{$t('m.Pick_One')}}
+                랜덤 선택
+                <!-- {{$t('m.Pick_One')}} -->
               </Button>
             </div>
           </div>
