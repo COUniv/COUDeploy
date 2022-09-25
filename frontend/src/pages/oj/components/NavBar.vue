@@ -125,7 +125,7 @@
 
 
     <!-- vertical navigation-bar -->
-    <Menu v-show="screenWidth <= 900" theme="light" width="100vw" mode="vertical" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
+    <Menu v-show="screenWidth <= 900" theme="light" width="100%" mode="vertical" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
       <Menu-item class="home_bar" name="/ff" >
         <div class="logo-name" @click="handleRoute('/')">COU</div>
       </Menu-item>
@@ -474,7 +474,7 @@
       z-index: 2;
     }
     .navbar_toggle-btn {
-      position: fixed;
+      position: absolute;
       background: transparent;
       border: none;
       right: 32px;
