@@ -933,6 +933,9 @@
   @media screen and (max-width : 900px) {
     #header {
       max-width: 900px;
+      .home_bar.ivu-menu-item {
+        min-width: 900px;
+      }
     }
     .ivu-menu-light.ivu-menu-vertical &.ivu-menu-item-active:not(.ivu-menu-submenu) {
         background:white;
@@ -957,6 +960,7 @@
   .ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item-selected  a {
     color: @purple !important;
   }
+
   .bar_list  {
     & .ivu-menu {
       background-color: @pale-purple;
