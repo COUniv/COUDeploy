@@ -125,7 +125,7 @@
 
 
     <!-- vertical navigation-bar -->
-    <Menu v-show="screenWidth <= 900" theme="light" width="100vw" mode="vertical" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
+    <Menu v-show="screenWidth <= 900" theme="light" width="100%" mode="vertical" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
       <Menu-item class="home_bar" name="/ff" >
         <div class="logo-name" @click="handleRoute('/')">COU</div>
       </Menu-item>
@@ -474,7 +474,7 @@
       z-index: 2;
     }
     .navbar_toggle-btn {
-      position: fixed;
+      position: absolute;
       background: transparent;
       border: none;
       right: 32px;
@@ -931,6 +931,12 @@
 <style lang="less">
 @import '../../../styles/common.less';
   @media screen and (max-width : 900px) {
+    #header {
+      max-width: 900px;
+      .home_bar.ivu-menu-item {
+        min-width: 900px;
+      }
+    }
     .ivu-menu-light.ivu-menu-vertical &.ivu-menu-item-active:not(.ivu-menu-submenu) {
         background:white;
     }
@@ -954,6 +960,7 @@
   .ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item-selected  a {
     color: @purple !important;
   }
+
   .bar_list  {
     & .ivu-menu {
       background-color: @pale-purple;
