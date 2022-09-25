@@ -195,6 +195,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import api from "@oj/api";
 import { mapGetters } from "vuex";
 import utils from "@/utils/utils";
