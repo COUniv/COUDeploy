@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex; justify-content:space-between;">
+  <div style="display:flex; justify-content:space-between;" id="contest-container">
     <div id="contest-card">
       <div style="display: block;">
         <div class="title">
@@ -520,6 +520,19 @@ export default {
       .third {
         color: @white;
       }
+    }
+  }
+}
+@media screen and (max-width : 900px) {
+  #contest-container {
+    flex-direction: column;
+    max-width: 900px;
+    #contest-card {
+      margin: 20px auto;
+    }
+    #user-ranking {
+      margin: 0 auto;
+      max-width: 70%;
     }
   }
 }

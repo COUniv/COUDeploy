@@ -931,6 +931,9 @@
 <style lang="less">
 @import '../../../styles/common.less';
   @media screen and (max-width : 900px) {
+    #header {
+      max-width: 900px;
+    }
     .ivu-menu-light.ivu-menu-vertical &.ivu-menu-item-active:not(.ivu-menu-submenu) {
         background:white;
     }
