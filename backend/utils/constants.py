@@ -28,9 +28,24 @@ class CacheKey:
 
 
 class Difficulty(Choices):
-    LOW = "Low"
-    MID = "Mid"
-    HIGH = "High"
+    Level1 = "Level1"
+    Level2 = "Level2"
+    Level3 = "Level3"
+    Level4 = "Level4"
+    Level5 = "Level5"
+    Level6 = "Level6"
+    Level7 = "Level7"
+    Level8 = "Level8"
+    Level9 = "Level9"
+    Level10 = "Level10"
+    Level11 = "Level11"
+    Level12 = "Level12"
+    Level13 = "Level13"
+    Level14 = "Level14"
+    Level15 = "Level15"
+    # LOW = "Low"
+    # MID = "Mid"
+    # HIGH = "High"
 
 
 CONTEST_PASSWORD_SESSION_KEY = "contest_password"
