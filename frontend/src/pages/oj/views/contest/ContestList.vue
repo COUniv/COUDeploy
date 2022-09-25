@@ -130,7 +130,11 @@
         <div class="ranking-container">
           <table class="ranking-list">
             <!-- 내용 -->
-            <tbody v-for="(data, index) in dataRank" @click="goUser(data.user)">
+            <tbody
+              v-for="(data, index) in dataRank"
+              @click="goUser(data.user)"
+              :key="index"
+            >
               <tr class="ranking-entry" v-if="index == 0">
                 <td class="image">
                   <img
