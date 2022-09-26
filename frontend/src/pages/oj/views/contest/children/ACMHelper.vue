@@ -230,5 +230,11 @@
   }
 </script>
 <style lang="less" scoped>
-
+.ivu-btn-info {
+  background-color: #5030e5;
+  border: 1px solid #5030e5;
+  &:hover {
+    background-color: #fff;
+  }
+}
 </style>

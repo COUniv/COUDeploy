@@ -141,6 +141,9 @@
     animation: fadeInUp .8s;
   }
 
+  @media screen and (min-width: 900px) {
+    max-width: 900px;
+  }
 
 
 </style>

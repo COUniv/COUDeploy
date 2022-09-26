@@ -370,6 +370,7 @@
     },
     watch: {
       '$route' (newVal, oldVal) {
+        console.log(newVal)
         this.articleID = newVal.params.articleID
         this.init()
       }
