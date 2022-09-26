@@ -75,7 +75,7 @@
       <!-- 댓글 목록 -->
 
       <div v-for="(comment, index) in comments" :key="comment.id" class="comment-list-box">
-        <a :id="'comment'+item.id" :name="'comment'+comment.id"></a>
+        <a :id="'comment'+comment.id" :name="'comment'+comment.id"></a>
             <!-- 사용자 정보영역 -->
               <div class="comment-user-time">
                 <div>
