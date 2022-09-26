@@ -204,7 +204,6 @@
         this.$store.commit(types.CLEAR_CONTEST)
       }
     }
-  }
 </script>
 
 <style scoped lang="less">
@@ -228,7 +227,7 @@
       flex: 1 1;
       width: 0;
     }
-  
+  }
     #countdown {
       font-size: 16px;
     }
@@ -263,5 +262,6 @@
         }
       }
     }
+  
   </style>
   
