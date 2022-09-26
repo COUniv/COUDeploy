@@ -1,6 +1,7 @@
 <template>
-  <div id="header">
-    <Menu v-show="screenWidth > 900" theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
+  <div id="header" >
+    <!-- <transition name="fadenav"> -->
+    <Menu v-if="screenWidth > 900" :style="{visibility: screenWidth > 900 ? 'visible' : 'hidden'}" theme="light" :mode="hMode" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
       <Menu-item class="home_bar" name="/" ><router-link to="/">COU</router-link></Menu-item>
       <Menu-item class="bar_list" name="/problem">
         <router-link to="/problem">문제</router-link>
@@ -125,7 +126,7 @@
 
 
     <!-- vertical navigation-bar -->
-    <Menu v-show="screenWidth <= 900" theme="light" width="100vw" mode="vertical" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu" v-click-outside="navToggle">
+    <Menu :style="{visibility: screenWidth <= 900 ? 'visible' : 'hidden'}" theme="light" width="100%" :mode="vMode" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
       <Menu-item class="home_bar" name="/ff" >
         <div class="logo-name" @click="handleRoute('/')">COU</div>
       </Menu-item>
@@ -167,9 +168,11 @@
         로그아웃
       </Menu-item>
     </Menu>
+    <!-- </transition> -->
     <button  v-show="screenWidth <= 900" class="navbar_toggle-btn" @click="navToggle">
       <Icon type="md-menu" />
     </button>
+    
     <Modal v-model="modalVisible" :width="430">
       <div slot="header" class="modal-title">인증이 필요해요!</div>
       <component :is="modalStatus.mode" v-if="modalVisible"></component>
@@ -195,6 +198,8 @@
       return {
         screenWidth: 0,
         navOpen: false,
+        hMode: 'horizontal',
+        vMode: 'vertical',
         alarmHoverActive: false,
         init_notification_count: 0,
         emptyChar: '알람이 존재하지 않습니다.',
@@ -353,6 +358,7 @@
       vGetNotifications () {
         api.getNotificationList().then(res => {
           this.vNotifications = res.data.data
+          console.log(res.data.data)
           this.getOnlyNotificationsListLength()
         })
       },
@@ -380,12 +386,24 @@
         let articleId = noti[noti.length - 1]
         if (!notification.is_read) this.init_notification_count -= 1
         api.checkNotification(notification.id).then(res => {
-          this.$router.push({name: 'article-details', params: {articleID: articleId}}).catch(() => {})
+          if (notification.notificationtype === 'COMMENT') {
+            this.$router.push({name: 'article-details', params: {articleID: articleId}, hash: this.getHashtag(notification)}).catch(() => {})
+          } else {
+            this.$router.push({name: 'article-details', params: {articleID: articleId}}).catch(() => {})
+          }
         })
         this.visibleDraw = false
       },
+      getHashtag (notification) {
+        return '#comment' + notification.id
+      },
       navToggle () {
         this.navOpen = !this.navOpen
+      },
+      closeNav () {
+        if (this.navOpen === true) {
+          this.navOpen = false
+        }
       },
       handleResize (e) {
         this.screenWidth = window.innerWidth
@@ -431,8 +449,11 @@
           this.visibleDraw = false
         }
       },
-      'screenWidth': (newVal, oldVal) => {
+      'screenWidth' (newVal, oldVal) {
         this.screenWidth = newVal
+        if (newVal > 900 && this.navOpen === true) {
+          this.closeNav()
+        }
       }
     }
   }
@@ -464,17 +485,17 @@
     left: 0;
     height: 60px;
     width: 100%;
-    z-index: 1000;
+    z-index: 885;
     background-color: #fff;
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
     .oj-menu {
       //background: #404040;
       position: relative;
       background: @white;
-      z-index: 2;
+      z-index: 886;
     }
     .navbar_toggle-btn {
-      position: fixed;
+      position: absolute;
       background: transparent;
       border: none;
       right: 32px;
@@ -482,7 +503,7 @@
       font-size: 24px;
       color: @purple;
       display: none;
-      z-index: 2;
+      z-index: 888;
     }
     .logo {
       margin-left: 2%;
@@ -925,14 +946,20 @@
       opacity: 0
   }
 
-  
 </style>
 
 <style lang="less">
 @import '../../../styles/common.less';
   @media screen and (max-width : 900px) {
-    .ivu-menu-light.ivu-menu-vertical &.ivu-menu-item-active:not(.ivu-menu-submenu) {
-        background:white;
+    #header {
+      max-width: 900px;
+      .home_bar.ivu-menu-item {
+        min-width: 900px;
+      }
+    }
+    
+    .ivu-menu-light .ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
+        background:@light-purple;
     }
     .bar_list {
       padding-left: 0;
@@ -948,15 +975,18 @@
   .ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item a {
     color: @default-font-color !important;
   }
-  .ivu-menu-item ivu-menu-item-active ivu-menu-item-selected {
+  .ivu-menu-item .ivu-menu-item-active .ivu-menu-item-selected {
     color: @purple !important;
   }
   .ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item-selected  a {
     color: @purple !important;
   }
+  .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
+    background: @pale-purple;
+  }
   .bar_list  {
-    & .ivu-menu {
-      background-color: @pale-purple;
+    & .ivu-menu{
+      background-color: @pale-purple !important;
       color: #20242c;
       text-align: center;
       & .ivu-menu-item {  // ivue commponent에서 padding-left가 48px로 되어있어 강제로 가운데 맞춤

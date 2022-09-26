@@ -1,33 +1,45 @@
 <template>
   <div class="setting-main">
-    <div class="section-title">
+    <div>
       <div v-if="profile.user">
-        <p style="font-size: 18px">
+        <!-- <p style="font-size: 18px">
           <span @v-if="profile.user" class="emphasis" style="margin: 2em; margin-top:10px; margin-botton:15px; font-weight:600">{{profile.user.username}}</span>
           <span v-if="profile.school">{{profile.school}}</span>
         </p>
         <p v-if="profile.mood">
           {{profile.mood}}
-        </p>
-        <hr id="split"/>
-
+        </p> -->
         <div class="flex-container">
-          <div class="left">
-            <p>{{$t('m.UserHomeSolved')}}</p>
-            <p class="emphasis">{{profile.accepted_number}}</p>
+          <div class="score">
+            <div class="left">
+              <p class="emphasis">{{profile.accepted_number}}</p>
+              <p>{{$t('m.UserHomeSolved')}}</p>
+            </div>
+            <div class="middle">
+              <p class="emphasis">{{profile.submission_number}}</p>
+              <p>{{$t('m.UserHomeserSubmissions')}}</p>
+            </div>
+            <div class="right">
+              <p class="emphasis">{{profile.total_score}}</p>
+              <p>{{$t('m.UserHomeScore')}}</p>
+            </div>
           </div>
-          <div class="middle">
-            <p>{{$t('m.UserHomeserSubmissions')}}</p>
-            <p class="emphasis">{{profile.submission_number}}</p>
-          </div>
-          <div class="right">
-            <p>{{$t('m.UserHomeScore')}}</p>
-            <p class="emphasis">{{profile.total_score}}</p>
+          <div class="btn-menu">
+            <div class="button"
+              @click="goCommentList" style="margin-right: 140px;">
+              <Icon size=25 type="ios-chatboxes-outline" />
+              댓글 단 글
+            </div>
+            <div class="button"
+              @click="goLikeList">
+              <Icon size=25 type="ios-heart-outline" />
+              좋아요 한 글
+            </div>
           </div>
         </div>
-        <div class="flex-container">
+        <div>
           <div id="problems">
-            <div v-if="problems.length">{{$t('m.List_Solved_Problems')}}
+            <div class="solved-container" v-if="problems.length">{{$t('m.List_Solved_Problems')}}
               <Poptip v-if="refreshVisible" trigger="hover" placement="right-start">
                 <Icon type="ios-help-outline"></Icon>
                 <div slot="content">
@@ -36,15 +48,15 @@
                 </div>
               </Poptip>
             </div>
-            <p v-else>{{$t('m.UserHomeIntro')}}</p>
+            <p class="no-solved" v-else>{{$t('m.UserHomeIntro')}}</p>
             <div class="btns">
               <div class="problem-btn" v-for="problemID of problems" :key="problemID">
-                <Button @click="goProblem(problemID)">{{problemID}}</Button>
+                <Button class="btn-padding" @click="goProblem(problemID)">{{problemID}}</Button>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex-container">
+        <div>
           <div id="icons">
             <a :href="profile.github">
               <Icon type="social-github-outline" size="30"></Icon>
@@ -63,7 +75,7 @@
       <!-- <Grass></Grass> -->
 
       <!-- account setting, profile setting button -->
-      <div class="flex-container">
+      <!-- <div>
         <div class="btn-menu">
           <div style="margin-top: 10px;">
             <Button
@@ -80,7 +92,7 @@
             </Button>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -168,6 +180,7 @@
 </script>
 
 <style lang="less" scoped>
+  @import '../../../../../styles/common.less';
   .container {
     position: relative;
     text-align: center;
@@ -190,8 +203,9 @@
       }
     }
     .emphasis {
-      font-size: 20px;
+      font-size: 25px;
       font-weight: 400;
+      -webkit-text-stroke: 1px;
       text-align: center;
     }
     #split {
@@ -199,41 +213,71 @@
       width: 90%;
     }
     .flex-container {
+      display: flex;
+      flex-direction: column;
       margin-top: 30px;
-      padding: auto 20px;
       text-align: center;
       font-weight: 400;
       font-size: 16px;
-      .left {
-        flex: 1 1;
-      }
-      .middle {
-        flex: 1 1;
-        border-left: 1px solid #999;
-        border-right: 1px solid #999;
-      }
-      .right {
-        flex: 1 1;
+      box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.25);
+      border-radius: 5px;
+      color: @black;
+      .score {
+        margin: 20px 0;
+        width: inherit;
+        display: flex;
+        justify-content: space-around;
+        .left, .middle, .right {
+          flex: 1 1;
+
+        }
+        .middle {
+          border-right: 2px solid @light-gray;
+          border-left: 2px solid @light-gray;
+        }
       }
       .btn-menu {
+        width: inherit;
+        display: flex;
+        justify-content: center;
+        background-color: #EEEEEE;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
         font-size: 16px;
-        float: right;
         margin-right: 10px;
-        margin-top: 15px;
+        color: @gray;
+        .button {
+          padding: 10px 0;
+          cursor: pointer;
+          &:hover {
+            color: @black;
+            transition: color .3s ease-in-out;
+          }
+        }
       }
     }
     #problems {
+      color: @purple;
+      .no-solved {
+        text-align: center;
+        color: @gray;
+        margin-top: 100px;
+      }
+      .solved-container {
+        -webkit-text-stroke: .5px;
+        border-bottom: 2px solid @purple;
+      }
       margin-top: 40px;
-      padding-left: 30px;
-      padding-right: 30px;
       font-size: 18px;
       font-weight: 400;
-      text-align: center;
       .btns {
-        margin-top: 15px;
+        margin-top: 10px;
         .problem-btn {
           display: inline-block;
-          margin: 5px;
+          .btn-padding {
+            padding: 0 10px !important;
+            margin-right: 5px;
+          }
         }
       }
     }
