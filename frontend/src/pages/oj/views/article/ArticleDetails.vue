@@ -3,9 +3,10 @@
     
     <Panel shadow>
       <!-- 게시글 제목 -->
-      <div slot="title" style="font-size: 1.5em;">
+      <div slot="title" style="font-size: 1.5em; height: 63px; line-height: 63px;">
         <!-- 뒤로가기 버튼 -->
-        <Button id="back-button" icon="md-arrow-back" size="large" @click="goBack" type="text"></Button>
+        <i id="back-button" class="mdi mdi-arrow-u-left-bottom" @click="goBack" ></i>
+        <!-- <Button id="back-button" icon="md-arrow-back" size="large" @click="goBack" type="text"></Button> -->
         {{article.title}}
       </div>
       
@@ -72,8 +73,9 @@
       <div style="clear:both;"></div>
       
       <!-- 댓글 목록 -->
-      <div v-for="comment in comments" :key="comment.id">
 
+      <div v-for="(comment, index) in comments" :key="comment.id" class="comment-list-box">
+        <a :id="'comment'+item.id" :name="'comment'+comment.id"></a>
             <!-- 사용자 정보영역 -->
               <div class="comment-user-time">
                 <div>
@@ -99,7 +101,6 @@
             <div id="comment-time">
                 {{ comment.create_time }}
             </div>
-
             <Modal v-model="deletemodalcomment">
               <p slot="header" style="color:#EE2E03">경고</p>
               <p style="font-size:14px">댓글을 삭제하시겠습니까?</p>
@@ -135,7 +136,6 @@
 <script>
   import api from '@oj/api'
   import time from '@/utils/time'
-
   export default {
     name: 'ArticleDetails',
     data () {
@@ -355,6 +355,7 @@
     },
     watch: {
       '$route' (newVal, oldVal) {
+        console.log(newVal)
         this.articleID = newVal.params.articleID
         this.init()
       }
@@ -448,11 +449,13 @@
   }
 
   #back-button {
+    // height: 62px;
     font-size: 90%;
     padding: 0px 8px;
     color: @gray;
+    transition: all 0.2s ease-in-out;
     &:hover, &:focus {
-      color: @black;
+      color: @orange;
       border-color: transparent;
       box-shadow: 0 0 0 transparent;
     }
@@ -519,6 +522,7 @@
   }
 
   .comment-submit-textarea {
+    border-radius: 3px 3px 0 0;
     width: 100%;
     min-height: 90px;
     height: 90px;
@@ -528,15 +532,21 @@
     outline: none;
     display: block;
     border-color: #C4C4C4;
+    border-bottom-width: 0;
   }
   .comment-section {
     margin-top: 20px;
     padding: 0 25px 15px;
   }
-
+  .comment-list-box {
+    margin-top : 10px;
+    margin-bottom : 10px;
+    border-bottom: 1px solid #f2f2f2;
+  }
 
   #comment_submit_btn {
-    border-radius: 0px;
+    margin: -1px -1px -1px auto;
+    border-radius: 0 0 3px 0;
     font-size: 1.3em;
     color: @white;
     background-color: @purple;
@@ -585,9 +595,8 @@
   }
 
   .comment-submit-area {
-    border-bottom: 1px solid #C4C4C4;
-    border-left: 1px solid #C4C4C4;
-    border-right: 1px solid #C4C4C4;
+    border-radius: 0 0 3px 3px;
+    border: 1px solid #C4C4C4;
     margin-bottom: 20px;
     display: flex;
     justify-content: flex-end;

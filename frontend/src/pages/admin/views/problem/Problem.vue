@@ -49,9 +49,21 @@
           <el-col :span="8">
             <el-form-item :label="$t('m.Difficulty')">
               <el-select class="difficulty-select" size="small" :placeholder="$t('m.Difficulty')" v-model="problem.difficulty">
-                <el-option :label="$t('m.Low')" value="Low"></el-option>
-                <el-option :label="$t('m.Mid')" value="Mid"></el-option>
-                <el-option :label="$t('m.High')" value="High"></el-option>
+                <el-option :label="Level1" value="Level1"></el-option>
+                <el-option :label="Level2" value="Level2"></el-option>
+                <el-option :label="Level3" value="Level3"></el-option>
+                <el-option :label="Level4" value="Level4"></el-option>
+                <el-option :label="Level5" value="Level5"></el-option>
+                <el-option :label="Level6" value="Level6"></el-option>
+                <el-option :label="Level7" value="Level7"></el-option>
+                <el-option :label="Level8" value="Level8"></el-option>
+                <el-option :label="Level9" value="Level9"></el-option>
+                <el-option :label="Level10" value="Level10"></el-option>
+                <el-option :label="Level11" value="Level11"></el-option>
+                <el-option :label="Level12" value="Level12"></el-option>
+                <el-option :label="Level13" value="Level13"></el-option>
+                <el-option :label="Level14" value="Level14"></el-option>
+                <el-option :label="Level15" value="Level15"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -344,7 +356,7 @@
           output_description: '',
           time_limit: 1000,
           memory_limit: 256,
-          difficulty: 'Low',
+          difficulty: 'Level1',
           visible: true,
           share_submission: false,
           tags: [],

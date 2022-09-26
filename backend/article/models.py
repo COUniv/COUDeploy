@@ -70,3 +70,4 @@ class Notification(models.Model):
     action_username = models.TextField(null=False) # 알림을 생성한 회원 이름
     notificationtype = models.TextField(null=False) # 알림 타입 - 댓글 / 좋아요
     content = models.TextField(null=False) # 알림 내용
+    comment_content = models.TextField(null=True) # Comment일 경우 content를 담아둠
