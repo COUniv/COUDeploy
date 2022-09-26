@@ -73,32 +73,33 @@
       <div style="clear:both;"></div>
       
       <!-- 댓글 목록 -->
-      <div v-for="(item, index) in comments" :key="comment.id" class="comment-list-box">
-        <a :id="'comment'+item.id" :name="'comment'+item.id"></a>
+
+      <div v-for="(comment, index) in comments" :key="comment.id" class="comment-list-box">
+        <a :id="'comment'+item.id" :name="'comment'+comment.id"></a>
             <!-- 사용자 정보영역 -->
               <div class="comment-user-time">
                 <div>
-                  <img id="user-avatar-2" :src="item.avatar"/>
-                  <div v-if="item.username === 'UnknownUser'" class="none-linkdiv">
+                  <img id="user-avatar-2" :src="comment.avatar"/>
+                  <div v-if="comment.username === 'UnknownUser'" class="none-linkdiv">
                     <b>알 수 없는 사용자</b>
                   </div>
-                  <div v-else class="linkdiv" @click="goCommentUesr(item.username)">
-                    <b>{{ item.username }}</b>
+                  <div v-else class="linkdiv" @click="goCommentUesr(comment.username)">
+                    <b>{{ comment.username }}</b>
                   </div>
                 </div>
                 <div>
                   <!-- 수정 버튼 -->
-                  <Button v-if="item.is_comment_writer" icon="md-create" @click="onModalComment(item)" class="modify-button smaller"></Button>
+                  <Button v-if="comment.is_comment_writer" icon="md-create" @click="onModalComment(comment)" class="modify-button smaller"></Button>
                   <!-- 삭제 버튼 -->
-                  <Button v-if="item.is_comment_writer" icon="md-trash"  @click="onDeleteModalComment(item)" class="delete-button smaller"></Button>
+                  <Button v-if="comment.is_comment_writer" icon="md-trash"  @click="onDeleteModalComment(comment)" class="delete-button smaller"></Button>
               </div>
               </div>
 
 
-            <pre v-katex v-html="item.content" style="overflow: auto;"></pre>
+            <pre v-katex v-html="comment.content" style="overflow: auto;"></pre>
             
             <div id="comment-time">
-                {{ item.create_time }}
+                {{ comment.create_time }}
             </div>
             <Modal v-model="deletemodalcomment">
               <p slot="header" style="color:#EE2E03">경고</p>
@@ -169,9 +170,6 @@
         },
         is_liked: false
       }
-    },
-    created () {
-      this.init()
     },
     mounted () {
       this.init()
@@ -353,19 +351,6 @@
             params: {problemID: problemid}
           }
         ).catch(() => {})
-      },
-      /**
-       * Deprecated
-       */
-      getAvatarSource (comments) {
-        comments.forEach((item) => {
-          let avatar = ''
-          api.getUserInfo(item.username).then(res => {
-            avatar = res.data.data.avatar
-            this.comments_avatars[item.username] = avatar
-            console.log(this.comments_avatars[item.username])
-          })
-        })
       }
     },
     watch: {

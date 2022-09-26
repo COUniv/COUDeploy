@@ -397,24 +397,25 @@ export default {
 
   #contest-list {
     list-style: none;
-    ul {
-      list-style: none;
-    }
-    .entry {
-      margin: 15px 20px;
-      border: 1px solid @dark-white;
-      padding: 15px;
-      .trophy {
-        width: 100px;
-        height: 100px;
-        img {
-          width: 100%;
-          height: 100%;
-        }
-        min-width: 100px;
-        min-height: 100px;
-        background-color: @light-purple;
-        margin-right: 10px;
+      ul {
+        list-style:none;
+      }
+      .entry {
+        margin: 15px 20px;
+        border: 1px solid @dark-white;
+        padding: 15px;
+        .trophy {
+          width: 100px;
+          height: 100px;
+          img {
+            width: 100%;
+            height: 100%;
+          }
+          min-width: 100px;
+          min-height: 100px;
+          background-color: @light-purple;
+          margin-right: 10px;
+          margin-top: 5px;
       }
 
       .contest-title {

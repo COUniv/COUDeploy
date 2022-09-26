@@ -2,14 +2,42 @@
   <div style="margin: 0px 0px 15px 0px;">
     <div class="header">
       <div class="options">
-        
-        <Tooltip :content="this.$i18n.t('m.Reset_to_default_code_definition')" placement="bottom" style="margin-left: 10px">
-            <Button icon="md-refresh" @click="onResetClick" class="reset-btn"></Button>
-          </Tooltip>
-        <Select :value="theme" @on-change="onThemeChange" class="adjust">
-          <Option v-for="item in themes" :key="item.label" :value="item.value">{{item.label}}
-          </Option>
-        </Select>
+        <div>
+          <div class="status" v-if="statusVisible">
+            <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
+              <!-- <span>{{$t('m.Status')}}</span> -->
+              <Tag class="result" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
+                {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
+              </Tag>
+            </template>
+            <template v-else-if="contestID && !OIContestRealTimePermission">
+              <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
+            </template>
+          </div>
+          <div v-else-if="my_status === 0">
+            <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
+          </div>
+          <div v-else-if="contestID && !OIContestRealTimePermission && submissionExists">
+            <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
+          </div>
+          <div v-if="contestEnded">
+            <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
+          </div>
+        </div>
+        <div>
+          <Tooltip :content="this.$i18n.t('m.Reset_to_default_code_definition')" placement="bottom" style="margin-left: 10px">
+              <Button icon="md-refresh" @click="onResetClick" class="reset-btn"></Button>
+            </Tooltip>
+          <Select :value="theme" @on-change="onThemeChange" class="adjust">
+            <Option v-for="item in themes" :key="item.label" :value="item.value">{{item.label}}
+            </Option>
+          </Select>
+          <Select :value="language" 
+          @on-change="onLangChange" class="adjust">
+            <Option v-for="item in languages" :key="item" :value="item">{{item}}
+            </Option>
+          </Select>
+        </div>
         <!-- <span>{{$t('m.Language')}}:</span> -->
         <!-- 
         <Tooltip :content="this.$i18n.t('m.Upload_file')" placement="top" style="margin-left: 10px">
@@ -19,11 +47,6 @@
         <!-- <input type="file" id="file-uploader" style="display: none" @change="onUploadFileDone"> -->
 
           <!-- <span>{{$t('m.Theme')}}:</span> -->
-
-          <Select :value="language" @on-change="onLangChange" class="adjust">
-            <Option v-for="item in languages" :key="item" :value="item">{{item}}
-            </Option>
-          </Select>
       </div>
       <div>
         <codemirror v-model.lazy="value" :options="options" @change="onEditorCodeChange" ref="myEditor">
@@ -82,7 +105,15 @@
       theme: {
         type: String,
         default: 'base16-light'
-      }
+      },
+      my_status: [Number, String],
+      statusVisible: Boolean,
+      contestID: [Number, String],
+      OIContestRealTimePermission: Boolean,
+      submissionStatus: [Function, Object],
+      submissionId: [Number, String],
+      submissionExists: Boolean,
+      contestEnded: Boolean
     },
     data () {
       return {
@@ -155,6 +186,9 @@
           document.getElementById('file-uploader').value = ''
         }
         fileReader.readAsText(f, 'UTF-8')
+      },
+      handleRoute (route) {
+        this.$router.push(route).catch(() => {})
       }
     },
     computed: {
@@ -177,7 +211,7 @@
     padding: 15px;
     .options {
       display: flex;
-      justify-content: end;
+      justify-content: space-between;
       margin-bottom: 15px;
     }
     .adjust {
@@ -195,6 +229,12 @@
       transition: background-color .3s ease-in-out;
       box-shadow: none;
     }
+  }
+
+  .result {
+    -webkit-text-stroke: .3px; 
+    font-size: 15px;
+    border-width: 2px;
   }
 </style>
 
