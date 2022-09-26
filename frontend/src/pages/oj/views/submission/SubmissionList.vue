@@ -2,7 +2,8 @@
   <div class="flex-container">
     <div id="main">
       <Panel shadow>
-        <div slot="title">{{title}}</div>
+        <div slot="title">제출 현황</div>
+        <!-- <div slot="title">{{title}}</div> -->
         <div slot="extra">
           <ul class="filter">
             <li>
@@ -28,7 +29,8 @@
               </i-switch>
             </li>
             <li>
-              <Input v-model="formFilter.username" :placeholder="$t('m.Search_Author')" @on-enter="handleQueryChange"/>
+              <Input v-model="formFilter.username" placeholder="검색할 아이디를 입력하세요" @on-enter="handleQueryChange"/>
+              <!-- <Input v-model="formFilter.username" :placeholder="$t('m.Search_Author')" @on-enter="handleQueryChange"/> -->
             </li>
 
             <!-- <li>
