@@ -1,48 +1,66 @@
 <template>
   <div class="setting-main">
-    <div class="flex-container">
+    <div class="title-setting">계정 설정</div>
       <div class="left">
         <p class="section-title">{{$t('m.ChangePassword')}}</p>
         <Form class="setting-content" ref="formPassword" :model="formPassword" :rules="rulePassword">
-          <FormItem label="Old Password" prop="old_password">
-            <Input v-model="formPassword.old_password" type="password"></Input>
-          </FormItem>
-          <FormItem label="New Password" prop="new_password">
-            <Input v-model="formPassword.new_password" type="password"></Input>
-          </FormItem>
-          <FormItem label="Confirm New Password" prop="again_password">
-            <Input v-model="formPassword.again_password" type="password"></Input>
-          </FormItem>
+          <div class="field">
+            <div class="text-field">현재 비밀번호</div>
+            <FormItem class="edit-field" prop="old_password">
+              <Input v-model="formPassword.old_password" type="password"></Input>
+            </FormItem>
+          </div>
+          <div class="field">
+            <div class="text-field">새 비밀번호</div>
+            <FormItem class="edit-field" prop="new_password">
+              <Input v-model="formPassword.new_password" type="password"></Input>
+            </FormItem>
+          </div>
+          <div class="field">
+            <div class="text-field">새 비밀번호 확인</div>
+            <FormItem class="edit-field" prop="again_password">
+              <Input v-model="formPassword.again_password" type="password"></Input>
+            </FormItem>
+          </div>
           <FormItem v-if="visible.tfaRequired" label="Two Factor Auth" prop="tfa_code">
             <Input v-model="formPassword.tfa_code"/>
           </FormItem>
           <FormItem v-if="visible.passwordAlert">
             <Alert type="success">You will need to login again after 5 seconds..</Alert>
           </FormItem>
-          <Button type="primary" @click="changePassword">{{$t('m.Update_Password')}}</Button>
+          <Button class="purple-button" @click="changePassword">{{$t('m.Update_Password')}}</Button>
         </Form>
       </div>
 
-      <div class="middle separator"></div>
+      <!-- <div class="middle separator"></div> -->
 
-      <div class="right">
+      <div class="left">
         <p class="section-title">{{$t('m.ChangeEmail')}}</p>
         <Form class="setting-content" ref="formEmail" :model="formEmail" :rules="ruleEmail">
-          <FormItem label="Current Password" prop="password">
-            <Input v-model="formEmail.password" type="password"></Input>
-          </FormItem>
-          <FormItem label="Current Email" prob="old_email" class="email-label-container">
-            <label v-if="getStatusEmailAuth" class="verify-label"><Icon type="md-checkmark" />  (인증된 이메일)</label>
-            <label v-else="getStatusEmailAuth" class="warnning-label"><Icon type="md-information" class="rotate-icon" />  (인증되지 않은 이메일)</label>
-            <Input type="text" v-model="getTokenToCheck" disabled></Input>
-          </FormItem>
-          <FormItem label="New Email" prop="new_email" class="new-email-container">
-            <Input type="text" v-model="formEmail.new_email"></Input>
-          </FormItem>
+          <div class="field">
+            <div class="text-field">현재 비밀번호</div>
+            <FormItem class="edit-field" prop="password">
+              <Input v-model="formEmail.password" type="password"></Input>
+            </FormItem>
+          </div>
+          <div class="field">
+            <div class="text-field" style="line-height: 100px;">현재 이메일</div>
+            <FormItem prob="old_email" class="email-label-container edit-field">
+              <label v-if="getStatusEmailAuth" class="verify-label"><Icon type="md-checkmark" />  (인증된 이메일)</label>
+              <label v-else="getStatusEmailAuth" class="warning-label"><Icon type="md-information" class="rotate-icon" />  (인증되지 않은 이메일)</label>
+              <Input type="text" v-model="getTokenToCheck" disabled></Input>
+            </FormItem>
+          </div>
+          <div class="field">
+            <div class="text-field">새 이메일</div>
+            <FormItem prop="new_email" class="new-email-container edit-field">
+              <Input type="text" v-model="formEmail.new_email"></Input>
+            </FormItem>
+          </div>
           <FormItem v-if="visible.tfaRequired" label="Two Factor Auth" prop="tfa_code">
             <Input type="text" v-model="formEmail.tfa_code"></Input>
           </FormItem>
-          <Button type="primary" @click="changeEmail">{{$t('m.ChangeEmail')}}</Button>
+          <Button class="purple-button" @click="changeEmail">{{$t('m.ChangeEmail')}}</Button>
           <span>
             <Button v-if="getStatusEmailAuth" type="primary" disabled>인증 된 이메일</Button>
             <Button v-else type="primary" @click="callAuthEmail" :loading="authButtonLoading">
@@ -63,38 +81,46 @@
           </div>
         </Form>
       </div>
-    </div>
+
     
     <div class="setting-delete">
       <div class="left">
-        <p class="section-title">{{$t('m.Delete_Account')}}</p>
+        <p class="section-title red">{{$t('m.Delete_Account')}}</p>
         <Form class="setting-content" ref="formDelete" :model="formDelete" :rules="ruleDelete">
-          <FormItem label="Current Username" prop="username">
-            <Input v-model="formDelete.username" type="text"></Input>
-          </FormItem>
-          <FormItem label="Current Password" prop="password">
-            <Input v-model="formDelete.password" type="password"></Input>
-          </FormItem>
-
-          <FormItem label="Captcha" prop="captcha" style="margin-bottom:30px">
-            <div class="oj-captcha">
-              <div class="oj-captcha-code">
-                <Input type="text" v-model="formDelete.captcha" size="large" @on-enter="deleteAccount"></Input>
+          <div class="field">
+            <div class="text-field red">현재 닉네임</div>
+            <FormItem class="edit-field" prop="username">
+              <Input v-model="formDelete.username" type="text"></Input>
+            </FormItem>
+          </div>
+          <div class="field">
+            <div class="text-field red">현재 비밀번호</div>
+            <FormItem class="edit-field" prop="password">
+              <Input v-model="formDelete.password" type="password"></Input>
+            </FormItem>
+          </div>
+          <div class="field">
+            <div class="text-field red">Captcha</div>
+            <FormItem class="edit-field" prop="captcha" style="margin-bottom:30px">
+              <div class="oj-captcha">
+                <div class="oj-captcha-code">
+                  <Input type="text" v-model="formDelete.captcha" size="large" @on-enter="deleteAccount"></Input>
+                </div>
+                <div class="oj-captcha-img">
+                  <Tooltip content="Click to refresh" placement="top">
+                    <img :src="captchaSrc" @click="getCaptchaSrc"/>
+                  </Tooltip>
+                </div>
               </div>
-              <div class="oj-captcha-img">
-                <Tooltip content="Click to refresh" placement="top">
-                  <img :src="captchaSrc" @click="getCaptchaSrc"/>
-                </Tooltip>
-              </div>
-            </div>
-          </FormItem>
+            </FormItem>
+          </div>
           <FormItem v-if="visible.tfaRequired" label="Two Factor Auth" prop="tfa_code">
             <Input type="text" v-model="formDelete.tfa_code"/>
           </FormItem>
           <FormItem v-if="visible.accountDelete">
             <Alert type="success">5초후에 자동 로그아웃 됩니다..</Alert>
           </FormItem>
-          <Button type="primary" @click="deleteAccount">{{$t('m.Delete_Account')}}</Button>
+          <Button type="primary" class="red-button" @click="deleteAccount">{{$t('m.Delete_Account')}}</Button>
         </Form>
       </div>
     </div>
@@ -329,6 +355,7 @@
   }
 </script>
 <style lang="less">
+  @import '../../../../../styles/common.less';
 .new-email-container {
   margin-bottom: 20px;
 }
@@ -347,7 +374,7 @@
   .ivu-form-item-label {
     padding-right: 5px;
   }
-  .warnning-label {
+  .warning-label {
     color: #ff3300;
     .ivu-icon {
       font-size: 20px;
@@ -387,8 +414,6 @@
     font-weight: bold;
   }
 }
-</style>
-<style lang="less" scoped>
   .fade-enter {
     opacity: 0;
   }
@@ -420,23 +445,63 @@
   .trans-container {
     margin-top: 10px
   }
-  .flex-container {
-    justify-content: flex-start;
-    .left {
-      flex: 1 0;
-      width: 250px;
-      padding-right: 5%;
-    }
-    > .middle {
-      flex: none;
-    }
-    .right {
-      flex: 1 0;
-      width: 250px;
-    }
-    .setting-delete {
-      width: 470px;
-      margin-top: 50px;
+  .title-setting {
+    font-size: 200%;
+    font-weight: 500;
+    -webkit-text-stroke: 1px;
+    color: @purple;
+  }
+  .section-title {
+    color: @purple;
+    font-size: 150%;
+    font-weight: 400;
+    -webkit-text-stroke: .8px;
+    padding-bottom: 3px;
+    border-bottom: 1.5px solid @purple;
+    margin-bottom: 15px;
+  }
+  .red {
+    color: #E1262A;
+    border-bottom: 1.5px solid #E1262A;
+  }
+  .left {
+    margin-bottom: 40px;
+    .setting-content {
+      margin: 0;
+      .field {
+        display: flex;
+        border-bottom: 1px solid @light-gray;
+        margin-bottom: 15px;
+        .text-field {
+          min-width: 150px;
+          line-height: 30px;
+          font-size: 120%;
+          color: @purple;
+          font-weight: 500;
+          -webkit-text-stroke: .5px;
+        }
+        .red {
+          color: #E1262A;
+          border: none;
+        }
+        .edit-field {
+          width: 250px;
+        }
+      }
+      .red-button {
+        background-color: #E1262A;
+        border: none;
+        &:focus {
+          color: @white;
+          box-shadow: none;
+          background-color: #af1d1f;
+        }
+      }
+      .purple-button {
+        border: 1px solid @purple;
+        color: @purple;
+        margin-right: 5px;
+      }
     }
   }
 </style>

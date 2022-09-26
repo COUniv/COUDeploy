@@ -2,9 +2,6 @@
 <template>
   <div class="demo-split">
     <div class="ss_header">
-      <!-- <div id="undo-icon">
-        <Icon type="ios-undo" size="24" @click="undoPage" />
-      </div>   -->
       <div class="header-left">
         <div class="logo" @click="goHome">COU</div>
         <div class="problem-name" style="color: #bdbdbd" >[2022년 3월 코딩 테스트]</div>
@@ -94,15 +91,23 @@
                       :languages="problem.languages"
                       :language="language"
                       :theme="theme"
+                      :my_status="problem.my_status"
+                      :statusVisible="statusVisible"
+                      :contestID="this.contestID"
+                      :OIContestRealTimePermission="OIContestRealTimePermission"
+                      :submissionStatus="submissionStatus"
+                      :submissionId = "submissionId"
+                      :submissionExists="submissionExists"
+                      :contestEnded="contestEnded"
                       @resetCode="onResetToTemplate"
                       @changeTheme="onChangeTheme"
                       @changeLang="onChangeLang"></SubmitCodeMirror>
-          <Row type="flex" justify="space-between">
-            <!-- 제출 상태 icon -->
+          <!-- <Row type="flex" justify="space-between">
+            제출 상태 icon
             <Col :span="10">
-              <div class="status" v-if="statusVisible" style="margin-top: -615px; margin-left: 15px;">
+              <div class="status" v-if="statusVisible">
                 <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
-                  <!-- <span>{{$t('m.Status')}}</span> -->
+                  <span>{{$t('m.Status')}}</span>
                   <Tag class="result" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
                     {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
                   </Tag>
@@ -111,27 +116,17 @@
                   <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
                 </template>
               </div>
-              <div v-else-if="problem.my_status === 0" style="margin-top: -620px; margin-left: 15px;">
+              <div v-else-if="problem.my_status === 0">
                 <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
               </div>
-              <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists" style="margin-top: -620px; margin-left: 15px;">
+              <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists">
                 <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
               </div>
-              <div v-if="contestEnded" style="margin-top: -620px; margin-left: 15px;">
+              <div v-if="contestEnded">
                 <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
               </div>
             </Col>
-            <Col :span="12">
-              <template v-if="captchaRequired">
-                <div class="captcha-containers">
-                  <Tooltip v-if="captchaRequired" content="Click to refresh" placement="top">
-                    <img :src="captchaSrc" @click="getCaptchaSrc"/>
-                  </Tooltip>
-                  <Input v-model="captchaCode" class="captcha-codes"/>
-                </div>
-              </template>
-            </Col>
-          </Row>
+          </Row> -->
         </div>
       </div>
     </Split>
@@ -780,20 +775,6 @@
       line-height: 60px;
     }
   }
-  .footer {
-    background-color: rgb(41, 41, 41);
-    position: absolute;
-
-    // 포지션 강제 fixing
-    margin-left: -50px;
-    margin-bottom: -130px;
-    left: 0px;
-    bottom: 0;
-    width: 100vw; // 강제로 넓히기
-    height: 80px;
-    text-align: center;
-    font-size: small;
-  }
 
   .solve_submit_footer{
     background: rgb(29, 29, 29);
@@ -828,15 +809,12 @@
 
   @media screen and (max-width: 1200px) {
     .demo-split{
-      margin: -80px -50px -120px -50px;
-      // margin: -160px -50px -200px -50px;
-      padding-bottom: -80px;
+      margin: -80px -50px -200px -50px;
     }
   }
   @media screen and (min-width: 1200px) {
     .demo-split{
       margin: -80px -50px -200px -50px;
-      padding-bottom: -80px;
     }
   }
 

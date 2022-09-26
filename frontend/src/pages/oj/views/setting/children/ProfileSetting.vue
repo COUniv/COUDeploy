@@ -1,21 +1,18 @@
 <template>
   <div class="mypage">
-    <div class="section-title">{{$t('m.Profile_Setting')}}</div>  
+    <div class="section-title-profile">{{$t('m.Profile_Setting')}}</div>  
       <!-- <Form ref="formProfile" :model="formProfile">         -->
-
+        <div class="subtitle">프로필 사진</div>
         <div class="mypage_main">
           <div class="mypage_img" >
-            
             <template class="container_img" v-if="!avatarOption.imgSrc">
+              <div class="avatar"><img :src="profile.avatar"/></div>
               <Upload type="drag"
                       class="container_img"
                       accept=".jpg,.jpeg,.png,.bmp,.gif"
                       action=""
                       :before-upload="handleSelectFile">
-                <div style="padding: 30px 0">
-                  <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                  <p>마우스로 파일을 끌어오거나 클릭하세요</p>
-                </div>
+                  <p>프로필 사진 변경</p>
               </Upload>
             </template>
         
@@ -96,39 +93,40 @@
             </Modal> -->
 
           </div>
+          <div class="subtitle">기본정보</div>
           <Form ref="formProfile" :model="formProfile">
           <div class="mypage_info">
             <div class="mypage_info_input" label="이름"> 
               <div>이름</div>
-              <div>{{profile.real_name}}</div>
+              <div class="data">{{profile.real_name}}</div>
             </div>
             <div class="mypage_info_input" label="학교">
               <div>학교</div>
-              <div>{{profile.school}}</div>
+              <div class="data">{{profile.school}}</div>
             </div>
             <div class="mypage_info_input" label="전공">
               <div>전공</div>
-              <div>{{profile.major}}</div>
+              <div class="data">{{profile.major}}</div>
             </div>
             <div class="mypage_info_input" label="회원분류">
               <div>회원 등급</div>
-              <div>{{user.admin_type}}</div>
+              <div class="data">{{user.admin_type}}</div>
               <!-- <Input v-model="formProfile.classification"/> -->
             </div>
             <div class="mypage_info_input" label="이메일">
               <div>이메일</div>
-              <div>{{user.email}}</div>
+              <div class="data">{{user.email}}</div>
               <!-- <Input v-model="formProfile.email"/> -->
             </div>
             <div class="mypage_info_input" label="Github">
               <div class="div-inline">
                 <div class="text">GitHub</div>
-                <div class="edit-btn">
-                  <Button @click="changeGithubEditMode">수정하기</Button>
+                <div>
+                  <Button class="edit-btn" @click="changeGithubEditMode"><Icon color="#5030e5" size=15 type="md-create" /></Button>
                 </div>
               </div>
-              <div>{{profile.github}}</div>
-              <transition name="slide-fade" mode="out-in">
+              <div class="data">{{profile.github}}</div>
+              <!-- <transition name="slide-fade" mode="out-in">
                 <div class="edit-input" v-show="githubEditMode">
                   <Input v-model="viewgithub">
                     <span slot="prepend">https://github.com/</span>
@@ -136,26 +134,35 @@
                   <div style="float:right"><Button @click="updateGithub">확인</Button></div>
                   <div style="clear: both;"></div>
                 </div>
+              </transition> -->
+            </div>
+            <div>
+              <transition name="slide-fade" mode="out-in">
+                <div class="edit-input" v-show="githubEditMode">
+                  <Input v-model="viewgithub">
+                    <span slot="prepend">https://github.com/</span>
+                  </Input>
+                  <div style="margin-left:5px;"><Button @click="updateGithub">확인</Button></div>
+                </div>
               </transition>
             </div>
             <div class="mypage_info_input" label="Github">
               <div class="div-inline">
                 <div class="text">블로그</div>
-                <div class="edit-btn">
-                  <Button @click="changeBlogEditMode">수정하기</Button>
+                <div>
+                  <Button class="edit-btn" @click="changeBlogEditMode"><Icon color="#5030e5" size=15 type="md-create" /></Button>
                 </div>
               </div>
-              <div>{{profile.blog}}</div>
-              <transition name="slide-fade" mode="out-in">
+              <div class="data">{{profile.blog}}</div>
+            </div>
+            <transition name="slide-fade" mode="out-in">
                 <div class="edit-input" v-show="blogEditMode">
                   <Input v-model="viewblog">
                     <span slot="prepend">https://</span>
                   </Input>
-                  <div style="float:right"><Button @click="updateBlog">확인</Button></div>
-                  <div style="clear: both;"></div>
+                  <div style="margin-left:5px;"><Button @click="updateBlog">확인</Button></div>
                 </div>
               </transition>
-            </div>
           </div>
           </Form>
         </div>
@@ -449,11 +456,13 @@
 
 
   .mypage{
-    margin: 1% 2% 2% 3%;
+    margin: 20px;
   }
 
-  .section-title{
-    font-size: 28px;
+  .section-title-profile{
+    font-size: 25px;
+    color: @purple;
+    -webkit-text-stroke: 1px;
     // background-color: magenta;
   }
 
@@ -463,25 +472,19 @@
 
   }
 
-  .mypage_img{
-    // display: inline-block;
-    // vertical-align: top;
-    margin: 1% 0 0 5%;
-    width: 300px;
-
-  }
-
   .container_img{
-    width: 300px;
-    height: auto;
+    width: 150px;
+    margin: auto;
+    margin-top: 10px;
+    font-size: 120%;
+    -webkit-text-stroke: .2px;
+    &:hover {
+      color: @purple;
+      transition: color .2s ease;
+    }
   }
 
   .mypage_info{
-    margin: 5% 0 5% 5%;
-    // padding-left: 200px;
-    // display: inline-block;
-    // vertical-align: top;
-    width: 400px;
   }
 
   .mypage_info_submit{
@@ -551,39 +554,49 @@
     border-radius: 50%;
   }
   .mypage_info_input {
-    width: 300px;
-    margin: 20px;
-    border-bottom: solid 1px @pale-purple;
-    span {
-      height: 33px;
+    width: 100%;
+    display: flex;
+    .data {
+      width: 100%;
+      border-bottom: 1px solid @dark-white;
+      line-height: 60px;
+      font-size: 110%;
+      padding: 0 10px 10px 10px;
     }
-    & div:first-child {
-      height: 33px;
+    & div:first-child, .text {
+      height: 44px;
+      min-width: 80px;
+      line-height: 60px;
+      font-size: 110%;
+      font-weight: 300;
+      -webkit-text-stroke: .5px;
+      color: @purple;
     }
     & div:nth-child(2) {
       font-weight: @weight-semi-bold;
-      height: 24px;
+      height: 44px;
     }
     .div-inline {
-      display: inline-block;
-      height: 33px;
-      line-height: 33px;
-      & .text {
-        float: left;
-        margin-right: 20px;
-      }
-      & .edit-btn {
-        width:fit-content;
-        float: right;
-      }
+      display: flex;
     }
     .edit-btn {
       width:fit-content;
+      padding: 0;
+      padding-top: 15px;
+      position: absolute;
+      right: 12%;
+      background-color: transparent;
+      border: none;
+      &:focus {
+        border: none;
+        box-shadow: none;
+      }
     }
   }
   .edit-input {
-    margin-top:10px;
-    margin-bottom:10px;
+    margin-left: 80px;
+    margin-top: 20px;
+    display: flex;
   }
 
 
@@ -614,6 +627,24 @@
   .slide-fade-leave-to {
     transform: translateY(-10px);
     opacity: 0;
+  }
+
+  .subtitle {
+    color: @purple;
+    font-size: 120%;
+    -webkit-text-stroke: .5px;
+    padding: 5px 0;
+    border-bottom: 1.5px solid @purple;
+  }
+
+  .avatar {
+    display: flex;
+    justify-content: center;
+    img {
+      height: 150px;
+      width: 150px;
+      border-radius: 50%;
+    }
   }
 
 </style>
