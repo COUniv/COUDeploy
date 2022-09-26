@@ -358,6 +358,7 @@
       vGetNotifications () {
         api.getNotificationList().then(res => {
           this.vNotifications = res.data.data
+          console.log(res.data.data)
           this.getOnlyNotificationsListLength()
         })
       },
@@ -385,7 +386,11 @@
         let articleId = noti[noti.length - 1]
         if (!notification.is_read) this.init_notification_count -= 1
         api.checkNotification(notification.id).then(res => {
-          this.$router.push({name: 'article-details', params: {articleID: articleId}}).catch(() => {})
+          if (notification.notificationtype === 'COMMENT') {
+            this.$router.push({name: 'article-details', params: {articleID: articleId}, hash: '#comment' + notification.id}).catch(() => {})
+          } else {
+            this.$router.push({name: 'article-details', params: {articleID: articleId}}).catch(() => {})
+          }
         })
         this.visibleDraw = false
       },

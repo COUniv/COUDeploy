@@ -74,7 +74,7 @@
       
       <!-- 댓글 목록 -->
       <div v-for="(item, index) in comments" :key="comment.id" class="comment-list-box">
-
+        <a :id="'comment'+item.id" :name="'comment'+item.id"></a>
             <!-- 사용자 정보영역 -->
               <div class="comment-user-time">
                 <div>
@@ -371,6 +371,7 @@
     },
     watch: {
       '$route' (newVal, oldVal) {
+        console.log(newVal)
         this.articleID = newVal.params.articleID
         this.init()
       }
