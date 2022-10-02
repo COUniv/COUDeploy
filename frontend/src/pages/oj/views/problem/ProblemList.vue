@@ -29,16 +29,30 @@
                 <Input @on-search="filterByKeyword" v-model="query.keyword" search placeholder="검색어를 입력하세요."></Input>
               </div>
               <div class="filter-difficulty">
-                <Dropdown @on-click="filterByDifficulty">
+                <Dropdown @on-click="filterByDifficulty" trigger="click">
                   <span>{{query.difficulty === '' ? this.$i18n.t('m.Difficulty') : this.$i18n.t('m.' + query.difficulty)}}
                     <Icon type="arrow-down-b"></Icon> 
                     <Icon type="md-arrow-dropdown" />
                   </span>
                   <Dropdown-menu slot="list">
                     <Dropdown-item name="">{{$t('m.All')}}</Dropdown-item>
-                    <Dropdown-item class="green" name="Low">{{$t('m.Low')}}</Dropdown-item>
-                    <Dropdown-item class="orange" name="Mid" >{{$t('m.Mid')}}</Dropdown-item>
-                    <Dropdown-item class="red" name="High">{{$t('m.High')}}</Dropdown-item>
+                    <Dropdown-item class="green" name="Level1">Level 1</Dropdown-item>
+                    <Dropdown-item class="green" name="Level2">Level 2</Dropdown-item>
+                    <Dropdown-item class="green" name="Level3">Level 3</Dropdown-item>
+                    <Dropdown-item class="green" name="Level4">Level 4</Dropdown-item>
+                    <Dropdown-item class="green" name="Level5">Level 5</Dropdown-item>
+
+                    <Dropdown-item class="orange" name="Level6">Level 6</Dropdown-item>
+                    <Dropdown-item class="orange" name="Level7">Level 7</Dropdown-item>
+                    <Dropdown-item class="orange" name="Level8">Level 8</Dropdown-item>
+                    <Dropdown-item class="orange" name="Level9">Level 9</Dropdown-item>
+                    <Dropdown-item class="orange" name="Level10">Level 10</Dropdown-item>
+
+                    <Dropdown-item class="red" name="Level11">Level 11</Dropdown-item>
+                    <Dropdown-item class="red" name="Level11">Level 12</Dropdown-item>
+                    <Dropdown-item class="red" name="Level11">Level 13</Dropdown-item>
+                    <Dropdown-item class="red" name="Level11">Level 14</Dropdown-item>
+                    <Dropdown-item class="red" name="Level11">Level 15</Dropdown-item>
                   </Dropdown-menu>
                 </Dropdown>
               </div>
@@ -71,7 +85,17 @@
               <tr>
                 <td id="problem-id">{{ problem._id }}</td>
                 <td id="problem-title" @click="redirectToProblem(problem)">{{ problem.title }}</td>
-                <td :class="[(problem.difficulty === 'Low' ? 'green' : ''), (problem.difficulty === 'Mid' ? 'orange' : ''), (problem.difficulty === 'High' ? 'red' : '')]">{{ problem.difficulty }}</td>
+                <td :class="[(problem.difficulty === 'Level1' || problem.difficulty === 'Level2' || 
+                              problem.difficulty === 'Level3' || problem.difficulty === 'Level4' || 
+                              problem.difficulty === 'Level5' ? 'green' : ''), 
+                    (problem.difficulty === 'Level6' || problem.difficulty === 'Level7' ||
+                    problem.difficulty === 'Level8' || problem.difficulty === 'Level9' ||
+                    problem.difficulty === 'Level10' ? 'orange' : ''),
+                    (problem.difficulty === 'Level11' || problem.difficulty === 'Level12' ||
+                    problem.difficulty === 'Level13' || problem.difficulty === 'Level14' ||
+                    problem.difficulty === 'Level15' ? 'red' : '')]">
+                    {{$t('m.' + problem.difficulty)}}
+                </td>
                 <td>{{ problem.submission_number }}</td>
                 <td> {{ convertToACRate(problem) }}</td>
               </tr>
@@ -669,5 +693,11 @@
       box-shadow: 0 0 0 transparent;
       background-color: transparent;
     }
+  }
+</style>
+<style lang="less">
+  .filter-difficulty .ivu-dropdown .ivu-select-dropdown {
+    height: 210px;
+    overflow-y: scroll;
   }
 </style>

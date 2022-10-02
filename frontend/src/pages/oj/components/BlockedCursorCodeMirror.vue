@@ -129,7 +129,6 @@
     },
     methods: {
       setHeight () {
-        console.log(this.editor.lastLine())
         if (this.editor.lastLine() * 20.5 > 100) {
           this.editor.setSize('100%', this.editor.lastLine() * 25)
         } else {

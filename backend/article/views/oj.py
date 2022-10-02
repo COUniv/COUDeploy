@@ -196,12 +196,13 @@ class CommentCreateAPI(APIView):
                                    content=content)
             
             url = "/article/" + str(articleid)
-            content = "[" + article.title + "]글에 댓글이 달렸습니다."
+            short_content = "[" + article.title + "]글에 댓글이 달렸습니다."
             if article.username != request.user.username:
                 Notification.objects.create(target_username=article.username,
                                     action_username=request.user.username,
                                     notificationtype=NotificationType.COMMENT,
-                                    content=content,
+                                    content=short_content,
+                                    comment_content = content,
                                     url=url)
             return self.success()
             

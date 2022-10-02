@@ -204,13 +204,30 @@
         this.$store.commit(types.CLEAR_CONTEST)
       }
     }
-  </script>
-  
-  <style scoped lang="less">
-    pre {
-      display: inline-block;
+</script>
+
+<style scoped lang="less">
+  body {
+    padding-bottom: 0 !important;
+    max-height: 100vh !important;
+  }
+  pre {
+    display: inline-block;
+  }
+
+  #countdown {
+    font-size: 16px;
+  }
+  .container {
+    width: 100%;
+    //padding: 0 40px;
+  }
+  .flex-container {
+    #contest-main {
+      flex: 1 1;
+      width: 0;
     }
-  
+  }
     #countdown {
       font-size: 16px;
     }
@@ -245,5 +262,6 @@
         }
       }
     }
+  
   </style>
   

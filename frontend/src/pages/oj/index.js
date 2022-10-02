@@ -44,6 +44,20 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
+const fixIdScrolling = {
+  watch: {
+    $route (to, from) {
+      const currentRoute = this.$router.currentRoute
+      const idToScrollTo = currentRoute.hash
+      this.$nextTick(() => {
+        if (idToScrollTo && document.querySelector(idToScrollTo)) {
+          document.querySelector(idToScrollTo).scrollIntoView()
+        }
+      })
+    }
+  }
+}
+
 Vue.use(iView, {
   i18n: (key, value) => i18n.t(key, value)
 })
@@ -80,4 +94,6 @@ Vue.prototype.$error = (s) => Vue.prototype.$Message.error(s)
 Vue.prototype.$info = (s) => Vue.prototype.$Message.info(s)
 Vue.prototype.$success = (s) => Vue.prototype.$Message.success(s)
 
-new Vue(Vue.util.extend({router, store, i18n}, App)).$mount('#app')
+new Vue(
+  Vue.util.extend({mixins: [fixIdScrolling], router, store, i18n}, App)
+).$mount('#app')

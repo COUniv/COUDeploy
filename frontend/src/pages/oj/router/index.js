@@ -11,7 +11,16 @@ Vue.use(VueRouter, store)
 const router = new VueRouter({
   mode: 'history',
   scrollBehavior (to, from, savedPosition) {
-    if (savedPosition) {
+    if (to.hash) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve({
+            selector: to.hash,
+            offset: { x: 0, y: 80 }
+          })
+        }, 500)
+      })
+    } else if (savedPosition) {
       return savedPosition
     } else {
       return {x: 0, y: 0}
