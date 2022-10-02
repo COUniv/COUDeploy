@@ -695,7 +695,7 @@
     }
   }
 </style>
-<style lang="less">
+<style lang="less" scoped>
   .filter-difficulty .ivu-dropdown .ivu-select-dropdown {
     height: 210px;
     overflow-y: scroll;
