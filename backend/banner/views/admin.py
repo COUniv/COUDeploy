@@ -17,16 +17,18 @@ class InputBannerAPI(APIView):
         
         if form.is_valid():
             image = form.cleaned_data["image"]
+            title = form.cleaned_data["title"]
+            url = form.cleaned_data["url"]
         else:
             return self.error("올바른 형식이 아니야!")
-        if image.size > 2 * 1024 * 1024:
+        if image.size > 2 * 1024 * 1024:    #->비율 재조정 필요!
             return self.error("이미지의 사이즈가 너무 커!")
         suffix = os.path.splitext(image.name)[-1].lower()
         if suffix not in [".gif", ".jpg", ".jpeg", ".bmp", ".png"]:
             return self.error("지원하지 않는 포맷입니다")
 
         name = rand_str(10) + suffix
-        while os.path.exists(os.path.join(settings.BANNER_UPLOAD_DIR, name)) == True:
+        while os.path.exists(os.path.join(settings.BANNER_UPLOAD_DIR, name)):
             name = rand_str(10) + suffix
             
         with open(os.path.join(settings.BANNER_UPLOAD_DIR, name), "wb") as img:
@@ -35,7 +37,8 @@ class InputBannerAPI(APIView):
                 
         newBanner = Banner.objects.create()
         newBanner.banner = f"{settings.BANNER_URI_PREFIX}/{name}"
-        #newBanner.title = title
+        newBanner.title = title
+        newBanner.url = url
         newBanner.save()
         return self.success("성공")
     
@@ -45,27 +48,22 @@ class Test(APIView):
 
 #배너 활성화 및 비활성화 컨트롤
 class BannerActiveAPI(APIView):
-    def get(self, request):
+    def post(self, request):
         #query?
-        data = request.POST.getlist('checks[]')
+        data = request.POST.getlist('checks')
         
         for tuple in Using_banner.objects.all():
             tuple.banner.isUse = False
             tuple.delete()
-        
-        #What form of query?
-        #Need to implement
-        
-        #pseudo->
-        """
+        num = 1
         for i in data:
-            a = Banner.objects.filter(id=i)
+            a = Banner.objects.get(id=i)
             a.isUse=True
             a.save()
             Using_banner.objects.create(banner = a,
-                                        priority = "num",
+                                        priority = num,
                                         url = "url")
-        """
+            num +=1
         return self.success()
 
 class BannerListAPI(APIView):
@@ -90,6 +88,7 @@ class DeleteBannerAPI(APIView):
         
         if os.path.exists(file_path):
             os.remove(file_path)
+            banner.delete()
         else:
             self.error("존재하지않는 파일")
             

@@ -14,3 +14,5 @@ class UsingBannerListSerializer(serializers.ModelSerializer):
 
 class ImageUploadForm(forms.Form):
     image = forms.FileField()
+    title = forms.CharField()
+    url = forms.URLField()

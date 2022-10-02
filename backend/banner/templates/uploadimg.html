@@ -1,6 +1,7 @@
 <div>
     <form action="{% url 'input_banner' %}" method="post", enctype='multipart/form-data'>
         {% csrf_token %}
+        <input type='text' name="title">
         <input type="file" name="image" accept="image/*">
         <input type="submit">
     </form>
