@@ -700,4 +700,17 @@
     height: 210px;
     overflow-y: scroll;
   }
+  @media screen and (max-width: 900px) {
+    .category {
+      margin: 20px 15px !important;
+    }
+    .main-list {
+      flex-direction: column-reverse;
+      margin: 15px auto !important;
+      .right-menu {
+        margin: 0 0 0 20px !important;
+        max-width: 90%;
+      }
+    }
+  }
 </style>
