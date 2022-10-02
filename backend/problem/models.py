@@ -22,9 +22,24 @@ class ProblemRuleType(Choices):
 
 
 class ProblemDifficulty(object):
-    High = "High"
-    Mid = "Mid"
-    Low = "Low"
+    Level1 = "Level1"
+    Level2 = "Level2"
+    Level3 = "Level3"
+    Level4 = "Level4"
+    Level5 = "Level5"
+    Level6 = "Level6"
+    Level7 = "Level7"
+    Level8 = "Level8"
+    Level9 = "Level9"
+    Level10 = "Level10"
+    Level11 = "Level11"
+    Level12 = "Level12"
+    Level13 = "Level13"
+    Level14 = "Level14"
+    Level15 = "Level15"
+    # High = "High"
+    # Mid = "Mid"
+    # Low = "Low"
 
 
 class ProblemIOMode(Choices):

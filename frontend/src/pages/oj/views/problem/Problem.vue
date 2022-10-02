@@ -67,7 +67,8 @@
         </template>
         <VerticalMenu-item class="list" v-if="!this.contestID || OIContestRealTimePermission" :route="submissionRoute">
           <Icon type="navicon-round"></Icon>
-          {{$t("m.Submissions")}}
+          제출 현황
+          <!-- {{$t("m.Submissions")}} -->
         </VerticalMenu-item>
         <template v-if="this.contestID">
           <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission"
@@ -107,7 +108,7 @@
           </li>
           <li v-if="problem.difficulty">
             <p>{{$t("m.Level")}}</p>
-            <p>{{$t("m." + problem.difficulty)}}</p>
+            <p>{{$t("m.problem.difficulty")}}</p>
           </li>
           <li v-if="problem.total_score">
             <p>{{$t("m.Score")}}</p>
@@ -383,6 +384,12 @@
     & > .ivu-card-body {
       padding-left: 20px;
       padding-right: 20px;
+    }
+  }
+
+  #right-column {
+    .list:hover {
+      cursor: pointer;
     }
   }
   .help-btn{

@@ -160,7 +160,7 @@ export const m = {
   MyHome: 'Home',
   MySubmissions: '제출',
   Settings: '설정',
-  Management: 'Management',
+  Management: '관리자페이지',
   Logout: '로그아웃',
   Welcome_to: 'Welcome to',
   // announcements.vue
@@ -178,7 +178,7 @@ export const m = {
   Delete_Account: '계정 탈퇴',
   // ProfileSetting.vue
   Avatar_Setting: '프로필 이미지 설정',
-  Profile_Setting: '프로필 설정',
+  Profile_Setting: '프로필 정보',
   // SecuritySettig
   Sessions: 'Sessions',
   Two_Factor_Authentication: 'Two Factor Authentication',
