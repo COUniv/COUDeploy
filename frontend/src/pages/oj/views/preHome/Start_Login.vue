@@ -239,7 +239,7 @@ export default {
   }
 }
 
-@media screen and (max-height: 725px) {
+@media screen and (max-height: 900px) {
   .start_login {
     margin: -80px -50px -190px -50px;
     // margin-top: 160px;
@@ -248,6 +248,13 @@ export default {
     // min-height: 100%;
     position: relative;
     // padding-bottom: 80px;
+    min-width: 100vw;
+    .form {
+      min-width: 90vw;
+      .login_edge {
+        padding: 0px 44px 20px;
+      }
+    }
   }
 }
 
