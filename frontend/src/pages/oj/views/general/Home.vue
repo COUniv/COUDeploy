@@ -733,5 +733,62 @@
     pointer-events: none;
     z-index: 997;
   }
-
+  @media screen and (max-width : 900px) {
+    .home_container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .img_container {
+      display: none;
+    }
+    .main_container{
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 50px;
+      margin-right: 0px !important;
+      padding: 0 0;
+      width: 90vw;
+      // height: 100vh;
+      .list_container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 100%;
+        margin: 0;
+        .left_announcement {
+          min-width: 100%;
+          min-height: 100%;
+          margin: 0;
+          .tab-item {
+            padding: 10px 16px;
+            font-size: 1.4em;
+          }
+          .contest-status-list {
+            position: absolute;
+            right: 40px;
+            span {
+              //font-size: 12px;
+            }
+            i {
+              visibility: hidden;
+            }
+          }
+          .plus {
+            padding: 0;
+          }
+        }
+        .right_rankings {
+          min-width: 100%;
+          margin: 20px 0 0;
+        }
+      }
+      .problem-category-container {
+        max-width: 100%;
+        //
+      }
+    }
+    
+  }
 </style>

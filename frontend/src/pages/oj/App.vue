@@ -1,5 +1,5 @@
 <template>
-  <div class="content_container">
+  <div class="content_container" style="overflow-x: hidden;">
     <div class="blockingdrag">
       <NavBar v-show="$route.name !== 'start-login' && $route.name !== 'contest-problem-submission' && $route.name !== 'problem-submission' && $route.name !== 'join'"></NavBar>
     </div>
@@ -141,8 +141,16 @@
     animation: fadeInUp .8s;
   }
 
-  @media screen and (min-width: 900px) {
-    max-width: 900px;
+  @media screen and (max-width: 900px) {
+    .content_container {
+      max-width: 100vw;
+      overflow-x: hidden;
+      margin-right: 0 !important;
+    }
+    .content-app {
+      max-width: 100vw;
+      overflow-x: hidden
+    }
   }
 
 
