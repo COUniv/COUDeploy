@@ -48,12 +48,16 @@ class Test(APIView):
 
 #배너 활성화 및 비활성화 컨트롤
 class BannerActiveAPI(APIView):
-    def post(self, request):
+    def get(self, request):
         #query?
-        data = request.POST.getlist('checks')
+        data = request.GET.getlist('checks',None)
+        if len(data) == 0:
+            return self.success("null values")
         
         for tuple in Using_banner.objects.all():
-            tuple.banner.isUse = False
+            t = tuple.banner
+            t.isUse = False
+            t.save()
             tuple.delete()
         num = 1
         for i in data:
@@ -62,9 +66,9 @@ class BannerActiveAPI(APIView):
             a.save()
             Using_banner.objects.create(banner = a,
                                         priority = num,
-                                        url = "url")
+                                        url = a.url)
             num +=1
-        return self.success()
+        return self.success("성공")
 
 class BannerListAPI(APIView):
     def get(self,request):
