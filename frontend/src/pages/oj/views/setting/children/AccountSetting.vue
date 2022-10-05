@@ -85,22 +85,22 @@
     
     <div class="setting-delete">
       <div class="left">
-        <p class="section-title red">{{$t('m.Delete_Account')}}</p>
+        <p class="section-title red-title">{{$t('m.Delete_Account')}}</p>
         <Form class="setting-content" ref="formDelete" :model="formDelete" :rules="ruleDelete">
           <div class="field">
-            <div class="text-field red">현재 닉네임</div>
+            <div class="text-field red-title">현재 닉네임</div>
             <FormItem class="edit-field" prop="username">
               <Input v-model="formDelete.username" type="text"></Input>
             </FormItem>
           </div>
           <div class="field">
-            <div class="text-field red">현재 비밀번호</div>
+            <div class="text-field red-title">현재 비밀번호</div>
             <FormItem class="edit-field" prop="password">
               <Input v-model="formDelete.password" type="password"></Input>
             </FormItem>
           </div>
           <div class="field">
-            <div class="text-field red">Captcha</div>
+            <div class="text-field red-title">Captcha</div>
             <FormItem class="edit-field" prop="captcha" style="margin-bottom:30px">
               <div class="oj-captcha">
                 <div class="oj-captcha-code">
@@ -460,7 +460,7 @@
     border-bottom: 1.5px solid @purple;
     margin-bottom: 15px;
   }
-  .red {
+  .red-title {
     color: #E1262A;
     border-bottom: 1.5px solid #E1262A;
   }
@@ -480,7 +480,7 @@
           font-weight: 500;
           -webkit-text-stroke: .5px;
         }
-        .red {
+        .red-title {
           color: #E1262A;
           border: none;
         }
