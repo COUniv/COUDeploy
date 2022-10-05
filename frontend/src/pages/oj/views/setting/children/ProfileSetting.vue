@@ -556,6 +556,7 @@
   .mypage_info_input {
     width: 100%;
     display: flex;
+    position: relative;
     .data {
       width: 100%;
       border-bottom: 1px solid @dark-white;
@@ -584,7 +585,7 @@
       padding: 0;
       padding-top: 15px;
       position: absolute;
-      right: 12%;
+      right: 10px;
       background-color: transparent;
       border: none;
       &:focus {
