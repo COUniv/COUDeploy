@@ -63,13 +63,14 @@
             <!-- {{$t('m.Submissions')}} -->
           </VerticalMenu-item>
   
-          <VerticalMenu-item v-if="OIContestRealTimePermission"
+          <!-- 랭킹 -->
+          <!-- <VerticalMenu-item v-if="OIContestRealTimePermission"
                              class="list" :disabled="contestMenuDisabled"
                              :route="{name: 'contest-rank', params: {contestID: contestID}}">
-            <Icon type="ios-stats" />
+            <Icon type="ios-stats" /> -->
             <!-- <Icon type="stats-bars"></Icon> -->
-            {{$t('m.Rankings')}}
-          </VerticalMenu-item>
+            <!-- {{$t('m.Rankings')}} -->
+          <!-- </VerticalMenu-item> -->
   
           <VerticalMenu-item v-if="showAdminHelper && isContestAdmin"
                              class="list" :route="{name: 'acm-helper', params: {contestID: contestID}}">
