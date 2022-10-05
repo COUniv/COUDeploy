@@ -952,9 +952,9 @@
 @import '../../../styles/common.less';
   @media screen and (max-width : 900px) {
     #header {
-      max-width: 900px;
+      max-width: 100vw;
       .home_bar.ivu-menu-item {
-        min-width: 900px;
+        min-width: 100vw;
       }
     }
     
@@ -982,7 +982,10 @@
     color: @purple !important;
   }
   .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
-    background: @white;
+    background: @pale-purple;
+    &:first-child {
+      background: #fff !important;
+    }
   }
   .bar_list  {
     & .ivu-menu{

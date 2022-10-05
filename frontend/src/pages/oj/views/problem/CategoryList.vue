@@ -17,11 +17,11 @@
               <div id="order-by">
               </div>
 
-              <div style="position:relative; right:50px;">
+              <div class="submenu" style="">
                 <ul>
                   <li class="submenu_list">
                     <!-- 카테고리 검색 카테고리 선택 - searchtype 결정 -->
-                    <Select v-model="formFilter.searchtype" style="width:73px">
+                    <Select v-model="formFilter.searchtype">
                       <Option v-for="item in searchTypeList" :value="item.value" :key="item.value">
                         {{ item.label }}
                       </Option>
@@ -30,7 +30,7 @@
 
                   <li class="submenu_list">
                     <!-- 게시글 검색 내용 입력 - search -->
-                    <Input @on-search="handleQueryChange" v-model="formFilter.search" search placeholder="검색어를 입력하세요." style="width: 225px"></Input>
+                    <Input @on-search="handleQueryChange" v-model="formFilter.search" search placeholder="검색어를 입력하세요."></Input>
                   </li>
                 </ul>
               </div>
@@ -317,9 +317,19 @@
     //     color: #1f4e79;
     //     /* background-color: rgb(255, 234, 239); */
     // }
+    .submenu {
+      position:relative; 
+      right:50px;
+    }
     .submenu_list {
       display: inline-block;
       //margin-right: 10px;
+      .ivu-select .ivu-select-single .ivu-select-default {
+        width: 73px;
+      }
+      .ivu-input-wrapper .ivu-input-wrapper-default .ivu-input-type {
+        width: 300px;
+      }
     }
 
     #add-new {
@@ -389,5 +399,44 @@
       margin-right: 10px;
       margin-top: 15px;
     }
-    
+  @media screen and (max-width : 900px) {
+    #main {
+      width: 90vw;
+      .community {
+        text-align: start;
+        .community_menu {
+          left: 0px;
+          margin-left: 20px;
+        }
+      }
+      .community_free {
+        width: 100%;
+        .community_free_bar {
+          min-width: 400px;
+          display: block;
+          //justify-content: center;
+          //left: 10px;
+          .submenu {
+            right: 0px;
+            margin-left: 20px;
+            ul {
+              li:first-child {
+                min-width: 20%;
+              }
+              li {
+                min-width: 50%;
+              }
+            }
+          }
+        }
+      }
+      .article-table {
+        .article-entry {
+          margin: 10px 20px;
+          min-width: 270px;
+        }
+      }
+      
+    }
+  }
 </style>
