@@ -500,7 +500,7 @@ export default {
     .no {
       font-size: 150%;
       line-height: 50px;
-      width: 70px;
+      width: 40px;
       margin-right: 15px;
     }
 

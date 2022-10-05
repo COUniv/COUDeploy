@@ -485,14 +485,14 @@
     left: 0;
     height: 60px;
     width: 100%;
-    z-index: 885;
+    z-index: 985;
     background-color: #fff;
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
     .oj-menu {
       //background: #404040;
       position: relative;
       background: @white;
-      z-index: 886;
+      z-index: 986;
     }
     .navbar_toggle-btn {
       position: absolute;
@@ -503,7 +503,7 @@
       font-size: 24px;
       color: @purple;
       display: none;
-      z-index: 888;
+      z-index: 988;
     }
     .logo {
       margin-left: 2%;
@@ -982,7 +982,7 @@
     color: @purple !important;
   }
   .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
-    background: @pale-purple;
+    background: @white;
   }
   .bar_list  {
     & .ivu-menu{
