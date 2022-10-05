@@ -186,6 +186,10 @@ export default {
   justify-content: center;
   align-items: center;
   height: calc(~"100vh - 80px");
+  .form {
+    min-width: 40vw;
+    max-width: 600px;
+  }
 }
 // .form {
 //   position: absolute;
@@ -239,7 +243,7 @@ export default {
   }
 }
 
-@media screen and (max-height: 900px) {
+@media screen and (max-width: 900px) {
   .start_login {
     margin: -80px -50px -190px -50px;
     // margin-top: 160px;
