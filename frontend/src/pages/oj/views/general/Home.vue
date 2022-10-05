@@ -785,8 +785,7 @@
         }
       }
       .problem-category-container {
-        max-width: 100%;
-        //
+        width: 90vw;
       }
     }
     
