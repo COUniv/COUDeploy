@@ -262,6 +262,25 @@
         }
       }
     }
-  
+  @media screen and (max-width : 900px) {
+    .container {
+      padding: 0;
+    }
+    .flex-container {
+      width: 100vw;
+      margin: 0;
+      flex-direction: column-reverse;
+      align-items: center;
+
+    }
+    #contest-main {
+      width: 90% !important;
+      //overflow: hidden;
+    }
+    #contest-menu {
+      width: 90% !important;
+      margin: 0 0 20px 0 !important;
+    }
+  }
   </style>
   

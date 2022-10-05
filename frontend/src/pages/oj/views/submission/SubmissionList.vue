@@ -1,7 +1,7 @@
 <template>
   <div class="flex-container">
     <div id="main">
-      <Panel shadow>
+      <Panel shadow style="min-width: 500px;">
         <div slot="title">제출 현황</div>
         <!-- <div slot="title">{{title}}</div> -->
         <div slot="extra">
@@ -380,6 +380,7 @@
 
 <style scoped lang="less">
   @import '../../../../styles/common.less';
+  
   .ivu-btn-text {
     color: @purple;
   }
@@ -434,5 +435,13 @@
       transform: rotate(360deg);
       color: @dark-purple;
     }
+  }
+  @media screen and (max-width : 900px) {
+    #main {
+      .ivu-card .ivu-card-dis-hover .ivu-card-shadow {
+        min-width: 550px;
+      }
+    }
+    
   }
 </style>
