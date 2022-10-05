@@ -118,7 +118,7 @@
             <Input type="text" v-model="formDelete.tfa_code"/>
           </FormItem>
           <FormItem v-if="visible.accountDelete">
-            <Alert type="success">5초후에 자동 로그아웃 됩니다..</Alert>
+            <Alert type="success">5초후에 자동 로그아웃 됩니다</Alert>
           </FormItem>
           <Button type="primary" class="red-button" @click="deleteAccount">{{$t('m.Delete_Account')}}</Button>
         </Form>
