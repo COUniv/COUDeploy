@@ -39,11 +39,11 @@ services:
       - ./data/judge_server/run:/judger
     environment:
       - SERVICE_URL=http://judge-server:8080
-      - BACKEND_URL=http://oj-backend:8000/api/judge_server_heartbeat/
+      - BACKEND_URL=http://cou-backend:8000/api/judge_server_heartbeat/
       - TOKEN=CHANGE_THIS
       - judger_debug=1
   
-  oj-backend:
+  cou-backend:
     image: kdonggyun97/cou-coding-platform-dev:latest
     container_name: cou-coding-platform-dev
     restart: always
