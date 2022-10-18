@@ -99,8 +99,8 @@ docker 컨테이너가 아닌 로컬 시스템의 frontend 의 빌드 폴더(dis
     container_name: cou-coding-platform-dev
     restart: always
     depends_on:
-      - oj-redis
-      - oj-postgres
+      - cou-redis
+      - cou-postgres
       - judge-server
     volumes:
       - ./data/backend:/data
