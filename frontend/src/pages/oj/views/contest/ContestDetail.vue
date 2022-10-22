@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" :class="{'container-padding': route_name !== 'contest-problem-submission'}">
     <div class="flex-container ">
       <div id="contest-main">
         <!--children-->
@@ -158,6 +158,9 @@
         handleRoute (route) {
           this.$router.push(route).catch(() => {})
         },
+        isContestProblemSubmission () {
+          return this.route_name === 'contest-problem-submission'
+        },
         checkPassword () {
           if (this.contestPassword === '') {
             this.$error('Password can\'t be empty')
@@ -221,7 +224,6 @@
   }
   .container {
     width: 100%;
-    //padding: 0 40px;
   }
   .flex-container {
     #contest-main {
@@ -233,6 +235,9 @@
       font-size: 16px;
     }
     .container {
+      width: 100%;
+    }
+    .container-padding {
       width: 100%;
       padding: 0 40px;
     }
