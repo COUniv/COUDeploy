@@ -246,8 +246,8 @@ Django는 암호화 인증에 사용되는 비밀키인 <b>SECRET_KEY</b> 가 �
 ``` ruby
 docker ps
 CONTAINER ID   IMAGE              COMMAND                  CREATED         STATUS         PORTS                      NAMES
-7c43ceed847e   redis:4.0-alpine   "docker-entrypoint.s…"   4 minutes ago   Up 4 minutes   127.0.0.1:6380->6379/tcp   oj-redis-dev
-c37ac7670c83   postgres:10        "docker-entrypoint.s…"   4 minutes ago   Up 4 minutes   127.0.0.1:5435->5432/tcp   oj-postgres-dev
+7c43ceed847e   redis:4.0-alpine   "docker-entrypoint.s…"   4 minutes ago   Up 4 minutes   127.0.0.1:6380->6379/tcp   cou-redis-dev
+c37ac7670c83   postgres:10        "docker-entrypoint.s…"   4 minutes ago   Up 4 minutes   127.0.0.1:5435->5432/tcp   cou-postgres-dev
  ```
 
 

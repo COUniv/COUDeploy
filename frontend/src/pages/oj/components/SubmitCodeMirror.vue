@@ -49,7 +49,7 @@
           <!-- <span>{{$t('m.Theme')}}:</span> -->
       </div>
       <div>
-        <codemirror v-model.lazy="value" :options="options" @change="onEditorCodeChange" ref="myEditor">
+        <codemirror :value="value" :options="options" @change="onEditorCodeChange" ref="myEditor">
         </codemirror>
       </div>
     </div>

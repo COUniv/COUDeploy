@@ -161,7 +161,7 @@ class SubmissionAPI(APIView):
         if not submission.check_user_permission(request.user, check_share=False):
             return self.error("제출 소스에 접근 권한이 없습니다")
         if submission.contest and submission.contest.status == ContestStatus.CONTEST_UNDERWAY:
-            return self.error("제출 소스를 비공개로 할 수 없습니다")
+            return self.error("제출 소스를 공개로 할 수 없습니다")
         submission.shared = request.data["shared"]
         submission.save(update_fields=["shared"])
         return self.success('성공하였습니다')
