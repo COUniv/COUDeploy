@@ -108,7 +108,7 @@
           </li>
           <li v-if="problem.difficulty">
             <p>{{$t("m.Level")}}</p>
-            <p>{{$t("m.problem.difficulty")}}</p>
+            <p>{{$t("m." + problem.difficulty)}}</p>
           </li>
           <li v-if="problem.total_score">
             <p>{{$t("m.Score")}}</p>

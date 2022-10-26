@@ -14,7 +14,7 @@ import raven
 from copy import deepcopy
 from utils.shortcuts import get_env
 
-production_env = get_env("OJ_ENV", "dev") == "production"
+production_env = get_env("COU_ENV", "dev") == "production"
 if production_env:
     from .production_settings import *
 else:
@@ -195,6 +195,7 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     )
 }
 

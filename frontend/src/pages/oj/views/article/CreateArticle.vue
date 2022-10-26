@@ -192,6 +192,10 @@
   bottom: 2px;
   left: 2px;
 }
-
+@media screen and (max-width: 900px) {
+  .main_contents {
+    margin: 0 20px;
+  }
+}
 
 </style>

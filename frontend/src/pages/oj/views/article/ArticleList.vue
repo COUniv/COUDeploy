@@ -657,7 +657,36 @@
       margin-top: 15px;
     }
 
-    
+    @media screen and (max-width: 900px) {
+      #main {
+        margin: 0 !important;
+        min-width: 90vw;
+        .community {
+          padding: 0 10px 0;
+          flex-direction: column;
+          .community_menu {
+            .community_menu_element {
+              min-width: 90px;
+              padding-right: 15px;
+              .community_menu_list {
+                font-size: 0.8em;
+              }
+            }
+          }
+        }
+        .community_free {
+          width: 100%;
+          .community_free_bar {
+            display: block;
+            padding: 10px 20px;
+          }
+          .article-entry {
+            margin: 10px 20px;
+          }
+        }
+      }
+      
+    }
 
     
 </style>

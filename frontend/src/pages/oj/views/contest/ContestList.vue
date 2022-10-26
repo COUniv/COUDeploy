@@ -500,7 +500,7 @@ export default {
     .no {
       font-size: 150%;
       line-height: 50px;
-      width: 70px;
+      width: 40px;
       margin-right: 15px;
     }
 
@@ -527,13 +527,36 @@ export default {
 @media screen and (max-width : 900px) {
   #contest-container {
     flex-direction: column;
-    max-width: 900px;
+    max-width: 100vw;
+    align-items: center;
     #contest-card {
-      margin: 20px auto;
+      margin: 20px 0;
+      min-width: 90vw;
+      .title {
+        margin: 0 0 20px;
+      }
+      .filter {
+        display: block;
+        margin: 0 0 20px;
+        .list {
+          display: inline-block;
+        }
+        #keyword {
+          display: block;
+          margin: 10px 0 0;
+          width: 100%;
+        }
+      }
+      #contest-list {
+        .entry {
+          margin: 15px 0;
+          padding: 10px;
+        }
+      }
     }
     #user-ranking {
       margin: 0 auto;
-      max-width: 70%;
+      min-width: 90vw;
     }
   }
 }

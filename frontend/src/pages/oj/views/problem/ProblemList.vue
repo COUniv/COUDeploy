@@ -695,9 +695,30 @@
     }
   }
 </style>
-<style lang="less">
+<style lang="less" scoped>
   .filter-difficulty .ivu-dropdown .ivu-select-dropdown {
     height: 210px;
     overflow-y: scroll;
+  }
+  @media screen and (max-width: 900px) {
+    .category-name {
+      margin: 0;
+    }
+    .category {
+      margin: 20px 15px !important;
+    }
+    .main-list {
+      flex-direction: column-reverse;
+      margin: 15px auto !important;
+      .left-menu {
+        .top-menu {
+          max-height: 32px;
+        }
+      }
+      .right-menu {
+        margin: 0 0 0 20px !important;
+        max-width: 90%;
+      }
+    }
   }
 </style>

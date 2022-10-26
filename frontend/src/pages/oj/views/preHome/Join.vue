@@ -367,10 +367,15 @@
   }
 }
 
-@media screen and (max-height: 800px) {
+@media screen and (max-height: 900px) {
   .join {
     margin: 60px -50px -100px -50px;
     position: relative;
+    .form {
+      .join_edge {
+        padding: 0px 14px 30px;
+      }
+    }
   }
 }
 
