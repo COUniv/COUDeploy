@@ -214,8 +214,6 @@
         this.showUpImageDialog = false
       },
       preView () {
-        console.log('hello')
-        console.log(this.cacheShowBannerSrc)
         return this.cacheShowBannerSrc
       },
       removeBanner () {

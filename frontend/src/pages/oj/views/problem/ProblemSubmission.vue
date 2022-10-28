@@ -267,14 +267,12 @@
         api[func](this.problemID, this.contestID).then(res => {
           this.$Loading.finish()
           let problem = res.data.data
-          console.log(problem)
           this.changeDomTitle({title: problem.title})
           api.submissionExists(problem.id).then(res => {
             this.submissionExists = res.data.data
           })
           problem.languages = problem.languages.sort()
           this.problem = problem
-          console.log(problem)
           this.changePie(problem)
           // 로컬에 코드가 있고 템플릿을 로드할 필요가 없음을 나타내는 beforeRouteEnter에서 수정됨
           if (this.code !== '') {
