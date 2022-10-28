@@ -38,7 +38,7 @@ class InputBannerAPI(APIView):
         newBanner = Banner.objects.create()
         newBanner.banner = f"{settings.BANNER_URI_PREFIX}/{name}"
         newBanner.title = title
-        newBanner.url = url
+        newBanner.url = f"{settings.BANNER_URI_PREFIX}/{name}"
         newBanner.save()
         return self.success("성공")
     
