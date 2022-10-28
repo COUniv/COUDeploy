@@ -1,16 +1,16 @@
 version: "3"
 services:
 
-  oj-redis:
+  cou-redis:
     image: redis:4.0-alpine
-    container_name: oj-redis
+    container_name: cou-redis
     restart: always
     volumes:
       - ./data/redis:/data
   
-  oj-postgres:
+  cou-postgres:
     image: postgres:10-alpine
-    container_name: oj-postgres
+    container_name: cou-postgres
     restart: always
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
@@ -39,17 +39,17 @@ services:
       - ./data/judge_server/run:/judger
     environment:
       - SERVICE_URL=http://judge-server:8080
-      - BACKEND_URL=http://oj-backend:8000/api/judge_server_heartbeat/
+      - BACKEND_URL=http://cou-backend:8000/api/judge_server_heartbeat/
       - TOKEN=CHANGE_THIS
       - judger_debug=1
   
-  oj-backend:
+  cou-backend:
     image: kdonggyun97/cou-coding-platform-dev:latest
     container_name: cou-coding-platform-dev
     restart: always
     depends_on:
-      - oj-redis
-      - oj-postgres
+      - cou-redis
+      - cou-postgres
       - judge-server
     volumes:
       - ./data/backend:/data

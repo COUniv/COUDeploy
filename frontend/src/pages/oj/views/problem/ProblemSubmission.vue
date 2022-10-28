@@ -4,7 +4,7 @@
     <div class="ss_header">
       <div class="header-left">
         <div class="logo" @click="goHome">COU</div>
-        <div class="problem-name" style="color: #bdbdbd" >[2022년 3월 코딩 테스트]</div>
+        <!-- <div class="problem-name" style="color: #bdbdbd" >[2022년 3월 코딩 테스트]</div> -->
         <div class="problem-name"> {{ problem.title }}</div>
       </div>
       <div class="header-right">
@@ -15,7 +15,7 @@
           <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" :loading="submitted" class="hide-btn" @click="toggle(false)">공개
             <Icon type="md-eye" />
           </Button>
-          <Button v-else type="primary" size="large" style="z-index: '1'" :loading="submitted" class="hide-btn" @click="toggle(true)">비공개
+          <Button v-else type="primary" size="large" style="z-index: '1'" :loading="submitted" class="hide-btn" @click="toggle(true)"  :disabled="sharedButtonDisabled">비공개
             <Icon type="md-eye-off" />
           </Button>
         </div>
@@ -130,32 +130,6 @@
         </div>
       </div>
     </Split>
-    <!-- </div> -->
-    <!-- <div class="ss_footer">
-      <div class="footer_title" style="color:white" >2022년 3월 코딩 테스트</div>
-      <div style="float: right">
-        <div v-if="!isAfterSubmit" class="footer_btn" style="color:white">
-          <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" :loading="submitted" @click="toggle(false)">공개</Button>
-          <Button v-else type="error" size="large" style="z-index: '1'" :loading="submitted" class="show" @click="toggle(true)">비공개</Button>
-        </div>
-        <div v-else="isAfterSubmit" class="footer_btn" style="color:white">
-          <Button v-if="isActive" type="primary" size="large" style="z-index: '1'" disabled>공개로 제출 됨</Button>
-          <Button v-else type="error" size="large" style="z-index: '1'" disabled>비공개로 제출 됨</Button>
-        </div>
-        <div class="footer_btn" style="color:white">
-          제출 오남용을 방지하기 위해 제출 한 번으로 제한 -->
-          <!-- <Button v-if="!isAfterSubmit" type="primary" size="large" style="z-index: '4'" :loading="submitted" @click="submitCode"
-                  :disabled="problemSubmitDisabled">
-            <span v-if="submitted">채점중</span>
-            <span v-else>{{$t('m.Submit')}}</span>
-          </Button>
-          <Button v-else type="primary" size="large" @click="goSubmissionList">
-            채점 현황 보러가기
-            <Icon type="ios-arrow-forward"></Icon>
-          </Button>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -187,6 +161,7 @@
     mixins: [FormMixin],
     data () {
       return {
+        sharedButtonDisabled: false,
         openHelpModal: false,
         lastURL: '',
         version: process.env.VERSION,
@@ -288,9 +263,11 @@
         this.contestID = this.$route.params.contestID
         this.problemID = this.$route.params.problemID
         let func = this.$route.name === 'problem-submission' ? 'getProblem' : 'getContestProblem'
+        this.sharedButtonDisabled = this.isContestRoute()
         api[func](this.problemID, this.contestID).then(res => {
           this.$Loading.finish()
           let problem = res.data.data
+          console.log(problem)
           this.changeDomTitle({title: problem.title})
           api.submissionExists(problem.id).then(res => {
             this.submissionExists = res.data.data
@@ -468,12 +445,17 @@
           submitFunc(data, true)
         }
       },
+      isContestRoute () {
+        return this.$route.name === 'contest-problem-submission'
+      },
       updateShareSubmission (submissionId, shared) {
-        let data = {id: submissionId, shared: shared}
-        api.updateSubmission(data).then(res => {
-        }, () => {
-          this.$error(this.$i18n.t('m.Error'))
-        })
+        if (!this.isContestRoute) {
+          let data = {id: submissionId, shared: shared}
+          api.updateSubmission(data).then(res => {
+          }, () => {
+            this.$error('코드 공유 여부 변경에 실패하였습니다')
+          })
+        }
       },
       onCopy (event) {
         this.$success('Code copied')
@@ -966,3 +948,8 @@
   }
   
 </style>
+<!-- <style lang="less">
+  .container {
+    padding: 0 0 !important;
+  }
+</style> -->
