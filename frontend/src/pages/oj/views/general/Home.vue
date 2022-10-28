@@ -2,27 +2,14 @@
   <div v-if="listVisible" class="home_container">
 
     <div class="img_container" style="width: 100%;">
-        <Carousel autoplay v-model="value1" loop arrow="hover" @on-change="handleChange">
-            <CarouselItem>
-                <div class="demo-carousel">
-                  <img src="../../../../assets/main01.png" />
-                </div>
-            </CarouselItem>
-            <CarouselItem>
-                <div class="demo-carousel">
-                  <img src="../../../../assets/main01.png" />
-                </div>
-            </CarouselItem>
-            <CarouselItem>
-                <div class="demo-carousel">
-                  3
-                </div>
-            </CarouselItem>
-            <CarouselItem>
-                <div class="demo-carousel">4</div>
-            </CarouselItem>
-        </Carousel>
-        <!-- <Button @click="value1 = 2">change</Button> -->
+      <Carousel v-model="value1" loop arrow="hover" @on-change="handleChange" :autoplay="bannerOpt.autoplay">
+          <CarouselItem v-for="(item, idx) in bannerList" :key="idx">
+            <div class="demo-carousel">
+              <img :src="item.url"/>
+            </div>
+          </CarouselItem>
+      </Carousel>
+      <!-- <Button @click="value1 = 2">change</Button> -->
     </div>
     <div class="main_container">
       <div class="list_container">
@@ -202,6 +189,11 @@
         announcement: '',
         contest_idx: 0,
         value1: 0,
+        bannerList: [],
+        bannerOpt: {
+          size: 0,
+          autoplay: false
+        },
         dataRank: [],
         contests: [],
         contest_stat: '',
@@ -222,8 +214,32 @@
       this.getAnnouncementList()
       this.getRankData(1)
       this.getContestList()
+      this.getUsingBannerList()
     },
     methods: {
+      getUsingBannerList () {
+        api.getUsingBannerList().then(res => {
+          let temp = []
+          temp = res.data.data
+          if (temp.length < 2) {
+            if (temp.length < 1) {
+              temp.push({url: '/public/banner/defaultBANNER.png'})
+            }
+            this.bannerList = temp
+            this.bannerOpt.size = this.bannerList.length
+            this.bannerOpt.autoplay = false
+          } else {
+            this.bannerList = temp
+            this.bannerOpt.size = this.bannerList.length
+            this.bannerOpt.autoplay = true
+          }
+        }, () => {
+          this.$error('배너를 불러오지 못했습니다.')
+          this.bannerList.push({banner: '/public/banner/defaultBANNER.png'})
+          this.bannerOpt.size = this.bannerList.length
+          this.bannerOpt.autoplay = false
+        })
+      },
       getContestList (page = 1) {
         api.getContestList(0, this.limit, this.query).then((res) => {
           let notfiltercontests = res.data.data.results
@@ -236,6 +252,10 @@
             contestlist.push(notfiltercontests[v])
           }
           this.contests = contestlist
+        }, () => {
+          this.contests = []
+        }).catch(() => {
+          this.contests = []
         })
       },
       getRankData (page = 1) {

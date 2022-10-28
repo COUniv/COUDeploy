@@ -280,7 +280,6 @@
         return false
       },
       realTime (data) {
-        console.log(data)
         this.preview = data
       },
       rotate (direction) {
