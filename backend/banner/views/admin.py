@@ -21,7 +21,7 @@ class InputBannerAPI(APIView):
             url = form.cleaned_data["url"]
         else:
             return self.error("올바른 형식이 아니야!")
-        if image.size > 2 * 1920 * 800:    #->비율 재조정 필요!
+        if image.size > 2 * 3200 * 2000 + 100:    #->비율 재조정 필요!
             return self.error("이미지의 사이즈가 너무 커!")
         suffix = os.path.splitext(image.name)[-1].lower()
         if suffix not in [".gif", ".jpg", ".jpeg", ".bmp", ".png"]:
