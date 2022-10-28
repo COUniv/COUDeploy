@@ -9,6 +9,26 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  addBanner (data) {
+    return ajax('admin/input_banner', 'post', {
+      data
+    })
+  },
+  activeBanner (data) {
+    return ajax('admin/banner_active', 'put', {
+      data
+    })
+  },
+  deleteBanner (id) {
+    return ajax('admin/delete_banner', 'get', {
+      params: {
+        id: id
+      }
+    })
+  },
+  getBannerList () {
+    return ajax('admin/banner_list', 'get')
+  },
   deleteProblemTag (id) {
     return ajax('admin/problem/tag/delete', 'get', {
       params: {
