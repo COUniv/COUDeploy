@@ -1,9 +1,9 @@
 from django.contrib import admin
 import os
 from django.shortcuts import render
-from utils.api import APIView
+from utils.api import APIView, validate_serializer
 from account.decorators import login_required, verify_required
-from ..serializers import BannerListSerializer, UsingBannerListSerializer, ImageUploadForm
+from ..serializers import BannerListSerializer, UsingBannerListSerializer, ImageUploadForm, EditEnableBannerSerializer
 from ..models import Banner,Using_banner
 from django.conf import settings
 from utils.shortcuts import rand_str
@@ -21,7 +21,7 @@ class InputBannerAPI(APIView):
             url = form.cleaned_data["url"]
         else:
             return self.error("올바른 형식이 아니야!")
-        if image.size > 2 * 1920 * 800:    #->비율 재조정 필요!
+        if image.size > 2 * 3200 * 2000 + 100:    #->비율 재조정 필요!
             return self.error("이미지의 사이즈가 너무 커!")
         suffix = os.path.splitext(image.name)[-1].lower()
         if suffix not in [".gif", ".jpg", ".jpeg", ".bmp", ".png"]:
@@ -38,7 +38,7 @@ class InputBannerAPI(APIView):
         newBanner = Banner.objects.create()
         newBanner.banner = f"{settings.BANNER_URI_PREFIX}/{name}"
         newBanner.title = title
-        newBanner.url = url
+        newBanner.url = f"{settings.BANNER_URI_PREFIX}/{name}"
         newBanner.save()
         return self.success("성공")
     
@@ -69,6 +69,46 @@ class BannerActiveAPI(APIView):
                                         url = a.url)
             num +=1
         return self.success("성공")
+
+    @validate_serializer(EditEnableBannerSerializer)
+    def put(self, request):
+        data = request.data
+        if len(data) == 0:
+            return self.error("null values")
+        banner_id = data["id"]
+        enable = data["enable"]
+        # disable banner
+        if enable == False or enable == 0 or enable == "0":
+            single_banner = Banner.objects.get(id=banner_id)
+            single_banner.isUse = False
+            single_banner.save()
+            using_banner = Using_banner.objects.filter(banner__id=banner_id)
+            using_banner.delete()
+
+            reorder_banner = Using_banner.objects.all().order_by("priority")
+            num = 1
+            for ban in reorder_banner:
+                ban.priority = num
+                ban.save()
+                num += 1
+            return self.success("비활성화 성공")
+        #enable banner
+        else:
+            num = 1
+            enable_banner = Banner.objects.get(id=banner_id)
+            enable_banner.isUse = True
+            enable_banner.save()
+            Using_banner.objects.create(banner = enable_banner,
+                                        priority = num,
+                                        url = enable_banner.url)
+            num += 1
+            reorder_banner = Using_banner.objects.all().order_by("priority")
+            for ban in reorder_banner:
+                ban.priority = num
+                ban.save()
+                num += 1
+            return self.success("활성화 성공")
+
 
 class BannerListAPI(APIView):
     def get(self,request):

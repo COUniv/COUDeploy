@@ -358,7 +358,6 @@
       vGetNotifications () {
         api.getNotificationList().then(res => {
           this.vNotifications = res.data.data
-          console.log(res.data.data)
           this.getOnlyNotificationsListLength()
         })
       },

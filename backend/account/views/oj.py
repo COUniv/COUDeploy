@@ -3,6 +3,7 @@ import os
 from datetime import timedelta
 from importlib import import_module
 import smtplib
+from urllib import request
 from utils.shortcuts import send_email
 import qrcode
 from django.conf import settings
@@ -28,8 +29,21 @@ from ..serializers import (ApplyResetPasswordSerializer, ResetPasswordSerializer
                            RankInfoSerializer, UserChangeEmailSerializer, SSOSerializer)
 from ..serializers import (TwoFactorAuthCodeSerializer, UserProfileSerializer,
                            EditUserProfileSerializer, ImageUploadForm, ApplyVerifyEmailSerializer, VerifyEmailSerializer,
-                           UserGrassDataSerializer, UserLastActivitySerializer)
+                           UserGrassDataSerializer, UserLastActivitySerializer, FindUserNameSerializer)
 from ..tasks import send_email_async
+
+
+class getFindUserIDAPI(APIView):
+    @validate_serializer(FindUserNameSerializer)
+    def get(self, request):
+        data = request.data
+        try:
+            user = User.objects.get(email=data["email"])
+        except User.DoesNotExist:
+            return self.error("존재하지 않는 유저입니다")
+        username = str(user.username)
+        result = username[:-2] + "**"
+        return self.success({"username": result})
 
 class LastActivityAPI(APIView):
     @validate_serializer(UserLastActivitySerializer)
