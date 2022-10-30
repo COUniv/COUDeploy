@@ -21,8 +21,11 @@
                 <!-- <Icon type="ios-lock-outline" slot="prepend"></Icon> -->
               </Input>
               <div class = "login_foot">
-              <a class="foot_password" @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
-            </div>
+                <a class="foot_password" @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
+              </div>
+              <div class = "login_foot">
+                <a class="foot_password" @click.stop="goFindUserID" style="float: right">아이디 찾기</a>     
+              </div>
             </FormItem>
             <!-- 로그인 상태 체크박스 -->
             
@@ -147,6 +150,10 @@ export default {
     goResetPassword () {
       this.changeModalStatus({visible: false})
       this.$router.push({name: 'apply-reset-password'}).catch(() => {})
+    },
+    goFindUserID () {
+      this.changeModalStatus({visible: false})
+      this.$router.push({name: 'find-user-id'}).catch(() => {})
     },
     isAlreadyLoggedin () {
       if (this.$store.getters.isAuthenticated === true) {
@@ -434,6 +441,7 @@ export default {
   .foot_password {
     color: @gray;
     font-weight: @weight-bold;
+    margin-left: 10px;
   }
   // margin: 5px 0 5px 0;
 }

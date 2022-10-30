@@ -134,9 +134,6 @@
       }
       const CheckPassword = (rule, value, callback) => {
         if (this.formRegister.password !== '') {
-          console.log(value)
-          console.log(passregex.test(value))
-          console.log(passregex.test(value))
           if (passregex.test(value) === false) {
             callback(new Error('영문 + 숫자 + 특수문자(@$!%*#?& 중 1개이상)로 구성되어야 합니다'))
           } else {

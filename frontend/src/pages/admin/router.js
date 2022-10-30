@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 // intro 구성요소 view\
 import { Announcement, Conf, Contest, ContestList, Home, JudgeServer, Login,
   Problem, ProblemList, User, PruneTestCase, Dashboard, ProblemImportOrExport,
-  ProblemCategoryList, ProblemCategory, ProblemTagList, ContestImg } from './views'
+  ProblemCategoryList, ProblemCategory, ProblemTagList, ContestImg, Banner } from './views'
 Vue.use(VueRouter)
 
 export default new VueRouter({
@@ -54,6 +54,11 @@ export default new VueRouter({
           path: '/announcement',
           name: 'announcement',
           component: Announcement
+        },
+        {
+          path: '/banner',
+          name: 'banner',
+          component: Banner
         },
         {
           path: '/user',
