@@ -21,7 +21,8 @@ import {
   AnnouncementList,
   Join,
   CategoryList,
-  ProblemSubmission
+  ProblemSubmission,
+  FindUserID
 } from '../views'
 import Logout from '../views/user/Logout.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
@@ -30,6 +31,12 @@ import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
 
 export default [
+  {
+    name: 'find-user-id',
+    path: '/find-user-id',
+    meta: {title: 'find-user-id'},
+    component: FindUserID
+  },
   {
     name: 'category-list',
     path: '/category-list',
