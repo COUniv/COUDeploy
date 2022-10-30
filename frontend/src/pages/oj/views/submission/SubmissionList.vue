@@ -90,8 +90,9 @@
               </tr>
             </tbody>
           </table>
+          <div class="no-data" v-if="submissions.length == 0">데이터 없음</div>
         </div>
-        <Pagination :total="total" :page-size="limit" @on-change="changeRoute" :current.sync="page" style="margin: 20px 0 10px; display: flex; justify-content: center; float: none;"></Pagination>
+        <Pagination v-if="submissions.length > 0" :total="total" :page-size="limit" @on-change="changeRoute" :current.sync="page" style="margin: 20px 0 10px; display: flex; justify-content: center; float: none;"></Pagination>
       </Panel>
     </div>
   </div>
@@ -422,6 +423,17 @@
       }
     }
   }
+
+  .no-data {
+    text-align: center;
+    padding: 15px 0 15px 0;
+    margin-bottom: 50px;
+    color: @gray;
+    font-size: 85%;
+    -webkit-text-stroke: .2px;
+    border-bottom: 1px solid @dark-white;
+  }
+
   .icon-hv {
       transition: all 0;
       cursor: pointer;
