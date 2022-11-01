@@ -81,7 +81,7 @@
     },
     watch: {
       $route () {
-        this.noShow()
+        return this.noShow
       }
     }
   }
