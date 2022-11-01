@@ -40,7 +40,7 @@ class getFindUserIDAPI(APIView):
         try:
             user = User.objects.get(email=data["email"])
         except User.DoesNotExist:
-            return self.error("존재하지 않는 유저입니다")
+            return self.success({"username": "None"})
         username = str(user.username)
         result = username[:-2] + "**"
         return self.success({"username": result})
