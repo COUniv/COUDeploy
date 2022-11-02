@@ -3,7 +3,7 @@
 APP=/app
 DATA=/data
 
-mkdir -p $DATA/log $DATA/config $DATA/ssl $DATA/test_case $DATA/public/upload $DATA/public/avatar $DATA/public/website $DATA/public/contestimgs
+mkdir -p $DATA/log $DATA/config $DATA/ssl $DATA/test_case $DATA/public/upload $DATA/public/avatar $DATA/public/website $DATA/public/contestimgs $DATA/public/banner
 
 if [ ! -f "$DATA/config/secret.key" ]; then
     echo $(cat /dev/urandom | head -1 | md5sum | head -c 32) > "$DATA/config/secret.key"
@@ -21,10 +21,14 @@ if [ ! -f "$DATA/public/contestimgs/default.png" ]; then
     cp data/public/contestimgs/default.png $DATA/public/contestimgs
 fi
 
+if [ ! -f "$DATA/public/banner/default.png" ]; then
+    cp data/public/banner/default.png $DATA/public/banner
+fi
+
 SSL="$DATA/ssl"
 if [ ! -f "$SSL/server.key" ]; then
     openssl req -x509 -newkey rsa:2048 -keyout "$SSL/server.key" -out "$SSL/server.crt" -days 1000 \
-        -subj "/C=CN/ST=Beijing/L=Beijing/O=Beijing OnlineJudge Technology Co., Ltd./OU=Service Infrastructure Department/CN=`hostname`" -nodes
+        -subj "/C=KR/ST=Seoul/L=Seoul/O=COU Co., Ltd./OU=Service Infrastructure Department/CN=`hostname`" -nodes
 fi
 
 cd $APP/deploy/nginx
