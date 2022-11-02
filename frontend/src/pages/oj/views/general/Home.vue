@@ -223,7 +223,7 @@
           temp = res.data.data
           if (temp.length < 2) {
             if (temp.length < 1) {
-              temp.push({url: '/public/banner/defaultBANNER.png'})
+              temp.push({url: '/public/banner/default.png'})
             }
             this.bannerList = temp
             this.bannerOpt.size = this.bannerList.length
@@ -235,7 +235,7 @@
           }
         }, () => {
           this.$error('배너를 불러오지 못했습니다.')
-          this.bannerList.push({banner: '/public/banner/defaultBANNER.png'})
+          this.bannerList.push({banner: '/public/banner/default.png'})
           this.bannerOpt.size = this.bannerList.length
           this.bannerOpt.autoplay = false
         })
