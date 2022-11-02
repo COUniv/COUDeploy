@@ -8,6 +8,7 @@ import NotFound from './general/404.vue'
 import Home from './general/Home.vue'
 import Announcements from './general/Announcements.vue'
 import AnnouncementList from './general/AnnouncementList.vue'
+import FindUserID from './user/FindUserID.vue'
 import Grass from './user/Grass.vue'
 // Grouping Components in the Same Chunk
 const SubmissionList = () => import(/* webpackChunkName: "submission" */ '@oj/views/submission/SubmissionList.vue')
@@ -39,5 +40,5 @@ export {
   ApplyResetPassword, ResetPassword,
   ArticleList, CreateArticle, Article, Notification, AnnouncementList, CategoryList,
   Grass,
-  ProblemSubmission
+  ProblemSubmission, FindUserID
 }

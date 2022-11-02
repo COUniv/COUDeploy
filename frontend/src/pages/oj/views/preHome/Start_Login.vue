@@ -21,8 +21,11 @@
                 <!-- <Icon type="ios-lock-outline" slot="prepend"></Icon> -->
               </Input>
               <div class = "login_foot">
-              <a class="foot_password" @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
-            </div>
+                <a class="foot_password" @click.stop="goResetPassword" style="float: right">{{$t('m.Forget_Password')}}</a>     
+              </div>
+              <div class = "login_foot">
+                <a class="foot_password" @click.stop="goFindUserID" style="float: right">아이디 찾기</a>     
+              </div>
             </FormItem>
             <!-- 로그인 상태 체크박스 -->
             
@@ -128,7 +131,7 @@ export default {
     },
     afterlogin (route) {
       if (route) {
-        if (route.path === '/logout' || route.path === '/join') {
+        if (route.path === '/logout' || route.path === '/join' || route.path === '/find-user-id') {
           this.$router.push({path: '/'}).catch(() => {})
         } else {
           this.$router.push({path: route.path}).catch(() => {})
@@ -147,6 +150,10 @@ export default {
     goResetPassword () {
       this.changeModalStatus({visible: false})
       this.$router.push({name: 'apply-reset-password'}).catch(() => {})
+    },
+    goFindUserID () {
+      this.changeModalStatus({visible: false})
+      this.$router.push({name: 'find-user-id'}).catch(() => {})
     },
     isAlreadyLoggedin () {
       if (this.$store.getters.isAuthenticated === true) {
@@ -246,15 +253,16 @@ export default {
 @media screen and (max-width: 900px) {
   .start_login {
     margin: -80px -50px -190px -50px;
+    & {}
     // margin-top: 160px;
     // min-height: 725px;
     // height: calc(~"100vh - 80px");
     // min-height: 100%;
     position: relative;
     // padding-bottom: 80px;
-    min-width: 100vw;
+    min-width: 500px;
     .form {
-      min-width: 90vw;
+      width: 375px;
       .login_edge {
         padding: 0px 44px 20px;
       }
@@ -434,6 +442,7 @@ export default {
   .foot_password {
     color: @gray;
     font-weight: @weight-bold;
+    margin-left: 10px;
   }
   // margin: 5px 0 5px 0;
 }

@@ -6,13 +6,14 @@ from ..views.oj import (ApplyResetPasswordAPI, ResetPasswordAPI,
                         AvatarUploadAPI, TwoFactorAuthAPI, UserProfileAPI,
                         UserRankAPI, CheckTFARequiredAPI, SessionManagementAPI,
                         ProfileProblemDisplayIDRefreshAPI, OpenAPIAppkeyAPI, SSOAPI, UserDeleteAPI,
-                        GrassAPI)
+                        GrassAPI, getFindUserIDAPI)
 
 from ..views.oj import (ApplyVerifyEmailAPI, VerifyEmailAPI, LastActivityAPI)
 
 from utils.captcha.views import CaptchaAPIView
 
 urlpatterns = [
+    url(r"get_find_username/?$", getFindUserIDAPI.as_view(), name="get_find_username"),
     url(r"^get_inactive_time/?$", LastActivityAPI.as_view(), name="get_inactive_time_api"),
     url(r"^apply_verify_email/?$", ApplyVerifyEmailAPI.as_view(), name="apply_verify_email_api"),
     url(r"^verify_email/?$", VerifyEmailAPI.as_view(), name="verify_email_api"),
