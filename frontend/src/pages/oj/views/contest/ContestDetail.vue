@@ -26,8 +26,8 @@
                          @on-enter="checkPassword"/>
                   <Button type="info" @click="checkPassword">Enter</Button>
                 </div>
+                <Table class="table" :columns="columns" :data="contest_table" disabled-hover></Table>
               </Panel>
-              <Table :columns="columns" :data="contest_table" disabled-hover style="margin-bottom: 40px;"></Table>
             </div>
           </template>
         </div>
@@ -140,6 +140,7 @@
         }
       },
       mounted () {
+        this.init()
         this.contestID = this.$route.params.contestID
         this.route_name = this.$route.name
         this.$store.dispatch('getContest').then(res => {
@@ -155,6 +156,9 @@
       },
       methods: {
         ...mapActions(['changeDomTitle']),
+        init () {
+          console.log(this.contest_table[0].contest_type)
+        },
         handleRoute (route) {
           this.$router.push(route).catch(() => {})
         },
@@ -211,6 +215,7 @@
 </script>
 
 <style scoped lang="less">
+@import '../../../../styles/common.less';
   body {
     padding-bottom: 0 !important;
     max-height: 100vh !important;
@@ -287,6 +292,11 @@
       width: 90% !important;
       margin: 0 0 20px 0 !important;
     }
+  }
+
+  .table {
+    margin: 40px 0 30px 0;
+    background-color: @white;
   }
   </style>
   

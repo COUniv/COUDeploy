@@ -465,7 +465,7 @@
     border-bottom: 1.5px solid #E1262A;
   }
   .left {
-    margin-bottom: 40px;
+    //margin-bottom: 40px;
     .setting-content {
       margin: 0;
       .field {

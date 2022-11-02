@@ -332,3 +332,36 @@ table {
 .ivu-form-item {
   margin-bottom: 24px;
 }
+
+.ivu-dropdown .ivu-select-dropdown {
+  max-height: 150px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.ivu-table {
+  color: @gray;
+
+  td {
+    -webkit-text-stroke-width: .2px;
+    border-bottom-color: @dark-white;
+  }
+
+  th {
+    color: black;
+    background-color: @white;
+    border-bottom: 1.5px solid @dark-white;
+  }
+}
+
+.problems-table .ivu-table-row {
+  cursor: pointer !important;
+  &:hover {
+    color: @purple;
+    transition: color .3s ease-in-out;
+  }
+}
+
+.ivu-table:after {
+  display: none;
+}

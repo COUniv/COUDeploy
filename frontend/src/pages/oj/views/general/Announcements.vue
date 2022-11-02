@@ -179,6 +179,7 @@
   .no-announcement {
     text-align: center;
     font-size: 16px;
+    margin-bottom: 117px;
   }
 
   .announcement-animate-enter-active {

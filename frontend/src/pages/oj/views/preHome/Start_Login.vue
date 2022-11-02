@@ -131,7 +131,7 @@ export default {
     },
     afterlogin (route) {
       if (route) {
-        if (route.path === '/logout' || route.path === '/join') {
+        if (route.path === '/logout' || route.path === '/join' || route.path === '/find-user-id') {
           this.$router.push({path: '/'}).catch(() => {})
         } else {
           this.$router.push({path: route.path}).catch(() => {})
@@ -253,15 +253,16 @@ export default {
 @media screen and (max-width: 900px) {
   .start_login {
     margin: -80px -50px -190px -50px;
+    & {}
     // margin-top: 160px;
     // min-height: 725px;
     // height: calc(~"100vh - 80px");
     // min-height: 100%;
     position: relative;
     // padding-bottom: 80px;
-    min-width: 100vw;
+    min-width: 500px;
     .form {
-      min-width: 90vw;
+      width: 375px;
       .login_edge {
         padding: 0px 44px 20px;
       }

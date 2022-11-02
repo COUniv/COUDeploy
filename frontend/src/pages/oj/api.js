@@ -8,9 +8,9 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
-  getFindusername (data) {
+  getFindusername (params) {
     return ajax('get_find_username', 'get', {
-      data
+      params
     })
   },
   getUsingBannerList () {
