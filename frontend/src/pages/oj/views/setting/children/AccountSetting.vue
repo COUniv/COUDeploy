@@ -504,4 +504,20 @@
       }
     }
   }
+  @media screen and (max-width : 900px) {
+    .field {
+      .ivu-input {
+        width: 70%;
+      }
+      .edit-field.ivu-form-item.ivu-form-item-required {
+        //width: 100%;
+      }
+      .oj-captcha {
+        display: block;
+        .oj-captcha-img {
+          margin: 0;
+        }
+      }
+    }
+  }
 </style>
