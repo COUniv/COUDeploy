@@ -104,12 +104,12 @@
       this.getCaptchaSrc()
     },
     data () {
-      const regExp = /(?=^.{4,20}$)^[a-z]+[a-z0-9]$/
+      const regExp = /^(?=.*[a-zA-Z])[-a-z0-9]{5,20}$/
       const blockAdminRegExp = /^(admin|user|root|gm|unknownuser|help)/i
       const passregex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
       const CheckUsernameNotExist = (rule, value, callback) => {
         if (!regExp.test(value)) {
-          callback(new Error('4 ~ 20자리 소문자 + 숫자 조합만 가능합니다'))
+          callback(new Error('5 ~ 20자리 소문자 + 숫자 조합만 가능합니다'))
         } else if (blockAdminRegExp.test(value)) {
           callback(new Error('생성할 수 없는 이름입니다'))
         } else {
@@ -134,9 +134,6 @@
       }
       const CheckPassword = (rule, value, callback) => {
         if (this.formRegister.password !== '') {
-          console.log(value)
-          console.log(passregex.test(value))
-          console.log(passregex.test(value))
           if (passregex.test(value) === false) {
             callback(new Error('영문 + 숫자 + 특수문자(@$!%*#?& 중 1개이상)로 구성되어야 합니다'))
           } else {

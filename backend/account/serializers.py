@@ -4,6 +4,9 @@ from utils.api import serializers, UsernameSerializer
 
 from .models import AdminType, ProblemPermission, User, UserProfile
 
+class FindUserNameSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=64, allow_blank=False, allow_null=False)
+
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()

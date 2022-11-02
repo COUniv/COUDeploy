@@ -16,3 +16,7 @@ class ImageUploadForm(forms.Form):
     image = forms.FileField()
     title = forms.CharField()
     url = forms.URLField()
+
+class EditEnableBannerSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    enable = serializers.BooleanField()

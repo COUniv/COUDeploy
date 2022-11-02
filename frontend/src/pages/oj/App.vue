@@ -142,15 +142,7 @@
   }
 
   @media screen and (max-width: 900px) {
-    .content_container {
-      max-width: 100vw;
-      overflow-x: hidden;
-      margin-right: 0 !important;
-    }
-    .content-app {
-      max-width: 100vw;
-      overflow-x: hidden
-    }
+    max-width: 900px;
   }
 
 
