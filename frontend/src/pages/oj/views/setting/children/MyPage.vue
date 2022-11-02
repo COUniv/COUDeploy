@@ -37,6 +37,7 @@
             </div>
           </div>
         </div>
+        <Grass></Grass>
         <div>
           <div id="problems">
             <div class="solved-container" v-if="problems.length">{{$t('m.List_Solved_Problems')}}
@@ -72,7 +73,7 @@
       </div>
 
       <!-- github같은 잔디 (현재 비활성화) -->
-      <!-- <Grass></Grass> -->
+      
 
       <!-- account setting, profile setting button -->
       <!-- <div>
@@ -94,6 +95,7 @@
         </div>
       </div> -->
     </div>
+    
   </div>
 </template>
 <script>
@@ -289,6 +291,11 @@
       .icon {
         padding-left: 20px;
       }
+    }
+  }
+  @media screen and (max-width : 900px) {
+    .setting-main {
+      max-width: 89vw;
     }
   }
 </style>

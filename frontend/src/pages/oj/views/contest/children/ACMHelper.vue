@@ -12,7 +12,7 @@
         </li>
       </ul>
     </div>
-    <Table :data="pagedAcInfo" :columns="columns" :loading="loadingTable" disabled-hover></Table>
+    <Table class="table" :data="pagedAcInfo" :columns="columns" :loading="loadingTable" disabled-hover></Table>
     <pagination :total="total"
                 :page-size.sync="limit"
                 :current.sync="page"
@@ -236,5 +236,10 @@
   &:hover {
     background-color: #fff;
   }
+}
+
+.table {
+  margin-top: 40px;
+  padding-bottom: 60px;
 }
 </style>

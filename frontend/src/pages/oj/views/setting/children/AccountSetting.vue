@@ -465,7 +465,7 @@
     border-bottom: 1.5px solid #E1262A;
   }
   .left {
-    margin-bottom: 40px;
+    //margin-bottom: 40px;
     .setting-content {
       margin: 0;
       .field {
@@ -501,6 +501,22 @@
         border: 1px solid @purple;
         color: @purple;
         margin-right: 5px;
+      }
+    }
+  }
+  @media screen and (max-width : 900px) {
+    .field {
+      .ivu-input {
+        width: 70%;
+      }
+      .edit-field.ivu-form-item.ivu-form-item-required {
+        //width: 100%;
+      }
+      .oj-captcha {
+        display: block;
+        .oj-captcha-img {
+          margin: 0;
+        }
       }
     }
   }

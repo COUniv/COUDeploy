@@ -2,16 +2,17 @@
   <div>
     <Panel>
       <div slot="title">{{$t('m.Problems_List')}}</div>
-      <Table v-if="contestRuleType == 'ACM' || OIContestRealTimePermission"
+      <Table class="problems-table" v-if="contestRuleType == 'ACM' || OIContestRealTimePermission"
              :columns="ACMTableColumns"
              :data="problems"
              @on-row-click="goContestProblem"
+             disabled-hover
              :no-data-text="$t('m.No_Problems')"></Table>
-      <Table v-else
+      <!-- <Table v-else
              :data="problems"
              :columns="OITableColumns"
              @on-row-click="goContestProblem"
-             no-data-text="$t('m.No_Problems')"></Table>
+             no-data-text="$t('m.No_Problems')"></Table> -->
     </Panel>
   </div>
 </template>
@@ -95,4 +96,7 @@
 </script>
 
 <style scoped lang="less">
+    .problems-table {
+      margin-bottom: 60px;
+    }
 </style>

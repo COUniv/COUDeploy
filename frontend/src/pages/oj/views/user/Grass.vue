@@ -75,9 +75,9 @@
   text-align: center;
   font-weight: 400;
   font-size: 16px;
-  margin-top: 30px;
+  margin-top: 50px;
   .flex-item {
-    width:75%;
+    width:100%;
     overflow-x: auto;
   }
   .grass-container {

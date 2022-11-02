@@ -12,24 +12,24 @@
         <p v-if="profile.mood">
           {{profile.mood}}
         </p>
-        <hr id="split"/>
+        <!-- <hr id="split"/> -->
 
         <div class="flex-container">
           <div class="left">
-            <p>{{$t('m.UserHomeSolved')}}</p>
             <p class="emphasis">{{profile.accepted_number}}</p>
+            <p>{{$t('m.UserHomeSolved')}}</p>
           </div>
           <div class="middle">
-            <p>{{$t('m.UserHomeserSubmissions')}}</p>
             <p class="emphasis">{{profile.submission_number}}</p>
+            <p>{{$t('m.UserHomeserSubmissions')}}</p>
           </div>
           <div class="right">
-            <p>{{$t('m.UserHomeScore')}}</p>
             <p class="emphasis">{{profile.total_score}}</p>
+            <p>{{$t('m.UserHomeScore')}}</p>
           </div>
         </div>
         <div id="problems">
-          <div v-if="problems.length">{{$t('m.List_Solved_Problems')}}
+          <div id="problem-title" v-if="problems.length">{{$t('m.List_Solved_Problems')}}
             <Poptip v-if="refreshVisible" trigger="hover" placement="right-start">
               <Icon type="ios-help-outline"></Icon>
               <div slot="content">
@@ -38,10 +38,10 @@
               </div>
             </Poptip>
           </div>
-          <p v-else>{{$t('m.UserHomeIntro')}}</p>
+          <p id="problem-title" v-else>{{$t('m.UserHomeIntro')}}</p>
           <div class="btns">
-            <div class="problem-btn" v-for="problemID of problems" :key="problemID">
-              <Button @click="goProblem(problemID)">{{problemID}}</Button>
+            <div v-for="problemID of problems" :key="problemID">
+              <Button class="problem-btn" type="primary" @click="goProblem(problemID)">{{problemID}}</Button>
             </div>
           </div>
         </div>
@@ -129,7 +129,9 @@
 </script>
 
 <style lang="less" scoped>
+@import '../../../../styles/common.less';
   .container {
+    color: @black;
     position: relative;
     width: 75%;
     margin: 170px auto;
@@ -152,8 +154,10 @@
       }
     }
     .emphasis {
-      font-size: 20px;
-      font-weight: 600;
+      font-size: 25px;
+      font-weight: 400;
+      -webkit-text-stroke: 1px;
+      text-align: center;
     }
     #split {
       margin: 20px auto;
@@ -161,14 +165,19 @@
     }
     .flex-container {
       margin-top: 30px;
-      padding: auto 20px;
+      padding: 20px;
+      font-size: 20px;
+      font-weight: 200;
+      -webkit-text-stroke: .3px;
+      box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.25);
+      border-radius: 5px;
       .left {
         flex: 1 1;
       }
       .middle {
         flex: 1 1;
-        border-left: 1px solid #999;
-        border-right: 1px solid #999;
+        border-right: 2px solid @light-gray;
+        border-left: 2px solid @light-gray;
       }
       .right {
         flex: 1 1;
@@ -176,15 +185,23 @@
     }
     #problems {
       margin-top: 40px;
-      padding-left: 30px;
-      padding-right: 30px;
-      font-size: 18px;
+      padding: 20px;
+      color: @purple;
+      #problem-title {
+        padding-bottom: 10px;
+        font-size: 18px;
+        font-weight: 200;
+        -webkit-text-stroke: .3px;
+        border-bottom: 2px solid @purple;
+      }
       .btns {
-        margin-top: 15px;
-        .problem-btn {
-          display: inline-block;
-          margin: 5px;
-        }
+        margin-top: 10px;
+        display: flex;
+        justify-content: start;
+          .problem-btn {
+            margin: 5px;
+            padding: 2px 10px;
+          }
       }
     }
     #icons {
