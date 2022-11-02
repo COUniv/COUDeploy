@@ -97,6 +97,6 @@
 
 <style scoped lang="less">
     .problems-table {
-      margin-bottom: 40px;
+      margin-bottom: 60px;
     }
 </style>

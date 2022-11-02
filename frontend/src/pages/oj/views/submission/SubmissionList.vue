@@ -409,6 +409,7 @@
     th {
       border-bottom: 1px solid #c4c4c4;
       padding: 8px;
+      color: @black;
     }
 
     tbody {
