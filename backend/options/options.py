@@ -107,9 +107,9 @@ class OptionKeys:
 
 class OptionDefaultValue:
     website_base_url = "http://127.0.0.1"
-    website_name = "Online Judge"
-    website_name_shortcut = "oj"
-    website_footer = "Online Judge Footer"
+    website_name = "COU"
+    website_name_shortcut = "cou"
+    website_footer = "COU Footer"
     allow_register = True
     submission_list_show_all = True
     smtp_config = {}
