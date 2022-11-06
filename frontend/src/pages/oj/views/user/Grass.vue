@@ -3,9 +3,11 @@
     <div class="flex-container">
       <div class="flex-item">
       <svg class="grass-container">
-        <template  v-for="(__, idx_x) in 52">
+        <template>
           <g>
-            <rect v-for="(_, idx_y) in 7" class="grass-pointer" v-bind:style="{'x':getPositionX(idx_x) ,'y': getPositionY(idx_y)}"></rect>
+            <rect v-for="(_, day) in this.numOfDaysInYear" class="grass-pointer"
+              v-bind:class="numberOfProblemsSolved(day)"
+              v-bind:style="{'x':getPositionX(day) ,'y': getPositionY(day)}"></rect>
           </g>
         </template>
       </svg>
@@ -43,33 +45,114 @@
 </template>
 <script>
   import api from '@oj/api'
+  import time from '@/utils/time'
   export default {
     data () {
       return {
-        grassList: []
+        grassList: [],
+        grassCount: {},
+        numOfDaysInYear: 0,
+        startingDayOfWeek: 0
       }
     },
     mounted () {
       this.getGrassList()
     },
     methods: {
-
       getGrassList () {
         api.getGrassList().then(res => {
           this.grassList = res.data.data.grass
+          // console.log(this.grassList)
+          this.getGrassListCount(this.grassList, '2022')
         })
       },
-      getPositionX (x) {
-        return 13 * x
+      getPositionX (day) {
+        var currentDay = day + (this.startingDayOfWeek - 1)
+        return Math.floor(currentDay / 7) * 13
       },
-      getPositionY (y) {
-        return 13 * y
+      getPositionY (day) {
+        var currentDay = day + (this.startingDayOfWeek - 1)
+        return currentDay % 7 * 13
+      },
+      getGrassListCount (list, chosenYear) {
+        this.numOfDaysInYear = this.daysInYear(parseInt(chosenYear))
+        this.startingDayOfWeek = new Date(parseInt(chosenYear), 0, 1).getDay()
+        this.grassCount = new Array(this.numOfDaysInYear).fill(0)
+        list.forEach(element => {
+          if (time.utcToLocal(element, 'YYYY') === chosenYear) {
+            var month = parseInt(time.utcToString(element, 'MM'))
+            var day = parseInt(time.utcToString(element, 'DD'))
+            var currentDay = this.whichDayInYear(month, day, this.numOfDaysInYear)
+            this.grassCount[currentDay - 1] = this.grassCount[currentDay - 1] + 1
+          }
+        })
+      },
+      daysInYear (year) {
+        return ((year % 4 === 0 && year % 100 > 0) || year % 400 === 0) ? 366 : 365
+      },
+      whichDayInYear (month, day, leapYear) {
+        var dayInYear = 0
+        for (let mo = 1; mo < month; mo++) {
+          switch (mo) {
+            case 1:
+              dayInYear += 31
+              break
+            case 2:
+              if (leapYear === 366) dayInYear += 29
+              else dayInYear += 28
+              break
+            case 3:
+              dayInYear += 31
+              break
+            case 4:
+              dayInYear += 30
+              break
+            case 5:
+              dayInYear += 31
+              break
+            case 6:
+              dayInYear += 30
+              break
+            case 7:
+              dayInYear += 31
+              break
+            case 8:
+              dayInYear += 31
+              break
+            case 9:
+              dayInYear += 30
+              break
+            case 10:
+              dayInYear += 31
+              break
+            case 11:
+              dayInYear += 30
+              break
+            case 12:
+              dayInYear += 31
+              break
+            default:
+              break
+          }
+        }
+        dayInYear += day
+        return dayInYear
+      },
+      numberOfProblemsSolved (day) {
+        var number = this.grassCount[day]
+        // console.log('current day ' + currentDay + ', number ' + number)
+        if (number <= 0) return 'level1'
+        else if (number < 2) return 'level2'
+        else if (number < 4) return 'level3'
+        else if (number < 6) return 'level4'
+        else if (number > 7) return 'level5'
       }
     }
   }
 </script>
 <style lang="less" scoped>
 @import '../../../../styles/common.less';
+
 .flex-container {
   width:100%;
   text-align: center;
@@ -81,13 +164,13 @@
     overflow-x: auto;
   }
   .grass-container {
-    width: 677px;
+    width: 703px;
     height: 100px;
     margin: 0 auto;
   }
 }
 .grass-pointer {
-  fill:@orange;
+  fill:@light-gray;
   rx: 2px;
   ry: 2px;
   height:10px; 
@@ -116,11 +199,10 @@
   margin-top: 10px;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
+  padding-right: 107px;
   .flex-level-item {
-    max-width: 677px;
-    width:75%;
     height: 18px;
     .level-left {
       float: left;
@@ -156,7 +238,7 @@
     }
   }
   .grass-container {
-    width: 677px;
+    width: 703px;
     height: 100px;
     margin: 0 auto;
   }
@@ -170,6 +252,18 @@
       width: 10px;
       margin-right: 0px;
     }
+  }
+}
+
+@media screen and (max-width: 1500px) {
+  .flex-container, .flex-level-container {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .flex-container, .flex-level-container {
+    display: flex;
   }
 }
 </style>

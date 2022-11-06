@@ -37,7 +37,7 @@
             </div>
           </div>
         </div>
-        <!-- <Grass></Grass> -->
+        <Grass></Grass>
         <div>
           <div id="problems">
             <div class="solved-container" v-if="problems.length">{{$t('m.List_Solved_Problems')}}

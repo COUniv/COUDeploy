@@ -5,6 +5,10 @@ function utcToLocal (utcDt, format = 'YYYY-M-D  HH:mm:ss') {
   return moment.utc(utcDt).local().format(format)
 }
 
+function utcToString (utcDt, format = 'YYYY-M-D  HH:mm:ss') {
+  return moment.utc(utcDt).format(format)
+}
+
 // get duration from startTime to endTime, return like 3 days, 2 hours, one year ..
 function duration (startTime, endTime) {
   let start = moment(startTime)
@@ -23,6 +27,7 @@ function secondFormat (seconds) {
 
 export default {
   utcToLocal: utcToLocal,
+  utcToString: utcToString,
   duration: duration,
   secondFormat: secondFormat
 }
