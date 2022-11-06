@@ -145,7 +145,7 @@
         else if (number < 2) return 'level2'
         else if (number < 4) return 'level3'
         else if (number < 6) return 'level4'
-        else if (number > 7) return 'level5'
+        else if (number >= 6) return 'level5'
       }
     }
   }
