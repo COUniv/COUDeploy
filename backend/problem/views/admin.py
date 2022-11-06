@@ -335,6 +335,16 @@ class ProblemBase(APIView):
         data["languages"] = list(data["languages"])
 
 
+class ProblemNumberingAPI(APIView):
+    @problem_permission_required
+    def get(self, request):
+        problems = Problem.objects.filter(contest_id__isnull=True).order_by("-_id")
+        if problems:
+            highest_number = int(problems[0]._id) + 1
+            return self.success({"last": str(highest_number)})
+        else:
+            return self.success({"last": "1000"})
+
 class ProblemAPI(ProblemBase):
     @problem_permission_required
     @validate_serializer(CreateProblemSerializer)
