@@ -312,7 +312,7 @@
 }
 
 @media screen and (max-width: 1500px) {
-  .flex-container, .flex-level-container {
+  .flex-container, .flex-level-container, .select {
     display: none;
   }
 }
