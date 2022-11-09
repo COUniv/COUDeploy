@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="flex-container">
+      <div class="contribution">{{this.numOfProblems}} problems in {{this.chosenYear}}</div>
       <div class="flex-item">
       <svg class="grass-container">
         <template>
@@ -12,34 +13,40 @@
         </template>
       </svg>
       </div>
-    </div>
-    <div class="flex-level-container">
-      <div class="flex-level-item">
-        <div class="level-left"></div>
-        <div class="level-right">
-          <div class="text">Less</div>
-          <div class="svg-level-box">
-          <svg class="level-svg">
-            <rect class="grass-pointer level1"></rect>
-          </svg>
-          <svg class="level-svg">
-            <rect class="grass-pointer level2"></rect>
-          </svg>
-          <svg class="level-svg">
-            <rect class="grass-pointer level3"></rect>
-          </svg>
-          <svg class="level-svg">
-            <rect class="grass-pointer level4"></rect>
-          </svg>
-          <svg class="level-svg last">
-            <rect class="grass-pointer level5"></rect>
-          </svg>
-          </div>
-          <div class="text">
-          More
-          </div>
+        <div class="flex-level-container">
+        <div class="flex-level-item">
+          <div class="level-left"></div>
+          <div class="level-right">
+            <div class="text">Less</div>
+            <div class="svg-level-box">
+            <svg class="level-svg">
+              <rect class="grass-pointer level1"></rect>
+            </svg>
+            <svg class="level-svg">
+              <rect class="grass-pointer level2"></rect>
+            </svg>
+            <svg class="level-svg">
+              <rect class="grass-pointer level3"></rect>
+            </svg>
+            <svg class="level-svg">
+              <rect class="grass-pointer level4"></rect>
+            </svg>
+            <svg class="level-svg last">
+              <rect class="grass-pointer level5"></rect>
+            </svg>
+            </div>
+            <div class="text">
+            More
+            </div>
         </div>
       </div>
+      </div>
+    </div>
+    <div class="year">
+      <Select :value="chosenYear" @on-change="getGrassList" class="select">
+        <Option v-for="item in yearsRegistered" :key="item" :value="item">{{item}}
+        </Option>
+      </Select>
     </div>
   </div>
 </template>
@@ -52,18 +59,48 @@
         grassList: [],
         grassCount: {},
         numOfDaysInYear: 0,
-        startingDayOfWeek: 0
+        startingDayOfWeek: 0,
+        numOfProblems: 0,
+        chosenYear: '',
+        yearsRegistered: [],
+        username: '',
+        registrationYear: ''
+      }
+    },
+    watch: {
+      numOfDaysInYear (newVal, oldVal) {
+        this.numOfDaysInYear = newVal
       }
     },
     mounted () {
-      this.getGrassList()
+      this.init()
     },
     methods: {
-      getGrassList () {
+      init () {
+        this.chosenYear = (new Date().getFullYear()).toString()
+        this.username = this.$route.query.username
+        api.getUserInfo(this.username).then(res => {
+          var registrationDate = res.data.data.user.create_time
+          this.registrationYear = time.utcToString(registrationDate, 'YYYY')
+          var chosenYearInt = parseInt(this.chosenYear)
+          var registrationYearInt = parseInt(this.registrationYear)
+          if (chosenYearInt - registrationYearInt === 0) {
+            this.yearsRegistered.push(this.chosenYear)
+          } else {
+            var diff = chosenYearInt - registrationYearInt
+            for (let i = 0; i <= diff; i++) {
+              this.yearsRegistered.push((registrationYearInt + i).toString())
+            }
+          }
+          this.getGrassList(this.chosenYear)
+        })
+      },
+      getGrassList (chosenYear) {
+        this.chosenYear = chosenYear
+        this.numOfProblems = 0
         api.getGrassList().then(res => {
           this.grassList = res.data.data.grass
-          // console.log(this.grassList)
-          this.getGrassListCount(this.grassList, '2022')
+          this.getGrassListCount(this.grassList, this.chosenYear)
         })
       },
       getPositionX (day) {
@@ -84,6 +121,7 @@
             var day = parseInt(time.utcToString(element, 'DD'))
             var currentDay = this.whichDayInYear(month, day, this.numOfDaysInYear)
             this.grassCount[currentDay - 1] = this.grassCount[currentDay - 1] + 1
+            this.numOfProblems += 1
           }
         })
       },
@@ -159,13 +197,25 @@
   font-weight: 400;
   font-size: 16px;
   margin-top: 50px;
+  padding: 20px 0 10px 0;
+  border: 1px solid @orange;
+  position: relative;
+  .contribution {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background-color: @white;
+    font-size: 80%;
+    padding: 0 10px;
+    color: @orange;
+  }
   .flex-item {
     width:100%;
     overflow-x: auto;
   }
   .grass-container {
     width: 703px;
-    height: 100px;
+    height: 90px;
     margin: 0 auto;
   }
 }
@@ -200,8 +250,8 @@
   display: flex;
   flex-direction: row;
   justify-content: end;
-  align-items: center;
-  padding-right: 107px;
+  // align-items: center;
+  padding-right: 105px;
   .flex-level-item {
     height: 18px;
     .level-left {
@@ -255,8 +305,14 @@
   }
 }
 
+.year {
+  width: 150px;
+  margin-left: auto;
+  margin-top: 20px;
+}
+
 @media screen and (max-width: 1500px) {
-  .flex-container, .flex-level-container {
+  .flex-container, .flex-level-container, .select {
     display: none;
   }
 }
@@ -264,6 +320,8 @@
 @media screen and (min-width: 1500px) {
   .flex-container, .flex-level-container {
     display: flex;
+    flex-direction: column;
+
   }
 }
 </style>
