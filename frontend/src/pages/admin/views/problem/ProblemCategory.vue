@@ -12,7 +12,7 @@
 
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item prop="input_description" :label="설명" required>
+            <el-form-item prop="input_description" label="내용" required>
               <Simditor v-model="problemCategory.description"></Simditor>
             </el-form-item>
           </el-col>
@@ -26,6 +26,10 @@
           @keyup.enter.native="addProblem"
           @select="addProblem"
           :fetch-suggestions="problemquerySearch">
+          <template #default="{ item }">
+      <div style="float:left">{{ item.value }}</div>
+      <div style="float:right; color: #9e9e9e;">{{ item._id }}</div>
+    </template>
         </el-autocomplete>
 
         <el-table
@@ -160,22 +164,21 @@
         api.searchProblemList({ keyword: queryString }).then(res => {
           let ProblemList = []
           for (let problem of res.data.data) {
-            ProblemList.push({value: problem.title})
+            ProblemList.push({value: problem.title, _id: problem._id})
           }
           cb(ProblemList)
         }).catch(() => {
         })
       },
-      addProblem () {
-        let title = this.problemInput
+      addProblem (item) {
         let flag = true
         for (let problem of this.problemList) {
-          if (problem.title === title) {
+          if (problem._id === item._id) {
             flag = false
           }
         }
-        if (title && flag) {
-          api.addProblem(title).then(res => {
+        if (item._id && flag) {
+          api.addProblem(item._id).then(res => {
             this.problemList.push(res.data.data)
             this.problemCategory.problems.push(res.data.data.id)
           })

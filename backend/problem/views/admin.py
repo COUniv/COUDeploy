@@ -129,20 +129,20 @@ class DeleteProblemCategoryAPI(APIView):
 class AddProblemAPI(APIView):
     @problem_permission_required
     def get(self, request):
-        title = request.GET.get("title")
-        if title:
+        _id = request.GET.get("_id")
+        if _id:
             try:
-                problem = Problem.objects.get(title=title)
+                problem = Problem.objects.get(_id=_id)
                 return self.success(ProblemAdminSerializer(problem).data)
             except Problem.DoesNotExist:
                 return self.error("Problem does not exist")
 
 class SearchProblemAPI(APIView):
     def get(self, request):
-        qs = Problem.objects
+        qs = Problem.objects.filter(Q(contest_id__isnull=True))
         keyword = request.GET.get("keyword")
         if keyword:
-            qs = Problem.objects.filter(Q(title__icontains=keyword) | Q(id__icontains=keyword))
+            qs = Problem.objects.filter(Q(contest_id__isnull=True) & (Q(title__icontains=keyword) | Q(id__icontains=keyword)))
         return self.success(ProblemSerializer(qs, many=True).data)
 
 class ProblemCategoryAPI(APIView):
