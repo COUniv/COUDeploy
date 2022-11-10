@@ -75,10 +75,10 @@ export default {
       }
     })
   },
-  addProblem (title) {
+  addProblem (_id) {
     return ajax('admin/problem/category/add', 'get', {
       params: {
-        title
+        _id
       }
     })
   },
