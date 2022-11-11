@@ -106,7 +106,7 @@
           }
         ],
         rules: {
-          title: {required: true, message: 'Title is required', trigger: 'blur'},
+          title: {required: true, message: 'Title is required', trigger: 'blur', min: 6, max: 40},
           content: {required: true, message: 'Content is required', trigger: 'blur'}
         },
         formArticle: { // 전송 데이터
