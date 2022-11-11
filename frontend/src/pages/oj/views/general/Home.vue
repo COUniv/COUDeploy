@@ -145,20 +145,24 @@
     </div>
 
   </div>
-  <div v-else>
-    <Panel shadow :padding="10">
-    <div slot="title">
+  <div v-else style="padding-left:50px; padding-right:50px">
+    <Panel shadow :padding="20">
+    <div slot="title" style="padding-left:20px; padding-right:20px">
       {{title}}
     </div>
     <div slot="extra">
       <Button v-if="listVisible" type="info" @click="init" :loading="btnLoading">{{$t('m.Refresh')}}</Button>
       <Button v-else icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button>
     </div>
-    <transition-group name="announcement-animate" mode="in-out">
-      <template>
-        <div v-katex v-html="announcement.content" key="content" class="content-container markdown-body"></div>
-      </template>
-    </transition-group>
+    <Row type="flex" justify="space-around">
+      <Col :span="22">
+        <transition-group name="announcement-animate" mode="in-out">
+          <template>
+            <div v-katex v-html="announcement.content" key="content" class="content-container markdown-body"></div>
+          </template>
+        </transition-group>
+      </Col>
+    </Row>
   </Panel>
   </div>
   
@@ -171,11 +175,13 @@
   import time from '@/utils/time'
   import { CONTEST_STATUS_REVERSE, CONTEST_STATUS, RULE_TYPE } from '@/utils/constants'
   import { mapGetters } from 'vuex'
+  import Panel from '../../components/Panel.vue'
   export default {
     name: 'home',
     components: {
       Announcements,
-      ProblemCategory
+      ProblemCategory,
+      Panel
     },
     data () {
       return {
