@@ -109,7 +109,7 @@
                   <span class="no">2</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
               
               <tr v-else-if="index == 2" class="ranker third">
@@ -118,22 +118,22 @@
                   <span class="no" style="color: white">3</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
               <tr v-else-if="index == 3" class="ranker defa">
                 <td class="no">4</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
               <tr v-else-if="index == 4" class="ranker defa">
                 <td class="no">5</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
               <tr v-else-if="index == 5" class="ranker defa">
                 <td class="no">6</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
             </tbody>
           </table>
