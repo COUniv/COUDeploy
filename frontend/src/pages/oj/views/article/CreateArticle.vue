@@ -26,7 +26,7 @@
           
           <!-- 질문 게시판의 경우 질문 관련 언어 설정 -->
           <div id="language" v-if="formArticle.boardtype === '2'" class="selectform">
-            <Select v-model="formArticle.problemtype" placeholder="언어" clearable size="large">
+            <Select v-model="formArticle.problemtype" placeholder="언어" size="large" clearable>
               <Option v-for="type in problemtypeList" :value="type.value" :key="type.value">
                 {{ type.value }}
               </Option>
@@ -45,14 +45,15 @@
         <div class="title_form">
             <el-form-item prop="title" required>
               <!-- 게시글 제목 입력 - formArticle.title -->
-              <Input v-model="formArticle.title" :border="true" placeholder="제목" size="large"></Input>
+              <el-input v-model="formArticle.title" :border="true" placeholder="제목" size="large"></el-input>
             </el-form-item>
         </div>
         
         <!-- 게시글 내용 입력 - formArticle.content -->
         <div class="contents_form">
             <el-form-item prop="content" required>
-              <Simditor v-model="formArticle.content"></Simditor>
+              <Simditor v-model="formArticle.content">
+              </Simditor>
             </el-form-item>
         </div>
 
@@ -106,8 +107,8 @@
           }
         ],
         rules: {
-          title: {required: true, message: 'Title is required', trigger: 'blur', min: 6, max: 40},
-          content: {required: true, message: 'Content is required', trigger: 'blur'}
+          title: [{required: true, message: '제목은 6이상 30이하 자리까지만 허용됩니다.', trigger: 'blur', min: 6, max: 30}],
+          content: [{required: true, message: 'Content is required', trigger: 'blur'}]
         },
         formArticle: { // 전송 데이터
           title: '', // 게시글 제목
