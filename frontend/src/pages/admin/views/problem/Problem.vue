@@ -532,8 +532,13 @@
           return
         }
         let fileList = response.data.info
+        let tot = 100
         for (let file of fileList) {
-          file.score = (100 / fileList.length).toFixed(0)
+          file.score = (tot / fileList.length).toFixed(0)
+          if (tot % fileList.length > 0) {
+            file.score = file.score + 1
+            tot = tot - 1
+          }
           if (!file.output_name && this.problem.spj) {
             file.output_name = '-'
           }
@@ -572,7 +577,7 @@
       },
       submit () {
         if (!this.problem.samples.length) {
-          this.$error('Sample is required')
+          this.$error('예제 데이터가 최소 1개 이상이어야 합니다')
           return
         }
         for (let sample of this.problem.samples) {
@@ -582,16 +587,16 @@
           }
         }
         if (!this.problem.tags.length) {
-          this.error.tags = 'Please add at least one tag'
+          this.error.tags = '태그가 최소 한 개 이상이어야 합니다'
           this.$error(this.error.tags)
           return
         }
         if (this.problem.spj) {
           if (!this.problem.spj_code) {
-            this.error.spj = 'Spj code is required'
+            this.error.spj = 'Spj code 를 공란으로 둘 수 없습니다'
             this.$error(this.error.spj)
           } else if (!this.problem.spj_compile_ok) {
-            this.error.spj = 'SPJ code has not been successfully compiled'
+            this.error.spj = 'SPJ code 가 컴파일에 실패하였습니다'
           }
           if (this.error.spj) {
             this.$error(this.error.spj)
@@ -599,24 +604,34 @@
           }
         }
         if (!this.problem.languages.length) {
-          this.error.languages = 'Please choose at least one language for problem'
+          this.error.languages = '제출 가능한 언어가 최소 1개 이상이어야 합니다'
           this.$error(this.error.languages)
           return
         }
         if (!this.testCaseUploaded) {
-          this.error.testCase = 'Test case is not uploaded yet'
+          this.error.testCase = '테스트 케이스가 업로드 되지 않았습니다'
           this.$error(this.error.testCase)
           return
         }
         if (this.problem.rule_type === 'OI') {
+          let tot = 0
           for (let item of this.problem.test_case_score) {
             try {
+              tot += parseInt(item.score)
               if (parseInt(item.score) <= 0) {
-                this.$error('Invalid test case score')
+                this.$error('테스트 점수는 0점 이상만 가능합니다')
+                return
+              }
+              if (parseInt(item.score) > 100) {
+                this.$error('테스트 점수는 100점을 초과할 수 없습니다')
                 return
               }
             } catch (e) {
-              this.$error('Test case score must be an integer')
+              this.$error('테스트 점수는 정수만 가능합니다')
+              return
+            }
+            if (tot !== 100) {
+              this.$error('테스트 점수 총합은 100점이어야 합니다')
               return
             }
           }
