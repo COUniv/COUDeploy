@@ -21,7 +21,7 @@ class Article(models.Model):
     username = models.TextField(null=False)
     boardtype = models.TextField(null=False) # 게시글 타입
 
-    title = models.CharField(max_length=20, null=True)
+    title = models.CharField(max_length=40, null=True)
     content = models.TextField(null=False)
     create_time = models.DateTimeField(auto_now_add=True)
     last_update_time = models.DateTimeField(auto_now=True) # 수정 예정
