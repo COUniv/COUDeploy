@@ -9,6 +9,9 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  getLastProblemNumber () {
+    return ajax('admin/last_problem_number', 'get')
+  },
   addBanner (data) {
     return ajax('admin/input_banner', 'post', {
       data
@@ -72,10 +75,10 @@ export default {
       }
     })
   },
-  addProblem (title) {
+  addProblem (_id) {
     return ajax('admin/problem/category/add', 'get', {
       params: {
-        title
+        _id
       }
     })
   },

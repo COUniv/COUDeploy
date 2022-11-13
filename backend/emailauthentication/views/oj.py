@@ -66,7 +66,7 @@ class MakeEmailAuthenticationTokenAPI(APIView):
                 email_html = render_to_string("auth_token_email.html", render_data)
                 send_email(smtp_config=SysOptions.smtp_config,
                            from_name=SysOptions.website_name_shortcut,
-                           to_name="email 인증",
+                           to_name=request.data["email"],
                            to_email=request.data["email"],
                            subject="[" + SysOptions.website_name_shortcut + "] 이메일 인증 코드",
                            content=email_html)

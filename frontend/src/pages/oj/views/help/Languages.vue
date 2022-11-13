@@ -199,7 +199,7 @@
         ],
         readable: 'nocursor',
         BlinkRate: 0,
-        exampleProblem: 'xxx번 예제 코드'
+        exampleProblem: 'A+B 예제 코드'
       }
     },
     beforeRouteEnter (to, from, next) {

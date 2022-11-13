@@ -311,13 +311,13 @@
   margin-top: 20px;
 }
 
-@media screen and (max-width: 1500px) {
+@media screen and (max-width: 1200px) {
   .flex-container, .flex-level-container, .select {
     display: none;
   }
 }
 
-@media screen and (min-width: 1500px) {
+@media screen and (min-width: 1200px) {
   .flex-container, .flex-level-container {
     display: flex;
     flex-direction: column;

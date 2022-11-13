@@ -71,6 +71,8 @@ data/public/upload/*
 !data/public/upload/.gitkeep
 data/public/avatar/*
 !data/public/avatar/default.png
+data/public/banner/*
+!data/public/banner/default.png
 data/config/*
 !data/config/.gitkeep
 

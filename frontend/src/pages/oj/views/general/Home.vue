@@ -101,7 +101,7 @@
                   <span class="no">1</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
               <tr v-else-if="index == 1" class="ranker second">
                 <td class="image">
@@ -109,7 +109,7 @@
                   <span class="no">2</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
               
               <tr v-else-if="index == 2" class="ranker third">
@@ -118,22 +118,22 @@
                   <span class="no" style="color: white">3</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
               <tr v-else-if="index == 3" class="ranker defa">
                 <td class="no">4</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
               <tr v-else-if="index == 4" class="ranker defa">
                 <td class="no">5</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
               <tr v-else-if="index == 5" class="ranker defa">
                 <td class="no">6</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.total_score * 1000}}</td>
+                <td class="score">{{data.accepted_number * 100}}</td>
               </tr>
             </tbody>
           </table>
@@ -145,20 +145,24 @@
     </div>
 
   </div>
-  <div v-else>
-    <Panel shadow :padding="10">
-    <div slot="title">
+  <div v-else style="padding-left:50px; padding-right:50px">
+    <Panel shadow :padding="20">
+    <div slot="title" style="padding-left:20px; padding-right:20px">
       {{title}}
     </div>
     <div slot="extra">
       <Button v-if="listVisible" type="info" @click="init" :loading="btnLoading">{{$t('m.Refresh')}}</Button>
       <Button v-else icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button>
     </div>
-    <transition-group name="announcement-animate" mode="in-out">
-      <template>
-        <div v-katex v-html="announcement.content" key="content" class="content-container markdown-body"></div>
-      </template>
-    </transition-group>
+    <Row type="flex" justify="space-around">
+      <Col :span="22">
+        <transition-group name="announcement-animate" mode="in-out">
+          <template>
+            <div v-katex v-html="announcement.content" key="content" class="content-container markdown-body"></div>
+          </template>
+        </transition-group>
+      </Col>
+    </Row>
   </Panel>
   </div>
   
@@ -171,11 +175,13 @@
   import time from '@/utils/time'
   import { CONTEST_STATUS_REVERSE, CONTEST_STATUS, RULE_TYPE } from '@/utils/constants'
   import { mapGetters } from 'vuex'
+  import Panel from '../../components/Panel.vue'
   export default {
     name: 'home',
     components: {
       Announcements,
-      ProblemCategory
+      ProblemCategory,
+      Panel
     },
     data () {
       return {
@@ -223,7 +229,7 @@
           temp = res.data.data
           if (temp.length < 2) {
             if (temp.length < 1) {
-              temp.push({url: '/public/banner/defaultBANNER.png'})
+              temp.push({url: '/public/banner/default.png'})
             }
             this.bannerList = temp
             this.bannerOpt.size = this.bannerList.length
@@ -235,7 +241,7 @@
           }
         }, () => {
           this.$error('배너를 불러오지 못했습니다.')
-          this.bannerList.push({banner: '/public/banner/defaultBANNER.png'})
+          this.bannerList.push({banner: '/public/banner/default.png'})
           this.bannerOpt.size = this.bannerList.length
           this.bannerOpt.autoplay = false
         })

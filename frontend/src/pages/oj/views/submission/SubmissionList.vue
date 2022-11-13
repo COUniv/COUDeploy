@@ -40,7 +40,7 @@
         </div>
         <!-- <Table stripe :disabled-hover="true" :columns="columns" :data="submissions" :key="renderKey" :loading="loadingTable" size="small"></Table> -->
         <div class="submission-container">
-          <table v-if="!getRejudgeAccess" class="submission-list">
+          <table v-if="!rejudgeColumnVisible" class="submission-list">
             <thead>
               <tr>
                 <th style="width:20%">아이디</th>
@@ -129,7 +129,9 @@
         routeName: '',
         JUDGE_STATUS: '',
         rejudge_column: false,
-        refreshStatus: null
+        refreshStatus: null,
+        interval: null,
+        intervalcount: 0
       }
     },
     mounted () {
@@ -141,6 +143,8 @@
     },
     methods: {
       init () {
+        this.intervalcount = 0
+        clearTimeout(this.interval)
         clearTimeout(this.refreshStatus)
         this.contestID = this.$route.params.contestID
         let query = this.$route.query
@@ -155,6 +159,7 @@
         this.routeName = this.$route.name
         this.getSubmissions()
         this.getRejudgeAccess()
+        console.log(this.getRejudgeAccess())
       },
       buildQuery () {
         return {
@@ -195,7 +200,7 @@
         this.renderKey += 1
       },
       getRejudgeAccess () {
-        if (!this.rejudgeColumnVisible || this.rejudge_column) {
+        if (!this.rejudgeColumnVisible) {
           return false
         } else {
           return true
@@ -234,7 +239,7 @@
                     if (this.submissions[index].result === '7' || this.submissions[index].result === 7) {
                       this.refreshStatus = setTimeout(checkStatus, 1000)
                     } else {
-                      this.refreshStatus = setTimeout(checkStatus, 1000)
+                      clearTimeout(this.refreshStatus)
                     }
                   }
                 }
@@ -246,10 +251,14 @@
             clearTimeout(this.refreshStatus)
           })
         }
-        this.refreshStatus = setTimeout(checkStatus, 1000)
+        const loadd = setInterval(checkStatus, 6000)
+        setTimeout(() => {
+          clearInterval(loadd)
+        }, 60000)
       },
       changeRoute () {
         clearTimeout(this.refreshStatus)
+        clearInterval(this.loadd)
         let query = utils.filterEmptyValue(this.buildQuery())
         query.contestID = this.contestID
         query.problemID = this.problemID
@@ -267,6 +276,8 @@
         }
       },
       goRoute (route) {
+        clearInterval(this.loadd)
+        clearTimeout(this.refreshStatus)
         this.$router.push(route).catch(() => {})
       },
       toTime (submission) {
@@ -308,6 +319,7 @@
         })
       },
       redirectToProblem (submission) {
+        clearInterval(this.loadd)
         if (this.contestID) {
           this.$router.push(
             {
@@ -324,6 +336,7 @@
         }
       },
       redirectToUser (submission) {
+        clearInterval(this.loadd)
         this.$router.push(
           {
             name: 'user-home',
@@ -351,20 +364,24 @@
     },
     beforeRouteLeave (to, from, next) {
       // 구성 요소 전환 후 지속적인 요청 방지
+      clearInterval(this.loadd)
       clearTimeout(this.refreshStatus)
       next()
     },
     unmounted () {
+      clearInterval(this.loadd)
       clearTimeout(this.refreshStatus)
     },
     beforeDestroy () {
       if (this.refreshStatus) {
+        clearInterval(this.loadd)
         clearTimeout(this.refreshStatus)
       }
     },
     watch: {
       '$route' (newVal, oldVal) {
         if (newVal !== oldVal) {
+          clearInterval(this.loadd)
           clearTimeout(this.refreshStatus)
           this.init()
         }

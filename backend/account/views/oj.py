@@ -462,11 +462,12 @@ class ApplyResetPasswordAPI(APIView):
             return self.error("SMTP 설정이 되어있지 않습니다")
         try:
             email_html = render_to_string("reset_password_email.html", render_data)
+            subj = "[" + SysOptions.website_name + "] 비밀번호 재설정 안내"
             send_email(smtp_config=SysOptions.smtp_config,
                        from_name=SysOptions.website_name_shortcut,
                        to_name=request.user.username,
                        to_email=request.data["email"],
-                       subject="Reset Your Password",
+                       subject=subj,
                        content=email_html)
         except smtplib.SMTPResponseException as e:
             # guess error message encoding
