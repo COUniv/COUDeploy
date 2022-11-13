@@ -147,12 +147,19 @@
   </div>
   <div v-else style="padding-left:50px; padding-right:50px">
     <Panel shadow :padding="20">
-    <div slot="title" style="padding-left:20px; padding-right:20px">
-      {{title}}
+    <div style="line-height: 50px; display: flex; flex-direction: column;" slot="title">
+      <div>
+        <i v-if="!listVisible" id="back-button" @click="goBack" class="mdi mdi-arrow-left-circle"></i>
+        {{title}}
+      </div>
+      <div v-if="!listVisible" class="announcements-container-header">
+        <div class="div-first-box">{{ createName }}</div>
+        <div>|</div>
+        <div>{{ createDate }}</div>
+      </div>
     </div>
     <div slot="extra">
       <Button v-if="listVisible" type="info" @click="init" :loading="btnLoading">{{$t('m.Refresh')}}</Button>
-      <Button v-else icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button>
     </div>
     <Row type="flex" justify="space-around">
       <Col :span="22">
@@ -282,6 +289,9 @@
           this.btnLoading = false
         })
       },
+      convertDate (item) {
+        return time.utcToLocal(item, 'YYYY-MM-DD HH:mm')
+      },
       goUser (user) {
         this.$router.push({
           name: 'user-home',
@@ -329,6 +339,12 @@
         } else {
           return this.announcement.title
         }
+      },
+      createName () {
+        return this.announcement.created_by.username
+      },
+      createDate () {
+        return this.convertDate(this.announcement.create_time)
       }
     }
   }
@@ -627,7 +643,7 @@
     margin: 15px 15px;
     border: 1px solid rgb(226, 226, 226);
     border-radius: 5px;
-    padding: 30px 20px;
+    padding: 30px 20px 10px 20px;
     width: calc(~"37% - 30px");
     min-width: 270px;
     flex-grow: 1;
@@ -643,7 +659,7 @@
     .rankings_user {
       margin-bottom: 10px;
       font-size: 14px;
-      height: 42px;
+      height: 57px;
       width: 100%;
       .ranker {
         position: relative;
@@ -815,5 +831,34 @@
       }
     }
     
+  }
+  #back-button {
+    font-size: 120%;
+    padding: 0px 8px;
+    color: @gray;
+    transition: all ease-in 0.1s;
+    &:hover, &:focus {
+      color: @dark-purple;
+      opacity: 0.8;
+      border-color: transparent;
+      box-shadow: 0 0 0 transparent;
+    }
+  }
+  .announcements-container-header-title {
+    display:flex; 
+    flex-direction: row;
+  }
+  .announcements-container-header {
+    display:flex; 
+    flex-direction: row;
+    font-size: small;
+    color: @gray;
+    margin-bottom: 15px;
+    .div-first-box {
+      margin-left: 50px;
+    }
+    div {
+      margin-right: 4px;
+    }
   }
 </style>
