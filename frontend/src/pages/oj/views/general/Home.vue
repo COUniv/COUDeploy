@@ -771,9 +771,9 @@
       flex-direction: column;
       align-items: center;
     }
-    .img_container {
-      display: none;
-    }
+    // .img_container {
+    //   display: none;
+    // }
     .main_container{
       display: flex;
       align-items: center;

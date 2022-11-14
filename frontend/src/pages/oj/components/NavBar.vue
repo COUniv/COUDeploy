@@ -128,8 +128,11 @@
 
     <!-- vertical navigation-bar -->
     <Menu :style="{visibility: screenWidth <= 900 ? 'visible' : 'hidden'}" theme="light" width="100%" :mode="vMode" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
-      <Menu-item class="home_bar" name="/ff" >
+      <Menu-item v-if="this.$route.path !== '/' || this.listVisible === true" class="home_bar" name="/ff" >
         <div class="logo-name" @click="handleRoute('/')">COU</div>
+      </Menu-item>
+      <Menu-item v-else class="home_bar" name="/ff" >
+        <div class="logo-name" @click="toggleVisible()">COU</div>
       </Menu-item>
       <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/problem">
         문제
