@@ -277,7 +277,6 @@
     },
     mounted () {
       this.init()
-      console.log('visible', this.listVisible)
     },
     created () {
       window.addEventListener('resize', this.handleResize)
