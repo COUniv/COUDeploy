@@ -3,9 +3,9 @@
     <Col :span="22">
     <Panel :padding="10">
       <div slot="title">{{$t('m.OI_Ranklist')}}</div>
-      <div class="echarts">
+      <!-- <div class="echarts">
         <ECharts :options="options" ref="chart" auto-resize></ECharts>
-      </div>
+      </div> -->
     </Panel>
     <Table :data="dataRank" :columns="columns" size="large"></Table>
     <Pagination :total="total" :page-size.sync="limit" :current.sync="page"
@@ -157,14 +157,14 @@
       getRankData (page) {
         let offset = (page - 1) * this.limit
         let bar = this.$refs.chart
-        bar.showLoading({maskColor: 'rgba(250, 250, 250, 0.8)'})
+        // bar.showLoading({maskColor: 'rgba(250, 250, 250, 0.8)'})
         api.getUserRank(offset, this.limit, RULE_TYPE.OI).then(res => {
           if (page === 1) {
             this.changeCharts(res.data.data.results.slice(0, 10))
           }
           this.total = res.data.data.total
           this.dataRank = res.data.data.results
-          bar.hideLoading()
+          // bar.hideLoading()
         })
       },
       changeCharts (rankData) {

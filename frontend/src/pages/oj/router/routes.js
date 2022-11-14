@@ -22,7 +22,8 @@ import {
   Join,
   CategoryList,
   ProblemSubmission,
-  FindUserID
+  FindUserID,
+  GeneralChart
 } from '../views'
 import Logout from '../views/user/Logout.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
@@ -31,6 +32,12 @@ import * as Contest from '@oj/views/contest'
 import * as Setting from '@oj/views/setting'
 
 export default [
+  {
+    name: 'user-position',
+    path: '/user-position',
+    meta: {title: 'user-position'},
+    component: GeneralChart
+  },
   {
     name: 'find-user-id',
     path: '/find-user-id',
