@@ -10,7 +10,6 @@
       </Carousel>
       <!-- <Button @click="value1 = 2">change</Button> -->
     </div>
-    <!-- <div @click="toggleVisible()">버튼버튼버튼버튼버튼버튼버튼버튼</div> -->
     <div class="main_container">
       <div class="list_container">
         <div class="left_announcement">
@@ -146,7 +145,6 @@
 
   </div>
   <div v-else>
-    <!-- <div @click="toggleVisible()">버튼버튼버튼버튼버튼버튼버튼버튼</div> -->
     <Panel shadow :padding="10">
     <div slot="title">
       {{title}}
