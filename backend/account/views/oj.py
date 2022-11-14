@@ -562,6 +562,64 @@ class UserRankAPI(APIView):
             profiles = profiles.filter(total_score__gt=0).order_by("-total_score")
         return self.success(self.paginate_data(request, profiles, RankInfoSerializer))
 
+class UserRatingChartAPI(APIView):
+    def get(self, request):
+        profiles = UserProfile.objects.filter(user__admin_type=AdminType.REGULAR_USER, user__is_disabled=False) \
+        .select_related("user")
+        if profiles.count() > 500:
+            profiles = profiles.order_by('?')[:500]
+        user = request.user
+        if user.is_authenticated:
+            profiles = profiles.exclude(user=user)
+
+        result = []
+        for profile in profiles:
+            acm_problems = profile.acm_problems_status.get("problems", {}) #JSON Field Type
+            accepted_ids = []
+            for acm_problem_key in list(acm_problems.keys()):
+                if acm_problems[acm_problem_key]["status"] == 0 or acm_problems[acm_problem_key]["status"] == "0":
+                    accepted_ids.append(acm_problem_key)
+            accepted_ids = list(accepted_ids)
+            accepted_problem_list = Problem.objects.filter(id__in=accepted_ids)
+            total_size = accepted_problem_list.count()
+            rating = 0
+            for problem in accepted_problem_list:
+                #wexp weight value = 1 - (4-difficulty)/15
+                exp = problem.getDifficultyToWeightValue()
+                    
+                '''
+                rating = sum(accepted_problems + (accepted_problems ** (1 - (4-difficulty) / 15) / 15)) / accepted_problems
+                '''
+                rating += (total_size + ((total_size ** exp) / 15))
+            rating = rating / total_size
+            result.append([total_size, rating])
+        return self.success(result)
+
+class MyRatingChartAPI(APIView):
+    @login_required
+    def get(self, request):
+        profile = request.user.userprofile
+        acm_problems = profile.acm_problems_status.get("problems", {})
+        accepted_ids = []
+        result = []
+        for acm_problem_key in list(acm_problems.keys()):
+            if acm_problems[acm_problem_key]["status"] == 0 or acm_problems[acm_problem_key]["status"] == "0":
+                accepted_ids.append(acm_problem_key)
+        accepted_ids = list(accepted_ids)
+        accepted_problem_list = Problem.objects.filter(id__in=accepted_ids)
+        total_size = accepted_problem_list.count()
+        rating = 0
+        for problem in accepted_problem_list:
+            #wexp weight value = 1 - (4-difficulty)/15
+            exp = problem.getDifficultyToWeightValue()
+                
+            '''
+            rating = sum(accepted_problems + (accepted_problems ** (1 - (4-difficulty) / 15) / 15)) / accepted_problems
+            '''
+            rating += (total_size + ((total_size ** exp) / 15))
+        rating = rating / total_size
+        result.append([total_size, rating])
+        return self.success(result)
 
 class ProfileProblemDisplayIDRefreshAPI(APIView):
     @login_required
