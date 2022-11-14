@@ -9,6 +9,9 @@ const getters = {
 }
 
 const mutations = {
+  setlistVisible (state) {
+    state.listVisible = true
+  },
   toggleVisible (state) {
     if (state.listVisible === true) {
       state.listVisible = false

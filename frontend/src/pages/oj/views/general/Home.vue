@@ -219,6 +219,7 @@
       this.getRankData(1)
       this.getContestList()
       this.getUsingBannerList()
+      this.$store.commit('setlistVisible')
     },
     methods: {
       toggleVisible () {
