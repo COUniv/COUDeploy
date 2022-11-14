@@ -2,7 +2,8 @@
   <div id="header" >
     <!-- <transition name="fadenav"> -->
     <Menu v-if="screenWidth > 900" :style="{visibility: screenWidth > 900 ? 'visible' : 'hidden'}" theme="light" :mode="hMode" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
-      <Menu-item class="home_bar" name="/" ><router-link to="/">COU</router-link></Menu-item>
+      <Menu-item v-if="this.$route.path !== '/' || this.listVisible === true" class="home_bar" name="/" ><router-link to="/">COU</router-link></Menu-item>
+      <Menu-item v-else class="home_bar" name="/"><span @click="toggleVisible()">COU</span></Menu-item>
       <Menu-item class="bar_list" name="/problem">
         <router-link to="/problem">문제</router-link>
       </Menu-item>
@@ -276,6 +277,7 @@
     },
     mounted () {
       this.init()
+      console.log('visible', this.listVisible)
     },
     created () {
       window.addEventListener('resize', this.handleResize)
@@ -286,6 +288,9 @@
       }, 5000)
     },
     methods: {
+      toggleVisible () {
+        this.$store.commit('toggleVisible')
+      },
       ...mapActions(['getProfile', 'changeModalStatus']),
       init () {
         this.getProfile()
@@ -431,6 +436,9 @@
       },
       getAvatar () {
         return this.profile.avatar !== '/public/avatar/default.png'
+      },
+      listVisible () {
+        return this.$store.getters.listVisible
       }
     },
     destroyed () {
