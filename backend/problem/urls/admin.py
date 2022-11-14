@@ -5,9 +5,10 @@ from ..views.admin import (ContestProblemAPI, ProblemAPI, TestCaseAPI, MakeConte
                            FPSProblemImport, ProblemCategoryListAPI, ProblemCategoryAPI, SearchProblemAPI, 
                            AddProblemAPI, DeleteProblemCategoryAPI, CategoryProblemListAPI, ModifyProblemCategoryAPI,
                            GetProblemTagAPI, AddProblemTagAPI, CreateProblemTagAPI, ModifyProblemTagAPI,
-                           DeleteProblemTagAPI)
+                           DeleteProblemTagAPI, ProblemNumberingAPI) 
 
 urlpatterns = [
+    url(r"^last_problem_number/?$", ProblemNumberingAPI.as_view(), name="last_problem_number_api"),
     url(r"^test_case/?$", TestCaseAPI.as_view(), name="test_case_api"),
     url(r"^compile_spj/?$", CompileSPJAPI.as_view(), name="compile_spj"),
     url(r"^problem/?$", ProblemAPI.as_view(), name="problem_admin_api"),

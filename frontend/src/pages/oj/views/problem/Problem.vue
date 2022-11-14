@@ -3,7 +3,21 @@
     <div id="problem-main">
       <!--problem main-->
       <Panel :padding='40' shadow>
-        <div slot="title">{{problem.title}}</div>
+        <div slot="title">
+          {{problem.title}}
+          <span v-if="!(problem.my_status === null)" class="side-title-box">
+            <span class="icon-box" :class="problem.my_status === 0 ? 'green-text' 
+                                         : problem.my_status === 8 ? 'yellow-text'
+                                         : 'red-text'">
+              <i class="mdi" :class="problem.my_status === 0 ? 'mdi-checkbox-marked-circle-outline' 
+                                   : problem.my_status === 8 ? 'mdi-alert-circle-outline'
+                                   : 'mdi-alert-outline'"></i> 
+            </span>
+            <span v-if="problem.my_status === 0" class="text-box green-text">성공</span>
+            <span v-else-if="problem.my_status === 8" class="text-box yellow-text">부분 성공</span>
+            <span v-else class="text-box red-text">실패</span>
+          </span>
+        </div>
         <div id="problem-content" class="markdown-body" v-katex>
           <p class="title">문제 설명</p>
           <p class="content" v-html="problem.description"></p>
@@ -166,6 +180,10 @@
         }
       }
     },
+    beforeRouteLeave (to, from, next) {
+      this.$store.commit(types.CHANGE_CONTEST_ITEM_VISIBLE, { menu: true })
+      next()
+    },
     mounted () {
       this.$store.commit(types.CHANGE_CONTEST_ITEM_VISIBLE, { menu: false })
       this.init()
@@ -258,6 +276,27 @@
 @import '../../../../styles/common.less';
   .card-title {
     margin-left: 8px;
+  }
+  .side-title-box {
+    margin:0 15px;
+    font-size:14px;
+    .icon-box {
+      font-size:18px; 
+      vertical-align: middle;
+    }
+
+    .green-text {
+      color: green;
+    }
+    .yellow-text {
+      color: @deep-dark-orange;
+    }
+    .red-text {
+      color: @red;
+    }
+    .text-box {
+
+    }
   }
 
   .in-out-container {
