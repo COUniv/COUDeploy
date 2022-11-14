@@ -278,7 +278,6 @@
         api.getAnnouncementList((page - 1) * this.limit, this.limit).then(res => {
           this.btnLoading = false
           this.announcements = res.data.data.results
-          console.log('announcements', this.announcements[0])
           this.total = res.data.data.total
         }, () => {
           this.btnLoading = false
@@ -771,9 +770,9 @@
       flex-direction: column;
       align-items: center;
     }
-    // .img_container {
-    //   display: none;
-    // }
+    .img_container {
+      display: none;
+    }
     .main_container{
       display: flex;
       align-items: center;
