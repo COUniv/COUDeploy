@@ -15,7 +15,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from otpauth import OtpAuth
 
 from account.models import User
-from problem.models import Problem
+from problem.models import Problem, ProblemRating
 from utils.constants import ContestRuleType
 from options.options import SysOptions
 from utils.api import APIView, validate_serializer, CSRFExemptAPIView
@@ -564,36 +564,82 @@ class UserRankAPI(APIView):
 
 class UserRatingChartAPI(APIView):
     def get(self, request):
-        profiles = UserProfile.objects.filter(user__admin_type=AdminType.REGULAR_USER, user__is_disabled=False) \
-        .select_related("user")
-        if profiles.count() > 500:
-            profiles = profiles.order_by('?')[:500]
-        user = request.user
-        if user.is_authenticated:
-            profiles = profiles.exclude(user=user)
+        if not ProblemRating.objects.exists():
+            profiles = UserProfile.objects.filter(user__admin_type=AdminType.REGULAR_USER, user__is_disabled=False) \
+            .select_related("user")
+            if profiles.count() > 500:
+                profiles = profiles.order_by('?')[:500]
+            user = request.user
+            if user.is_authenticated:
+                profiles = profiles.exclude(user=user)
 
-        result = []
-        for profile in profiles:
-            acm_problems = profile.acm_problems_status.get("problems", {}) #JSON Field Type
-            accepted_ids = []
-            for acm_problem_key in list(acm_problems.keys()):
-                if acm_problems[acm_problem_key]["status"] == 0 or acm_problems[acm_problem_key]["status"] == "0":
-                    accepted_ids.append(acm_problem_key)
-            accepted_ids = list(accepted_ids)
-            accepted_problem_list = Problem.objects.filter(id__in=accepted_ids)
-            total_size = accepted_problem_list.count()
-            rating = 0
-            for problem in accepted_problem_list:
-                #wexp weight value = 1 - (4-difficulty)/15
-                exp = problem.getDifficultyToWeightValue()
-                    
-                '''
-                rating = sum(accepted_problems + (accepted_problems ** (1 - (4-difficulty) / 15) / 15)) / accepted_problems
-                '''
-                rating += (total_size + ((total_size ** exp) / 15))
-            rating = rating / total_size
-            result.append([total_size, rating])
-        return self.success(result)
+            result = []
+            for profile in profiles:
+                acm_problems = profile.acm_problems_status.get("problems", {}) #JSON Field Type
+                accepted_ids = []
+                for acm_problem_key in list(acm_problems.keys()):
+                    if acm_problems[acm_problem_key]["status"] == 0 or acm_problems[acm_problem_key]["status"] == "0":
+                        accepted_ids.append(acm_problem_key)
+                accepted_ids = list(accepted_ids)
+                accepted_problem_list = Problem.objects.filter(id__in=accepted_ids)
+                total_size = accepted_problem_list.count()
+                rating = 0
+                for problem in accepted_problem_list:
+                    #wexp weight value = 1 - (4-difficulty)/15
+                    exp = problem.getDifficultyToWeightValue()
+
+                    '''
+                    rating = sum(accepted_problems + (accepted_problems ** (1 - (4-difficulty) / 15) / 15)) / accepted_problems
+                    '''
+                    rating += (total_size + ((total_size ** exp) / 15))
+                rating = rating / total_size
+                result.append([total_size, rating])
+            expire_time = now() + timedelta(minutes=10)
+            problemRating = ProblemRating.objects.create(rating = result, update_expire_time=expire_time)
+            problemRating.save()
+            return self.success(result)
+        else:
+            try:
+                pr = ProblemRating.objects.get(id=1)
+            except ProblemRating.DoesNotExist:
+                self.error("ProblemRating not exist")
+            if pr.update_expire_time > now():
+                return self.success(pr.rating)
+            else:
+                profiles = UserProfile.objects.filter(user__admin_type=AdminType.REGULAR_USER, user__is_disabled=False) \
+                .select_related("user")
+                if profiles.count() > 500:
+                    profiles = profiles.order_by('?')[:500]
+                user = request.user
+                if user.is_authenticated:
+                    profiles = profiles.exclude(user=user)
+
+                result = []
+                for profile in profiles:
+                    acm_problems = profile.acm_problems_status.get("problems", {}) #JSON Field Type
+                    accepted_ids = []
+                    for acm_problem_key in list(acm_problems.keys()):
+                        if acm_problems[acm_problem_key]["status"] == 0 or acm_problems[acm_problem_key]["status"] == "0":
+                            accepted_ids.append(acm_problem_key)
+                    accepted_ids = list(accepted_ids)
+                    accepted_problem_list = Problem.objects.filter(id__in=accepted_ids)
+                    total_size = accepted_problem_list.count()
+                    rating = 0
+                    for problem in accepted_problem_list:
+                        #wexp weight value = 1 - (4-difficulty)/15
+                        exp = problem.getDifficultyToWeightValue()
+
+                        '''
+                        rating = sum(accepted_problems + (accepted_problems ** (1 - (4-difficulty) / 15) / 15)) / accepted_problems
+                        '''
+                        rating += (total_size + ((total_size ** exp) / 15))
+                    rating = rating / total_size
+                    result.append([total_size, rating])
+                expire_time = now() + timedelta(minutes=10)
+                pr.rating = result
+                pr.update_expire_time = expire_time
+                pr.save()
+                return self.success(result)
 
 class MyRatingChartAPI(APIView):
     @login_required

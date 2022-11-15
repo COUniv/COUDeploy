@@ -129,3 +129,7 @@ class ProblemCategory(models.Model):
 
 class ProblemCategoryList(models.Model):
     categories = ArrayField(models.TextField(), blank=True, default=list)
+
+class ProblemRating(models.Model):
+    rating =  ArrayField(ArrayField(models.FloatField(), blank=True, default=list), blank=True, default=list)
+    update_expire_time = models.DateTimeField(null=True)
