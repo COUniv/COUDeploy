@@ -583,6 +583,8 @@ class UserRatingChartAPI(APIView):
                 accepted_ids = list(accepted_ids)
                 accepted_problem_list = Problem.objects.filter(id__in=accepted_ids)
                 total_size = accepted_problem_list.count()
+                if total_size == 0:
+                    continue
                 rating = 0
                 for problem in accepted_problem_list:
                     #wexp weight value = 1 - (4-difficulty)/15
@@ -624,6 +626,8 @@ class UserRatingChartAPI(APIView):
                     accepted_ids = list(accepted_ids)
                     accepted_problem_list = Problem.objects.filter(id__in=accepted_ids)
                     total_size = accepted_problem_list.count()
+                    if total_size == 0:
+                        continue
                     rating = 0
                     for problem in accepted_problem_list:
                         #wexp weight value = 1 - (4-difficulty)/15
@@ -655,6 +659,9 @@ class MyRatingChartAPI(APIView):
         accepted_problem_list = Problem.objects.filter(id__in=accepted_ids)
         total_size = accepted_problem_list.count()
         rating = 0
+        if total_size == 0:
+            result.append([0, 0])
+            return self.success(result)
         for problem in accepted_problem_list:
             #wexp weight value = 1 - (4-difficulty)/15
             exp = problem.getDifficultyToWeightValue()
