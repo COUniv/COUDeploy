@@ -26,7 +26,7 @@ import 'echarts-gl'
 import * as ecStat from 'echarts-stat'
 import * as echarts from 'echarts/core'
 import { LineChart, BarChart, ScatterChart, EffectScatterChart } from 'echarts/charts'
-import { GridComponent, TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import { GridComponent, TitleComponent, TooltipComponent, LegendComponent, DataZoomComponent } from 'echarts/components'
 import { UniversalTransition } from 'echarts/features'
 import { CanvasRenderer } from 'echarts/renderers'
 // use([BarChart, GridComponent, CanvasRenderer])
@@ -47,7 +47,8 @@ echarts.use([
   TooltipComponent,
   EffectScatterChart,
   UniversalTransition,
-  LegendComponent
+  LegendComponent,
+  DataZoomComponent
 ])
 // register global utility filters.
 Object.keys(filters).forEach(key => {
