@@ -8,6 +8,12 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  getUserRatingChart () {
+    return ajax('get_user_rating_chart', 'get')
+  },
+  getMyRatingChart () {
+    return ajax('get_my_rating_chart', 'get')
+  },
   getFindusername (params) {
     return ajax('get_find_username', 'get', {
       params
