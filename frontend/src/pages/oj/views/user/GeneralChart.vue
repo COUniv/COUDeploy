@@ -259,7 +259,7 @@
           this.option.dataZoom[0].endValue = maxX + 2
           this.option.dataZoom[1].endValue = (Math.floor(maxY) * 100) + 100
 
-          const myReg = ecStat.regression('polynomial', addMinSource, 3)
+          const myReg = ecStat.regression('polynomial', addMinSource, this.degree)
           this.expr = myReg.expression
           this.option.title.subtext = this.$store.state.user.username
           this.option.series[0].data = myReg.points
@@ -303,7 +303,7 @@
           this.option2.yAxis.max = (Math.floor(maxY) * 100) + 100
           this.option2.dataZoom[0].endValue = maxX + 2
           this.option2.dataZoom[1].endValue = (Math.floor(maxY) * 100) + 100
-          const myReg = ecStat.regression('polynomial', sources, 20)
+          const myReg = ecStat.regression('polynomial', sources, this.degree)
           this.expr = myReg.expression
 
           this.option2.series[0].data = myReg.points
