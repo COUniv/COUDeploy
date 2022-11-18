@@ -304,7 +304,7 @@
           this.option2.dataZoom[0].endValue = maxX + 2
           this.option2.dataZoom[1].endValue = (Math.floor(maxY) * 100) + 100
           const myReg = ecStat.regression('polynomial', sources, 20)
-          const expr = myReg.expression
+          this.expr = myReg.expression
 
           this.option2.series[0].data = myReg.points
         })
