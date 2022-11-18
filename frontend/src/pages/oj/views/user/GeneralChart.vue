@@ -6,6 +6,8 @@
         <i class="mdi mdi-help-circle" id="help-icn">도움말</i>
         <div slot="content" style="font-size: 7px;">
           <p>데이터는 최대 500명의 데이터로 제한됩니다.<br>500명이 넘을 경우 전체 유저 중 500명을 무작위 추출합니다.</p>
+          <p>레이팅은 통과한 문제 수 및 문제의 난이도 별 추가점수가 부여되며<br>해당 식은 악용을 방지하기 위해 비공개합니다.</p>
+          <p>데이터 반영 시간까지 최대 10분정도 소요될 수 있습니다.</p>
         </div>
       </Tooltip>
       </div>
