@@ -1,6 +1,5 @@
 <template>
   <div v-if="listVisible" class="home_container">
-
     <div class="img_container" style="width: 100%;">
       <Carousel v-model="value1" loop arrow="hover" @on-change="handleChange" :autoplay="bannerOpt.autoplay">
           <CarouselItem v-for="(item, idx) in bannerList" :key="idx">
@@ -190,7 +189,6 @@
         limit: 5,
         total: 5,
         btnLoading: false,
-        listVisible: true,
         announcements: [],
         announcement: '',
         contest_idx: 0,
@@ -221,8 +219,12 @@
       this.getRankData(1)
       this.getContestList()
       this.getUsingBannerList()
+      this.$store.commit('setlistVisible')
     },
     methods: {
+      toggleVisible () {
+        this.$store.commit('toggleVisible')
+      },
       getUsingBannerList () {
         api.getUsingBannerList().then(res => {
           let temp = []
@@ -290,13 +292,13 @@
       },
       goAnnouncement (announcement) {
         this.announcement = announcement
-        this.listVisible = false
+        this.toggleVisible()
       },
       getDuration (startTime, endTime) {
         return time.duration(startTime, endTime)
       },
       goBack () {
-        this.listVisible = true
+        this.toggleVisible()
         this.announcement = ''
       },
       goContest () {
@@ -329,6 +331,10 @@
         } else {
           return this.announcement.title
         }
+      },
+
+      listVisible () {
+        return this.$store.getters.listVisible
       }
     }
   }
