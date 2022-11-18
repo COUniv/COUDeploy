@@ -15,7 +15,10 @@
   </Row> -->
   <div class="main">
     <div class="ranking-container">
-      <h3>사용자 순위</h3>
+      <div>
+        <span><h3 class="title" style="display:inline; float: left">사용자 순위</h3></span>
+        <span @click="goMyPosition" class="my-position-btn">나의 지표 보기</span>
+      </div>
       <table class="ranking-list">
         <!-- 제목 -->
         <thead>
@@ -253,6 +256,11 @@
           query: {username: user.username}
         }).catch(() => {})
       },
+      goMyPosition () {
+        this.$router.push({
+          name: 'user-position'
+        }).catch(() => {})
+      },
       toPercent (rank) {
         return utils.getACRate(rank.accepted_of_all_submission_number, rank.submission_number)
       }
@@ -268,7 +276,18 @@
     margin-bottom: 20px;
     color: @default-font-color;
   }
-
+  .title {
+    display:inline; 
+    float: left;
+  }
+  .my-position-btn {
+    display: inline;
+    float: right;
+    &:hover {
+      color: @purple;
+      cursor: pointer;
+    }
+  }
   .main {
     margin: auto;
     padding: 30px 20px;

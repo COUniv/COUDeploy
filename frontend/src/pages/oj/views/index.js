@@ -10,6 +10,7 @@ import Announcements from './general/Announcements.vue'
 import AnnouncementList from './general/AnnouncementList.vue'
 import FindUserID from './user/FindUserID.vue'
 import Grass from './user/Grass.vue'
+import GeneralChart from './user/GeneralChart.vue'
 // Grouping Components in the Same Chunk
 const SubmissionList = () => import(/* webpackChunkName: "submission" */ '@oj/views/submission/SubmissionList.vue')
 const SubmissionDetails = () => import(/* webpackChunkName: "submission" */ '@oj/views/submission/SubmissionDetails.vue')
@@ -40,5 +41,5 @@ export {
   ApplyResetPassword, ResetPassword,
   ArticleList, CreateArticle, Article, Notification, AnnouncementList, CategoryList,
   Grass,
-  ProblemSubmission, FindUserID
+  ProblemSubmission, FindUserID, GeneralChart
 }

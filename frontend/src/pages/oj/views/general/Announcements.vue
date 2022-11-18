@@ -1,14 +1,17 @@
 <template>
   <Panel shadow :padding="10">
-    <div style="line-height: 50px; display: flex;" slot="title">
-      <Button v-if="!listVisible" id="back-button" icon="md-arrow-back" size="large" @click="goBack" type="text"></Button>
-      <div>{{title}}</div>
+    <div style="line-height: 50px; display: flex; flex-direction: column;" slot="title">
+      <div class="announcements-container-header-title">
+        <i v-if="!listVisible" id="back-button" @click="goBack" class="mdi mdi-arrow-left-circle"></i>
+        <div>{{title}}</div>
+      </div>
+      <div v-if="!listVisible" class="announcements-container-header">
+        <div class="div-first-box">{{ createName }}</div>
+        <div>|</div>
+        <div>{{ createDate }}</div>
+      </div>
     </div>
-    <div slot="extra">
-      <!-- <Button v-if="listVisible" type="info" @click="init" :loading="btnLoading">{{$t('m.Refresh')}}</Button> -->
-      <!-- <Button v-if="!listVisible" icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button> -->
-    </div>
-
+    
     <transition-group name="announcement-animate" mode="in-out">
       <div class="no-announcement" v-if="!announcements.length" key="no-announcement">
         <p>{{$t('m.No_Announcements')}}</p>
@@ -37,7 +40,6 @@
       </template>
 
       <template v-else>
-        
         <div v-katex v-html="announcement.content" key="content" class="content-container markdown-body"></div>
       </template>
     </transition-group>
@@ -115,6 +117,12 @@
           return this.announcement.title
         }
       },
+      createName () {
+        return this.announcement.created_by.username
+      },
+      createDate () {
+        return this.convertDate(this.announcement.create_time)
+      },
       isContest () {
         return !!this.$route.params.contestID
       }
@@ -173,7 +181,7 @@
   }
 
   .content-container {
-    padding: 0 20px 20px 20px;
+    padding: 0 45px 20px 45px;
   }
 
   .no-announcement {
@@ -190,10 +198,29 @@
     font-size: 120%;
     padding: 0px 8px;
     color: @gray;
+    transition: all ease-in 0.1s;
     &:hover, &:focus {
-      color: @black;
+      color: @dark-purple;
+      opacity: 0.8;
       border-color: transparent;
       box-shadow: 0 0 0 transparent;
+    }
+  }
+  .announcements-container-header-title {
+    display:flex; 
+    flex-direction: row;
+  }
+  .announcements-container-header {
+    display:flex; 
+    flex-direction: row;
+    font-size: small;
+    color: @gray;
+    margin-bottom: 15px;
+    .div-first-box {
+      margin-left: 50px;
+    }
+    div {
+      margin-right: 4px;
     }
   }
 </style>
