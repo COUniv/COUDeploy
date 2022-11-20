@@ -38,9 +38,9 @@
           <div class="main-box">
             현재 표기 된 데이터 수 : {{this.usersCount}}
           </div>
-          <div class="main-box">
+          <!-- <div class="main-box">
             현재 회귀식 : {{this.expr}}
-          </div>
+          </div> -->
         </div>
       </div>
       <div v-else class="footer-h">
@@ -48,9 +48,9 @@
           <div class="main-box">
             현재 표기 된 데이터 수 : {{this.usersCount}}
           </div>
-          <div class="main-box">
+          <!-- <div class="main-box">
             현재 회귀식 : {{this.expr}}
-          </div>  
+          </div>   -->
         </div>
       </div>
     </Panel>
