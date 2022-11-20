@@ -24,7 +24,7 @@
             <p>{{$t('m.UserHomeserSubmissions')}}</p>
           </div>
           <div class="right">
-            <p class="emphasis">{{profile.total_score}}</p>
+            <p class="emphasis">{{rating}}</p>
             <p>{{$t('m.UserHomeScore')}}</p>
           </div>
         </div>
@@ -70,7 +70,8 @@
       return {
         username: '',
         profile: {},
-        problems: []
+        problems: [],
+        rating: 0
       }
     },
     mounted () {
@@ -84,6 +85,10 @@
           this.changeDomTitle({title: res.data.data.user.username})
           this.profile = res.data.data
           this.getSolvedProblems()
+          api.getMyRatingChart(this.username).then(res => {
+            let source = res.data.data
+            this.rating = Math.floor(source[0][1] * 100)
+          })
         })
       },
       getSolvedProblems () {
