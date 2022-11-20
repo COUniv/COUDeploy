@@ -30,6 +30,7 @@ class Submission(models.Model):
     user_id = models.IntegerField(db_index=True)
     username = models.TextField()
     code = models.TextField()
+    byte_length = models.IntegerField(null=True)
     result = models.IntegerField(db_index=True, default=JudgeStatus.PENDING)
     # JudgeServer에서 반환된 판단 세부 정보
     info = JSONField(default=dict)
