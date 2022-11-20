@@ -1,5 +1,4 @@
 from django.db import models
-from django.forms import IntegerField
 
 from utils.constants import ContestStatus
 from utils.models import JSONField
