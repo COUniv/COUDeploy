@@ -98,11 +98,13 @@ class SubmissionAPI(APIView):
             return self.error("존재하지 않은 문제입니다")
         if data["language"] not in problem.languages:
             return self.error(f"{data['language']} is now allowed in the problem")
+        b_length = len(data["code"].encode('utf-8'))
         submission = Submission.objects.create(user_id=request.user.id,
                                                username=request.user.username,
                                                language=data["language"],
                                                code=data["code"],
                                                problem_id=problem.id,
+                                               byte_length=b_length,
                                                ip=request.session["ip"],
                                                contest_id=data.get("contest_id"))
         
@@ -121,6 +123,11 @@ class SubmissionAPI(APIView):
             return self.error("해당 제출 아이디가 존재하지 않습니다")
         try:
             submission = Submission.objects.select_related("problem").get(id=submission_id)
+            if not submission.byte_length:
+                code = submission.code
+                b_length = len(code.encode('utf-8'))
+                submission.byte_length = b_length
+                submission.save()
         except Submission.DoesNotExist:
             return self.error("제출한 코드가 존재하지 않습니다")
         if not submission.check_user_permission(request.user):
@@ -191,6 +198,12 @@ class SubmissionListAPI(APIView):
             submissions = submissions.filter(username__icontains=username)
         if result:
             submissions = submissions.filter(result=result)
+        for submin in submissions:
+            if not submin.byte_length:
+                code = submin.code
+                b_length = len(code.encode('utf-8'))
+                submin.byte_length = b_length
+                submin.save()
         data = self.paginate_data(request, submissions)
         data["results"] = SubmissionListSerializer(data["results"], many=True, user=request.user).data
         return self.success(data)

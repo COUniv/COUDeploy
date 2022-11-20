@@ -648,7 +648,15 @@ class UserRatingChartAPI(APIView):
 class MyRatingChartAPI(APIView):
     @login_required
     def get(self, request):
-        profile = request.user.userprofile
+        username = request.GET.get("username")
+        try:
+            if username:
+                user = User.objects.get(username=username, is_disabled=False)
+            else:
+                user = request.user
+        except User.DoesNotExist:
+            return self.error("존재하지 않는 유저입니다")
+        profile = user.userprofile
         acm_problems = profile.acm_problems_status.get("problems", {})
         accepted_ids = []
         result = []

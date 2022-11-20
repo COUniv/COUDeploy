@@ -11,8 +11,12 @@ export default {
   getUserRatingChart () {
     return ajax('get_user_rating_chart', 'get')
   },
-  getMyRatingChart () {
-    return ajax('get_my_rating_chart', 'get')
+  getMyRatingChart (username = undefined) {
+    return ajax('get_my_rating_chart', 'get', {
+      params: {
+        username
+      }
+    })
   },
   getFindusername (params) {
     return ajax('get_find_username', 'get', {

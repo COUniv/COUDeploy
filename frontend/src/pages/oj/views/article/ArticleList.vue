@@ -54,6 +54,7 @@
                 <Dropdown @on-click="handleLanguageChange">
                   <span><div style="padding-right:3px; display: inline-flex;" v-bind:style="[this.language != '' ? {'color' : '#858585'}:{}]">{{ toLanguage(this.language) }}</div><div style="display: inline-flex;"><Icon type="md-arrow-dropdown" /></div></span>
                   <Dropdown-menu slot="list">
+                    <Dropdown-item name="">전체</Dropdown-item>
                     <Dropdown-item name="Java">Java</Dropdown-item>
                     <Dropdown-item name="C">C</Dropdown-item>
                     <Dropdown-item name="C++">C++</Dropdown-item>
@@ -63,81 +64,30 @@
               </li>
               </ul>
             </div>
-
-              <div>
-                <ul>
-                  <li class="submenu_list">
-                    <!-- 게시글 검색 카테고리 선택 - searchtype 결정 -->
-                    <Select v-model="formFilter.searchtype" style="width:73px">
-                      <Option v-for="item in searchTypeList" :value="item.value" :key="item.value">
-                        {{ item.label }}
-                      </Option>
-                    </Select>
-                  </li>
-
-                  <li class="submenu_list">
-                    <!-- 게시글 검색 내용 입력 - search -->
-                    <Input @on-search="handleQueryChange" v-model="formFilter.search" search placeholder="검색어를 입력하세요."></Input>
-                  </li>
-                  <!-- <li class="submenu_list">
-                    <Button type="primary" icon="ios-search" @click="handleQueryChange"></Button>
-                  </li> -->
-                </ul>
-              </div>
-              
-              <!-- 게시판 정렬 선택 -->
-              <!-- <li class="submenu_list" style="width=200px">
-                <Dropdown @on-click="handleSortChange">
-                  <span><div style="padding-right:3px; display: inline-flex;">정렬</div><div style="display: inline-flex;"><Icon type="md-arrow-dropdown" /></div></span>
-                  <Dropdown-menu slot="list">
-                    <Dropdown-item name="0">최신순</Dropdown-item>
-                    <Dropdown-item name="1">좋아요순</Dropdown-item>
-                    <Dropdown-item name="2">댓글순</Dropdown-item>
-                  </Dropdown-menu>
-                </Dropdown>
-              </li> -->
-
-              <!-- 게시판 타입 선택 -->
-              <!-- <li class="submenu_list">
-                <Dropdown @on-click="handleTypeChange">
-                  <span>게시판<Icon type="arrow-down-b"></Icon></span>
-                  <Dropdown-menu slot="list">
-                    <Dropdown-item name="">전체</Dropdown-item>
-                    <Dropdown-item name="1">자유</Dropdown-item>
-                    <Dropdown-item name="2">질문</Dropdown-item>
-                  </Dropdown-menu>
-                </Dropdown>
-              </li> -->
-
-              <!-- All - 전체 게시글 출력 / Mine - 자신이 작성한 게시글만 출력 -->
-              <!-- <li class="submenu_list">
-                <i-switch size="large" v-model="formFilter.myself" @on-change="handleQueryChange">
-                  <span slot="open">{{$t('m.Mine')}}</span>
-                   <span slot="close">{{$t('m.All')}}</span>
-                </i-switch>
-              </li> -->
-
-                <!-- 게시글 작성 버튼 -->
-              <!-- <li class="submenu_list">
-                <Button type="primary" @click="Create">Create Article</Button>
-              </li> -->
-
-              <!-- 새로고침 버튼 -->
-              <!-- <li class="submenu_list">
-                <Button type="info" icon="refresh" @click="getArticles">{{$t('m.Refresh')}}</Button>
-              </li> -->
+            <div>
+              <ul>
+                <li class="submenu_list">
+                  <!-- 게시글 검색 카테고리 선택 - searchtype 결정 -->
+                  <Select v-model="formFilter.searchtype" style="width:73px">
+                    <Option v-for="item in searchTypeList" :value="item.value" :key="item.value">
+                      {{ item.label }}
+                    </Option>
+                  </Select>
+                </li>
+                <li class="submenu_list">
+                  <!-- 게시글 검색 내용 입력 - search -->
+                  <Input @on-search="handleQueryChange" v-model="formFilter.search" search placeholder="검색어를 입력하세요."></Input>
+                </li>
+              </ul>
+            </div>
           </div>
-          <!-- <div>
-              !-- 게시글 목록 --
-            <Table :show-header="false" :disabled-hover="true" :columns="columns" :data="articles" :loading="loadingTable"></Table>
-          </div> -->
-
           <ul class="article-table">
             <li v-for="(item) in articles">
               <ul class="article-entry">
                 <div>
                   <div>
-                    <li><a @click="toArticle(item)"> {{item.title}} </a></li>
+                    <li v-if="articleTypeCheck(item)" class="board-type-title">{{articleTypeTitle(item)}}</li>
+                    <li><a @click="toArticle(item)"> {{articleTitle(item)}} </a></li>
                   </div>
                   <div>
                     <li><a @click="toUser(item)"> {{item.username}} </a></li>
@@ -147,11 +97,11 @@
                 <div>
                   <div>
                     <Icon type="md-heart" class="heart" size="20" color="#C4C4C4"/>
-                    <li>{{item.like_count}}</li>
+                    <li class="heart-and-comment-count">{{item.like_count}}</li>
                   </div>
                   <div>
                     <Icon type="md-text" class="comment" size="20" color="#c4C4C4" />
-                    <li>{{item.comment_count}}</li>
+                    <li class="heart-and-comment-count">{{item.comment_count}}</li>
                   </div>
                 </div>
               </ul>
@@ -161,27 +111,6 @@
 
         <!-- 하단 -->
           <div style="display:flex; justify-content: center">
-
-            <!-- <div style="margin:auto auto; line-height:center">
-              <ul>
-                <li class="submenu_list">
-                  !-- 게시글 검색 카테고리 선택 - searchtype 결정 --
-                  <Select v-model="formFilter.searchtype" style="width:100px">
-                    <Option v-for="item in searchTypeList" :value="item.value" :key="item.value">
-                      {{ item.label }}
-                    </Option>
-                  </Select>
-                </li>
-
-                <li class="submenu_list">
-                  !-- 게시글 검색 내용 입력 - search --
-                  <Input v-model="formFilter.search" placeholder="검색" style="width: 300px"></Input>
-                </li>
-                <li class="submenu_list">
-                  <Button type="primary" icon="ios-search" @click="handleQueryChange">검색</Button>
-                </li>
-              </ul>
-            </div>-->
             <div style="float:right">
               <Pagination :total="total" :page-size="limit" @on-change="changeRoute" :current.sync="page"></Pagination>
             </div>
@@ -231,80 +160,6 @@
           search: '', // 게시글 검색 시 검색할 내용
           searchtype: '' // 게시글 검색 시 검색할 카테고리 - 제목 = 0, 내용 = 1, 작성자명 = 2
         },
-        columns: [ // 열 속성 - 추후 추가 예정
-          // {
-          //   title: '번호',
-          //   align: 'center',
-          //   render: (h, params) => {
-          //     return h('span', params.row.id)
-          //   }
-          // },
-          {
-            title: '제목',
-            align: 'center',
-            render: (h, params) => {
-              return h('a',
-                {
-                  style: {
-                  },
-                  on: { // 게시글 제목 클릭 시 해당 게시글 detail 뷰로 이동, 게시글 고유 ID 전송
-                    click: () => {
-                      this.$router.push({name: 'article-details', params: {articleID: params.row.id}}).catch(() => {})
-                    }
-                  }
-                }, params.row.title)
-            }
-          },
-          {
-            title: '작성일',
-            align: 'center',
-            render: (h, params) => {
-              return h('div', {
-                style: {
-                }
-              }, time.utcToLocal(params.row.create_time, 'YYYY-MM-DD HH:mm:ss'))
-            }
-          },
-          {
-            title: '작성자',
-            align: 'center',
-            render: (h, params) => {
-              return h('a', {
-                style: {
-                },
-                on: { // 작성자명 클릭 시 해당 작성자의 프로필로 이동
-                  click: () => {
-                    this.$router.push(
-                      {
-                        name: 'user-home',
-                        query: {username: params.row.username}
-                      }).catch(() => {})
-                  }
-                }
-              }, params.row.username)
-            }
-          },
-          {
-            title: '좋아요',
-            align: 'center',
-            render: (h, params) => {
-              return h('div', {
-                style: {
-                }
-              }, params.row.like_count)
-            }
-          },
-          {
-            title: '댓글',
-            align: 'center',
-            render: (h, params) => {
-              return h('div', {
-                style: {
-                }
-              }, params.row.comment_count)
-            }
-          }
-        ],
         loadingTable: false,
         articles: [], // 게시글 목록
         total: 30,
@@ -352,7 +207,6 @@
             this.mainTitle = '전체 게시판'
         }
         this.getArticles() // 쿼리로 설정한 데이터(필터)를 통해 게시글 데이터를 가져옴
-        this.handleColumnVisible(this.formFilter.boardtype) // 게시판의 종류에 따라 Table의 column들을 변경하는 함수
       },
       buildQuery () { // 쿼리로 설정한 필터값을 전송용 데이터로 빌드
         return {
@@ -419,26 +273,30 @@
       handleSearchTypeChange (searchtype) { // 게시글 검색 카테고리 변경
         this.formFilter.searchtype = searchtype
       },
-      handleColumnVisible (boardtype) { // 게시판 타입에 따라 column을 추가하거나 제거하는 함수
-        if (boardtype === '2' && !this.language) { // 현재 질문 게시판으로 이동하되 language 쿼리가 비어 있는 경우 언어 column 추가
-          this.columns.push(
-            {
-              title: '언어',
-              align: 'center',
-              render: (h, params) => {
-                return h('span', params.row.problemtype)
-              }
-            })
-        } else if (boardtype !== '2') { // 질문 게시판이 아닌 게시판으로 이동하는 경우 언어 column을 지움
-          this.columns.splice(6, 1)
-        }
-      },
       handleLanguageChange (language) { // 질문 게시판의 경우 출력하고자하는 게시글의 언어 카테고리 설정
         this.language = language
         this.changeRoute()
       },
       toArticle (item) {
         this.$router.push({name: 'article-details', params: {articleID: item.id}}).catch(() => {})
+      },
+      articleTypeCheck (item) {
+        if (item.boardtype === 'QUESTION' || item.boardtype === 'REQUEST') {
+          return true
+        }
+        return false
+      },
+      articleTypeTitle (item) {
+        if (item.boardtype === 'QUESTION') {
+          if (item.problemid === null || item.problemid === '') {
+            return '[질문]'
+          }
+          return '[' + String(item.problemid) + '번 질문]'
+        }
+        return '[요청]'
+      },
+      articleTitle (item) {
+        return item.title
       },
       toUser (item) {
         this.$router.push(
@@ -616,6 +474,23 @@
         flex-direction: column;
         div:nth-of-type(1) {
           font-size: @font-regular;
+          flex-direction: row;
+          li {
+            font-size: @font-regular;
+            margin-right: 4px;
+          }
+          li.board-type-title {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            font-size: 12px;
+          }
+          li:not(.board-type-title) {
+            a:hover {
+              transition: all 0.3s ease-in-out;
+              color: @dark-purple;
+            }
+          }
         }
         div:nth-of-type(2) {
           a, li {
@@ -635,8 +510,9 @@
         display: flex;
         div:first-child {
           li:first-of-type {
-            margin-right: 20px;
-            line-height: 50px;
+            margin-right: 15px;
+            line-height: 48px;
+            height: 50px;
           }
           display: flex;
           flex-direction: row;
@@ -644,7 +520,8 @@
 
         div:nth-of-type(2) {
           li:first-of-type {
-            line-height: 50px;
+            line-height: 48px;
+            height: 50px;
           }
           display: flex;
           flex-direction: row;
@@ -655,6 +532,9 @@
     .heart, .comment {
       margin-right: 10px;
       margin-top: 15px;
+    }
+    .heart-and-comment-count {
+      min-width: 22px;
     }
 
     @media screen and (max-width: 900px) {
