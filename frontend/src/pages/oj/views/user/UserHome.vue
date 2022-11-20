@@ -25,7 +25,7 @@
           </div>
           <div class="right">
             <p class="emphasis">{{rating}}</p>
-            <p>{{$t('m.UserHomeScore')}}</p>
+            <p>레이팅</p>
           </div>
         </div>
         <div id="problems">
