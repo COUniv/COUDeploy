@@ -89,7 +89,7 @@
               <tr class="ranking_title">
                 <td>순위</td>
                 <td>아이디</td>
-                <td>점수</td>
+                <td>레이팅</td>
               </tr>
             </thead>
             <!-- 내용 -->
@@ -100,7 +100,7 @@
                   <span class="no">1</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
               <tr v-else-if="index == 1" class="ranker second">
                 <td class="image">
@@ -108,7 +108,7 @@
                   <span class="no">2</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
               
               <tr v-else-if="index == 2" class="ranker third">
@@ -117,22 +117,22 @@
                   <span class="no" style="color: white">3</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
               <tr v-else-if="index == 3" class="ranker defa">
                 <td class="no">4</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
               <tr v-else-if="index == 4" class="ranker defa">
                 <td class="no">5</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
               <tr v-else-if="index == 5" class="ranker defa">
                 <td class="no">6</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
             </tbody>
           </table>
@@ -179,7 +179,7 @@
   import ProblemCategory from '../problem/ProblemCategory.vue'
   import api from '@oj/api'
   import time from '@/utils/time'
-  import { CONTEST_STATUS_REVERSE, CONTEST_STATUS, RULE_TYPE } from '@/utils/constants'
+  import { CONTEST_STATUS_REVERSE } from '@/utils/constants'
   import { mapGetters } from 'vuex'
   import Panel from '../../components/Panel.vue'
   export default {
@@ -275,7 +275,7 @@
       },
       getRankData (page = 1) {
         let offset = (page - 1) * this.limit
-        api.getUserRank(offset, this.limit, RULE_TYPE.ACM).then(res => {
+        api.getUserRatingRank(offset, this.limit).then(res => {
           this.dataRank = res.data.data.results
           // bar.hideLoading()
         }).catch(() => {
@@ -293,6 +293,9 @@
       },
       convertDate (item) {
         return time.utcToLocal(item, 'YYYY-MM-DD HH:mm')
+      },
+      convertRating (item) {
+        return Math.floor(item.rating_score * 100)
       },
       goUser (user) {
         this.$router.push({
