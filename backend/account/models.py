@@ -50,7 +50,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
     
-    problem_sequence = grass = ArrayField(models.TextField(null=True), blank=True, default=list)
+    problem_sequence = ArrayField(models.TextField(null=True), blank=True, default=list)
     grass = ArrayField(models.DateTimeField(), blank=True, default=list)
 
     last_activity = models.DateTimeField(null=True)
@@ -111,6 +111,9 @@ class UserProfile(models.Model):
     # for OI
     total_score = models.BigIntegerField(default=0)
     submission_number = models.IntegerField(default=0)
+    # for rating score
+    rating_score = models.FloatField(default=0)
+    rating_position = ArrayField(ArrayField(models.FloatField(), blank=True, default=list), blank=True, default=list)
 
     def add_accepted_of_all_submission_problem_number(self):
         self.accepted_of_all_submission_number = models.F("accepted_of_all_submission_number") + 1
@@ -128,6 +131,37 @@ class UserProfile(models.Model):
     def add_score(self, this_time_score, last_time_score=None):
         last_time_score = last_time_score or 0
         self.total_score = models.F("total_score") - last_time_score + this_time_score
+        self.save()
+
+    def update_rating(self, user):
+        from problem.models import Problem
+        profile = user.userprofile
+        acm_problems = profile.acm_problems_status.get("problems", {})
+        accepted_ids = []
+        result = []
+        for acm_problem_key in list(acm_problems.keys()):
+            if acm_problems[acm_problem_key]["status"] == 0 or acm_problems[acm_problem_key]["status"] == "0":
+                accepted_ids.append(acm_problem_key)
+        accepted_ids = list(accepted_ids)
+        accepted_problem_list = Problem.objects.filter(id__in=accepted_ids)
+        total_size = accepted_problem_list.count()
+        rating = 0
+        if total_size == 0:
+            result.append([0, 0])
+            self.rating_position = result
+        else:
+            for problem in accepted_problem_list:
+                #wexp weight value = 1 - (4-difficulty)/15
+                exp = problem.getDifficultyToWeightValue()
+
+                '''
+                rating = sum(accepted_problems + (accepted_problems ** (1 - (4-difficulty) / 15) / 15)) / accepted_problems
+                '''
+                rating += (total_size + ((total_size ** exp) / 15))
+            rating = rating / total_size
+            result.append([total_size, rating])
+            self.rating_position = result
+        self.rating_score = rating
         self.save()
 
     class Meta:
