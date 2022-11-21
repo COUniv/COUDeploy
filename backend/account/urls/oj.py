@@ -6,13 +6,15 @@ from ..views.oj import (ApplyResetPasswordAPI, ResetPasswordAPI,
                         AvatarUploadAPI, TwoFactorAuthAPI, UserProfileAPI,
                         UserRankAPI, CheckTFARequiredAPI, SessionManagementAPI,
                         ProfileProblemDisplayIDRefreshAPI, OpenAPIAppkeyAPI, SSOAPI, UserDeleteAPI,
-                        GrassAPI, getFindUserIDAPI, UserRatingChartAPI, MyRatingChartAPI)
+                        GrassAPI, getFindUserIDAPI, UserRatingChartAPI, MyRatingChartAPI, UserRatingRankAPI)
 
 from ..views.oj import (ApplyVerifyEmailAPI, VerifyEmailAPI, LastActivityAPI)
-
+from ..views.admin import (ForceUpdateAllUserRatingAPI)
 from utils.captcha.views import CaptchaAPIView
 
 urlpatterns = [
+    url(r"force_update_all_user_rating/?$", ForceUpdateAllUserRatingAPI.as_view(), name="force_update_all_user_rating"),
+    url(r"get_user_rating_rank/?$", UserRatingRankAPI.as_view(), name="get_user_rating_rank"),
     url(r"get_user_rating_chart/?$", UserRatingChartAPI.as_view(), name="get_user_rating_chart"),
     url(r"get_my_rating_chart/?$", MyRatingChartAPI.as_view(), name="get_mt_rating_chart"),
     url(r"get_find_username/?$", getFindUserIDAPI.as_view(), name="get_find_username"),
