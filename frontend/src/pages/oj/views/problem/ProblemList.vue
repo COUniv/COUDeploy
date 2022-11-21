@@ -77,7 +77,7 @@
             </thead>
             <tbody v-for="problem in problemList">
               <tr>
-                <td id="problem-id" :class="[(problem.my_status === null ? ''
+                <td id="problem-id" :class="[((problem.my_status === null || isAuthenticated === false) ? ''
                                             : problem.my_status === 0 ? 'accepted-color'
                                             : problem.my_status === 8 ? 'partially-accepted-color'
                                             : 'not-accepted-color')]">{{ problem._id }}</td>

@@ -504,6 +504,7 @@
   .content-container {
     margin: 15px 70px 5px 70px;
     white-space: break-spaces;
+    line-height: 1.75;
   }
 
   .no-article {
@@ -651,4 +652,10 @@
     font-size: 90%;
   }
 
+</style>
+<style lang="less">
+ .content-container p {
+    display: block;
+    margin: 0.5em 0;
+  }
 </style>
