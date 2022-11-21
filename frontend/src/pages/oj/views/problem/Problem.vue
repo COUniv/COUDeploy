@@ -5,7 +5,7 @@
       <Panel :padding='40' shadow>
         <div slot="title">
           {{problem.title}}
-          <span v-if="!(problem.my_status === null)" class="side-title-box">
+          <span v-if="!(problem.my_status === null || isAuthenticated === false)" class="side-title-box">
             <span class="icon-box" :class="problem.my_status === 0 ? 'green-text' 
                                          : problem.my_status === 8 ? 'yellow-text'
                                          : 'red-text'">
@@ -354,7 +354,7 @@
     }
     p.content {
       margin-right: 20px;
-      font-size: 15px
+      font-size: 15px;
     }
 
   }
@@ -395,9 +395,11 @@
   }
 
   .input-for-pre {
+    font-family: 'Menlo', sans-serif;
     min-width: 90px;
-
+    display:block;
   }
+  
 
   .hint-hide-btn {
     padding: 0px;
