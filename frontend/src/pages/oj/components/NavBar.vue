@@ -38,7 +38,7 @@
                   ref="loginBtn"
                   shape="circle"
                   @click="goLogin"
-                  style="line-height:50%;">
+                  style="line-height:0px">
                   <p>{{$t('m.Login')}}</p>
           </Button>
         </div>
