@@ -11,10 +11,102 @@ from submission.models import Submission
 from utils.api import APIView, validate_serializer
 from utils.shortcuts import rand_str
 
-from ..decorators import super_admin_required
-from ..models import AdminType, ProblemPermission, User, UserProfile
+from ..decorators import super_admin_required, admin_role_required
+from ..models import AdminType, ProblemPermission, User, UserProfile, ManagedUserList
 from ..serializers import EditUserSerializer, UserAdminSerializer, GenerateUserSerializer
-from ..serializers import ImportUserSeralizer
+from ..serializers import ImportUserSeralizer,AllManagedUserListSerializer, ManagedUserListSerializer, CreateManagedUserListSerializer
+
+class AllMangedUserList(APIView):
+    @admin_role_required
+    def get(self, request):
+        myself = request.GET.get("myself") # 자기 자신의 관리 리스트만 확인하기 위한 데이터
+        search = request.GET.get("search")
+        searchtype = request.GET.get("searchtype")
+        userlists = ManagedUserList.objects.all()
+        if (myself and myself == "1"):
+            userlists = userlists.filter(writer=request.user.username)
+
+        if search:
+            if (searchtype == "0"): # 전체 검색
+                userlists = userlists.filter(Q (title__icontains=search) | Q (content__icontains=search) | Q (writer__icontains=search) | Q(users__username__icontains=search)).distinct()
+            elif (searchtype == "1"): # 제목에서 검색
+                userlists = userlists.filter(title__icontains=search)
+            elif (searchtype == "2"): # 내용에서 검색
+                userlists = userlists.filter(content__icontains=search)
+            elif (searchtype == "3"): # 작성자명에서 검색
+                userlists = userlists.filter(writer__icontains=search)
+            elif (searchtype == "4"): # 특정 유저명에서 검색
+                userlists = userlists.filter(users__username__icontains=search)
+        self.success(self.paginate_data(request, userlists, AllManagedUserListSerializer))
+
+class ManagedUserListAPI(APIView):
+    @admin_role_required
+    def get(self, request):
+        list_id = request.GET.get("id") # 파라미터로 전송된 ID값을 통해 유저리스트 출력
+        try:
+            userlist = ManagedUserList.objects.get(id = list_id)
+        except:
+            return self.error("존재하지 않는 관리리스트 입니다.")
+        
+        return self.sucess(userlist)
+
+    @admin_role_required
+    @validate_serializer(ManagedUserListSerializer)
+    def put(self, request):
+        data = request.data
+        list_id = data["id"]
+        title = data["title"]
+        content = data["content"]
+        writer = request.user
+        users = data["user_ids"]
+        try:
+            userlist = ManagedUserList.objects.get(id = list_id)
+        except:
+            return self.error("존재하지 않는 관리리스트 입니다.")
+        userlist.title = title
+        userlist.content = content
+
+        except_userlist = []
+        userlist.users.clear()
+        for user_id in users:
+            try:
+                user = User.objects.get(id=user_id)
+            except:
+                except_userlist.append(user_id)
+                continue
+            userlist.user.add(user)
+        userlist.save()
+        self.success(except_userlist)
+
+    @admin_role_required
+    @validate_serializer(CreateManagedUserListSerializer)
+    def post(self, request):
+        data = request.data
+        title = data["title"]
+        content = data["content"]
+        writer = request.user
+        users = data["user_ids"]
+        userlist = ManagedUserList.objects.create(writer=writer,
+                                                 title=title,
+                                                 content=content)
+        except_userlist = []
+        for user_id in users:
+            try:
+                user = User.objects.get(id=user_id)
+            except:
+                except_userlist.append(user_id)
+                continue
+            userlist.user.add(user)
+        userlist.save()
+        self.success(except_userlist)
+
+    @admin_role_required
+    def delete(self, request):
+        if request.GET.get("id"):
+            userlist = ManagedUserList.objects.filter(id=request.GET["id"])
+            userlist.users.clear()
+            userlist.delete()
+        return self.success()
 
 class ForceUpdateAllUserRatingAPI(APIView):
     @super_admin_required
