@@ -166,3 +166,22 @@ class UserProfile(models.Model):
 
     class Meta:
         db_table = "user_profile"
+
+class ManagedUserList(models.Model):
+    """
+    관리자에 의해 관리되는 유저 리스트
+    """
+    id = models.IntegerField(primary_key=True, db_index=True) # 메니지 리스트 고유 ID
+    # 해당 계정이 삭제될 경우에도 유지하도록 함(수정 권한 -> SuperAdmin으로 변경될 예정)
+    writer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    title = models.CharField(max_length=128, null=True)
+    content = models.TextField(null=False)
+    create_time = models.DateTimeField(auto_now_add=True)
+    last_update_time = models.DateTimeField(auto_now=True)
+
+    users = models.ManyToManyField(User, related_name='managed_lists', null=True, blank=True)
+
+    class Meta:
+        db_table = "manged_user_list"
+        ordering = ("-last_update_time",)
