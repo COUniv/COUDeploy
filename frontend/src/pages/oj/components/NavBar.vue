@@ -2,7 +2,8 @@
   <div id="header" >
     <!-- <transition name="fadenav"> -->
     <Menu v-if="screenWidth > 900" :style="{visibility: screenWidth > 900 ? 'visible' : 'hidden'}" theme="light" :mode="hMode" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
-      <Menu-item class="home_bar" name="/" ><router-link to="/">COU</router-link></Menu-item>
+      <Menu-item v-if="this.$route.path !== '/' || this.listVisible === true" class="home_bar" name="/" ><router-link to="/">COU</router-link></Menu-item>
+      <Menu-item v-else class="home_bar" name="/"><span @click="toggleVisible()">COU</span></Menu-item>
       <Menu-item class="bar_list" name="/problem">
         <router-link to="/problem">문제</router-link>
       </Menu-item>
@@ -37,7 +38,7 @@
                   ref="loginBtn"
                   shape="circle"
                   @click="goLogin"
-                  style="line-height:50%;">
+                  style="line-height:0px">
                   <p>{{$t('m.Login')}}</p>
           </Button>
         </div>
@@ -127,8 +128,11 @@
 
     <!-- vertical navigation-bar -->
     <Menu :style="{visibility: screenWidth <= 900 ? 'visible' : 'hidden'}" theme="light" width="100%" :mode="vMode" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
-      <Menu-item class="home_bar" name="/ff" >
+      <Menu-item v-if="this.$route.path !== '/' || this.listVisible === true" class="home_bar" name="/ff" >
         <div class="logo-name" @click="handleRoute('/')">COU</div>
+      </Menu-item>
+      <Menu-item v-else class="home_bar" name="/ff" >
+        <div class="logo-name" @click="toggleVisible()">COU</div>
       </Menu-item>
       <Menu-item class="bar_list" :class="{'open': navOpen === true}" name="/problem">
         문제
@@ -286,6 +290,9 @@
       }, 5000)
     },
     methods: {
+      toggleVisible () {
+        this.$store.commit('toggleVisible')
+      },
       ...mapActions(['getProfile', 'changeModalStatus']),
       init () {
         this.getProfile()
@@ -431,6 +438,9 @@
       },
       getAvatar () {
         return this.profile.avatar !== '/public/avatar/default.png'
+      },
+      listVisible () {
+        return this.$store.getters.listVisible
       }
     },
     destroyed () {

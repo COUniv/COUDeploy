@@ -2,7 +2,7 @@
   <footer>
     <div>
       <p v-html="website.website_footer"></p>
-      <p>Powered by <a href="https://github.com/OnlineJudgePlatformDev">COU</a>
+      <p>Powered by <a href="https://github.com/COUniv/COUDeploy">COU</a>
         <span v-if="version">&nbsp; Version: {{ version }}</span>
       </p>
     </div>

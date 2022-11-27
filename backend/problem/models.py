@@ -112,6 +112,14 @@ class Problem(models.Model):
         self.accepted_number = models.F("accepted_number") + 1
         self.save(update_fields=["accepted_number"])
 
+    def getDifficultyToWeightValue(self):
+        diff = self.difficulty
+        slice_dif = diff[5:]
+        dif_to_int = int(slice_dif)
+        #wexp weight value = 1 - (4-difficulty)/15
+        exp_weight_value = 1 - (4 - dif_to_int) / 15
+        return exp_weight_value
+
 class ProblemCategory(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
     title = models.TextField()
@@ -121,3 +129,7 @@ class ProblemCategory(models.Model):
 
 class ProblemCategoryList(models.Model):
     categories = ArrayField(models.TextField(), blank=True, default=list)
+
+class ProblemRating(models.Model):
+    rating =  ArrayField(ArrayField(models.FloatField(), blank=True, default=list), blank=True, default=list)
+    update_expire_time = models.DateTimeField(null=True)

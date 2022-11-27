@@ -17,6 +17,7 @@ from fps.parser import FPSHelper, FPSParser
 from judge.dispatcher import SPJCompiler
 from options.options import SysOptions
 from submission.models import Submission, JudgeStatus
+from account.models import User
 from utils.api import APIView, CSRFExemptAPIView, validate_serializer, APIError
 from utils.constants import Difficulty
 from utils.shortcuts import rand_str, natural_sort_key
@@ -436,7 +437,15 @@ class ProblemAPI(ProblemBase):
             except ProblemTag.DoesNotExist:
                 tag = ProblemTag.objects.create(name=tag)
             problem.tags.add(tag)
-
+        # 문제 변경으로 인한 rating 재측정
+        submissions = Submission.objects.filter(Q(problem=problem) & ~Q(username__isnull=True)).order_by('username').distinct('username')
+        for submission in submissions:
+            try:
+                user = User.objects.get(username=submission.username)
+                user_profile = user.userprofile
+                user_profile.update_rating(user)
+            except User.DoesNotExist:
+                continue
         return self.success()
 
     @problem_permission_required

@@ -16,6 +16,13 @@ from ..models import AdminType, ProblemPermission, User, UserProfile
 from ..serializers import EditUserSerializer, UserAdminSerializer, GenerateUserSerializer
 from ..serializers import ImportUserSeralizer
 
+class ForceUpdateAllUserRatingAPI(APIView):
+    @super_admin_required
+    def get(self, request):
+        users = User.objects.all()
+        for user in users:
+            user.userprofile.update_rating(user)
+        return self.success()
 
 class UserAdminAPI(APIView):
     @validate_serializer(ImportUserSeralizer)

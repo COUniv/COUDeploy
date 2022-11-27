@@ -9,8 +9,13 @@
           </template>
           <template v-else>
             <span>{{$t('m.Time')}}: {{submission.statistic_info.time_cost | submissionTime}}</span>
+            <span>|</span>
             <span>{{$t('m.Memory')}}: {{submission.statistic_info.memory_cost | submissionMemory}}</span>
+            <span>|</span>
+            <span>코드 길이: {{submission.byte_length}} B</span>
+            <span>|</span>
             <span>{{$t('m.Lang')}}: {{submission.language}}</span>
+            <span>|</span>
             <span>{{$t('m.Author')}}: {{submission.username}}</span>
           </template>
         </div>
@@ -56,7 +61,7 @@
       return {
         columns: [
           {
-            title: this.$i18n.t('m.ID'),
+            title: 'TC 번호',
             align: 'center',
             type: 'index'
           },
@@ -142,6 +147,7 @@
             }
           }
           this.submission = data
+          console.log(this.submission)
         }, () => {
           this.loading = false
         })

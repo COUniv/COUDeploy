@@ -5,7 +5,7 @@
       <!-- 게시글 제목 -->
       <div slot="title" style="font-size: 1.5em; height: 63px; line-height: 63px;">
         <!-- 뒤로가기 버튼 -->
-        <i id="back-button" class="mdi mdi-arrow-u-left-bottom" @click="goBack" ></i>
+        <i id="back-button" class="mdi mdi-arrow-left-circle" @click="goBack" ></i>
         <!-- <Button id="back-button" icon="md-arrow-back" size="large" @click="goBack" type="text"></Button> -->
         {{article.title}}
       </div>
@@ -504,6 +504,7 @@
   .content-container {
     margin: 15px 70px 5px 70px;
     white-space: break-spaces;
+    line-height: 1.75;
   }
 
   .no-article {
@@ -651,4 +652,10 @@
     font-size: 90%;
   }
 
+</style>
+<style lang="less">
+ .content-container p {
+    display: block;
+    margin: 0.5em 0;
+  }
 </style>

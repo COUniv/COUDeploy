@@ -20,8 +20,8 @@
               <p>{{$t('m.UserHomeserSubmissions')}}</p>
             </div>
             <div class="right">
-              <p class="emphasis">{{profile.total_score}}</p>
-              <p>{{$t('m.UserHomeScore')}}</p>
+              <p class="emphasis">{{toRating(profile)}}</p>
+              <p>레이팅</p>
             </div>
           </div>
           <div class="btn-menu">
@@ -162,6 +162,9 @@
           this.$success('Update successfully')
           this.init()
         })
+      },
+      toRating (rank) {
+        return Math.floor(rank.rating_score * 100)
       }
     },
     computed: {

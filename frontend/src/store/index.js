@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import user from './modules/user'
 import contest from './modules/contest'
+import announcement from './modules/announcement'
 import api from '@oj/api'
 import types from './types'
 import createPersistedState from 'vuex-persistedstate'
@@ -63,7 +64,8 @@ const rootActions = {
 export default new Vuex.Store({
   modules: {
     user,
-    contest
+    contest,
+    announcement
   },
   plugins: [createPersistedState({
     storage: window.sessionStorage

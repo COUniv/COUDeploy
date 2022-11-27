@@ -15,16 +15,36 @@
   </Row> -->
   <div class="main">
     <div class="ranking-container">
-      <h3>사용자 순위</h3>
+      <div>
+        <span>
+          <h3 class="title" style="display:inline; float: left">사용자 순위</h3>
+          <Tooltip trigger="hover" placement="bottom" max-width="300"  style="display:inline; float: left; margin-left:4px;">
+            <i class="mdi mdi-help-circle" id="help-icn"></i>
+            <div slot="content" style="font-size: 7px;">
+              <p>레이팅은 소수점 자리까지 측정하기 때문에 점수가 같아도 소수점에서 차이가 날 수 있습니다.</p>
+            </div>
+          </Tooltip>
+        </span>
+        <span @click="goMyPosition" class="my-position-btn">나의 지표 보기</span>
+        <span v-if="isSuperAdmin" class="update-rating-btn">
+          <Tooltip trigger="hover" placement="bottom" max-width="300">
+            <i @click="updateForceRating" class="mdi mdi-restore-alert" id="help-icn"><span>Force Update</span></i>
+            <div slot="content" style="font-size: 7px;">
+              <p>※주의 : 전체 사용자에 대하여 레이팅을 강제 업데이트 합니다.</p>
+            </div>
+          </Tooltip>
+        </span>
+      </div>
       <table class="ranking-list">
         <!-- 제목 -->
         <thead>
           <tr class="ranking_title">
-            <td style="width: 20%">순위</td>
+            <td style="width: 15%">순위</td>
             <td style="width: 20%">아이디</td>
-            <td style="width: 20%">맞은 문제</td>
+            <td style="width: 20%">Rating</td>
+            <td style="width: 10%">맞은 문제</td>
             <td style="width: 20%">제출</td>
-            <td style="width: 20%">정답 비율</td>
+            <td style="width: 15%">정답 비율</td>
           </tr>
         </thead>
         <!-- 내용 -->
@@ -35,6 +55,7 @@
               <span class="no top">1</span>
             </td>
             <td class="name">{{data.user.username}}</td>
+            <td>{{toRating(data)}}</td>
             <td>{{data.accepted_number}}</td>
             <td>{{data.submission_number}}</td>
             <td>{{toPercent(data)}}</td>
@@ -45,6 +66,7 @@
               <span class="no top">2</span>
             </td>
             <td class="name">{{data.user.username}}</td>
+            <td>{{toRating(data)}}</td>
             <td>{{data.accepted_number}}</td>
             <td>{{data.submission_number}}</td>
             <td>{{toPercent(data)}}</td>
@@ -56,6 +78,7 @@
               <span class="no top third" style="color: white">3</span>
             </td>
             <td class="name">{{data.user.username}}</td>
+            <td>{{toRating(data)}}</td>
             <td>{{data.accepted_number}}</td>
             <td>{{data.submission_number}}</td>
             <td>{{toPercent(data)}}</td>
@@ -63,6 +86,7 @@
           <tr v-else-if="index > 2">
             <td class="no"> {{index + 1}} </td>
             <td class="name">{{data.user.username}}</td>
+            <td>{{toRating(data)}}</td>
             <td>{{data.accepted_number}}</td>
             <td>{{data.submission_number}}</td>
             <td>{{toPercent(data)}}</td>
@@ -82,7 +106,7 @@
   import Pagination from '@oj/components/Pagination'
   import utils from '@/utils/utils'
   import { RULE_TYPE } from '@/utils/constants'
-
+  import {mapGetters} from 'vuex'
   export default {
     name: 'acm-rank',
     components: {
@@ -95,59 +119,6 @@
         total: 0,
         loadingTable: false,
         dataRank: [],
-        columns: [
-          {
-            title: '순위',
-            align: 'center',
-            width: 60,
-            render: (h, params) => {
-              return h('span', {}, params.index + (this.page - 1) * this.limit + 1)
-            }
-          },
-          {
-            title: '아이디',
-            align: 'center',
-            render: (h, params) => {
-              return h('a', {
-                style: {
-                  'display': 'inline-block',
-                  'max-width': '200px'
-                },
-                on: {
-                  click: () => {
-                    this.$router.push(
-                      {
-                        name: 'user-home',
-                        query: {username: params.row.user.username}
-                      }).catch(() => {})
-                  }
-                }
-              }, params.row.user.username)
-            }
-          },
-          {
-            title: this.$i18n.t('m.mood'),
-            align: 'center',
-            key: 'mood'
-          },
-          {
-            title: '맞은 문제',
-            align: 'center',
-            key: 'accepted_number'
-          },
-          {
-            title: '제출',
-            align: 'center',
-            key: 'submission_number'
-          },
-          {
-            title: this.$i18n.t('m.Rating'),
-            align: 'center',
-            render: (h, params) => {
-              return h('span', utils.getACRate(params.row.accepted_of_all_submission_number, params.row.submission_number))
-            }
-          }
-        ],
         options: {
           tooltip: {
             trigger: 'axis'
@@ -223,7 +194,7 @@
         // let bar = this.$refs.chart
         // bar.showLoading({maskColor: 'rgba(250, 250, 250, 0.8)'})
         this.loadingTable = true
-        api.getUserRank(offset, this.limit, RULE_TYPE.ACM).then(res => {
+        api.getUserRatingRank(offset, this.limit).then(res => {
           this.loadingTable = false
           if (page === 1) {
             this.changeCharts(res.data.data.results.slice(0, 10))
@@ -234,6 +205,16 @@
         }).catch(() => {
           this.loadingTable = false
           // bar.hideLoading()
+        })
+      },
+      updateForceRating () {
+        this.loadingTable = true
+        api.updateForceRating().then(res => {
+          this.getRankData(1)
+          this.$success('업데이트가 완료되었습니다')
+        }, _ => {
+          this.loadingTable = false
+          this.$error('업데이트에 실패하였습니다')
         })
       },
       changeCharts (rankData) {
@@ -253,9 +234,20 @@
           query: {username: user.username}
         }).catch(() => {})
       },
+      goMyPosition () {
+        this.$router.push({
+          name: 'user-position'
+        }).catch(() => {})
+      },
       toPercent (rank) {
         return utils.getACRate(rank.accepted_of_all_submission_number, rank.submission_number)
+      },
+      toRating (rank) {
+        return Math.floor(rank.rating_score * 100)
       }
+    },
+    computed: {
+      ...mapGetters(['isSuperAdmin'])
     }
   }
 </script>
@@ -268,7 +260,47 @@
     margin-bottom: 20px;
     color: @default-font-color;
   }
+  .title {
+    display:inline; 
+    float: left;
+  }
+  #help-icn {
+    font-style: normal;
+    line-height: 22px;
+    span {
+      margin-left: 5px;
+      color: #515a6e;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    &:hover, &:hover > span {
+      transition: all ease-in 0.1s;
+      cursor: pointer;
+      color: @dark-purple;
+    }
 
+  }  
+  .update-rating-btn {
+    display: inline;
+    float: right;
+    margin-right: 20px;
+    font-size: 16px;
+    height: 22px;
+    line-height: 22px;
+    color: red;
+    font-weight: 700;
+  }
+  .my-position-btn {
+    display: inline;
+    float: right;
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+    &:hover {
+      color: @purple;
+      cursor: pointer;
+    }
+  }
   .main {
     margin: auto;
     padding: 30px 20px;
