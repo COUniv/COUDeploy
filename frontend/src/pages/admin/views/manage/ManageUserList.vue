@@ -16,15 +16,17 @@
       <el-table
         v-loading="loadingTable"
         element-loading-text="loading"
-        @selection-change="handleSelectionChange"
+        
         ref="table"
         :data="manageUserList"
         style="width: 100%">
-        <el-table-column type="selection" width="55"></el-table-column>
+        <!-- <el-table-column type="selection" width="55"></el-table-column> -->
 
-        <el-table-column prop="id" label="고유 ID"></el-table-column>
+        <el-table-column prop="title" label="제목"></el-table-column>
 
-        <el-table-column prop="username" label="닉네임"></el-table-column>
+        <el-table-column prop="content" label="내용"></el-table-column>
+
+        <el-table-column prop="writer.username" label="관리자"></el-table-column>
 
         <el-table-column prop="create_time" label="생성일자">
           <template slot-scope="scope">
@@ -32,26 +34,15 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="last_login" label="마지막 로그인">
+        <el-table-column prop="last_update_time" label="마지막 수정일">
           <template slot-scope="scope">
-            {{scope.row.last_login | localtime }}
+            {{scope.row.last_update_time | localtime }}
           </template>
         </el-table-column>
-
-        <el-table-column prop="real_name" label="이름"></el-table-column>
-
-        <el-table-column prop="email" label="이메일"></el-table-column>
-
-        <el-table-column prop="admin_type" label="사용자 권한">
-          <template slot-scope="scope">
-            {{ scope.row.admin_type }}
-          </template>
-        </el-table-column>
-
         <el-table-column fixed="right" label="옵션" width="200">
           <template slot-scope="{row}">
-            <icon-btn name="수정" icon="edit" @click.native="openUserDialog(row.id)"></icon-btn>
-            <icon-btn name="삭제" icon="trash" @click.native="deleteUsers([row.id])"></icon-btn>
+            <el-button icon="el-icon-edit" size="mini" @click.native="openUserDialog(row.id)"></el-button>
+            <el-button icon="el-icon-delete" size="mini" @click.native="deleteList([row.id])"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -69,9 +60,7 @@
 </template>
 
 <script>
-  import papa from 'papaparse'
   import api from '../../api.js'
-  import utils from '@/utils/utils'
 
   export default {
     name: 'ManagedUserList',
@@ -133,17 +122,22 @@
           this.loadingTable = false
           this.total = res.data.data.total
           this.manageUserList = res.data.data.results
+          for (let idx = 0; idx < this.manageUserList.length; idx++) {
+            var content = this.manageUserList[idx].content
+            if (content.length > 9) {
+              this.manageUserList[idx].content = (content.substr(0, 10) + '...')
+            }
+          }
         }, res => {
           this.loadingTable = false
         })
       },
-      deleteUsers (ids) {
-        this.$confirm('Sure to delete the user? The associated resources created by this user will be deleted as well, like problem, contest, announcement, etc.', 'confirm', {
+      deleteList (ids) {
+        this.$confirm('정말로 삭제하시겠습니까? 삭제하면 되돌릴 수 없습니다.', 'confirm', {
           type: 'warning'
         }).then(() => {
-          api.deleteUsers(ids.join(',')).then(res => {
-            this.getManageUserList(this.currentPage)
-          }).catch(() => {
+          api.deleteManagedUserList(ids[0]).then(res => {
+            console.log(res)
             this.getManageUserList(this.currentPage)
           })
         }, () => {
