@@ -29,8 +29,12 @@ export default {
   editManagedUserList () {
     return ajax('admin/managed_user_list', 'put')
   },
-  deleteManagedUserList () {
-    return ajax('admin/managed_user_list', 'delete')
+  deleteManagedUserList (id) {
+    return ajax('admin/managed_user_list', 'delete', {
+      params: {
+        id
+      }
+    })
   },
   getLastProblemNumber () {
     return ajax('admin/last_problem_number', 'get')
