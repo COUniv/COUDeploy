@@ -171,7 +171,6 @@ class ManagedUserList(models.Model):
     """
     관리자에 의해 관리되는 유저 리스트
     """
-    id = models.IntegerField(primary_key=True, db_index=True) # 메니지 리스트 고유 ID
     # 해당 계정이 삭제될 경우에도 유지하도록 함(수정 권한 -> SuperAdmin으로 변경될 예정)
     writer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 

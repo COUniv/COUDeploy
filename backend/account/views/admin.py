@@ -1,6 +1,5 @@
 import os
 import re
-import xlsxwriter
 
 from django.db import transaction, IntegrityError
 from django.db.models import Q
@@ -14,15 +13,16 @@ from utils.shortcuts import rand_str
 from ..decorators import super_admin_required, admin_role_required
 from ..models import AdminType, ProblemPermission, User, UserProfile, ManagedUserList
 from ..serializers import EditUserSerializer, UserAdminSerializer, GenerateUserSerializer
-from ..serializers import ImportUserSeralizer,AllManagedUserListSerializer, ManagedUserListSerializer, CreateManagedUserListSerializer
+from ..serializers import ImportUserSeralizer,AllManagedUserListSerializer, ManagedUserListSerializer, CreateManagedUserListSerializer, GETManagedUserListSerializer
 
-class AllMangedUserList(APIView):
+class AllManagedUserList(APIView):
     @admin_role_required
     def get(self, request):
-        myself = request.GET.get("myself") # 자기 자신의 관리 리스트만 확인하기 위한 데이터
-        search = request.GET.get("search")
-        searchtype = request.GET.get("searchtype")
+        myself = request.GET.get("myself", None) # 자기 자신의 관리 리스트만 확인하기 위한 데이터
+        search = request.GET.get("search",None)
+        searchtype = request.GET.get("searchtype", None)
         userlists = ManagedUserList.objects.all()
+
         if (myself and myself == "1"):
             userlists = userlists.filter(writer=request.user.username)
 
@@ -37,7 +37,10 @@ class AllMangedUserList(APIView):
                 userlists = userlists.filter(writer__icontains=search)
             elif (searchtype == "4"): # 특정 유저명에서 검색
                 userlists = userlists.filter(users__username__icontains=search)
-        self.success(self.paginate_data(request, userlists, AllManagedUserListSerializer))
+        
+        data = self.paginate_data(request, userlists) # 페이징
+        data["results"] = AllManagedUserListSerializer(data["results"], many=True).data
+        return self.success(data)
 
 class ManagedUserListAPI(APIView):
     @admin_role_required
@@ -48,7 +51,7 @@ class ManagedUserListAPI(APIView):
         except:
             return self.error("존재하지 않는 관리리스트 입니다.")
         
-        return self.sucess(userlist)
+        return self.sucess(GETManagedUserListSerializer(userlist))
 
     @admin_role_required
     @validate_serializer(ManagedUserListSerializer)
@@ -86,6 +89,8 @@ class ManagedUserListAPI(APIView):
         content = data["content"]
         writer = request.user
         users = data["user_ids"]
+        if ManagedUserList.objects.filter(title__contains=title).exists():
+            return self.error('중복되는 제목이 있습니다.')
         userlist = ManagedUserList.objects.create(writer=writer,
                                                  title=title,
                                                  content=content)
@@ -96,9 +101,9 @@ class ManagedUserListAPI(APIView):
             except:
                 except_userlist.append(user_id)
                 continue
-            userlist.user.add(user)
+            userlist.users.add(user)
         userlist.save()
-        self.success(except_userlist)
+        return self.success(except_userlist)
 
     @admin_role_required
     def delete(self, request):
