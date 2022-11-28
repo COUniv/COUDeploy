@@ -5,7 +5,7 @@ import store from '@/store'
 import i18n from '@/i18n'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-
+import '@mdi/font/css/materialdesignicons.css'
 import filters from '@/utils/filters'
 import router from './router'
 import { GOOGLE_ANALYTICS_ID } from '@/utils/constants'
