@@ -90,7 +90,7 @@ class ManagedUserListAPI(APIView):
         writer = request.user
         users = data["user_ids"]
         if ManagedUserList.objects.filter(title__contains=title).exists():
-            return self.error('중복되는 제목이 있습니다.')
+            return self.error('이미 존재하는 제목입니다')
         userlist = ManagedUserList.objects.create(writer=writer,
                                                  title=title,
                                                  content=content)
