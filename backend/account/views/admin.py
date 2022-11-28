@@ -107,10 +107,15 @@ class ManagedUserListAPI(APIView):
 
     @admin_role_required
     def delete(self, request):
-        if request.GET.get("id"):
-            userlist = ManagedUserList.objects.filter(id=request.GET["id"])
-            userlist.users.clear()
-            userlist.delete()
+        id = request.GET.get("id")
+        if not id:
+            return self.error("잘못 된 값입니다")
+        try:
+            userlist = ManagedUserList.objects.get(id=id)
+        except:
+            return self.error("해당 리스트가 존재하지 않습니다")
+        userlist.users.clear()
+        userlist.delete()
         return self.success()
 
 class ForceUpdateAllUserRatingAPI(APIView):
