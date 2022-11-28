@@ -164,7 +164,7 @@
         }
         let data = Object.assign({}, this.manageForm)
         api.addManagedUserList(data).then(res => {
-          console.log(res)
+          this.$router.push({name: 'manage-user-list'})
         })
       }
     },
