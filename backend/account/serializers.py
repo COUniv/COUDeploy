@@ -102,6 +102,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class AllManagedUserListSerializer(serializers.ModelSerializer):
     users = UserSerializer(read_only=True, many=True)
+    writer = UserSerializer()
     #관리유저리스트 전체 리스트 전송용
     class Meta:
         model = ManagedUserList
@@ -109,6 +110,7 @@ class AllManagedUserListSerializer(serializers.ModelSerializer):
 
 class GETManagedUserListSerializer(serializers.ModelSerializer):
     users = UserSerializer(read_only=True, many=True)
+    writer = UserSerializer()
     #관리유저리스트 리스트 전송용
     class Meta:
         model = ManagedUserList
