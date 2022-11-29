@@ -43,11 +43,12 @@
           <table v-if="!rejudgeColumnVisible" class="submission-list">
             <thead>
               <tr>
-                <th style="width:20%">아이디</th>
-                <th style="width:20%">문제 번호</th>
+                <th style="width:15%">아이디</th>
+                <th style="width:15%">문제 번호</th>
                 <th style="width:15%">채점 결과</th>
                 <th style="width:10%">시간</th>
                 <th style="width:10%">메모리</th>
+                <th style="width:10%">코드 길이</th>
                 <th style="width:10%">언어</th>
                 <th style="width:15%">제출일</th>
               </tr>
@@ -59,6 +60,7 @@
                 <td><Tag :color=toColor(submission) :checkable="checkIfAvailable(submission)" v-bind:style="[checkIfAvailable(submission) ? {'cursor' : 'pointer'}:{'cursor' : 'default'}]" @on-change="redirectToDetails(submission)"> {{ toResult(submission) }} </Tag></td>
                 <td>{{ toTime(submission) }}</td>
                 <td>{{ toMemory(submission) }}</td>
+                <td>{{ toByteLength(submission) }}</td>
                 <td>{{ submission.language }}</td>
                 <td>{{ toDate(submission) }}</td>
               </tr>
@@ -67,13 +69,14 @@
           <table v-else class="submission-list">
             <thead>
               <tr>
-                <th style="width:15%">아이디</th>
-                <th style="width:15%">문제 번호</th>
-                <th style="width:15%">채점 결과</th>
+                <th style="width:12%">아이디</th>
+                <th style="width:12%">문제 번호</th>
+                <th style="width:12%">채점 결과</th>
                 <th style="width:10%">시간</th>
                 <th style="width:10%">메모리</th>
+                <th style="width:10%">코드 길이</th>
                 <th style="width:10%">언어</th>
-                <th style="width:15%">제출일</th>
+                <th style="width:14%">제출일</th>
                 <th style="width:10%; text-align: center;">재체점</th>
               </tr>
             </thead>
@@ -84,6 +87,7 @@
                 <td><Tag :color=toColor(submission) :checkable="checkIfAvailable(submission)" v-bind:style="[checkIfAvailable(submission) ? {'cursor' : 'pointer'}:{'cursor' : 'default'}]" @on-change="redirectToDetails(submission)"> {{ toResult(submission) }} </Tag></td>
                 <td>{{ toTime(submission) }}</td>
                 <td>{{ toMemory(submission) }}</td>
+                <td>{{ toByteLength(submission) }}</td>
                 <td>{{ submission.language }}</td>
                 <td>{{ toDate(submission) }}</td>
                 <td style="text-align: center;"><Icon type="md-refresh" size="18" class="icon-hv" @click="handleRejudge(submission.id, idx)"></Icon></td>
@@ -282,6 +286,9 @@
       },
       toTime (submission) {
         return utils.submissionTimeFormat(submission.statistic_info.time_cost)
+      },
+      toByteLength (submission) {
+        return String(submission.byte_length) + ' B'
       },
       toMemory (submission) {
         return utils.submissionMemoryFormat(submission.statistic_info.memory_cost)

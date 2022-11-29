@@ -3,6 +3,7 @@ import os
 from datetime import timedelta
 from importlib import import_module
 import smtplib
+from unittest import result
 from urllib import request
 from utils.shortcuts import send_email
 import qrcode
@@ -13,9 +14,9 @@ from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from otpauth import OtpAuth
-
+import random
 from account.models import User
-from problem.models import Problem
+from problem.models import Problem, ProblemRating
 from utils.constants import ContestRuleType
 from options.options import SysOptions
 from utils.api import APIView, validate_serializer, CSRFExemptAPIView
@@ -562,6 +563,78 @@ class UserRankAPI(APIView):
             profiles = profiles.filter(total_score__gt=0).order_by("-total_score")
         return self.success(self.paginate_data(request, profiles, RankInfoSerializer))
 
+
+class UserRatingRankAPI(APIView):
+    def get(self, request):
+        profiles = UserProfile.objects.filter(user__admin_type=AdminType.REGULAR_USER, user__is_disabled=False) \
+            .select_related("user")
+        profiles = profiles.filter(rating_score__gt=0).order_by("-rating_score", "submission_number")
+        return self.success(self.paginate_data(request, profiles, RankInfoSerializer))
+
+
+class UserRatingChartAPI(APIView):
+    def get(self, request):
+        if not ProblemRating.objects.exists():
+            profiles = UserProfile.objects.filter(user__admin_type=AdminType.REGULAR_USER, user__is_disabled=False, rating_score__gt=0) \
+            .select_related("user")
+            # if profiles.count() > 500:
+            #     profiles = profiles.order_by('?')[:500]
+            user = request.user
+            if user.is_authenticated:
+                profiles = profiles.exclude(user=user)
+
+            result = []
+            for profile in profiles:
+                result.append(profile.rating_position[0])
+
+            expire_time = now() + timedelta(minutes=10)
+            problemRating = ProblemRating.objects.create(rating = result, update_expire_time=expire_time)
+            problemRating.save()
+            return self.success(result)
+        else:
+            try:
+                pr = ProblemRating.objects.get(id=1)
+            except ProblemRating.DoesNotExist:
+                self.error("ProblemRating not exist")
+            if pr.update_expire_time > now():
+                return self.success(pr.rating)
+            else:
+                profiles = UserProfile.objects.filter(user__admin_type=AdminType.REGULAR_USER, user__is_disabled=False, rating_score__gt=0) \
+                .select_related("user")
+                # if profiles.count() > 500:
+                #     profiles = profiles.order_by('?')[:500]
+                user = request.user
+                if user.is_authenticated:
+                    profiles = profiles.exclude(user=user)
+
+                result = []
+                for profile in profiles:
+                    result.append(profile.rating_position[0])
+                expire_time = now() + timedelta(minutes=10)
+
+                pr.rating = result
+                pr.update_expire_time = expire_time
+                pr.save()
+                return self.success(result)
+
+class MyRatingChartAPI(APIView):
+    @login_required
+    def get(self, request):
+        username = request.GET.get("username")
+        try:
+            if username:
+                user = User.objects.get(username=username, is_disabled=False)
+            else:
+                user = request.user
+        except User.DoesNotExist:
+            return self.error("존재하지 않는 유저입니다")
+        profile = user.userprofile
+        result = profile.rating_position
+        if result is None or len(result) == 0:
+            profile.update_rating(user)
+            result = profile.rating_position
+
+        return self.success(result)
 
 class ProfileProblemDisplayIDRefreshAPI(APIView):
     @login_required

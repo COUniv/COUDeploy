@@ -21,23 +21,35 @@ import highlight from '@/plugins/highlight'
 import katex from '@/plugins/katex'
 import filters from '@/utils/filters.js'
 
-import ECharts from 'vue-echarts/components/ECharts.vue'
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/chart/line'
-import 'echarts/lib/chart/pie'
-import 'echarts/lib/component/title'
-import 'echarts/lib/component/grid'
-import 'echarts/lib/component/dataZoom'
-import 'echarts/lib/component/legend'
-import 'echarts/lib/component/tooltip'
-import 'echarts/lib/component/toolbox'
-import 'echarts/lib/component/markPoint'
+import ECharts from 'vue-echarts'
+import 'echarts-gl'
+import * as ecStat from 'echarts-stat'
+import * as echarts from 'echarts/core'
+import { LineChart, BarChart, ScatterChart, EffectScatterChart } from 'echarts/charts'
+import { GridComponent, TitleComponent, TooltipComponent, LegendComponent, DataZoomComponent } from 'echarts/components'
+import { UniversalTransition } from 'echarts/features'
+import { CanvasRenderer } from 'echarts/renderers'
+// use([BarChart, GridComponent, CanvasRenderer])
+
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // auto logout
 // import IdleVue from 'idle-vue-3'
 import '@mdi/font/css/materialdesignicons.css'
-
+echarts.registerTransform(ecStat.transform.regression)
+echarts.use([
+  CanvasRenderer,
+  TitleComponent,
+  LineChart,
+  BarChart,
+  ScatterChart,
+  GridComponent,
+  TooltipComponent,
+  EffectScatterChart,
+  UniversalTransition,
+  LegendComponent,
+  DataZoomComponent
+])
 // register global utility filters.
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])

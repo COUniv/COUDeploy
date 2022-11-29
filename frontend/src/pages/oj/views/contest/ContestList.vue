@@ -145,7 +145,7 @@
                 </td>
                 <div class="user-info ranker">
                   <td class="name">{{ data.user.username }}</td>
-                  <td class="score">{{ data.accepted_number }}</td>
+                  <!-- <td class="score">{{ data.accepted_number }}</td> -->
                 </div>
               </tr>
               <tr class="ranking-entry" v-else-if="index == 1">
@@ -158,7 +158,7 @@
                 </td>
                 <div class="user-info ranker">
                   <td class="name">{{ data.user.username }}</td>
-                  <td class="score">{{ data.accepted_number }}</td>
+                  <!-- <td class="score">{{ data.accepted_number }}</td> -->
                 </div>
               </tr>
 
@@ -172,14 +172,14 @@
                 </td>
                 <div class="user-info ranker">
                   <td class="name">{{ data.user.username }}</td>
-                  <td class="score">{{ data.accepted_number }}</td>
+                  <!-- <td class="score">{{ data.accepted_number }}</td> -->
                 </div>
               </tr>
               <tr class="ranking-entry" v-else-if="index > 2">
                 <td class="no">{{ index + 1 }}</td>
                 <div class="user-info">
                   <td class="name">{{ data.user.username }}</td>
-                  <td class="score">{{ data.accepted_number }}</td>
+                  <!-- <td class="score">{{ data.accepted_number }}</td> -->
                 </div>
               </tr>
             </tbody>
@@ -473,8 +473,14 @@ export default {
   .user-info {
     display: flex;
     flex-direction: column;
-    padding-bottom: 10px;
+    // padding-bottom: 10px;
     text-align: left;
+    td {
+      height: 48px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
   }
   .ranker {
     justify-content: flex-end;
@@ -501,6 +507,8 @@ export default {
       font-size: 150%;
       line-height: 50px;
       width: 40px;
+      max-width: 40px;
+      min-width: 40px;
       margin-right: 15px;
     }
 

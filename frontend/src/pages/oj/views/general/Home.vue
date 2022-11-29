@@ -89,7 +89,7 @@
               <tr class="ranking_title">
                 <td>순위</td>
                 <td>아이디</td>
-                <td>점수</td>
+                <td>레이팅</td>
               </tr>
             </thead>
             <!-- 내용 -->
@@ -100,7 +100,7 @@
                   <span class="no">1</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
               <tr v-else-if="index == 1" class="ranker second">
                 <td class="image">
@@ -108,7 +108,7 @@
                   <span class="no">2</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
               
               <tr v-else-if="index == 2" class="ranker third">
@@ -117,22 +117,22 @@
                   <span class="no" style="color: white">3</span>
                 </td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
               <tr v-else-if="index == 3" class="ranker defa">
                 <td class="no">4</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
               <tr v-else-if="index == 4" class="ranker defa">
                 <td class="no">5</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
               <tr v-else-if="index == 5" class="ranker defa">
                 <td class="no">6</td>
                 <td class="name">{{data.user.username}}</td>
-                <td class="score">{{data.accepted_number * 100}}</td>
+                <td class="score">{{convertRating(data)}}</td>
               </tr>
             </tbody>
           </table>
@@ -146,12 +146,19 @@
   </div>
   <div v-else style="padding-left:50px; padding-right:50px">
     <Panel shadow :padding="20">
-    <div slot="title" style="padding-left:20px; padding-right:20px">
-      {{title}}
+    <div style="line-height: 50px; display: flex; flex-direction: column;" slot="title">
+      <div>
+        <i v-if="!listVisible" id="back-button" @click="goBack" class="mdi mdi-arrow-left-circle"></i>
+        {{title}}
+      </div>
+      <div v-if="!listVisible" class="announcements-container-header">
+        <div class="div-first-box">{{ createName }}</div>
+        <div>|</div>
+        <div>{{ createDate }}</div>
+      </div>
     </div>
     <div slot="extra">
       <Button v-if="listVisible" type="info" @click="init" :loading="btnLoading">{{$t('m.Refresh')}}</Button>
-      <Button v-else icon="ios-undo" @click="goBack">{{$t('m.Back')}}</Button>
     </div>
     <Row type="flex" justify="space-around">
       <Col :span="22">
@@ -172,7 +179,7 @@
   import ProblemCategory from '../problem/ProblemCategory.vue'
   import api from '@oj/api'
   import time from '@/utils/time'
-  import { CONTEST_STATUS_REVERSE, CONTEST_STATUS, RULE_TYPE } from '@/utils/constants'
+  import { CONTEST_STATUS_REVERSE } from '@/utils/constants'
   import { mapGetters } from 'vuex'
   import Panel from '../../components/Panel.vue'
   export default {
@@ -268,7 +275,7 @@
       },
       getRankData (page = 1) {
         let offset = (page - 1) * this.limit
-        api.getUserRank(offset, this.limit, RULE_TYPE.ACM).then(res => {
+        api.getUserRatingRank(offset, this.limit).then(res => {
           this.dataRank = res.data.data.results
           // bar.hideLoading()
         }).catch(() => {
@@ -283,6 +290,12 @@
         }, () => {
           this.btnLoading = false
         })
+      },
+      convertDate (item) {
+        return time.utcToLocal(item, 'YYYY-MM-DD HH:mm')
+      },
+      convertRating (item) {
+        return Math.floor(item.rating_score * 100)
       },
       goUser (user) {
         this.$router.push({
@@ -332,7 +345,12 @@
           return this.announcement.title
         }
       },
-
+      createName () {
+        return this.announcement.created_by.username
+      },
+      createDate () {
+        return this.convertDate(this.announcement.create_time)
+      },
       listVisible () {
         return this.$store.getters.listVisible
       }
@@ -633,7 +651,7 @@
     margin: 15px 15px;
     border: 1px solid rgb(226, 226, 226);
     border-radius: 5px;
-    padding: 30px 20px;
+    padding: 30px 20px 10px 20px;
     width: calc(~"37% - 30px");
     min-width: 270px;
     flex-grow: 1;
@@ -649,7 +667,7 @@
     .rankings_user {
       margin-bottom: 10px;
       font-size: 14px;
-      height: 42px;
+      height: 57px;
       width: 100%;
       .ranker {
         position: relative;
@@ -821,5 +839,34 @@
       }
     }
     
+  }
+  #back-button {
+    font-size: 120%;
+    padding: 0px 8px;
+    color: @gray;
+    transition: all ease-in 0.1s;
+    &:hover, &:focus {
+      color: @dark-purple;
+      opacity: 0.8;
+      border-color: transparent;
+      box-shadow: 0 0 0 transparent;
+    }
+  }
+  .announcements-container-header-title {
+    display:flex; 
+    flex-direction: row;
+  }
+  .announcements-container-header {
+    display:flex; 
+    flex-direction: row;
+    font-size: small;
+    color: @gray;
+    margin-bottom: 15px;
+    .div-first-box {
+      margin-left: 50px;
+    }
+    div {
+      margin-right: 4px;
+    }
   }
 </style>
