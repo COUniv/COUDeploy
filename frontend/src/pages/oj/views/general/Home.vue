@@ -396,18 +396,22 @@
   }
 
   .demo-carousel{
+    display: inline-block;
     // height: 456px;
-    height: 60vh;
-    line-height: 60vh;
-    // line-height: 456px;
+    width: 100%;
+    height: auto;
+    //line-height: 60vh;
+    //line-height: 456px;
     text-align: center;
     justify-content: center;
     color: #fff;
     font-size: 20px;
     background: #000000;
     img {
+      display: inline-block;
       width: 100%;
-      height: 100%;
+      height: 500px;
+      max-width: 1800px;
     }
   }
 
@@ -789,8 +793,14 @@
       flex-direction: column;
       align-items: center;
     }
+    .demo-carousel{
+      img {
+        height: 240px;
+        min-width: 480px
+      }
+    }
     .img_container {
-      display: none;
+      //display: none;
     }
     .main_container{
       display: flex;
