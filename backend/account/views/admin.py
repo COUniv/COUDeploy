@@ -51,7 +51,7 @@ class ManagedUserListAPI(APIView):
         except:
             return self.error("존재하지 않는 관리리스트 입니다.")
         
-        return self.sucess(GETManagedUserListSerializer(userlist))
+        return self.success(GETManagedUserListSerializer(userlist).data)
 
     @admin_role_required
     @validate_serializer(ManagedUserListSerializer)
@@ -77,9 +77,9 @@ class ManagedUserListAPI(APIView):
             except:
                 except_userlist.append(user_id)
                 continue
-            userlist.user.add(user)
+            userlist.users.add(user)
         userlist.save()
-        self.success(except_userlist)
+        return self.success(except_userlist)
 
     @admin_role_required
     @validate_serializer(CreateManagedUserListSerializer)
