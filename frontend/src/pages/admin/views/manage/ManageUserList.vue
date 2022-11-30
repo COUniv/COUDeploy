@@ -22,8 +22,16 @@
         style="width: 100%">
         <!-- <el-table-column type="selection" width="55"></el-table-column> -->
 
-        <el-table-column prop="title" label="제목"></el-table-column>
-
+        <el-table-column prop="title" label="제목">
+          <template slot-scope="scope">
+            <div v-if="isMine(scope.row.writer.username)" @click="goDetail(scope.row.id)" class="isMine">
+              {{scope.row.title}}
+            </div>
+            <div v-else>
+              {{scope.row.title}}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="content" label="내용"></el-table-column>
 
         <el-table-column prop="writer.username" label="관리자"></el-table-column>
@@ -40,9 +48,11 @@
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="옵션" width="200">
-          <template slot-scope="{row}">
-            <el-button icon="el-icon-edit" size="mini" @click.native="openUserDialog(row.id)"></el-button>
-            <el-button icon="el-icon-delete" size="mini" @click.native="deleteList([row.id])"></el-button>
+          <template slot-scope="scope">
+            <el-button v-if="isMine(scope.row.writer.username)" icon="el-icon-edit" size="mini" @click.native="goEditList(scope.row.id)"></el-button>
+            <el-button v-else icon="el-icon-edit" size="mini" @click.native="goEditList(scope.row.id)" disabled></el-button>
+            <el-button v-if="isMine(scope.row.writer.username)" icon="el-icon-delete" size="mini" @click.native="deleteList([scope.row.id])"></el-button>
+            <el-button v-else icon="el-icon-delete" size="mini" @click.native="deleteList([scope.row.id])" disabled></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -88,6 +98,9 @@
       this.getManageUserList(1)
     },
     methods: {
+      goDetail (id) {
+        this.$router.push({name: 'manage-user-details', params: {manageId: id}})
+      },
       createList () {
         this.$router.push({name: 'create-manage-user-list'}).catch(() => {})
       },
@@ -106,14 +119,8 @@
         }).catch(() => {
         })
       },
-      // 사용자 대화 상자 열기
-      openUserDialog (id) {
-        this.showUserDialog = true
-        api.getUser(id).then(res => {
-          this.user = res.data.data
-          this.user.password = ''
-          this.user.real_tfa = this.user.two_factor_auth
-        })
+      goEditList (id) { // 게시글 수정 - 현재 게시글 ID를 전송
+        this.$router.push({name: 'manage-user-edit', params: {manageId: id}}).catch(() => {})
       },
       // 사용자 목록 가져오기
       getManageUserList (page) {
@@ -145,6 +152,9 @@
       },
       handleSelectionChange (val) {
         this.selectedManageList = val
+      },
+      isMine (username) {
+        return username === this.$store.getters.user.username
       }
     },
     computed: {
@@ -172,11 +182,18 @@
 </script>
 
 <style scoped lang="less">
+@import '../../../../styles/common.less';
   .import-user-icon {
     color: #555555;
     margin-left: 4px;
   }
-
+  .isMine {
+    cursor: pointer;
+    transition: all 0.2s ease-in;
+    &:hover {
+      color: @dark-orange;
+    }
+  }
   .userPreview {
     padding-left: 10px;
   }

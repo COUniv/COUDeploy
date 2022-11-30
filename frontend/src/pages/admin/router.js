@@ -3,7 +3,8 @@ import VueRouter from 'vue-router'
 // intro 구성요소 view\
 import { Announcement, Conf, Contest, ContestList, Home, JudgeServer, Login,
   Problem, ProblemList, User, PruneTestCase, Dashboard, ProblemImportOrExport,
-  ProblemCategoryList, ProblemCategory, ProblemTagList, ContestImg, Banner, ManageUserList, CreateManageUserList } from './views'
+  ProblemCategoryList, ProblemCategory, ProblemTagList, ContestImg, Banner, ManageUserList, CreateManageUserList,
+  ManageUserDetail } from './views'
 Vue.use(VueRouter)
 
 export default new VueRouter({
@@ -73,6 +74,16 @@ export default new VueRouter({
         {
           path: '/manage-user-list/create',
           name: 'create-manage-user-list',
+          component: CreateManageUserList
+        },
+        {
+          path: '/manage-user/:manageId',
+          name: 'manage-user-details',
+          component: ManageUserDetail
+        },
+        {
+          path: '/manage-user/edit/:manageId',
+          name: 'manage-user-edit',
           component: CreateManageUserList
         },
         {

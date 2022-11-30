@@ -1,6 +1,9 @@
 <template>
   <div>
-    <Panel :title="`관리 리스트 생성`">
+    <Panel :title="title" v-loading.fullscreen.lock="fullscreenLoading"
+      element-loading-text="로딩중..."
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.7)">
       <el-form ref="form" :model="manageForm" :rules="rules" label-position="top" label-width="70px">
         <el-row :gutter="20">
           <el-col :span="18">
@@ -56,7 +59,7 @@
         </el-row>
       </div>
       <el-table
-        v-loading="loading"
+        v-loading="loadingTable"
         element-loading-text="loading"
         ref="table"
         @selection-change="handleSelectionChange"
@@ -95,6 +98,8 @@
     name: 'Problem',
     data () {
       return {
+        title: '',
+        fullscreenLoading: false,
         rules: {
           title: {required: true, message: '제목을 입력해주세요 (6자 이상 60자 이하)', trigger: 'blur', min: 6, max: 60},
           content: {required: true, message: '설명을 입력해주세요', trigger: 'blur'}
@@ -108,10 +113,40 @@
         userList: [],
         keyword: '',
         inputVisible: false,
-        loadingTable: false
+        loadingTable: false,
+        mode: '',
+        manageID: ''
+      }
+    },
+    mounted () {
+      this.routeName = this.$route.name
+      this.fullscreenLoading = true
+      if (this.routeName === 'manage-user-edit') { // route명이 리스트 수정인 경우
+        this.mode = 'modify' // 리스트 수정
+        this.title = '관리 리스트 수정'
+        this.init()
+      } else {
+        this.title = '관리 리스트 생성'
+        this.fullscreenLoading = false
       }
     },
     methods: {
+      init () {
+        this.manageID = this.$route.params.manageId
+        this.fullscreenLoading = true
+        this.loadingTable = true
+        api.getManagedUserList(this.manageID).then(res => {
+          let data = res.data.data
+          this.manageForm.title = data.title
+          this.manageForm.content = data.content
+          this.userList = data.users
+          this.loadingTable = false
+          this.fullscreenLoading = false
+        }, _ => {
+          this.loadingTable = false
+          this.fullscreenLoading = false
+        })
+      },
       querySearch (queryString, cb) {
         api.getUserList(0, 10, queryString).then(res => {
           let userList = []
@@ -128,10 +163,13 @@
         } else {
           api.getUser(item.id).then(res => {
             this.userList.push(res.data.data)
+            this.inputVisible = false
+            this.loadingTable = false
+          }, _ => {
+            this.inputVisible = false
+            this.loadingTable = false
           })
         }
-        this.inputVisible = false
-        this.loadingTable = true
         this.keyword = ''
       },
       handleSelectionChange (val) {
@@ -163,9 +201,16 @@
           this.manageForm.user_ids.push(user.id)
         }
         let data = Object.assign({}, this.manageForm)
-        api.addManagedUserList(data).then(res => {
-          this.$router.push({name: 'manage-user-list'})
-        })
+        if (this.mode === 'modify') {
+          data['id'] = this.manageID // append ID
+          api.editManagedUserList(data).then(res => {
+            this.$router.push({name: 'manage-user-details', params: {manageId: this.manageID}}).catch(() => {})
+          })
+        } else {
+          api.addManagedUserList(data).then(res => {
+            this.$router.push({name: 'manage-user-list'})
+          })
+        }
       }
     },
     computed: {
