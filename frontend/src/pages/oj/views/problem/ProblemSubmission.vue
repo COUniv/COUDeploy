@@ -79,6 +79,19 @@
               </div>
             </div>
           </TabPane>
+          <TabPane v-if="contestID" label="문제 리스트" name="problem_list">
+            <div class="contest-list" :class="item._id === problemID ? 'purple' : ''" 
+                v-for="(item, index) in problems"
+                @click="goContestProblem(item)">
+              <div>{{index + 1}})</div> 
+              <div>{{item.title}}</div> 
+              <!-- {{item.difficulty}} 
+              {{item.submission_number}}  -->
+              <div v-if="item.accepted_number">
+                <i class="mdi-checkbox-marked-circle-outline">성공</i> 
+              </div>
+            </div>
+          </TabPane>
         </Tabs>
       </div>
       <div slot="right" class="right-split-pane">
@@ -137,7 +150,7 @@
 
 
 <script>
-  import {mapGetters, mapActions} from 'vuex'
+  import {mapGetters, mapActions, mapState} from 'vuex'
   import {types} from '../../../../store'
   import SubmitCodeMirror from '@oj/components/SubmitCodeMirror.vue'
   import CodeMirror from '@oj/components/CodeMirror.vue'
@@ -474,11 +487,24 @@
           this.$router.push({name: 'submission-list', query: {problemID: this.problemID}}).catch(() => {})
         }
       },
+      goContestProblem (row) {
+        this.$router.push({ name: 'contest-problem-submission',
+          params: {
+            contestID: this.contestID,
+            problemID: row._id
+          }
+        }).catch(() => {}).then(res =>
+          window.location.reload()
+        )
+      },
       hintHide () {
         this.hintHidden = !this.hintHidden
       }
     },
     computed: {
+      ...mapState({
+        problems: state => state.contest.contestProblems
+      }),
       ...mapGetters(['problemSubmitDisabled', 'contestRuleType', 'OIContestRealTimePermission', 'contestStatus', 'website', 'isVerifiedEmail', 'isAuthenticated']),
       contest () {
         return this.$store.state.contest.contest
@@ -943,6 +969,24 @@
     -webkit-text-stroke: .3px; 
     font-size: 15px;
     border-width: 2px;
+  }
+
+  .contest-list {
+    display: flex;
+    margin: 15px 10px;
+    font-size: 15px;
+    cursor: pointer;
+    &:hover {
+      -webkit-text-stroke: .5px;
+      color: @dark-orange;
+    }
+    div:first-child {
+      padding-right: 10px;
+    }
+    &.purple {
+      -webkit-text-stroke: .7px;
+      color: @purple;
+    }
   }
   
 </style>
