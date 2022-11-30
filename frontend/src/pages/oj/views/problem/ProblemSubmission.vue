@@ -973,19 +973,22 @@
 
   .contest-list {
     display: flex;
-    margin: 15px 10px;
+    padding: 15px 10px;
     font-size: 15px;
+    -webkit-text-stroke: .5px;
     cursor: pointer;
     &:hover {
-      -webkit-text-stroke: .5px;
-      color: @dark-orange;
+      color: @purple;
+      background-color: #f0edff;
+      transition: all .1s ease-in;
     }
-    div:first-child {
-      padding-right: 10px;
-    }
+
     &.purple {
       -webkit-text-stroke: .7px;
       color: @purple;
+    }
+    div:first-child {
+      padding-right: 10px;
     }
   }
   
