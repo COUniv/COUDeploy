@@ -406,12 +406,12 @@
     justify-content: center;
     color: #fff;
     font-size: 20px;
-    background: #000000;
+    background: #fafafa;
     img {
       display: inline-block;
       width: 100%;
       height: 500px;
-      max-width: 1800px;
+      max-width: 1180px;
     }
   }
 
