@@ -18,16 +18,22 @@ export default {
       params: params
     })
   },
-  getManagedUserList () {
-    return ajax('admin/managed_user_list', 'get')
+  getManagedUserList (id) {
+    return ajax('admin/managed_user_list', 'get', {
+      params: {
+        id
+      }
+    })
   },
   addManagedUserList (data) {
     return ajax('admin/managed_user_list', 'post', {
       data
     })
   },
-  editManagedUserList () {
-    return ajax('admin/managed_user_list', 'put')
+  editManagedUserList (data) {
+    return ajax('admin/managed_user_list', 'put', {
+      data
+    })
   },
   deleteManagedUserList (id) {
     return ajax('admin/managed_user_list', 'delete', {
