@@ -19,6 +19,19 @@
       <el-row :gutter="20" class="content-title">
         <el-col :span="16">{{content}}</el-col>
       </el-row>
+      <el-row :gutter="20" class="content-title">
+        <el-button v-show="selectedUsers.length"
+                   class="email-btn"
+                   type="primary" icon="el-icon-s-promotion"
+                   >이메일 보내기
+        </el-button>
+        <el-button v-show="selectedUsers.length === 0"
+                   class="email-btn"
+                   type="primary" icon="el-icon-s-promotion"
+                   disabled>이메일 보내기
+        </el-button>
+      </el-row>
+      
       <el-divider class="user-list-title" content-position="left">관리 목록</el-divider>
       <el-table
         ref="table"
@@ -63,7 +76,7 @@
         createTime: '',
         lastUpdateTime: '',
         loadingTable: false,
-        selectUsers: []
+        selectedUsers: []
       }
     },
     mounted () {
@@ -87,7 +100,7 @@
       },
       handleSelectionChange (val) {
         console.log(val)
-        this.selectUsers = val
+        this.selectedUsers = val
       },
       backPage () {
         this.$router.push({name: 'manage-user-list'})
@@ -117,6 +130,10 @@
   &:hover {
     color: @dark-orange;
   }
+}
+.email-btn {
+  margin-top: 10px;
+  margin-left: 10px;
 }
 </style>
 <style lang="less">
