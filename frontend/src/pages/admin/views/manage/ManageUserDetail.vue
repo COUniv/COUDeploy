@@ -5,6 +5,8 @@
         <i class="mdi mdi-chevron-left back-btn" @click="backPage"></i>
         {{title}}
       </div>
+      <mavon-editor v-model="textContent" defaultOpen="edit" :language="`en`" :ishljs="ishljs" @change="changes" @save="save" :toolbars="toolbars"/>
+      <pre v-html.lazy="convertTextContent" ref="divHTML" class="text-example"></pre>
       <div slot="header">
         <div class="header-time">
           관리자 : {{writer.username}}
@@ -63,20 +65,57 @@
 </template>
 <script>
   import api from '../../api.js'
-
   export default {
     name: 'ManagedUserDetail',
     data () {
       return {
+        content: '',
         manageID: '',
         userlist: [],
         writer: '',
         title: '',
-        content: '',
+        textContent: '<h1>Initial Content</h1>',
+        convertTextContent: '',
         createTime: '',
         lastUpdateTime: '',
         loadingTable: false,
-        selectedUsers: []
+        selectedUsers: [],
+        ishljs: false,
+        toolbars: {
+          bold: true,
+          italic: true,
+          header: true,
+          underline: true,
+          strikethrough: true,
+          mark: true,
+          superscript: true,
+          subscript: true,
+          quote: false,
+          ol: true,
+          ul: true,
+          link: true,
+          imagelink: false,
+          code: false,
+          table: false,
+          fullscreen: false,
+          readmodel: false,
+          htmlcode: false,
+          help: false,
+          /* 1.3.5 */
+          undo: true,
+          redo: true,
+          trash: true,
+          save: true,
+          /* 1.4.2 */
+          navigation: false,
+          /* 2.1.8 */
+          alignleft: false,
+          aligncenter: false,
+          alignright: false,
+          /* 2.2.1 */
+          subfield: false,
+          preview: false
+        }
       }
     },
     mounted () {
@@ -104,12 +143,34 @@
       },
       backPage () {
         this.$router.push({name: 'manage-user-list'})
+      },
+      onSelectionChange (status, value) {
+        console.log(value)
+        // if (delta.ops[1].insert === ' ') {
+        //   console.log('convert!')
+        //   this.textContent.replaceAll(' ', '&nbsp;')
+        // }
+      },
+      changes (status, value) {
+        this.convertTextContent = value
+        console.log(value)
+      },
+      save (status, value) {
+        console.log(value.replaceAll(' ', '&nbsp;').replaceAll('<br&nbsp;/>', '<br />').replaceAll('<br /><br />', '<br />'))
+      }
+    },
+    watch: {
+      'textContent' (newVal, oldVal) {
       }
     }
   }
 </script>
 <style scoped lang="less">
 @import '../../../../styles/common.less';
+.text-example {
+  font-family: 'Manrope';
+}
+
 .content-title {
   font-size: 20px;
   color: #7b7b7b;
