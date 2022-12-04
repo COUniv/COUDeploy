@@ -83,13 +83,17 @@
             <div class="contest-list" :class="item._id === problemID ? 'purple' : ''" 
                 v-for="(item, index) in problems"
                 @click="goContestProblem(item)">
-              <div>{{index + 1}})</div> 
-              <div>{{item.title}}</div> 
+              <div class="left-contest-list">
+                <div v-if="item.accepted_number">
+                  <i class="badge mdi mdi-checkbox-marked-circle-outline"></i> 
+                </div>
+                <div v-else style="margin-left: 15px;"></div>
+                <div style="margin-right: 5px;">{{index + 1}}) </div> 
+                <div>{{item.title}}</div>
+              </div>
               <!-- {{item.difficulty}} 
               {{item.submission_number}}  -->
-              <div v-if="item.accepted_number">
-                <i class="mdi-checkbox-marked-circle-outline">성공</i> 
-              </div>
+              <div style="margin-right: 15px;">{{item.difficulty}}</div>
             </div>
           </TabPane>
         </Tabs>
@@ -973,18 +977,23 @@
 
   .contest-list {
     display: flex;
+    justify-content: space-between;
     padding: 15px 10px;
     font-size: 15px;
     -webkit-text-stroke: .5px;
     cursor: pointer;
+    .left-contest-list {
+      display: flex;
+    }
+
     &:hover {
       color: @purple;
-      background-color: #f0edff;
+      background-color: #f7f6ff;
       transition: all .1s ease-in;
     }
 
     &.purple {
-      -webkit-text-stroke: .7px;
+      -webkit-text-stroke: .5px;
       color: @purple;
     }
     div:first-child {
