@@ -9,11 +9,67 @@ from django.contrib.auth.hashers import make_password
 from submission.models import Submission
 from utils.api import APIView, validate_serializer
 from utils.shortcuts import rand_str
+from options.options import SysOptions
+from django.utils.timezone import now
+from django.template.loader import render_to_string
+from utils.shortcuts import send_email
+import smtplib
+from datetime import timedelta
 
 from ..decorators import super_admin_required, admin_role_required
 from ..models import AdminType, ProblemPermission, User, UserProfile, ManagedUserList
 from ..serializers import EditUserSerializer, UserAdminSerializer, GenerateUserSerializer
-from ..serializers import ImportUserSeralizer,AllManagedUserListSerializer, ManagedUserListSerializer, CreateManagedUserListSerializer, GETManagedUserListSerializer
+from ..serializers import ImportUserSeralizer,AllManagedUserListSerializer, ManagedUserListSerializer, CreateManagedUserListSerializer, GETManagedUserListSerializer, SendEmailForUsersAPISerializer
+
+class SendEmailForUsersAPI(APIView):
+    @validate_serializer(SendEmailForUsersAPISerializer)
+    @admin_role_required
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return self.error("잘못 된 접근입니다.")
+        if not SysOptions.smtp_config:
+            return self.error("SMTP 설정이 되어있지 않습니다")
+        data = request.data
+        title = data["title"]
+        content = data["content"]
+        user_ids = data["user_ids"]
+
+        excepted_user_list = []
+        for user_id in user_ids:
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist: # 유저 존재 유무
+                excepted_user_list.append(user_id)
+                continue
+            if not user.email: #이메일 존재하지 않을경우 except
+                excepted_user_list.append(user_id)
+                continue
+            render_data = {
+              "content" : content
+            }
+            try:
+                email_html = render_to_string("send_mail_default_form.html", render_data)
+                send_email(smtp_config=SysOptions.smtp_config,
+                           from_name=SysOptions.website_name_shortcut,
+                           to_name=user.username,
+                           to_email=user.email,
+                           subject="[" + SysOptions.website_name_shortcut + "] " + title,
+                           content=email_html)
+            except smtplib.SMTPResponseException as e:
+                # guess error message encoding
+                msg = "이메일 전송에 실패했습니다"
+                try:
+                    msg = e.smtp_error
+                    # qq mail
+                    msg = msg.decode("gbk")
+                except Exception:
+                    msg = msg.decode("utf-8", "ignore")
+                return self.error(msg)
+            except Exception as e:
+                msg = str(e)
+                return self.error(msg)
+
+        return self.success(excepted_user_list)
 
 class AllManagedUserList(APIView):
     @admin_role_required

@@ -4,6 +4,11 @@ from utils.api import serializers, UsernameSerializer
 
 from .models import AdminType, ProblemPermission, User, UserProfile, ManagedUserList
 
+class SendEmailForUsersAPISerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=128, required=False)
+    content = serializers.TextField(required=False, allow_blank=True)
+    user_ids = serializers.ListField(child=serializers.IntegerField())
+
 class CreateManagedUserListSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=128, required=False)
     content = serializers.CharField(required=False, allow_blank=True)
