@@ -9,6 +9,11 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  sendMailForUsers (data) {
+    return ajax('admin/send_mail_for_users', 'post', {
+      data
+    })
+  },
   getAllManagedUserList (offset, limit, keyword) {
     let params = {paging: true, offset, limit}
     if (keyword) {

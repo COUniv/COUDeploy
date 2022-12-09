@@ -11,13 +11,16 @@ import router from './router'
 import { GOOGLE_ANALYTICS_ID } from '@/utils/constants'
 import VueAnalytics from 'vue-analytics'
 import katex from '@/plugins/katex'
-
 import Panel from './components/Panel.vue'
 import IconBtn from './components/btn/IconBtn.vue'
 import Save from './components/btn/Save.vue'
 import Cancel from './components/btn/Cancel.vue'
+import { VueEditor, Quill } from 'vue2-editor'
 import './style.less'
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
+// use
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 
@@ -34,7 +37,10 @@ Vue.use(VueAnalytics, {
   id: GOOGLE_ANALYTICS_ID,
   router
 })
+Vue.use(mavonEditor)
 Vue.use(katex)
+Vue.component(VueEditor.name, VueEditor)
+Vue.component(Quill.name, Quill)
 Vue.component(IconBtn.name, IconBtn)
 Vue.component(Panel.name, Panel)
 Vue.component(Save.name, Save)
