@@ -5,8 +5,6 @@
         <i class="mdi mdi-chevron-left back-btn" @click="backPage"></i>
         {{title}}
       </div>
-      <mavon-editor v-model="textContent" defaultOpen="edit" :language="`en`" :ishljs="ishljs" @change="changes" @save="save" :toolbars="toolbars"/>
-      <pre v-html.lazy="convertTextContent" ref="divHTML" class="text-example"></pre>
       <div slot="header">
         <div class="header-time">
           관리자 : {{writer.username}}
@@ -21,10 +19,41 @@
       <el-row :gutter="20" class="content-title">
         <el-col :span="16">{{content}}</el-col>
       </el-row>
+      <el-row v-show="!editorVisible" class="editor-container">
+        <i class="mdi mdi-square-edit-outline edit-btn" @click="viewEditor">
+          <span>이메일 편집기 열기</span>
+          <span v-show="!isFirstOpen">
+            <i v-show="(!isEidit)" class="mdi mdi-checkbox-marked-circle-outline is-save-icn" style="font-size: 14px;"><span>저장 됨</span></i>
+            <i v-show="isEidit" class="mdi mdi-alert-circle-check-outline is-edit-icn" style="font-size: 14px;"><span>수정 중</span></i>
+          </span>
+        </i>
+      </el-row>
+      <el-row v-show="editorVisible" class="editor-container">
+        <i class="mdi mdi-square-edit-outline edit-btn" @click="closeEditor">
+          <span>이메일 편집기 닫기</span>
+        </i>
+      </el-row>
+      <el-row v-show="editorVisible" class="editor-container">
+        <el-divider class="editor-hor" content-position="left">이메일 편집</el-divider>
+        <el-col style="width: 60%;">
+          <div style="margin-left:10px; color:gray;">* 제목</div>
+          <el-input v-model="sendMailForm.title" placeholder="메일 제목" required></el-input>
+        </el-col>
+      </el-row>
+      <el-row v-show="editorVisible" :gutter="20">
+        <div style="margin-left:20px; margin-bottom:4px; color:gray;">
+          * 내용 (편집 후 반드시 저장 버튼을 누르세요)
+          <i v-show="!isEidit" class="mdi mdi-checkbox-marked-circle-outline is-save-icn"><span>저장 됨</span></i>
+          <i v-show="isEidit" class="mdi mdi-alert-circle-check-outline is-edit-icn"><span>수정 중</span></i>
+        </div>
+        <el-col style="width: 48%;"><mavon-editor v-model="textContent" defaultOpen="edit" :language="`en`" :ishljs="ishljs" @change="changes" @save="save" :toolbars="toolbars"/></el-col>
+        <el-col style="width: 48%;" class="ex-box"><div v-html.lazy="convertTextContent" ref="divHTML" id="divHTML" class="text-example"></div></el-col>
+      </el-row>
       <el-row :gutter="20" class="content-title">
         <el-button v-show="selectedUsers.length"
                    class="email-btn"
                    type="primary" icon="el-icon-s-promotion"
+                   @click="sendMail"
                    >이메일 보내기
         </el-button>
         <el-button v-show="selectedUsers.length === 0"
@@ -65,22 +94,31 @@
 </template>
 <script>
   import api from '../../api.js'
+
   export default {
     name: 'ManagedUserDetail',
     data () {
       return {
+        isFirstOpen: true,
         content: '',
         manageID: '',
         userlist: [],
         writer: '',
         title: '',
-        textContent: '<h1>Initial Content</h1>',
+        textContent: '',
         convertTextContent: '',
         createTime: '',
         lastUpdateTime: '',
         loadingTable: false,
         selectedUsers: [],
         ishljs: false,
+        editorVisible: false,
+        isEidit: true,
+        sendMailForm: {
+          title: '',
+          content: '',
+          user_ids: []
+        },
         toolbars: {
           bold: true,
           italic: true,
@@ -115,7 +153,23 @@
           /* 2.2.1 */
           subfield: false,
           preview: false
-        }
+        },
+        defaultPresetPre: `<div>
+                          <table cellpadding="0" align="center"
+                                 style="overflow:hidden;background:#fff;margin:0 auto;text-align:left;position:relative;font-size:14px; font-family:'lucida Grande',Verdana;line-height:1.5;box-shadow:0 0 3px #ccc;border:1px solid #ccc;border-radius:5px;border-collapse:collapse;">
+                              <tbody>
+                              <tr>
+                                  <th valign="middle"
+                                      style="height:38px;color:#fff; font-size:14px;line-height:38px; font-weight:bold;text-align:left;padding:10px 24px 6px; border-bottom:1px solid #5030e5;background:#5030e5;border-radius:5px 5px 0 0;"> COU </th>
+                              </tr>
+                              <tr>
+                                  <td style="padding: 20px; white-space:pre">`,
+        defaultPresetLast: `
+                                  </td>
+                              </tr>
+                              </tbody>
+                          </table>
+                      </div>`
       }
     },
     mounted () {
@@ -144,23 +198,59 @@
       backPage () {
         this.$router.push({name: 'manage-user-list'})
       },
-      onSelectionChange (status, value) {
-        console.log(value)
-        // if (delta.ops[1].insert === ' ') {
-        //   console.log('convert!')
-        //   this.textContent.replaceAll(' ', '&nbsp;')
-        // }
-      },
       changes (status, value) {
-        this.convertTextContent = value
-        console.log(value)
+        this.isEidit = true
+        value = value.replaceAll('<br />', '<br style="display:none;"/>')
+        this.convertTextContent = this.defaultPresetPre + value + this.defaultPresetLast
       },
       save (status, value) {
-        console.log(value.replaceAll(' ', '&nbsp;').replaceAll('<br&nbsp;/>', '<br />').replaceAll('<br /><br />', '<br />'))
+        if (!this.sendMailForm.title.length) {
+          this.$error('이메일 제목이 입력되지 않았습니다')
+          return
+        }
+        if (!value.length) {
+          this.$error('이메일 내용이 입력되지 않았습니다')
+          return
+        }
+        let li = value.split('\n')
+        let inlineContent = ''
+        for (let v of li) {
+          inlineContent = inlineContent + v
+        }
+        this.sendMailForm.content = inlineContent
+        this.isEidit = false
+        this.$success('저장되었습니다')
+      },
+      sendMail () {
+        if (this.isEidit) {
+          this.$error('이메일이 아직 수정중입니다')
+          return
+        }
+        if (!this.sendMailForm.title.length) {
+          this.$error('이메일 제목이 입력되지 않았습니다')
+          return
+        }
+        if (!this.sendMailForm.content.length) {
+          this.$error('이메일 내용이 입력되지 않았습니다')
+          return
+        }
+        for (let user of this.selectedUsers) {
+          this.sendMailForm.user_ids.push(user.id)
+        }
+        console.log(this.sendMailForm)
+        let data = Object.assign({}, this.sendMailForm)
+      },
+      viewEditor () {
+        this.editorVisible = true
+        this.isFirstOpen = false
+      },
+      closeEditor () {
+        this.editorVisible = false
       }
     },
     watch: {
-      'textContent' (newVal, oldVal) {
+      'sendMailForm.title' () {
+        this.isEidit = true
       }
     }
   }
@@ -169,8 +259,35 @@
 @import '../../../../styles/common.less';
 .text-example {
   font-family: 'Manrope';
+  ::v-deep p {
+      display: block !important;
+      margin-block-start: 1em !important;
+      margin-block-end: 1em !important;
+      margin-inline-start: 0px !important;
+      margin-inline-end: 0px !important;
+  }
+  ::v-deep br {
+    height: 0 !important;
+    display: none !important;
+  }
 }
-
+::v-deep .text-example p {
+      display: block !important;
+      margin-block-start: 1em !important;
+      margin-block-end: 1em !important;
+      margin-inline-start: 0px !important;
+      margin-inline-end: 0px !important;
+}
+::v-deep .text-example br {
+    height: 0 !important;
+    display: none !important;
+ }
+.editor-container {
+  margin-bottom: 20px;
+}
+.editor-hor {
+  margin-bottom: 40px;
+}
 .content-title {
   font-size: 20px;
   color: #7b7b7b;
@@ -192,9 +309,43 @@
     color: @dark-orange;
   }
 }
+.edit-btn {
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+  font-style: normal;
+  &:hover {
+    color: @dark-orange;
+  }
+  span {
+    font-size: 14px;
+    margin-left: 4px;
+  }
+}
+.ex-box {
+  overflow: auto;
+  box-shadow: 0 0 5px 0px rgb(194, 194, 194);
+  padding: 0 !important;
+}
 .email-btn {
   margin-top: 10px;
   margin-left: 10px;
+}
+.is-save-icn {
+  margin-left: 20px;
+  font-style: normal;
+  color: green;
+  span {
+    color:#7b7b7b;
+  }
+}
+.is-edit-icn {
+  margin-left: 20px;
+  font-style: normal;
+  color: orange;
+  span {
+    color:#7b7b7b;
+  }
 }
 </style>
 <style lang="less">
@@ -207,4 +358,29 @@
     }
   }
 }
+.text-example {
+  font-family: 'Manrope';
+  ::v-deep p {
+      display: block !important;
+      margin-block-start: 1em !important;
+      margin-block-end: 1em !important;
+      margin-inline-start: 0px !important;
+      margin-inline-end: 0px !important;
+  }
+  ::v-deep br {
+    height: 0 !important;
+    display: none !important;
+  }
+}
+::v-deep .text-example p {
+      display: block !important;
+      margin-block-start: 1em !important;
+      margin-block-end: 1em !important;
+      margin-inline-start: 0px !important;
+      margin-inline-end: 0px !important;
+}
+::v-deep .text-example br {
+    height: 0 !important;
+    display: none !important;
+ }
 </style>
