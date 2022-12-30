@@ -1,9 +1,6 @@
 <template>
   <div>
-    <Panel :title="title" v-loading.fullscreen.lock="fullscreenLoading"
-      element-loading-text="로딩중..."
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(0, 0, 0, 0.7)">
+    <Panel :title="title">
       <el-form ref="form" :model="manageForm" :rules="rules" label-position="top" label-width="70px">
         <el-row :gutter="20">
           <el-col :span="18">
@@ -120,20 +117,25 @@
     },
     mounted () {
       this.routeName = this.$route.name
-      this.fullscreenLoading = true
       if (this.routeName === 'manage-user-edit') { // route명이 리스트 수정인 경우
         this.mode = 'modify' // 리스트 수정
         this.title = '관리 리스트 수정'
         this.init()
       } else {
         this.title = '관리 리스트 생성'
-        this.fullscreenLoading = false
       }
     },
     methods: {
       init () {
+        let loadingInstance1 = this.$loading({
+          fullscreen: true,
+          target: '#app',
+          lock: true,
+          text: '로딩중',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
         this.manageID = this.$route.params.manageId
-        this.fullscreenLoading = true
         this.loadingTable = true
         api.getManagedUserList(this.manageID).then(res => {
           let data = res.data.data
@@ -141,10 +143,10 @@
           this.manageForm.content = data.content
           this.userList = data.users
           this.loadingTable = false
-          this.fullscreenLoading = false
+          loadingInstance1.close()
         }, _ => {
           this.loadingTable = false
-          this.fullscreenLoading = false
+          loadingInstance1.close()
         })
       },
       querySearch (queryString, cb) {

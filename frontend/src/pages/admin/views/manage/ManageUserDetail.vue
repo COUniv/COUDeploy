@@ -94,11 +94,11 @@
 </template>
 <script>
   import api from '../../api.js'
-
   export default {
     name: 'ManagedUserDetail',
     data () {
       return {
+        fullscreenLoading: false,
         isFirstOpen: true,
         content: '',
         manageID: '',
@@ -114,6 +114,7 @@
         ishljs: false,
         editorVisible: false,
         isEidit: true,
+        shortcut: '',
         sendMailForm: {
           title: '',
           content: '',
@@ -156,7 +157,7 @@
         },
         defaultPresetPre: `<div>
                           <table cellpadding="0" align="center"
-                                 style="overflow:hidden;background:#fff;margin:0 auto;text-align:left;position:relative;font-size:14px; font-family:'lucida Grande',Verdana;line-height:1.5;box-shadow:0 0 3px #ccc;border:1px solid #ccc;border-radius:5px;border-collapse:collapse;">
+                                 style="overflow:hidden;background:#fff;margin:0 auto;text-align:left;position:relative;font-size:14px; font-family:'lucida Grande',Verdana;line-height:1.5;box-shadow:0 0 3px #ccc;border:1px solid #ccc;border-radius:5px;border-collapse:collapse;min-width:400px;">
                               <tbody>
                               <tr>
                                   <th valign="middle"
@@ -188,6 +189,20 @@
           this.createTime = data.create_time
           this.lastUpdateTime = data.last_update_time
           this.loadingTable = false
+        })
+        api.getWebsiteConfig().then(res => {
+          this.shortcut = res.data.data.website_name_shortcut
+          this.defaultPresetPre = `<div>
+                          <table cellpadding="0" align="center"
+                                 style="overflow:hidden;background:#fff;margin:0 auto;text-align:left;position:relative;font-size:14px; font-family:'lucida Grande',Verdana;line-height:1.5;box-shadow:0 0 3px #ccc;border:1px solid #ccc;border-radius:5px;border-collapse:collapse;min-width:400px;">
+                              <tbody>
+                              <tr>
+                                  <th valign="middle"
+                                      style="height:38px;color:#fff; font-size:14px;line-height:38px; font-weight:bold;text-align:left;padding:10px 24px 6px; border-bottom:1px solid #5030e5;background:#5030e5;border-radius:5px 5px 0 0;"> ` + res.data.data.website_name_shortcut + ` </th>
+                              </tr>
+                              <tr>
+                                  <td style="padding: 20px; white-space:pre">`
+        }).catch(() => {
         })
         this.loadingTable = false
       },
@@ -222,16 +237,27 @@
         this.$success('저장되었습니다')
       },
       sendMail () {
+        let loadingInstance1 = this.$loading({
+          fullscreen: true,
+          target: '#app',
+          lock: true,
+          text: '전송중',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
         if (this.isEidit) {
           this.$error('이메일이 아직 수정중입니다')
+          loadingInstance1.close()
           return
         }
         if (!this.sendMailForm.title.length) {
           this.$error('이메일 제목이 입력되지 않았습니다')
+          loadingInstance1.close()
           return
         }
         if (!this.sendMailForm.content.length) {
           this.$error('이메일 내용이 입력되지 않았습니다')
+          loadingInstance1.close()
           return
         }
         for (let user of this.selectedUsers) {
@@ -239,6 +265,13 @@
         }
         console.log(this.sendMailForm)
         let data = Object.assign({}, this.sendMailForm)
+        api.sendMailForUsers(data).then(res => {
+          console.log(res)
+          loadingInstance1.close()
+        }, _err => {
+          console.log(_err)
+          loadingInstance1.close()
+        })
       },
       viewEditor () {
         this.editorVisible = true

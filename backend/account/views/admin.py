@@ -45,6 +45,7 @@ class SendEmailForUsersAPI(APIView):
                 excepted_user_list.append(user_id)
                 continue
             render_data = {
+              "website_name": SysOptions.website_name,
               "content" : content
             }
             try:
