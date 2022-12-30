@@ -30,6 +30,7 @@
 </script>
 
 <style scoped lang="less">
+@import '../../../../styles/common.less';
   .disabled {
     /*background-color: #ccc;*/
     opacity: 1;
@@ -49,10 +50,11 @@
     display: block;
     text-align: left;
     padding: 15px 20px;
+    cursor: pointer;
     &:hover {
       background: #f8f8f9;
-      border-left: 2px solid #5cadff;
-      color: #2d8cf0;
+      border-left: 2px solid @purple;
+      color: @purple;
     }
     & > .ivu-icon {
       font-size: 16px;

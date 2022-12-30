@@ -79,6 +79,23 @@
               </div>
             </div>
           </TabPane>
+          <TabPane v-if="contestID" label="문제 리스트" name="problem_list">
+            <div class="contest-list" :class="item._id === problemID ? 'purple' : ''" 
+                v-for="(item, index) in problems"
+                @click="goContestProblem(item)">
+              <div class="left-contest-list">
+                <div v-if="item.accepted_number">
+                  <i class="badge mdi mdi-checkbox-marked-circle-outline"></i> 
+                </div>
+                <div v-else style="margin-left: 15px;"></div>
+                <div style="margin-right: 5px;">{{index + 1}}) </div> 
+                <div>{{item.title}}</div>
+              </div>
+              <!-- {{item.difficulty}} 
+              {{item.submission_number}}  -->
+              <div style="margin-right: 15px;">{{item.difficulty}}</div>
+            </div>
+          </TabPane>
         </Tabs>
       </div>
       <div slot="right" class="right-split-pane">
@@ -137,7 +154,7 @@
 
 
 <script>
-  import {mapGetters, mapActions} from 'vuex'
+  import {mapGetters, mapActions, mapState} from 'vuex'
   import {types} from '../../../../store'
   import SubmitCodeMirror from '@oj/components/SubmitCodeMirror.vue'
   import CodeMirror from '@oj/components/CodeMirror.vue'
@@ -474,11 +491,24 @@
           this.$router.push({name: 'submission-list', query: {problemID: this.problemID}}).catch(() => {})
         }
       },
+      goContestProblem (row) {
+        this.$router.push({ name: 'contest-problem-submission',
+          params: {
+            contestID: this.contestID,
+            problemID: row._id
+          }
+        }).catch(() => {}).then(res =>
+          window.location.reload()
+        )
+      },
       hintHide () {
         this.hintHidden = !this.hintHidden
       }
     },
     computed: {
+      ...mapState({
+        problems: state => state.contest.contestProblems
+      }),
       ...mapGetters(['problemSubmitDisabled', 'contestRuleType', 'OIContestRealTimePermission', 'contestStatus', 'website', 'isVerifiedEmail', 'isAuthenticated']),
       contest () {
         return this.$store.state.contest.contest
@@ -943,6 +973,32 @@
     -webkit-text-stroke: .3px; 
     font-size: 15px;
     border-width: 2px;
+  }
+
+  .contest-list {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 10px;
+    font-size: 15px;
+    -webkit-text-stroke: .5px;
+    cursor: pointer;
+    .left-contest-list {
+      display: flex;
+    }
+
+    &:hover {
+      color: @purple;
+      background-color: #f7f6ff;
+      transition: all .1s ease-in;
+    }
+
+    &.purple {
+      -webkit-text-stroke: .5px;
+      color: @purple;
+    }
+    div:first-child {
+      padding-right: 10px;
+    }
   }
   
 </style>
