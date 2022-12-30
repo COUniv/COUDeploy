@@ -2,7 +2,23 @@ from django import forms
 
 from utils.api import serializers, UsernameSerializer
 
-from .models import AdminType, ProblemPermission, User, UserProfile
+from .models import AdminType, ProblemPermission, User, UserProfile, ManagedUserList
+
+class SendEmailForUsersAPISerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=128, required=False)
+    content = serializers.CharField(required=False, allow_blank=True)
+    user_ids = serializers.ListField(child=serializers.IntegerField())
+
+class CreateManagedUserListSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=128, required=False)
+    content = serializers.CharField(required=False, allow_blank=True)
+    user_ids = serializers.ListField(child=serializers.IntegerField())
+
+class ManagedUserListSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField(max_length=128, required=False)
+    content = serializers.CharField(required=False, allow_blank=True)
+    user_ids = serializers.ListField(child=serializers.IntegerField())
 
 class FindUserNameSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=64, allow_blank=False, allow_null=False)
@@ -89,6 +105,21 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_real_name(self, obj):
         return obj.real_name if self.show_real_name else None
 
+class AllManagedUserListSerializer(serializers.ModelSerializer):
+    users = UserSerializer(read_only=True, many=True)
+    writer = UserSerializer()
+    #관리유저리스트 전체 리스트 전송용
+    class Meta:
+        model = ManagedUserList
+        fields = '__all__'
+
+class GETManagedUserListSerializer(serializers.ModelSerializer):
+    users = UserSerializer(read_only=True, many=True)
+    writer = UserSerializer()
+    #관리유저리스트 리스트 전송용
+    class Meta:
+        model = ManagedUserList
+        fields = '__all__'
 
 class EditUserSerializer(serializers.Serializer):
     id = serializers.IntegerField()
