@@ -9,6 +9,44 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  sendMailForUsers (data) {
+    return ajax('admin/send_mail_for_users', 'post', {
+      data
+    })
+  },
+  getAllManagedUserList (offset, limit, keyword) {
+    let params = {paging: true, offset, limit}
+    if (keyword) {
+      params.keyword = keyword
+    }
+    return ajax('admin/all_managed_user_list', 'get', {
+      params: params
+    })
+  },
+  getManagedUserList (id) {
+    return ajax('admin/managed_user_list', 'get', {
+      params: {
+        id
+      }
+    })
+  },
+  addManagedUserList (data) {
+    return ajax('admin/managed_user_list', 'post', {
+      data
+    })
+  },
+  editManagedUserList (data) {
+    return ajax('admin/managed_user_list', 'put', {
+      data
+    })
+  },
+  deleteManagedUserList (id) {
+    return ajax('admin/managed_user_list', 'delete', {
+      params: {
+        id
+      }
+    })
+  },
   getLastProblemNumber () {
     return ajax('admin/last_problem_number', 'get')
   },

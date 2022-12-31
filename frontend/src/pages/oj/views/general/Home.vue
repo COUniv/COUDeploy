@@ -36,8 +36,13 @@
               <div v-if="!announcements.length" class="no_announcement">
                 공지사항이 없습니다
               </div>
-              <div v-else v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)">
-                <div class="announcement-title-box">
+              <div v-else v-for="announcement in announcements" :key="announcement.title" class="announcement_title">
+                <div v-if="isAuthenticated" class="announcement-title-box" @click="goAnnouncement(announcement)">
+                  <a>
+                    {{announcement.title}}
+                  </a>
+                </div>
+                <div v-else class="announcement-title-box-no-click">
                   <a>
                     {{announcement.title}}
                   </a>
@@ -432,6 +437,18 @@
     width: calc(80% - 40px);
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .announcement-title-box-no-click {
+    position: relative;
+    float: left;
+    height: 34px;
+    line-height: 34px;
+    font-size: 1rem;
+    width: calc(80% - 40px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: none;
+    pointer-events: none;
   }
   .announcement-time {
     // display: none;

@@ -24,6 +24,7 @@
     "idle-vue-3": "^1.0.1",
     "iview": "^3.4.2",
     "katex": "^0.10.0",
+    "mavon-editor": "^2.10.4",
     "moment": "^2.29.4",
     "papaparse": "^5.2.0",
     "raven-js": "^3.25.0",
@@ -39,6 +40,7 @@
     "vue-echarts": "^6.2.3",
     "vue-i18n": "^7.7.0",
     "vue-router": "^3.0.1",
+    "vue2-editor": "^2.10.3",
     "vuex": "^3.6.2",
     "vuex-persistedstate": "^4.1.0",
     "vuex-router-sync": "^5.0.0"
