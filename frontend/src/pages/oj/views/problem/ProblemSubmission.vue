@@ -492,14 +492,19 @@
         }
       },
       goContestProblem (row) {
+        let template = this.problem.template
+        if (template && template[this.language]) {
+          this.code = template[this.language]
+        } else {
+          this.code = ''
+        }
         this.$router.push({ name: 'contest-problem-submission',
           params: {
             contestID: this.contestID,
             problemID: row._id
           }
-        }).catch(() => {}).then(res =>
-          window.location.reload()
-        )
+        }).catch(() => {}).then(res => {
+        })
       },
       hintHide () {
         this.hintHidden = !this.hintHidden
