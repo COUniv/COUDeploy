@@ -9,7 +9,7 @@ class DraftCode(models.Model):
     """
     임시저장된 코드 객체
     """
-    id = models.IntegerField(primary_key=True, db_index=True)
+    id = models.AutoField(primary_key=True, auto_created=True, db_index=True)
     # 자동 저장 중 잘못된 저장이 되는 것을 방지하기 위한 checksum
     checksum = models.TextField(default=rand_str)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
