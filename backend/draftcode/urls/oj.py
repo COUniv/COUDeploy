@@ -1,8 +1,8 @@
 from django.conf.urls import url
 
-# from ..views.oj import (EmailAuthenticationAPI, MakeEmailAuthenticationTokenAPI)
+from ..views.oj import (DraftCodeAPI, ContestDraftCodeAPI)
 
 urlpatterns = [
-    # url(r"^auth_email_call/?$", MakeEmailAuthenticationTokenAPI.as_view(), name="make_email_authentication_token"),
-    # url(r"^authed_email/?$", EmailAuthenticationAPI.as_view(), name="email_authentication")
+    url(r"^draft_code/?$", DraftCodeAPI.as_view(), name="draft_code"),
+    url(r"^contest/draft_code/?$", ContestDraftCodeAPI.as_view(), name="email_authentication")
 ]

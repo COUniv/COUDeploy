@@ -54,7 +54,7 @@ class DraftCodeAPI(APIView):
 
         problem_id = data["problem_id"]
         if data["contest_id"]:
-            return self.error("contest 문제가 아닙니다")
+            return self.error("대회 문제가 아닙니다")
         language = data["language"]
         code = data["code"]
         drafts = DraftCode.objects.filter(user=request.user)
