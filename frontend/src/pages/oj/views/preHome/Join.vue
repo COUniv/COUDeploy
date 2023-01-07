@@ -435,7 +435,7 @@
   padding: 0px;
   text-align: center;
   font-size: @font-large;
-  font-weight: @weight-bold;
+  font-weight: 700;
   line-height: 50px;
   color: @purple;
   p {

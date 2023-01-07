@@ -214,7 +214,6 @@ docker 컨테이너가 아닌 로컬 시스템의 frontend 의 빌드 폴더(dis
      │── ApplyVerifyEmail.vue       # 이메일 인증 페이지
      │── Login.vue                  # 로그인 함수 (페이지 뷰는 없음)
      │── Logout.vue                 # 로그아웃 함수 (페이지 뷰는 없음)
-     │── Register.vue               # 회원가입
      │── ResetPassword.vue          #(/reset-password/:token) : 비밀번호 재설정
      └── UserHome.vue               #(/user-home) : 사용자 계정 정보
  ```  
