@@ -8,6 +8,17 @@
         <div class="problem-name"> {{ problem.title }}</div>
       </div>
       <div class="header-right">
+        <div class="auto-save-block" v-show="autosaveLoading">
+          <div class="loading-box"
+            v-loading="`true`"
+            element-loading-background="rgba(0, 0, 0, 0)"
+            element-loading-spinner="el-icon-loading"></div>
+          <div class="text-block">저장중...</div>
+        </div>
+        <div class="auto-save-block" v-show="!autosaveLoading">
+          <div class="loading-box"><i class="check-icon mdi mdi-check-bold"></i></div>
+          <div class="text-block">저장됨</div>
+        </div>
         <div class="help">
           <p @click="help_btn" class="help-btn">도움말</p>
         </div>
@@ -116,34 +127,11 @@
                       :submissionId = "submissionId"
                       :submissionExists="submissionExists"
                       :contestEnded="contestEnded"
+                      @keyup.native="codeKeyUp"
                       @resetCode="onResetToTemplate"
                       @changeTheme="onChangeTheme"
                       @changeLang="onChangeLang"></SubmitCodeMirror>
-          <!-- <Row type="flex" justify="space-between">
-            제출 상태 icon
-            <Col :span="10">
-              <div class="status" v-if="statusVisible">
-                <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
-                  <span>{{$t('m.Status')}}</span>
-                  <Tag class="result" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
-                    {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
-                  </Tag>
-                </template>
-                <template v-else-if="this.contestID && !OIContestRealTimePermission">
-                  <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
-                </template>
-              </div>
-              <div v-else-if="problem.my_status === 0">
-                <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
-              </div>
-              <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists">
-                <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
-              </div>
-              <div v-if="contestEnded">
-                <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
-              </div>
-            </Col>
-          </Row> -->
+ 
         </div>
       </div>
     </Split>
@@ -164,7 +152,8 @@
   import {JUDGE_STATUS, CONTEST_STATUS, buildProblemCodeKey} from '@/utils/constants'
   import api from '@oj/api'
   import {pie, largePie} from './chartData'
-
+  import SHA3 from 'js-sha3'
+  import _ from 'lodash'
   // 이 상태의 그래픽 점유만 표시
   const filtedStatus = ['-1', '-2', '0', '1', '2', '3', '4', '8']
 
@@ -178,6 +167,13 @@
     mixins: [FormMixin],
     data () {
       return {
+        autosaveLoading: false,
+        isChangeLanguage: false,
+        isFirst: true,
+        autosave: false,
+        reselectModalVisible: false,
+        checksum: '',
+        draftID: '',
         sharedButtonDisabled: false,
         openHelpModal: false,
         lastURL: '',
@@ -247,7 +243,7 @@
       this.getWebsiteConfig()
     },
     methods: {
-      ...mapActions(['changeDomTitle', 'getWebsiteConfig']),
+      ...mapActions(['changeDomTitle', 'getWebsiteConfig', 'changeModalStatus']),
       help_btn () {
         // this.openHelpModal = true
         this.$Notice.open({
@@ -274,7 +270,19 @@
       toggle (shared) {
         this.isActive = shared
       },
-      init () {
+      codeKeyUp () {
+        if (this.autosave && this.isFirst === false && this.isChangeLanguage === false) {
+          this.debounceDraft()
+        } else {
+          this.isFirst = false
+          this.autosave = true
+          this.isChangeLanguage = false
+        }
+      },
+      init (language) {
+        this.isFirst = true
+        this.autosave = false
+        this.isChangeLanguage = true
         this.$Loading.start()
         // routes.js에 정의 된 params
         this.contestID = this.$route.params.contestID
@@ -293,16 +301,75 @@
           this.changePie(problem)
           // 로컬에 코드가 있고 템플릿을 로드할 필요가 없음을 나타내는 beforeRouteEnter에서 수정됨
           if (this.code !== '') {
-            return
+            this.code = ''
           }
           // try to load problem template
-          this.language = this.problem.languages[0]
+          if (language === undefined) {
+            this.language = this.problem.languages[0]
+          } else {
+            this.language = language
+          }
           let template = this.problem.template
           if (template && template[this.language]) {
             this.code = template[this.language]
           }
+          this.getDraftCode()
         }, () => {
           this.$Loading.error()
+        })
+      },
+      updateDraftCode () {
+        this.autosaveLoading = true
+        if (this.autosave && !this.isFirst && this.isChangeLanguage === false) {
+          let func = this.$route.name === 'problem-submission' ? 'updateDraftCode' : 'updateContestDraftCode'
+          api[func](this.draftID, this.problemID, this.contestID, this.language, this.checksum, this.code).then(res => {
+            this.autosaveLoading = false
+          }, err => {
+            console.log(err)
+            this.autosaveLoading = false
+          })
+        }
+      },
+      debounceDraft: _.debounce(function (newVal, oldVal) {
+        this.updateDraftCode()
+        this.isChangeLanguage = false
+      }, 1000),
+      getDraftCode () {
+        let func = this.$route.name === 'problem-submission' ? 'getDraftCode' : 'getContestDraftCode'
+        api[func](this.problemID, this.contestID, this.language).then(res => {
+          let msg = SHA3.sha3_256.update('nonedraftcode' + this.$store.getters.user.username).hex()
+          if (res.data.data === msg) {
+            this.makeDraftCode()
+            this.autosave = true
+          } else {
+            if (res.data.data.code === undefined || res.data.data.code === null || res.data.data.code === 'null') {
+              this.checksum = res.data.data.checksum
+              this.draftID = res.data.data.id
+              this.code = ''
+            } else {
+              this.checksum = res.data.data.checksum
+              this.code = res.data.data.code
+              this.draftID = res.data.data.id
+            }
+            this.autosave = true
+            this.isFirst = false
+          }
+        })
+      },
+      makeDraftCode () {
+        api.makeDraftCode(this.problemID, this.contestID, this.language).then(res => {
+          let func = this.$route.name === 'problem-submission' ? 'getDraftCode' : 'getContestDraftCode'
+          api[func](this.problemID, this.contestID, this.language).then(res => {
+            if (res.data.data.code === undefined || res.data.data.code === null || res.data.data.code === 'null') {
+              this.checksum = res.data.data.checksum
+              this.draftID = res.data.data.id
+            } else {
+              this.checksum = res.data.data.checksum
+              this.code = res.data.data.code
+              this.draftID = res.data.data.id
+            }
+          })
+        }, _ => {
         })
       },
       changePie (problemData) {
@@ -341,9 +408,6 @@
         largePieData.push({name: 'AC', value: acCount})
         this.largePie.series[0].data = largePieData
       },
-      handleRoute (route) {
-        this.$router.push(route).catch(() => {})
-      },
       onChangeLang (newLang) {
         if (this.problem.template[newLang]) {
           if (this.code.trim() === '') {
@@ -351,6 +415,8 @@
           }
         }
         this.language = newLang
+        this.isChangeLanguage = true
+        this.init(this.language)
       },
       onChangeTheme (newTheme) {
         this.theme = newTheme
@@ -492,10 +558,21 @@
         }
       },
       goContestProblem (row) {
+        this.isChangeLanguage = true
+        this.autosave = false
         let template = this.problem.template
+        this.isChangeLanguage = true
         if (template && template[this.language]) {
           this.code = template[this.language]
+          this.isFirst = true
+          this.autosave = false
+          this.checksum = ''
+          this.draftID = ''
         } else {
+          this.isFirst = true
+          this.autosave = false
+          this.checksum = ''
+          this.draftID = ''
           this.code = ''
         }
         this.$router.push({ name: 'contest-problem-submission',
@@ -538,7 +615,6 @@
     beforeRouteLeave (to, from, next) {
       // 구성 요소 전환 후 지속적인 요청 방지
       clearInterval(this.refreshStatus)
-
       this.$store.commit(types.CHANGE_CONTEST_ITEM_VISIBLE, {menu: true})
       storage.set(buildProblemCodeKey(this.problem._id, from.params.contestID), {
         code: this.code,
@@ -926,13 +1002,37 @@
       padding-right: 20px;
     }
   }
+
+  .auto-save-block {
+    margin-right: 30px;
+    .loading-box {
+      float: left;
+      width: 30px;
+      height: 60px;
+      display: block;
+      line-height: 60px;
+      margin-left: 5px;
+      .check-icon {
+        font-size: 1.5em;
+        color: rgba(230, 228, 228, 0.864);
+      }
+    }
+    .text-block {
+      float: right;
+      width: 60px;
+      font-size : 14px;
+      font-weight: 400;
+      line-height: 60px;
+      color: #e9eaece2;
+    }
+  }
   .help {
     cursor: pointer;
     margin-right: 10px;
     .help-btn {
       font-size: 14px;
       font-weight: 400;
-      line-height: 65px;
+      line-height: 60px;
       color: @white;
       background-color: transparent;
       border-color: transparent;
@@ -1005,10 +1105,14 @@
       padding-right: 10px;
     }
   }
-  
 </style>
-<!-- <style lang="less">
-  .container {
-    padding: 0 0 !important;
+<style lang="less">
+  .el-loading-spinner {
+    top: initial;
+    margin-top: initial;
+    i {
+      font-size: 1.4em;
+      color: rgba(255, 255, 255, 0.864);
+    }
   }
-</style> -->
+</style>
