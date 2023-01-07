@@ -113,7 +113,12 @@
       },
       getGrassListCount (list, chosenYear) {
         this.numOfDaysInYear = this.daysInYear(parseInt(chosenYear))
+        console.log(`numOfDaysInYear : ` + this.numOfDaysInYear)
         this.startingDayOfWeek = new Date(parseInt(chosenYear), 0, 1).getDay()
+        if (this.startingDayOfWeek === 0) {
+          this.startingDayOfWeek = 7
+        }
+        console.log(`startingDayOfWeek : ` + this.startingDayOfWeek)
         this.grassCount = new Array(this.numOfDaysInYear).fill(0)
         list.forEach(element => {
           if (time.utcToLocal(element, 'YYYY') === chosenYear) {
