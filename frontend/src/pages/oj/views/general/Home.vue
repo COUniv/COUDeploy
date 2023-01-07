@@ -1,7 +1,7 @@
 <template>
   <div v-if="listVisible" class="home_container">
     <div class="img_container" style="width: 100%;">
-      <Carousel v-model="value1" loop arrow="hover" @on-change="handleChange" :autoplay="bannerOpt.autoplay">
+      <Carousel v-model="value1" loop arrow="hover" :autoplay="bannerOpt.autoplay">
           <CarouselItem v-for="(item, idx) in bannerList" :key="idx">
             <div class="demo-carousel">
               <img :src="item.url"/>
@@ -329,9 +329,6 @@
         this.query.status = status
         this.contest_stat = status
         this.getContestList()
-      },
-      handleChange (old, newval) {
-        // console.log(old, newval)
       },
       addPage () {
         if (this.currentTab === 0) {
