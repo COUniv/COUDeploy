@@ -449,7 +449,7 @@
               this.submitted = false
               this.isAfterSubmit = true
               clearTimeout(this.refreshStatus)
-              this.init()
+              this.init(this.language)
             } else {
               this.refreshStatus = setTimeout(checkStatus, 2000)
             }
