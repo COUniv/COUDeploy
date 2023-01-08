@@ -161,6 +161,13 @@ class ProblemSafeSerializer(BaseProblemSerializer):
                    "difficulty", "submission_number", "accepted_number", "statistic_info")
 
 
+class SimplyProblemSafeSerializer(BaseProblemSerializer):
+    template = serializers.SerializerMethodField("get_public_template")
+
+    class Meta:
+        model = Problem
+        fields = ["id", "_id", "title", "rule_type", "contest"]
+
 class ContestProblemMakePublicSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     display_id = serializers.CharField(max_length=32)
