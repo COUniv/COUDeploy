@@ -419,6 +419,14 @@ export default {
       }
     })
   },
+  getContestProblemID (problemID, contestID) {
+    return ajax('simple_problems', 'get', {
+      params: {
+        contest_id: contestID,
+        problem_id: problemID
+      }
+    })
+  },
   submitCode (data) {
     return ajax('submission', 'post', {
       data
