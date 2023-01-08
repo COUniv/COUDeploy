@@ -1,5 +1,6 @@
 import os
 import re
+import xlsxwriter
 
 from django.db import transaction, IntegrityError
 from django.db.models import Q

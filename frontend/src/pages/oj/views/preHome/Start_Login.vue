@@ -55,12 +55,8 @@
 import { mapGetters, mapActions } from 'vuex'
 import api from '@oj/api'
 import { FormMixin } from '@oj/components/mixins'
-import register from '@oj/views/user/Register'
 export default {
   mixins: [FormMixin],
-  components: {
-    register
-  },
   data () {
     // LoginStaus :false;  //로그인 상태 초기값 : false
     const CheckRequiredTFA = (rule, value, callback) => {

@@ -157,7 +157,6 @@
       methods: {
         ...mapActions(['changeDomTitle']),
         init () {
-          console.log(this.contest_table[0].contest_type)
         },
         handleRoute (route) {
           this.$router.push(route).catch(() => {})
