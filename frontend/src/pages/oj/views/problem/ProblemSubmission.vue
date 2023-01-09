@@ -130,7 +130,8 @@
                       @keyup.native="codeKeyUp"
                       @resetCode="onResetToTemplate"
                       @changeTheme="onChangeTheme"
-                      @changeLang="onChangeLang"></SubmitCodeMirror>
+                      @changeLang="onChangeLang"
+                      :key="codeMirrorForceRender"></SubmitCodeMirror>
  
         </div>
       </div>
@@ -167,6 +168,7 @@
     mixins: [FormMixin],
     data () {
       return {
+        codeMirrorForceRender: false,
         autosaveLoading: false,
         isChangeLanguage: false,
         isFirst: true,
@@ -298,6 +300,7 @@
           })
           problem.languages = problem.languages.sort()
           this.problem = problem
+          // console.log(problem)
           this.changePie(problem)
           // 로컬에 코드가 있고 템플릿을 로드할 필요가 없음을 나타내는 beforeRouteEnter에서 수정됨
           if (this.code !== '') {
@@ -314,9 +317,13 @@
             this.code = template[this.language]
           }
           this.getDraftCode()
+          this.updateCodeMirrorForceRender()
         }, () => {
           this.$Loading.error()
         })
+      },
+      updateCodeMirrorForceRender () {
+        this.codeMirrorForceRender = !this.codeMirrorForceRender
       },
       updateDraftCode () {
         this.autosaveLoading = true
@@ -568,12 +575,14 @@
           this.autosave = false
           this.checksum = ''
           this.draftID = ''
+          this.isAfterSubmit = false
         } else {
           this.isFirst = true
           this.autosave = false
           this.checksum = ''
           this.draftID = ''
           this.code = ''
+          this.isAfterSubmit = false
         }
         this.$router.push({ name: 'contest-problem-submission',
           params: {

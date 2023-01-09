@@ -22,7 +22,7 @@
   import { RULE_TYPE } from '@/utils/constants'
 
   export default {
-    name: 'acm-rank',
+    name: 'oi-rank',
     components: {
       Pagination
     },
