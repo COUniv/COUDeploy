@@ -38,9 +38,9 @@
             <td>{{data.accepted_number}}</td>
             <td>{{data.submission_number}}</td>
             <td>{{toPercent(data)}}</td>
-            <td class="detail" @click="opemModal(true)">detail</td>
+            <td class="detail" @click="opemModal(true, index)">detail</td>
           </tr>
-          <Modal v-model="modalVisible" :width="430" :key="index">
+          <Modal v-model="modalVisible[index]" :width="430" :key="index">
             <div slot="header" class="modal-title">{{data.user.username}}</div>
             <div class="modal-center">
               <div class="accepted-problems">맞은 문제 : {{data.accepted_number}}</div>
@@ -113,7 +113,7 @@
           total_time: '',
           submissions: []
         },
-        modalVisible: false,
+        modalVisible: [],
         page: 1,
         total: 0,
         loadingTable: false,
@@ -127,8 +127,8 @@
     },
     methods: {
       ...mapActions(['getContestProblems']),
-      opemModal (data) {
-        this.modalVisible = true
+      opemModal (data, index) {
+        this.modalVisible[index] = data
       },
       getContestRankData (page = 1, refresh = false) {
         let offset = (page - 1) * this.limit
@@ -141,6 +141,10 @@
         api.getContestRank(params).then(res => {
           this.total = res.data.data.total
           this.dataRank = res.data.data.results
+          this.modalVisible = []
+          for (let i = 0; i < this.total; i++) {
+            this.modalVisible.push(false)
+          }
         })
       },
       downloadRankCSV () {
