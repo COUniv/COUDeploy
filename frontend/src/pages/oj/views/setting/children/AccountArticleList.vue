@@ -99,7 +99,6 @@
           this.page = 1
         }
         this.getArticles()
-        console.log(this.articles)
       },
       buildQuery () { // 쿼리로 설정한 필터값을 전송용 데이터로 빌드
         return {

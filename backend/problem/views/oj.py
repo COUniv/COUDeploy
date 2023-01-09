@@ -3,7 +3,7 @@ from django.db.models import Q, Count
 from utils.api import APIView
 from account.decorators import check_contest_permission
 from ..models import ProblemTag, Problem, ProblemRuleType, ProblemCategory, User
-from ..serializers import ProblemSerializer, TagSerializer, ProblemSafeSerializer, ProblemCategorySerializer, CategoryListSerializer
+from ..serializers import ProblemSerializer, TagSerializer, ProblemSafeSerializer, ProblemCategorySerializer, CategoryListSerializer, SimplyProblemSafeSerializer
 from contest.models import ContestRuleType
 
 class CategoryProblemPercentAPI(APIView):
@@ -184,6 +184,18 @@ class ProblemAPI(APIView):
         self._add_problem_status(request, data)
         return self.success(data)
 
+class ContestNativeProblemIDAPI(APIView):
+    @check_contest_permission(check_type="problems")
+    def get(self, request):
+        problem_id = request.GET.get("problem_id")
+        try:
+            problem = Problem.objects.select_related("created_by").get(id=problem_id,
+                                                                       contest=self.contest,
+                                                                       visible=True)
+        except Problem.DoesNotExist:
+            return self.error("문제가 존재하지 않습니다")
+        problem_data = SimplyProblemSafeSerializer(problem).data
+        return self.success(problem_data)
 
 class ContestProblemAPI(APIView):
     def _add_problem_status(self, request, queryset_values):

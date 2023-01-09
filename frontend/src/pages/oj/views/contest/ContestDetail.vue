@@ -54,7 +54,7 @@
             {{$t('m.Problems')}}
           </VerticalMenu-item>
   
-          <VerticalMenu-item v-if="OIContestRealTimePermission"
+          <VerticalMenu-item v-if="OIContestRealTimePermission || isContestAdmin"
                              class="list" :disabled="contestMenuDisabled"
                              :route="{name: 'contest-submission-list'}">
             <Icon type="md-arrow-round-up" />
@@ -64,13 +64,13 @@
           </VerticalMenu-item>
   
           <!-- 랭킹 -->
-          <!-- <VerticalMenu-item v-if="OIContestRealTimePermission"
+          <VerticalMenu-item v-if="OIContestRealTimePermission"
                              class="list" :disabled="contestMenuDisabled"
                              :route="{name: 'contest-rank', params: {contestID: contestID}}">
-            <Icon type="ios-stats" /> -->
-            <!-- <Icon type="stats-bars"></Icon> -->
-            <!-- {{$t('m.Rankings')}} -->
-          <!-- </VerticalMenu-item> -->
+            <Icon type="ios-stats" />
+            <Icon type="stats-bars"></Icon>
+            {{$t('m.Rankings')}}
+          </VerticalMenu-item>
   
           <VerticalMenu-item v-if="showAdminHelper && isContestAdmin"
                              class="list" :route="{name: 'acm-helper', params: {contestID: contestID}}">
@@ -157,7 +157,6 @@
       methods: {
         ...mapActions(['changeDomTitle']),
         init () {
-          console.log(this.contest_table[0].contest_type)
         },
         handleRoute (route) {
           this.$router.push(route).catch(() => {})

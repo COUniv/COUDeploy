@@ -8,6 +8,57 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 export default {
+  updateDraftCode (draftID, problemID, contestID, language, checksum, code) {
+    return ajax('draft_code', 'put', {
+      data: {
+        id: draftID,
+        problem_id: problemID,
+        contest_id: contestID,
+        language: language,
+        checksum: checksum,
+        code: code
+      }
+    })
+  },
+  updateContestDraftCode (draftID, problemID, contestID, language, checksum, code) {
+    return ajax('contest/draft_code', 'put', {
+      data: {
+        id: draftID,
+        problem_id: problemID,
+        contest_id: contestID,
+        language: language,
+        checksum: checksum,
+        code: code
+      }
+    })
+  },
+  makeDraftCode (problemID, contestID, language) {
+    return ajax('draft_code', 'post', {
+      data: {
+        problem_id: problemID,
+        contest_id: contestID,
+        language: language
+      }
+    })
+  },
+  getDraftCode (problemID, contestID, language) {
+    return ajax('draft_code', 'get', {
+      params: {
+        problem_id: problemID,
+        contest_id: contestID,
+        language: language
+      }
+    })
+  },
+  getContestDraftCode (problemID, contestID, language) {
+    return ajax('contest/draft_code', 'get', {
+      params: {
+        problem_id: problemID,
+        contest_id: contestID,
+        language: language
+      }
+    })
+  },
   updateForceRating () {
     return ajax('force_update_all_user_rating', 'get')
   },
@@ -362,6 +413,14 @@ export default {
   },
   getContestProblem (problemID, contestID) {
     return ajax('contest/problem', 'get', {
+      params: {
+        contest_id: contestID,
+        problem_id: problemID
+      }
+    })
+  },
+  getContestProblemID (problemID, contestID) {
+    return ajax('simple_problems', 'get', {
       params: {
         contest_id: contestID,
         problem_id: problemID
