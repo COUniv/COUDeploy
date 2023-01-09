@@ -31,23 +31,23 @@
           </tr>
         </thead>
         <!-- 내용 -->
-        <tbody v-for="(data, index) in dataRank">
+        <tbody :ref="index + 'tbody'" v-for="(data, index) in dataRank" :v-model="data.visible" v-on:change="data.visible" :key="index">
           <tr>
             <td class="no"> {{toRank(index)}} </td>
             <td class="name" @click="goUser(data.user)">{{data.user.username}}</td>
             <td>{{data.accepted_number}}</td>
             <td>{{data.submission_number}}</td>
             <td>{{toPercent(data)}}</td>
-            <td class="detail" @click="opemModal(true)">detail</td>
+            <td class="detail" @click="opemModal('vis', index)">detail</td>
           </tr>
-          <Modal v-model="modalVisible" :width="430" :key="index">
+          <Modal :ref="index + 'modal'" v-bind:value="isOpen(data)" :width="430" @on-cancel="closeModal(index)">
             <div slot="header" class="modal-title">{{data.user.username}}</div>
             <div class="modal-center">
               <div class="accepted-problems">맞은 문제 : {{data.accepted_number}}</div>
               <div class="total-submit">총 제출 수 : {{data.submission_number}}</div>
               <div class="total-time">총 시간 : {{data.total_time}}s</div>
               <div class="split-detail-box">Details</div>
-              <div class="problem-details" v-for="(da, i, idx) in data.submission_info" :key="i" v-bind="getProblemID(i, data.contest, idx, index)">
+              <div class="problem-details" v-for="(da, i, idx) in data.submission_info" v-bind="getProblemID(i, data.contest, idx, index)">
                 <div class="problem-details-title">
                   <span :ref="index + 'p_title'"></span>
                   (<span :ref="index + 'p_id'"></span>)
@@ -113,22 +113,35 @@
           total_time: '',
           submissions: []
         },
-        modalVisible: false,
+        modalVisible: [],
         page: 1,
         total: 0,
         loadingTable: false,
-        dataRank: []
+        dataRank: [],
+        forceupdatekey: 0
       }
     },
     mounted () {
+      this.modalVisible = Array(300).fill({value: false})
       this.contestID = this.$route.params.contestID
+      this.forceupdatekey = 0
+      this.forceUpdate = true
       this.getContestRankData(1)
       // this.getRankData(1)
     },
     methods: {
       ...mapActions(['getContestProblems']),
-      opemModal (data) {
-        this.modalVisible = true
+      opemModal (data, index) {
+        this.dataRank[index].visible = data
+        this.forceupdatekey += 1
+        this.$forceUpdate()
+      },
+      closeModal (index) {
+        this.dataRank[index].visible = ''
+        this.$forceUpdate()
+      },
+      isOpen (data) {
+        return data.visible === 'vis'
       },
       getContestRankData (page = 1, refresh = false) {
         let offset = (page - 1) * this.limit
@@ -141,6 +154,9 @@
         api.getContestRank(params).then(res => {
           this.total = res.data.data.total
           this.dataRank = res.data.data.results
+          for (let v of this.dataRank) {
+            v.visible = 'none'
+          }
         })
       },
       downloadRankCSV () {
@@ -209,6 +225,15 @@
     },
     computed: {
       ...mapGetters(['isSuperAdmin', 'modalStatus'])
+    },
+    watch: {
+      dataRank: {
+        deep: true,
+        handler (val) {
+        }
+      },
+      $route (newVal, oldVal) {
+      }
     }
   }
 </script>
