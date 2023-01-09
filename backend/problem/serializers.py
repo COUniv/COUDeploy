@@ -166,7 +166,7 @@ class SimplyProblemSafeSerializer(BaseProblemSerializer):
 
     class Meta:
         model = Problem
-        fields = ["id", "_id", "title", "rule_type", "contest"]
+        fields = ["id", "_id", "title", "rule_type", "contest", "template"]
 
 class ContestProblemMakePublicSerializer(serializers.Serializer):
     id = serializers.IntegerField()
