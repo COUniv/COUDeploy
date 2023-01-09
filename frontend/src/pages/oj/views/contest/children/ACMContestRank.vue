@@ -128,7 +128,6 @@
     methods: {
       ...mapActions(['getContestProblems']),
       opemModal (data) {
-        console.log(data)
         this.modalVisible = true
       },
       getContestRankData (page = 1, refresh = false) {
@@ -140,13 +139,8 @@
           force_refresh: this.forceUpdate ? '1' : '0'
         }
         api.getContestRank(params).then(res => {
-          if (page === 1) {
-            // this.applyToChart(res.data.data.results.slice(0, 10))
-          }
-          // this.applyToTable(res.data.data.results)
           this.total = res.data.data.total
           this.dataRank = res.data.data.results
-          console.log(res.data.data)
         })
       },
       downloadRankCSV () {
@@ -184,8 +178,6 @@
       },
       getProblemID (problemID, contestID, idx, index) {
         api.getContestProblemID(problemID, contestID).then(res => {
-          console.log(idx)
-          console.log(res.data.data)
           this.$refs[index + 'p_title'][idx].textContent = res.data.data.title
           this.$refs[index + 'p_id'][idx].textContent = res.data.data._id
           return res.data.data._id
