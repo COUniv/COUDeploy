@@ -377,7 +377,7 @@
   }
   @media screen and (min-width: 1200px) {
     .home_container{
-      margin: -20px -50px -100px -50px;
+      margin: -40px -50px -100px -50px;
       padding-bottom: -80px;
     }
   }
@@ -412,7 +412,8 @@
     img {
       display: inline-block;
       width: 100%;
-      height: 500px;
+      height: calc(100vw * 303.0 / 1280.0);
+      max-height: 303px;
       max-width: 1180px;
     }
   }
@@ -711,43 +712,6 @@
             transform: translate( -50%, -50% );
           }
         }
-        // .first {
-        //   height: 42px;
-        //   line-height: 42px;
-        //   color: #800080;
-        //   //margin-left: 15px;
-        //   &:hover {
-        //     color: #2d8cf0;
-        //   }
-        // }
-        // .second {
-        //   height: 42px;
-        //   line-height: 42px;
-        //   color: red;
-        //   //margin-left: 15px;
-        //   &:hover {
-        //     color: #2d8cf0;
-        //   }
-        // }
-        //.third {
-        //   height: 42px;
-        //   line-height: 42px;
-        //   color: orange;
-        //   margin-left: 15px;
-        //   &:hover {
-        //     color: #2d8cf0;
-        //}
-        // }
-        // .defa {
-        //   height: 42px;
-        //   line-height: 42px;
-        //   color: #495060;
-        //   margin-left: 15px;
-        //   &:hover {
-        //     color: #2d8cf0;
-        //   }
-        // }
-        
       }
     }
   }
@@ -802,15 +766,31 @@
     z-index: 997;
   }
   @media screen and (max-width : 900px) {
+
     .home_container {
+      margin: -20px -50px -100px -50px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
     .demo-carousel{
+    display: inline-block;
+    // height: 456px;
+    width: 100%;
+    height: auto;
+    //line-height: 60vh;
+    //line-height: 456px;
+    text-align: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+    background: #fafafa;
       img {
-        height: 240px;
-        min-width: 480px
+        display: inline-block;
+        width: 100%;
+        height: calc(100vw * 303.0 / 1280.0);
+        max-height: 303px;
+        max-width: 1180px;
       }
     }
     .img_container {
