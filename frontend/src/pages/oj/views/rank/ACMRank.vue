@@ -1,18 +1,4 @@
 <template>
-  <!-- <Row type="flex" justify="space-around">
-    <Col :span="22"> -->
-    <!-- <Panel :padding="10">
-      <div slot="title">{{$t('m.ACM_Ranklist')}}</div>
-      <div class="echarts">
-        <ECharts :options="options" ref="chart" auto-resize></ECharts>
-      </div>
-    </Panel> -->
-    <!-- <Table :data="dataRank" :columns="columns" :loading="loadingTable" size="small"></Table>
-    <Pagination :total="total" :page-size.sync="limit" :current.sync="page"
-                @on-change="getRankData" show-sizer
-                @on-page-size-change="getRankData(1)"></Pagination>
-    </Col>
-  </Row> -->
   <div class="main">
     <div class="ranking-container">
       <div>
@@ -49,7 +35,7 @@
         </thead>
         <!-- 내용 -->
         <tbody v-for="(data, index) in dataRank" @click="goUser(data.user)">
-          <tr v-if="index == 0">
+          <tr v-if="toRank(index) == 1">
             <td  class="image">
               <img class="rankings-img" src="../../../../assets/gold crown.png">
               <span class="no top">1</span>
@@ -60,7 +46,7 @@
             <td>{{data.submission_number}}</td>
             <td>{{toPercent(data)}}</td>
           </tr>
-          <tr v-else-if="index == 1">
+          <tr v-else-if="toRank(index) == 2">
             <td class="image">
               <img class="rankings-img" src="../../../../assets/silver crown.png"/>
               <span class="no top">2</span>
@@ -72,7 +58,7 @@
             <td>{{toPercent(data)}}</td>
           </tr>
           
-          <tr v-else-if="index == 2" class="ranker">
+          <tr v-else-if="toRank(index) == 3" class="ranker">
             <td class="image">
               <img class="rankings-img" src="../../../../assets/bronse crown.png"/>
               <span class="no top third" style="color: white">3</span>
@@ -83,8 +69,8 @@
             <td>{{data.submission_number}}</td>
             <td>{{toPercent(data)}}</td>
           </tr>
-          <tr v-else-if="index > 2">
-            <td class="no"> {{index + 1}} </td>
+          <tr v-else-if="toRank(index) > 3">
+            <td class="no"> {{toRank(index)}} </td>
             <td class="name">{{data.user.username}}</td>
             <td>{{toRating(data)}}</td>
             <td>{{data.accepted_number}}</td>
@@ -189,6 +175,9 @@
       this.getRankData(1)
     },
     methods: {
+      toRank (index) {
+        return (this.page - 1) * this.limit + index + 1
+      },
       getRankData (page) {
         let offset = (page - 1) * this.limit
         // let bar = this.$refs.chart
