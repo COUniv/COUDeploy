@@ -147,7 +147,6 @@
             }
           }
           this.submission = data
-          console.log(this.submission)
         }, () => {
           this.loading = false
         })
