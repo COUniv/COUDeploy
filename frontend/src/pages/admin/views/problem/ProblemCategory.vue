@@ -27,9 +27,9 @@
           @select="addProblem"
           :fetch-suggestions="problemquerySearch">
           <template #default="{ item }">
-      <div style="float:left">{{ item.value }}</div>
-      <div style="float:right; color: #9e9e9e;">{{ item._id }}</div>
-    </template>
+            <div style="float:left">{{ item.value }}</div>
+            <div style="float:right; color: #9e9e9e;">{{ item._id }}</div>
+          </template>
         </el-autocomplete>
 
         <el-table

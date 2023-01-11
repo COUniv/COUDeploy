@@ -128,7 +128,6 @@
         return time.utcToLocal(date, 'YYYY-MM-DD HH:mm')
       },
       redirectToArticle (notification) {
-        console.log(notification)
         api.checkNotification(notification.id).then(res => {
           this.$router.push({path: notification.url})
         })

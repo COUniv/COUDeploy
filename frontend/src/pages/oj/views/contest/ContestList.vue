@@ -125,72 +125,6 @@
         @on-page-size-change="changeRoute"
       ></Pagination>
     </div>
-    <div id="user-ranking">
-      <div class="main">
-        <div class="ranking-container">
-          <table class="ranking-list">
-            <!-- 내용 -->
-            <tbody
-              v-for="(data, index) in dataRank"
-              @click="goUser(data.user)"
-              :key="index"
-            >
-              <tr class="ranking-entry" v-if="index == 0">
-                <td class="image">
-                  <img
-                    class="rankings-img"
-                    src="../../../../assets/gold crown.png"
-                  />
-                  <span class="top">1</span>
-                </td>
-                <div class="user-info ranker">
-                  <td class="name">{{ data.user.username }}</td>
-                  <!-- <td class="score">{{ data.accepted_number }}</td> -->
-                </div>
-              </tr>
-              <tr class="ranking-entry" v-else-if="index == 1">
-                <td class="image">
-                  <img
-                    class="rankings-img"
-                    src="../../../../assets/silver crown.png"
-                  />
-                  <span class="top">2</span>
-                </td>
-                <div class="user-info ranker">
-                  <td class="name">{{ data.user.username }}</td>
-                  <!-- <td class="score">{{ data.accepted_number }}</td> -->
-                </div>
-              </tr>
-
-              <tr class="ranking-entry" v-else-if="index == 2">
-                <td class="image">
-                  <img
-                    class="rankings-img"
-                    src="../../../../assets/bronse crown.png"
-                  />
-                  <span class="top third" style="color: white">3</span>
-                </td>
-                <div class="user-info ranker">
-                  <td class="name">{{ data.user.username }}</td>
-                  <!-- <td class="score">{{ data.accepted_number }}</td> -->
-                </div>
-              </tr>
-              <tr class="ranking-entry" v-else-if="index > 2">
-                <td class="no">{{ index + 1 }}</td>
-                <div class="user-info">
-                  <td class="name">{{ data.user.username }}</td>
-                  <!-- <td class="score">{{ data.accepted_number }}</td> -->
-                </div>
-              </tr>
-            </tbody>
-          </table>
-          <!-- <Pagination :total="total" :page-size.sync="limit" :current.sync="page"
-                      @on-change="getRankData" show-sizer
-                      @on-page-size-change="getRankData(1)"
-                      style="margin: 20px 0 10px; display: flex; justify-content:center; float: none;"></Pagination> -->
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -352,13 +286,13 @@ export default {
 @import "../../../../styles/common.less";
 #contest-card {
   //min-width: 800px;
-  width: 70%;
+  width: 95%;
   background-color: @white;
   border-radius: 5px;
   box-shadow: 0 0 5px #cac6c6;
-  margin: 20px 0 20px 200px;
-  padding: 20px;
-
+  margin: 20px auto;
+  padding: 40px 15%;
+  min-width: 570px;
   #no-contest {
     margin: 0 20px;
     font-size: @font-regular;
@@ -539,7 +473,7 @@ export default {
     align-items: center;
     #contest-card {
       margin: 20px 0;
-      min-width: 90vw;
+      min-width: 570px;
       .title {
         margin: 0 0 20px;
       }

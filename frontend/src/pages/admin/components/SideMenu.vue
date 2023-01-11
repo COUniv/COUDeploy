@@ -8,6 +8,7 @@
     <el-submenu v-if="isSuperAdmin" index="general">
       <template slot="title"><i class="el-icon-menu"></i>{{$t('m.General')}}</template>
       <el-menu-item index="/user">{{$t('m.User')}}</el-menu-item>
+      <el-menu-item index="/manage-user-list">특별 관리</el-menu-item>
       <el-menu-item index="/announcement">{{$t('m.Announcement')}}</el-menu-item>
       <el-menu-item index="/banner">배너</el-menu-item>
       <el-menu-item index="/conf">{{$t('m.System_Config')}}</el-menu-item>

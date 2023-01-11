@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from ..views.oj import ProblemTagAPI, ProblemAPI, ContestProblemAPI, PickOneAPI, CategoryListAPI, CategoryProblemPercentAPI
+from ..views.oj import ProblemTagAPI, ProblemAPI, ContestProblemAPI, PickOneAPI, CategoryListAPI, CategoryProblemPercentAPI, ContestNativeProblemIDAPI
 
 urlpatterns = [
     url(r"^problem/tags/?$", ProblemTagAPI.as_view(), name="problem_tag_list_api"),
@@ -9,4 +9,5 @@ urlpatterns = [
     url(r"^contest/problem/?$", ContestProblemAPI.as_view(), name="contest_problem_api"),
     url(r"^categories/?$", CategoryListAPI.as_view(), name="categories"),
     url(r"^percent/?$", CategoryProblemPercentAPI.as_view(), name="percent"),
+    url(r"^simple_problems/?$", ContestNativeProblemIDAPI.as_view(), name="simple_prolem_api"),
 ]

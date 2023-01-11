@@ -108,12 +108,12 @@ class ContestRankAPI(APIView):
             return ACMContestRank.objects.filter(contest=self.contest,
                                                  user__admin_type=AdminType.REGULAR_USER,
                                                  user__is_disabled=False).\
-                select_related("user").order_by("-accepted_number", "total_time")
+                select_related("user").order_by("-accepted_number", "submission_number", "total_time")
         else:
             return OIContestRank.objects.filter(contest=self.contest,
                                                 user__admin_type=AdminType.REGULAR_USER,
                                                 user__is_disabled=False). \
-                select_related("user").order_by("-total_score")
+                select_related("user").order_by("-total_score", "submission_number")
 
     def column_string(self, n):
         string = ""
