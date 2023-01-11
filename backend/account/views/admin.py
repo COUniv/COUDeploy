@@ -10,11 +10,171 @@ from django.contrib.auth.hashers import make_password
 from submission.models import Submission
 from utils.api import APIView, validate_serializer
 from utils.shortcuts import rand_str
+from options.options import SysOptions
+from django.utils.timezone import now
+from django.template.loader import render_to_string
+from utils.shortcuts import send_email
+import smtplib
+from datetime import timedelta
 
-from ..decorators import super_admin_required
-from ..models import AdminType, ProblemPermission, User, UserProfile
+from ..decorators import super_admin_required, admin_role_required
+from ..models import AdminType, ProblemPermission, User, UserProfile, ManagedUserList
 from ..serializers import EditUserSerializer, UserAdminSerializer, GenerateUserSerializer
-from ..serializers import ImportUserSeralizer
+from ..serializers import ImportUserSeralizer,AllManagedUserListSerializer, ManagedUserListSerializer, CreateManagedUserListSerializer, GETManagedUserListSerializer, SendEmailForUsersAPISerializer
+
+class SendEmailForUsersAPI(APIView):
+    @validate_serializer(SendEmailForUsersAPISerializer)
+    @admin_role_required
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return self.error("잘못 된 접근입니다.")
+        if not SysOptions.smtp_config:
+            return self.error("SMTP 설정이 되어있지 않습니다")
+        data = request.data
+        title = data["title"]
+        content = data["content"]
+        user_ids = data["user_ids"]
+
+        excepted_user_list = []
+        for user_id in user_ids:
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist: # 유저 존재 유무
+                excepted_user_list.append(user_id)
+                continue
+            if not user.email: #이메일 존재하지 않을경우 except
+                excepted_user_list.append(user_id)
+                continue
+            render_data = {
+              "website_name": SysOptions.website_name,
+              "content" : content
+            }
+            try:
+                email_html = render_to_string("send_mail_default_form.html", render_data)
+                send_email(smtp_config=SysOptions.smtp_config,
+                           from_name=SysOptions.website_name_shortcut,
+                           to_name=user.username,
+                           to_email=user.email,
+                           subject="[" + SysOptions.website_name_shortcut + "] " + title,
+                           content=email_html)
+            except smtplib.SMTPResponseException as e:
+                # guess error message encoding
+                msg = "이메일 전송에 실패했습니다"
+                try:
+                    msg = e.smtp_error
+                    # qq mail
+                    msg = msg.decode("gbk")
+                except Exception:
+                    msg = msg.decode("utf-8", "ignore")
+                return self.error(msg)
+            except Exception as e:
+                msg = str(e)
+                return self.error(msg)
+
+        return self.success(excepted_user_list)
+
+class AllManagedUserList(APIView):
+    @admin_role_required
+    def get(self, request):
+        myself = request.GET.get("myself", None) # 자기 자신의 관리 리스트만 확인하기 위한 데이터
+        search = request.GET.get("search",None)
+        searchtype = request.GET.get("searchtype", None)
+        userlists = ManagedUserList.objects.all()
+
+        if (myself and myself == "1"):
+            userlists = userlists.filter(writer=request.user.username)
+
+        if search:
+            if (searchtype == "0"): # 전체 검색
+                userlists = userlists.filter(Q (title__icontains=search) | Q (content__icontains=search) | Q (writer__icontains=search) | Q(users__username__icontains=search)).distinct()
+            elif (searchtype == "1"): # 제목에서 검색
+                userlists = userlists.filter(title__icontains=search)
+            elif (searchtype == "2"): # 내용에서 검색
+                userlists = userlists.filter(content__icontains=search)
+            elif (searchtype == "3"): # 작성자명에서 검색
+                userlists = userlists.filter(writer__icontains=search)
+            elif (searchtype == "4"): # 특정 유저명에서 검색
+                userlists = userlists.filter(users__username__icontains=search)
+        
+        data = self.paginate_data(request, userlists) # 페이징
+        data["results"] = AllManagedUserListSerializer(data["results"], many=True).data
+        return self.success(data)
+
+class ManagedUserListAPI(APIView):
+    @admin_role_required
+    def get(self, request):
+        list_id = request.GET.get("id") # 파라미터로 전송된 ID값을 통해 유저리스트 출력
+        try:
+            userlist = ManagedUserList.objects.get(id = list_id)
+        except:
+            return self.error("존재하지 않는 관리리스트 입니다.")
+        
+        return self.success(GETManagedUserListSerializer(userlist).data)
+
+    @admin_role_required
+    @validate_serializer(ManagedUserListSerializer)
+    def put(self, request):
+        data = request.data
+        list_id = data["id"]
+        title = data["title"]
+        content = data["content"]
+        writer = request.user
+        users = data["user_ids"]
+        try:
+            userlist = ManagedUserList.objects.get(id = list_id)
+        except:
+            return self.error("존재하지 않는 관리리스트 입니다.")
+        userlist.title = title
+        userlist.content = content
+
+        except_userlist = []
+        userlist.users.clear()
+        for user_id in users:
+            try:
+                user = User.objects.get(id=user_id)
+            except:
+                except_userlist.append(user_id)
+                continue
+            userlist.users.add(user)
+        userlist.save()
+        return self.success(except_userlist)
+
+    @admin_role_required
+    @validate_serializer(CreateManagedUserListSerializer)
+    def post(self, request):
+        data = request.data
+        title = data["title"]
+        content = data["content"]
+        writer = request.user
+        users = data["user_ids"]
+        if ManagedUserList.objects.filter(title__contains=title).exists():
+            return self.error('이미 존재하는 제목입니다')
+        userlist = ManagedUserList.objects.create(writer=writer,
+                                                 title=title,
+                                                 content=content)
+        except_userlist = []
+        for user_id in users:
+            try:
+                user = User.objects.get(id=user_id)
+            except:
+                except_userlist.append(user_id)
+                continue
+            userlist.users.add(user)
+        userlist.save()
+        return self.success(except_userlist)
+
+    @admin_role_required
+    def delete(self, request):
+        id = request.GET.get("id")
+        if not id:
+            return self.error("잘못 된 값입니다")
+        try:
+            userlist = ManagedUserList.objects.get(id=id)
+        except:
+            return self.error("해당 리스트가 존재하지 않습니다")
+        userlist.users.clear()
+        userlist.delete()
+        return self.success()
 
 class ForceUpdateAllUserRatingAPI(APIView):
     @super_admin_required

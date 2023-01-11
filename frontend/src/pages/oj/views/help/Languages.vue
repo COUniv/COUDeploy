@@ -184,17 +184,17 @@
                     'var input = fs.readFileSync(\'/dev/stdin\').toString().split(\' \');\n' +
                     'var a = parseInt(input[0]);\n' +
                     'var b = parseInt(input[1]);\n' +
-                    'console.log(a+b)\n'
+                    'console.log(a + b)\n'
           },
           {
             lang: 'Python2',
             source: 'a, b = map(int, raw_input().split())\n' +
-                    'print a+b'
+                    'print(a + b)'
           },
           {
             lang: 'Python3',
             source: 'a, b = map(int, input().split())\n' +
-                    'print a+b'
+                    'print(a + b)'
           }
         ],
         readable: 'nocursor',

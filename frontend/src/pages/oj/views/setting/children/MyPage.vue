@@ -2,13 +2,6 @@
   <div class="setting-main">
     <div>
       <div v-if="profile.user">
-        <!-- <p style="font-size: 18px">
-          <span @v-if="profile.user" class="emphasis" style="margin: 2em; margin-top:10px; margin-botton:15px; font-weight:600">{{profile.user.username}}</span>
-          <span v-if="profile.school">{{profile.school}}</span>
-        </p>
-        <p v-if="profile.mood">
-          {{profile.mood}}
-        </p> -->
         <div class="flex-container">
           <div class="score">
             <div class="left">
@@ -71,31 +64,7 @@
           </div>
         </div>
       </div>
-
-      <!-- github같은 잔디 (현재 비활성화) -->
-      
-
-      <!-- account setting, profile setting button -->
-      <!-- <div>
-        <div class="btn-menu">
-          <div style="margin-top: 10px;">
-            <Button
-              shape="circle"
-              @click="goCommentList"
-              style="margin-left: 5px;">
-              댓글 단 글
-            </Button>
-            <Button
-              shape="circle"
-              @click="goLikeList"
-              style="margin-left: 5px;">
-              좋아요 한 글
-            </Button>
-          </div>
-        </div>
-      </div> -->
     </div>
-    
   </div>
 </template>
 <script>
