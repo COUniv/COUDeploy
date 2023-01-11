@@ -23,5 +23,8 @@ module.exports = {
       "skipTemplates": true
     }],
     "no-unused-vars": ["warn"]
+  },
+  "globals": {
+    "todoEventBus": "readable"
   }
 }

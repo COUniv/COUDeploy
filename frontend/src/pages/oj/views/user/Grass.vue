@@ -1,17 +1,20 @@
 <template>
   <div>
     <div class="flex-container">
+      <div ref="tooltip" id="tooltip" class="tooltip-init"></div>
       <div class="contribution">{{this.numOfProblems}} problems in {{this.chosenYear}}</div>
       <div class="flex-item">
-      <svg class="grass-container">
-        <template>
-          <g>
-            <rect v-for="(_, day) in this.numOfDaysInYear" class="grass-pointer"
+        <svg class="grass-container">
+          <template>
+            <g>
+              <rect class="grass-pointer" v-for="(_, day) in this.numOfDaysInYear" :key="day" 
+              ref="grass"
               v-bind:class="numberOfProblemsSolved(day)"
-              v-bind:style="{'x':getPositionX(day) ,'y': getPositionY(day)}"></rect>
-          </g>
-        </template>
-      </svg>
+              v-bind:style="{'x':getPositionX(day) ,'y': getPositionY(day)}" @mouseover="doMouseOver(day)" @mouseleave="leaveMouseOver">
+              </rect>
+            </g>
+          </template>
+        </svg>
       </div>
         <div class="flex-level-container">
         <div class="flex-level-item">
@@ -56,6 +59,10 @@
   export default {
     data () {
       return {
+        tt: true,
+        monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December'
+        ],
         grassList: [],
         grassCount: {},
         numOfDaysInYear: 0,
@@ -76,6 +83,16 @@
       this.init()
     },
     methods: {
+      doMouseOver (day) {
+        this.$refs.tooltip.style.left = this.getPositionX(day) + 'px'
+        this.$refs.tooltip.style.top = this.getPositionY(day) + 'px'
+        this.$refs.tooltip.style.display = 'block'
+        this.$refs.tooltip.innerText = this.dateFormatinDays(day)
+      },
+      leaveMouseOver () {
+        this.$refs.tooltip.style.display = 'none'
+        this.$refs.tooltip.innerText = ''
+      },
       init () {
         this.chosenYear = (new Date().getFullYear()).toString()
         this.username = this.$route.query.username
@@ -114,6 +131,9 @@
       getGrassListCount (list, chosenYear) {
         this.numOfDaysInYear = this.daysInYear(parseInt(chosenYear))
         this.startingDayOfWeek = new Date(parseInt(chosenYear), 0, 1).getDay()
+        if (this.startingDayOfWeek === 0) {
+          this.startingDayOfWeek = 7
+        }
         this.grassCount = new Array(this.numOfDaysInYear).fill(0)
         list.forEach(element => {
           if (time.utcToLocal(element, 'YYYY') === chosenYear) {
@@ -177,13 +197,17 @@
         return dayInYear
       },
       numberOfProblemsSolved (day) {
+        this.dateFormatinDays(day, this.chosenYear)
         var number = this.grassCount[day]
-        // console.log('current day ' + currentDay + ', number ' + number)
         if (number <= 0) return 'level1'
         else if (number < 2) return 'level2'
         else if (number < 4) return 'level3'
         else if (number < 6) return 'level4'
         else if (number >= 6) return 'level5'
+      },
+      dateFormatinDays (day, year = this.chosenYear) {
+        let date = new Date(year, 0, 1 + day)
+        return this.monthNames[date.getMonth()] + time.utcToLocal(date, ' D, YYYY')
       }
     }
   }
@@ -227,18 +251,33 @@
   width:10px;
   &.level1 {
     fill: @light-gray;
+    &:hover {
+      fill: #9e9e9e;
+    }
   }
   &.level2 {
     fill: @light-orange;
+    &:hover {
+      fill: @orange;
+    }
   }
   &.level3 {
     fill: @orange;
+    &:hover {
+      fill: @dark-orange;
+    }
   }
   &.level4 {
     fill: @dark-orange;
+    &:hover {
+      fill: @deep-dark-orange;
+    }
   }
   &.level5 {
     fill: @deep-dark-orange;
+    &:hover {
+      fill: #894a02;
+    }
   }
 }
 .flex-level-container {
@@ -303,6 +342,15 @@
       margin-right: 0px;
     }
   }
+}
+
+.tooltip-init {
+  width: max-content;
+  position: absolute; 
+  display: none;
+  overflow: visible;
+  font-size: 12px;
+  cursor: none;
 }
 
 .year {

@@ -1,7 +1,7 @@
 <template>
   <div v-if="listVisible" class="home_container">
     <div class="img_container" style="width: 100%;">
-      <Carousel v-model="value1" loop arrow="hover" @on-change="handleChange" :autoplay="bannerOpt.autoplay">
+      <Carousel v-model="value1" loop arrow="hover" :autoplay="bannerOpt.autoplay">
           <CarouselItem v-for="(item, idx) in bannerList" :key="idx">
             <div class="demo-carousel">
               <img :src="item.url"/>
@@ -36,8 +36,13 @@
               <div v-if="!announcements.length" class="no_announcement">
                 공지사항이 없습니다
               </div>
-              <div v-else v-for="announcement in announcements" :key="announcement.title" class="announcement_title" @click="goAnnouncement(announcement)">
-                <div class="announcement-title-box">
+              <div v-else v-for="announcement in announcements" :key="announcement.title" class="announcement_title">
+                <div v-if="isAuthenticated" class="announcement-title-box" @click="goAnnouncement(announcement)">
+                  <a>
+                    {{announcement.title}}
+                  </a>
+                </div>
+                <div v-else class="announcement-title-box-no-click">
                   <a>
                     {{announcement.title}}
                   </a>
@@ -325,9 +330,6 @@
         this.contest_stat = status
         this.getContestList()
       },
-      handleChange (old, newval) {
-        // console.log(old, newval)
-      },
       addPage () {
         if (this.currentTab === 0) {
           this.$router.push('/announcement-list').catch(() => {})
@@ -375,7 +377,7 @@
   }
   @media screen and (min-width: 1200px) {
     .home_container{
-      margin: -20px -50px -100px -50px;
+      margin: -40px -50px -100px -50px;
       padding-bottom: -80px;
     }
   }
@@ -396,18 +398,23 @@
   }
 
   .demo-carousel{
+    display: inline-block;
     // height: 456px;
-    height: 60vh;
-    line-height: 60vh;
-    // line-height: 456px;
+    width: 100%;
+    height: auto;
+    //line-height: 60vh;
+    //line-height: 456px;
     text-align: center;
     justify-content: center;
     color: #fff;
     font-size: 20px;
-    background: #000000;
+    background: #fafafa;
     img {
+      display: inline-block;
       width: 100%;
-      height: 100%;
+      height: calc(100vw * 303.0 / 1280.0);
+      max-height: 303px;
+      max-width: 1180px;
     }
   }
 
@@ -432,6 +439,18 @@
     width: calc(80% - 40px);
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .announcement-title-box-no-click {
+    position: relative;
+    float: left;
+    height: 34px;
+    line-height: 34px;
+    font-size: 1rem;
+    width: calc(80% - 40px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: none;
+    pointer-events: none;
   }
   .announcement-time {
     // display: none;
@@ -693,43 +712,6 @@
             transform: translate( -50%, -50% );
           }
         }
-        // .first {
-        //   height: 42px;
-        //   line-height: 42px;
-        //   color: #800080;
-        //   //margin-left: 15px;
-        //   &:hover {
-        //     color: #2d8cf0;
-        //   }
-        // }
-        // .second {
-        //   height: 42px;
-        //   line-height: 42px;
-        //   color: red;
-        //   //margin-left: 15px;
-        //   &:hover {
-        //     color: #2d8cf0;
-        //   }
-        // }
-        //.third {
-        //   height: 42px;
-        //   line-height: 42px;
-        //   color: orange;
-        //   margin-left: 15px;
-        //   &:hover {
-        //     color: #2d8cf0;
-        //}
-        // }
-        // .defa {
-        //   height: 42px;
-        //   line-height: 42px;
-        //   color: #495060;
-        //   margin-left: 15px;
-        //   &:hover {
-        //     color: #2d8cf0;
-        //   }
-        // }
-        
       }
     }
   }
@@ -784,13 +766,35 @@
     z-index: 997;
   }
   @media screen and (max-width : 900px) {
+
     .home_container {
+      margin: -20px -50px -100px -50px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
+    .demo-carousel{
+    display: inline-block;
+    // height: 456px;
+    width: 100%;
+    height: auto;
+    //line-height: 60vh;
+    //line-height: 456px;
+    text-align: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+    background: #fafafa;
+      img {
+        display: inline-block;
+        width: 100%;
+        height: calc(100vw * 303.0 / 1280.0);
+        max-height: 303px;
+        max-width: 1180px;
+      }
+    }
     .img_container {
-      display: none;
+      //display: none;
     }
     .main_container{
       display: flex;

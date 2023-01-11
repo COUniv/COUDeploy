@@ -16,9 +16,12 @@ import ProblemCategoryList from './problem/ProblemCategoryList.vue'
 import ProblemCategory from './problem/ProblemCategory.vue'
 import ProblemTagList from './problem/ProblemTagList.vue'
 import Banner from './general/Banner.vue'
+import ManageUserList from './manage/ManageUserList.vue'
+import CreateManageUserList from './manage/CreateManageUserList'
+import ManageUserDetail from './manage/ManageUserDetail.vue'
 
 export {
   Announcement, User, Conf, JudgeServer, Problem, ProblemList, Contest,
   ContestList, Login, Home, PruneTestCase, Dashboard, ProblemImportOrExport,
-  ProblemCategoryList, ProblemCategory, ProblemTagList, ContestImg, Banner
+  ProblemCategoryList, ProblemCategory, ProblemTagList, ContestImg, Banner, ManageUserList, CreateManageUserList, ManageUserDetail
 }

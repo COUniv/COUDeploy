@@ -163,7 +163,6 @@
         this.routeName = this.$route.name
         this.getSubmissions()
         this.getRejudgeAccess()
-        console.log(this.getRejudgeAccess())
       },
       buildQuery () {
         return {
