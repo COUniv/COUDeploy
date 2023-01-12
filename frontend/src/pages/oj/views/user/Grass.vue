@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="flex-container">
-      <div ref="tooltip" id="tooltip" class="tooltip-init"></div>
+      <div class="tooltip-box">
+        <div ref="tooltip" id="tooltip" class="tooltip-init"></div>
+      </div>
       <div class="contribution">{{this.numOfProblems}} problems in {{this.chosenYear}}</div>
       <div class="flex-item">
         <svg class="grass-container">
@@ -84,8 +86,8 @@
     },
     methods: {
       doMouseOver (day) {
-        this.$refs.tooltip.style.left = this.getPositionX(day) + 'px'
-        this.$refs.tooltip.style.top = this.getPositionY(day) + 'px'
+        this.$refs.tooltip.style['left'] = (this.getPositionX(day) - 30) + 'px'
+        this.$refs.tooltip.style['top'] = (this.getPositionY(day) - 35) + 'px'
         this.$refs.tooltip.style.display = 'block'
         this.$refs.tooltip.innerText = this.dateFormatinDays(day)
       },
@@ -206,8 +208,15 @@
         else if (number >= 6) return 'level5'
       },
       dateFormatinDays (day, year = this.chosenYear) {
+        let preText = ''
+        let solved = this.grassCount[day]
+        if (solved < 2) {
+          preText = solved + ' problem solved on '
+        } else {
+          preText = solved + ' problems solved on '
+        }
         let date = new Date(year, 0, 1 + day)
-        return this.monthNames[date.getMonth()] + time.utcToLocal(date, ' D, YYYY')
+        return preText + this.monthNames[date.getMonth()] + time.utcToLocal(date, ' D, YYYY')
       }
     }
   }
@@ -241,6 +250,31 @@
     width: 703px;
     height: 90px;
     margin: 0 auto;
+  }
+  .tooltip-box {
+    width: 703px;
+    margin: 0 auto;
+    position: relative;
+    .tooltip-init {
+      &::before {
+        position: absolute;
+        top: 24px;
+        left: 35px;
+        content: '';
+        border-top: 10px solid #353535b3;
+        border-right: 10px solid transparent;
+      }
+      padding: 3px 7px;
+      color: @white;
+      width: max-content;
+      position: absolute; 
+      display: none;
+      overflow: visible;
+      font-size: 12px;
+      cursor: none;
+      background-color: #353535b3;
+      border-radius: 4px;
+    }
   }
 }
 .grass-pointer {
@@ -342,15 +376,6 @@
       margin-right: 0px;
     }
   }
-}
-
-.tooltip-init {
-  width: max-content;
-  position: absolute; 
-  display: none;
-  overflow: visible;
-  font-size: 12px;
-  cursor: none;
 }
 
 .year {
