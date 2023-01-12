@@ -256,6 +256,7 @@
     margin: 0 auto;
     position: relative;
     .tooltip-init {
+      z-index: 2;
       &::before {
         position: absolute;
         top: 24px;
