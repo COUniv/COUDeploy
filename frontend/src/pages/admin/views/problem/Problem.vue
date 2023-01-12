@@ -49,21 +49,10 @@
           <el-col :span="8">
             <el-form-item :label="$t('m.Difficulty')">
               <el-select class="difficulty-select" size="small" :placeholder="$t('m.Difficulty')" v-model="problem.difficulty">
-                <el-option :label="Level1" value="Level1"></el-option>
-                <el-option :label="Level2" value="Level2"></el-option>
-                <el-option :label="Level3" value="Level3"></el-option>
-                <el-option :label="Level4" value="Level4"></el-option>
-                <el-option :label="Level5" value="Level5"></el-option>
-                <el-option :label="Level6" value="Level6"></el-option>
-                <el-option :label="Level7" value="Level7"></el-option>
-                <el-option :label="Level8" value="Level8"></el-option>
-                <el-option :label="Level9" value="Level9"></el-option>
-                <el-option :label="Level10" value="Level10"></el-option>
-                <el-option :label="Level11" value="Level11"></el-option>
-                <el-option :label="Level12" value="Level12"></el-option>
-                <el-option :label="Level13" value="Level13"></el-option>
-                <el-option :label="Level14" value="Level14"></el-option>
-                <el-option :label="Level15" value="Level15"></el-option>
+                <el-option v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -300,6 +289,52 @@
     },
     data () {
       return {
+        options: [{
+          value: 'Level1',
+          label: 'Level1'
+        }, {
+          value: 'Level2',
+          label: 'Level2'
+        }, {
+          value: 'Level3',
+          label: 'Level3'
+        }, {
+          value: 'Level4',
+          label: 'Level4'
+        }, {
+          value: 'Level5',
+          label: 'Level5'
+        }, {
+          value: 'Level6',
+          label: 'Level6'
+        }, {
+          value: 'Level7',
+          label: 'Level7'
+        }, {
+          value: 'Level8',
+          label: 'Level8'
+        }, {
+          value: 'Level9',
+          label: 'Level9'
+        }, {
+          value: 'Level10',
+          label: 'Level10'
+        }, {
+          value: 'Level11',
+          label: 'Level11'
+        }, {
+          value: 'Level12',
+          label: 'Level12'
+        }, {
+          value: 'Level13',
+          label: 'Level13'
+        }, {
+          value: 'Level14',
+          label: 'Level14'
+        }, {
+          value: 'Level15',
+          label: 'Level15'
+        }],
         rules: {
           _id: {required: true, message: 'Display ID is required', trigger: 'blur'},
           title: {required: true, message: 'Title is required', trigger: 'blur'},
@@ -536,8 +571,8 @@
         for (let file of fileList) {
           file.score = (tot / fileList.length).toFixed(0)
           if (tot % fileList.length > 0) {
-            file.score = file.score + 1
-            tot = tot - 1
+            file.score = parseInt(file.score) + 1
+            tot = parseInt(tot) - 1
           }
           if (!file.output_name && this.problem.spj) {
             file.output_name = '-'
