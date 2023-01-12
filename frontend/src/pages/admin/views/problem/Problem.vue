@@ -572,7 +572,6 @@
           file.score = (tot / fileList.length).toFixed(0)
           if (tot % fileList.length > 0) {
             file.score = parseInt(file.score) + 1
-            console.log(parseInt(file.score) + 1)
             tot = parseInt(tot) - 1
           }
           if (!file.output_name && this.problem.spj) {
