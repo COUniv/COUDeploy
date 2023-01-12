@@ -6,7 +6,6 @@ from urllib.parse import urljoin
 import requests
 from django.db import transaction, IntegrityError
 from django.db.models import F
-
 from account.models import User
 from conf.models import JudgeServer
 from contest.models import ContestRuleType, ACMContestRank, OIContestRank, ContestStatus
@@ -202,9 +201,12 @@ class JudgeDispatcher(DispatcherBase):
                 self.update_contest_problem_status()
                 self.update_contest_rank()
         else:
-            if self.last_result:
+            logger.error("self last result = " + str(self.last_result))
+            if self.last_result != None:
+                logger.error("self last result it True = " + str(self.last_result))
                 self.update_problem_status_rejudge()
             else:
+                logger.error("self last result it False = " + str(self.last_result))
                 self.update_problem_status()
 
         # 이 시점에서 판단은 끝났고 태스크 큐에 남아있는 태스크를 처리해 보면 됨.

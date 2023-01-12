@@ -40,7 +40,7 @@
             </Button>
           </ButtonGroup>
         </div>
-        <div v-else>
+        <div v-else> 
           <Button type="primary"
                   @click="goLogin"
                   class="btn" long
