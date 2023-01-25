@@ -3,13 +3,11 @@
     <div id="main">
       <Panel shadow style="min-width: 500px;">
         <div slot="title">제출 현황</div>
-        <!-- <div slot="title">{{title}}</div> -->
         <div slot="extra">
           <ul class="filter">
             <li>
               <Dropdown @on-click="handleResultChange">
                 <span>{{status}}
-                  <!-- <Icon type="arrow-down-b"></Icon> -->
                   <Icon type="md-arrow-dropdown" />
                 </span>
                 <Dropdown-menu slot="list">
@@ -20,8 +18,6 @@
                 </Dropdown-menu>
               </Dropdown>
             </li>
-
-
             <li>
               <i-switch size="large" v-model="formFilter.myself" @on-change="handleQueryChange">
                 <span slot="open">{{$t('m.Mine')}}</span>
@@ -30,15 +26,9 @@
             </li>
             <li>
               <Input v-model="formFilter.username" placeholder="검색할 아이디를 입력하세요" @on-enter="handleQueryChange"/>
-              <!-- <Input v-model="formFilter.username" :placeholder="$t('m.Search_Author')" @on-enter="handleQueryChange"/> -->
             </li>
-
-            <!-- <li>
-              <Button type="info" icon="md-refresh" @click="getSubmissions">{{$t('m.Refresh')}}</Button>
-            </li> -->
           </ul>
         </div>
-        <!-- <Table stripe :disabled-hover="true" :columns="columns" :data="submissions" :key="renderKey" :loading="loadingTable" size="small"></Table> -->
         <div class="submission-container">
           <table v-if="!rejudgeColumnVisible" class="submission-list">
             <thead>
@@ -328,6 +318,7 @@
         this.changeRoute()
       },
       handleRejudge (id, index) {
+        this.$message('$ ' + id.substring(0, 6) + ' 재채점을 요청하였습니다.')
         this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'none'
         this.submissions[index].loading = true
         api.submissionRejudge(id).then(async () => {
