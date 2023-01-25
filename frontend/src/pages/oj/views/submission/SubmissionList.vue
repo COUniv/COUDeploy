@@ -80,7 +80,7 @@
                 <th style="width:10%; text-align: center;">재체점</th>
               </tr>
             </thead>
-            <tbody v-for="(submission, idx) in submissions">
+            <tbody v-for="(submission, idx) in submissions" refs="submissions">
               <tr>
                 <td id="user-id" @click="redirectToUser(submission)">{{ submission.username }}</td>
                 <td id="problem-id" @click="redirectToProblem(submission)">{{ submission.problem }}</td>
@@ -90,7 +90,7 @@
                 <td>{{ toByteLength(submission) }}</td>
                 <td>{{ submission.language }}</td>
                 <td>{{ toDate(submission) }}</td>
-                <td style="text-align: center;"><Icon type="md-refresh" size="18" class="icon-hv" @click="handleRejudge(submission.id, idx)"></Icon></td>
+                <td style="text-align: center;" :ref="idx + 'icn_btn'"><Icon type="md-refresh" size="18" class="icon-hv" @click="handleRejudge(submission.id, idx)"></Icon></td>
               </tr>
             </tbody>
           </table>
@@ -212,29 +212,37 @@
       getRealtimeStatus (id, index) {
         if (id === undefined) {
           clearTimeout(this.refreshSatus)
+          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
         }
         if (this.refreshSatus) {
           clearTimeout(this.refreshSatus)
+          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
           return
         }
         if (this.submissions.length === 0) {
           clearTimeout(this.refreshStatus)
+          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
         }
         const checkStatus = () => {
           api.getSubmissionStatus(id).then(__ => {
             if (this.submissions[index] === undefined || this.submissions[index].result === undefined) {
               clearTimeout(this.refreshStatus)
+              this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
             } else if (this.submissions[index].id !== __.data.data.id) {
               clearTimeout(this.refreshStatus)
+              this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
             } else {
               api.getSafeSubmissionStatus(id).then(res => {
                 if (res.data.data.result === undefined) {
                   clearTimeout(this.refreshStatus)
+                  this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
                 } else if (this.submissions[index] === undefined) {
                   clearTimeout(this.refreshStatus)
+                  this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
                 } else {
                   if (this.submissions[index].id !== res.data.data.id) {
                     clearTimeout(this.refreshStatus)
+                    this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
                   } else {
                     this.submissions[index].result = res.data.data.result
                     this.submissions[index].username = res.data.data.username
@@ -243,15 +251,18 @@
                       this.refreshStatus = setTimeout(checkStatus, 1000)
                     } else {
                       clearTimeout(this.refreshStatus)
+                      this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
                     }
                   }
                 }
               }, ___ => {
                 clearTimeout(this.refreshStatus)
+                this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
               })
             }
           }, _ => {
             clearTimeout(this.refreshStatus)
+            this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
           })
         }
         const loadd = setInterval(checkStatus, 6000)
@@ -317,6 +328,7 @@
         this.changeRoute()
       },
       handleRejudge (id, index) {
+        this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'none'
         this.submissions[index].loading = true
         api.submissionRejudge(id).then(async () => {
           this.submissions[index].loading = false
