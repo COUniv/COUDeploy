@@ -37,7 +37,7 @@ docker build --tag [name]:[version] .
 
 ```shell
 #먼저 도커에 로그인하는 과정이 필요합니다.
-docker push [repositories_name]:[version]
+docker push [image_name]:[version]
 ```
 
 
