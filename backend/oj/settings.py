@@ -182,7 +182,7 @@ LOGGING = {
         'dramatiq': {
             'handlers': LOGGING_HANDLERS,
             'level': 'DEBUG',
-            'propagate': False,
+            'propagate': True,
         },
        '': {
            'handlers': LOGGING_HANDLERS,

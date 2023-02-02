@@ -3,13 +3,11 @@
     <div id="main">
       <Panel shadow style="min-width: 500px;">
         <div slot="title">제출 현황</div>
-        <!-- <div slot="title">{{title}}</div> -->
         <div slot="extra">
           <ul class="filter">
             <li>
               <Dropdown @on-click="handleResultChange">
                 <span>{{status}}
-                  <!-- <Icon type="arrow-down-b"></Icon> -->
                   <Icon type="md-arrow-dropdown" />
                 </span>
                 <Dropdown-menu slot="list">
@@ -20,8 +18,6 @@
                 </Dropdown-menu>
               </Dropdown>
             </li>
-
-
             <li>
               <i-switch size="large" v-model="formFilter.myself" @on-change="handleQueryChange">
                 <span slot="open">{{$t('m.Mine')}}</span>
@@ -30,15 +26,9 @@
             </li>
             <li>
               <Input v-model="formFilter.username" placeholder="검색할 아이디를 입력하세요" @on-enter="handleQueryChange"/>
-              <!-- <Input v-model="formFilter.username" :placeholder="$t('m.Search_Author')" @on-enter="handleQueryChange"/> -->
             </li>
-
-            <!-- <li>
-              <Button type="info" icon="md-refresh" @click="getSubmissions">{{$t('m.Refresh')}}</Button>
-            </li> -->
           </ul>
         </div>
-        <!-- <Table stripe :disabled-hover="true" :columns="columns" :data="submissions" :key="renderKey" :loading="loadingTable" size="small"></Table> -->
         <div class="submission-container">
           <table v-if="!rejudgeColumnVisible" class="submission-list">
             <thead>
@@ -80,7 +70,7 @@
                 <th style="width:10%; text-align: center;">재체점</th>
               </tr>
             </thead>
-            <tbody v-for="(submission, idx) in submissions">
+            <tbody v-for="(submission, idx) in submissions" refs="submissions">
               <tr>
                 <td id="user-id" @click="redirectToUser(submission)">{{ submission.username }}</td>
                 <td id="problem-id" @click="redirectToProblem(submission)">{{ submission.problem }}</td>
@@ -90,7 +80,7 @@
                 <td>{{ toByteLength(submission) }}</td>
                 <td>{{ submission.language }}</td>
                 <td>{{ toDate(submission) }}</td>
-                <td style="text-align: center;"><Icon type="md-refresh" size="18" class="icon-hv" @click="handleRejudge(submission.id, idx)"></Icon></td>
+                <td style="text-align: center;" :ref="idx + 'icn_btn'"><Icon type="md-refresh" size="18" class="icon-hv" @click="handleRejudge(submission.id, idx)"></Icon></td>
               </tr>
             </tbody>
           </table>
@@ -212,29 +202,37 @@
       getRealtimeStatus (id, index) {
         if (id === undefined) {
           clearTimeout(this.refreshSatus)
+          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
         }
         if (this.refreshSatus) {
           clearTimeout(this.refreshSatus)
+          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
           return
         }
         if (this.submissions.length === 0) {
           clearTimeout(this.refreshStatus)
+          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
         }
         const checkStatus = () => {
           api.getSubmissionStatus(id).then(__ => {
             if (this.submissions[index] === undefined || this.submissions[index].result === undefined) {
               clearTimeout(this.refreshStatus)
+              this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
             } else if (this.submissions[index].id !== __.data.data.id) {
               clearTimeout(this.refreshStatus)
+              this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
             } else {
               api.getSafeSubmissionStatus(id).then(res => {
                 if (res.data.data.result === undefined) {
                   clearTimeout(this.refreshStatus)
+                  this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
                 } else if (this.submissions[index] === undefined) {
                   clearTimeout(this.refreshStatus)
+                  this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
                 } else {
                   if (this.submissions[index].id !== res.data.data.id) {
                     clearTimeout(this.refreshStatus)
+                    this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
                   } else {
                     this.submissions[index].result = res.data.data.result
                     this.submissions[index].username = res.data.data.username
@@ -243,15 +241,18 @@
                       this.refreshStatus = setTimeout(checkStatus, 1000)
                     } else {
                       clearTimeout(this.refreshStatus)
+                      this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
                     }
                   }
                 }
               }, ___ => {
                 clearTimeout(this.refreshStatus)
+                this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
               })
             }
           }, _ => {
             clearTimeout(this.refreshStatus)
+            this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
           })
         }
         const loadd = setInterval(checkStatus, 6000)
@@ -317,6 +318,8 @@
         this.changeRoute()
       },
       handleRejudge (id, index) {
+        this.$message('$ ' + id.substring(0, 6) + ' 재채점을 요청하였습니다.')
+        this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'none'
         this.submissions[index].loading = true
         api.submissionRejudge(id).then(async () => {
           this.submissions[index].loading = false
