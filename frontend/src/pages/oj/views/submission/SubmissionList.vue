@@ -131,7 +131,6 @@
     mounted () {
       this.init()
       this.JUDGE_STATUS = Object.assign({}, JUDGE_STATUS)
-      // 去除submitting的状态 和 两个
       delete this.JUDGE_STATUS['9']
       delete this.JUDGE_STATUS['2']
     },
@@ -177,12 +176,6 @@
           this.adjustRejudgeColumn()
           this.loadingTable = false
           this.submissions = data.results
-          try {
-            // settimeout api call router 변경시 exception 추출
-            for (let idx = 0; this.submissions.length; idx++) {
-              this.getRealtimeStatus(this.submissions[idx].id, idx)
-            }
-          } catch (e) { }
           this.total = data.total
         }).catch(() => {
           this.loadingTable = false
@@ -198,67 +191,6 @@
         } else {
           return true
         }
-      },
-      getRealtimeStatus (id, index) {
-        if (id === undefined) {
-          clearTimeout(this.refreshSatus)
-          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-        }
-        if (this.refreshSatus) {
-          clearTimeout(this.refreshSatus)
-          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-          return
-        }
-        if (this.submissions.length === 0) {
-          clearTimeout(this.refreshStatus)
-          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-        }
-        const checkStatus = () => {
-          api.getSubmissionStatus(id).then(__ => {
-            if (this.submissions[index] === undefined || this.submissions[index].result === undefined) {
-              clearTimeout(this.refreshStatus)
-              this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-            } else if (this.submissions[index].id !== __.data.data.id) {
-              clearTimeout(this.refreshStatus)
-              this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-            } else {
-              api.getSafeSubmissionStatus(id).then(res => {
-                if (res.data.data.result === undefined) {
-                  clearTimeout(this.refreshStatus)
-                  this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-                } else if (this.submissions[index] === undefined) {
-                  clearTimeout(this.refreshStatus)
-                  this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-                } else {
-                  if (this.submissions[index].id !== res.data.data.id) {
-                    clearTimeout(this.refreshStatus)
-                    this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-                  } else {
-                    this.submissions[index].result = res.data.data.result
-                    this.submissions[index].username = res.data.data.username
-                    this.submissions[index].statistic_info = res.data.data.statistic_info
-                    if (this.submissions[index].result === '7' || this.submissions[index].result === 7) {
-                      this.refreshStatus = setTimeout(checkStatus, 1000)
-                    } else {
-                      clearTimeout(this.refreshStatus)
-                      this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-                    }
-                  }
-                }
-              }, ___ => {
-                clearTimeout(this.refreshStatus)
-                this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-              })
-            }
-          }, _ => {
-            clearTimeout(this.refreshStatus)
-            this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
-          })
-        }
-        const loadd = setInterval(checkStatus, 6000)
-        setTimeout(() => {
-          clearInterval(loadd)
-        }, 60000)
       },
       changeRoute () {
         clearTimeout(this.refreshStatus)
@@ -317,10 +249,74 @@
         this.page = 1
         this.changeRoute()
       },
+      getRealtimeStatusInterval (id, index) {
+        if (id === undefined) {
+          clearInterval(this.loadd)
+          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+        }
+        if (this.refreshSatus) {
+          clearInterval(this.loadd)
+          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+          return
+        }
+        if (this.submissions.length === 0) {
+          clearInterval(this.loadd)
+          this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+        }
+        const checkStatusInterval = () => {
+          api.getSubmissionStatus(id).then(__ => {
+            if (this.submissions[index] === undefined || this.submissions[index].result === undefined) {
+              clearInterval(loadd)
+              this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+            } else if (this.submissions[index].id !== __.data.data.id) {
+              clearInterval(loadd)
+              this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+            } else {
+              api.getSafeSubmissionStatus(id).then(res => {
+                if (res.data.data.result === undefined) {
+                  clearInterval(loadd)
+                  this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+                } else if (this.submissions[index] === undefined) {
+                  clearInterval(loadd)
+                  this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+                } else {
+                  if (this.submissions[index].id !== res.data.data.id) {
+                    clearInterval(loadd)
+                    this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+                  } else {
+                    this.submissions[index].result = res.data.data.result
+                    this.submissions[index].username = res.data.data.username
+                    this.submissions[index].statistic_info = res.data.data.statistic_info
+                    if (this.submissions[index].result === '7' || this.submissions[index].result === 7) {
+                      // pass
+                    } else {
+                      clearInterval(loadd)
+                      this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+                    }
+                  }
+                }
+              }, ___ => {
+                clearInterval(loadd)
+                this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+              })
+            }
+          }, _ => {
+            clearTimeout(loadd)
+            this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'auto'
+          })
+        }
+        const loadd = setInterval(checkStatusInterval, 250)
+        setTimeout(() => {
+          clearInterval(loadd)
+        }, 60000)
+      },
       handleRejudge (id, index) {
         this.$message('$ ' + id.substring(0, 6) + ' 재채점을 요청하였습니다.')
         this.$refs[index + 'icn_btn'][0].style['pointerEvents'] = 'none'
         this.submissions[index].loading = true
+        try {
+          this.getRealtimeStatusInterval(this.submissions[index].id, index)
+        } catch (e) { }
         api.submissionRejudge(id).then(async () => {
           this.submissions[index].loading = false
         }, () => {
