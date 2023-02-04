@@ -260,7 +260,7 @@ c37ac7670c83   postgres:10        "docker-entrypoint.s…"   4 minutes ago   Up 
 
 ### 전체 반영(Docker) 테스트   
 
-back 안에서 개발을 완료했을 경우 해당 사항을 바로 반영해보고 싶다면, 앞서 했던 것 처럼 docker에 반영하고자 하는 폴더를 copy하면 됩니다.   
+backend 안에서 개발을 완료했을 경우 해당 사항을 바로 반영해보고 싶다면, 앞서 했던 것 처럼 docker에 반영하고자 하는 폴더를 copy하면 됩니다.   
 예로들어 announcement 폴더 내용을 반영시키고 싶다면 다음과 같이 docker에 반영시킵니다.    
 
 ``` ruby
@@ -270,7 +270,78 @@ back 안에서 개발을 완료했을 경우 해당 사항을 바로 반영해�
 
 이 때 docker를 재시작 해야 할 수 있다.
 
+<br/>     
+<br />   
+<br />   
 
+### 원격 서버 반영(Docker)
+
+개발 완료 후 새 버전을 릴리즈하여 원격서버에 반영하고자 하는 경우 다음과 같은 과정을 거쳐야 합니다. 여기서 예시로는 0.2.20 버전으로 릴리즈한다고 가정하겠습니다.
+
+> #### STEP 1. 먼저 개발 완료한 상태의 이미지를 빌드해야 합니다. 이 때, frontend는 backend의 서브 디렉토리로 종속성을 갖고 있기 때문에 frontend부터 build과정을 거쳐야 합니다.
+
+> #### STEP 1-1. (frontend 빌드하기)
+frontend 빌드의 경우 개발 환경 구축과 매우 유사합니다.
+(윈도우의 경우 export 대신 set 을 사용하세요.)
+``` ruby
+# COUDeploy/frontend
+> npm install
+> export NODE_ENV=development
+> npm run build:dll
+> export TARGET=http://localhost
+> npm run build
+```  
+
+> #### STEP 1-2. backend로 빌드 된 frontend 내용 주입
+위 과정을 거칠경우 frontend/ 디렉토리에 dist라는 폴더가 생깁니다.
+우리 프로젝트에서는 도커로 빌드시 frontend 내용은 dist.zip 의 압축파일을 풀어 화면을 뿌려주도록 설정되어있습니다.
+그리하여, 빌드 된 dist를 압축하고 압축으로 생긴 zip 파일을 backend 디렉토리에 삽입해야합니다.
+
+``` ruby
+# COUDeploy/frontend
+# 하위 내용들을 모두 순회하여 압축해야합니다. 해당 명령어가 없을시 zip 패키지를 다운받아 실행해야 합니다.
+> zip dist.zip -r dist/*
+```
+
+
+위 명령어를 사용하면 frontend 디렉토리에 zip 파일이 하나 생깁니다. 해당 zip 파일을 ***backend 디렉토리***에 옮겨주세요.
+
+<br />
+
+> #### STEP 2. 옮기기 까지 완료가 되었다면, 이제 backend 디렉토리를 기준으로 Docker 이미지로 빌드해야 합니다.
+
+> #### STEP 2-1. (Docker 이미지 빌드하기)
+
+우리 프로젝트는 크게 두 가지 버전을 빌드하게 됩니다. 최신버전인 latest 와 0.x.x 버전입니다. 이렇게 하는 이유는 사용자가 이미지를 pull받을 때, 특정 버전을 받을 수도 있고, 최신 버전을 받을 수도 있게 하기 위함입니다.
+```ruby
+> docker build --tag kdonggyun97/cou-coding-platform-dev:latest --tag kdonggyun97/cou-coding-platform-dev:v.0.2.20 .
+```
+
+위 명령어를 사용하면 두 개의 이미지(latest, 0.2.20)가 빌드 됩니다.
+
+
+> #### STEP 2-2. (Docker 이미지를 Docker hub로 업로드 하기)
+
+이제 원격 서버에서도 로컬에서 빌드 된 docker 이미지를 pull 받을 수 있도록 docker hub에 업로드 합니다. 이 때도 마찬가지로 위 두 버전 모두 업로드 해야합니다.
+
+```ruby
+# latest 버전 업로드
+> docker push kdonggyun97/cou-coding-platform-dev:latest
+# 특정 버전 업로드
+> docker push kdonggyun97/cou-coding-platform-dev:v.0.2.20
+```
+
+위 과정을 거치면 이제 원격지에서도 이미지를 pull 받을 수 있게 됩니다.
+
+
+
+README.md (수정중)
+README.md (수정중) 
+
+
+
+
+<br />   
 <br />   
 <br />   
 
@@ -278,7 +349,7 @@ back 안에서 개발을 완료했을 경우 해당 사항을 바로 반영해�
 백엔드 계층    
 
 ```python
- back
+ backend
  │── account # 사용자 계정 관리
  │── announcement # 공지사항
  │── article # 게시판 / 게시글 관리
