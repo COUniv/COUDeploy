@@ -46,6 +46,7 @@ services:
   cou-backend:
     #image: kdonggyun97/cou-coding-platform-dev:latest
     image: rlawlgh001028/cou-coding-platform-dev:latest
+    
     container_name: cou-coding-platform-dev
     restart: always
     depends_on:
