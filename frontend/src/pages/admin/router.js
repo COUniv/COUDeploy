@@ -155,6 +155,11 @@ export default new VueRouter({
           path: '/contest/:contestId/problem/:problemId/edit',
           name: 'edit-contest-problem',
           component: Problem
+        },
+        {
+          path: '/contest/:contestId/problem/create',
+          name: 'create-contest-problem',
+          component: Problem
         }
       ]
     },

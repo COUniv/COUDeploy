@@ -32,6 +32,9 @@
         <!-- <Icon type="ios-pulse-strong"></Icon> -->
        <router-link to="/status">{{$t('m.NavStatus')}}</router-link>
       </Menu-item>
+      <Menu-item class="bar_list" name="/codeReview">
+        <router-link to="/code-review">코드리뷰</router-link>
+      </Menu-item>
       <template v-if="!isAuthenticated">
         <div class="login_menu">
           <Button type="text"
