@@ -64,8 +64,8 @@
       <!-- 제출 버튼 -->
       <VerticalMenu style="margin-bottom: 20px;">
         <!-- <VerticalMenu-item :route="{name: "contest-problem-list", params: {contestID: contestID}}"> -->
-          <Button v-if="isAuthenticated && isVerifiedEmail" type="primary" size="large" @click="goSubmitView" long>제출하기</Button>
-          <Button v-else type="primary" size="large" disabled long>제출하기</Button>
+          <Button v-if="isAuthenticated && isVerifiedEmail" type="primary" size="large" @click="goSubmitView" long>코드 작성</Button>
+          <Button v-else type="primary" size="large" disabled long>코드 작성</Button>
         <!-- </VerticalMenu-item> -->
       </VerticalMenu>
       <VerticalMenu @on-click="handleRoute">
