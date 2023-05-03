@@ -1,0 +1,42 @@
+from django.db import models
+from account.models import User
+from problem.models import Problem
+
+class Code(models.Model):
+    '''
+    코드 관리를 위한 1:1 테이블
+    '''
+    code = models.TextField(null=True)
+    
+    # 추가?
+
+class CodeReview(models.Model):
+    writer = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    username = models.TextField(null=False)
+    
+    title = models.CharField(max_length=40, null=True)
+    content = models.TextField(null=False)
+    create_time = models.DateTimeField(auto_now_add=True)
+    last_update_time = models.DateTimeField(auto_now=True)
+    
+    review_count = models.PositiveIntegerField(default=0)
+    problemid = models.TextField(null=True, blank=True) # 해당 문제 아이디
+    
+    code = models.OneToOneField(Code, on_delete=models.CASCADE)
+    #problem = models.ForeignKey(Problem, null=True)    #관련 문제
+    
+    class Meta:
+        db_table = "codereview"
+        ordering = ("-create_time",)
+
+class Review(models.Model):
+    """
+    리뷰 테이블
+    """
+    username = models.TextField(null=False)
+    create_time = models.DateTimeField(auto_now_add=True)
+    
+    target = models.ForeignKey(CodeReview, on_delete=models.CASCADE)
+    content = models.TextField(null=False)
+
+    line_num = models.PositiveIntegerField(default = -1, null=True) #타겟 라인 넘버

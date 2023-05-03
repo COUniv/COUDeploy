@@ -55,6 +55,7 @@ LOCAL_APPS = [
     'emailauthentication',
     'banner',
     'draftcode',
+    'codereview',
 ]
 
 INSTALLED_APPS = VENDOR_APPS + LOCAL_APPS
