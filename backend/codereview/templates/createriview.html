@@ -1,0 +1,9 @@
+<div>
+    <form action="{% url 'create_codereview' %}" method="post">
+        {% csrf_token %}
+        <input type='text' name="title">
+        <input type='text' name="content">
+        <textarea name="code"></textarea>
+        <input type="submit" value="확인">
+    </form>
+</div>

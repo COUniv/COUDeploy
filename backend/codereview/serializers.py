@@ -1,5 +1,5 @@
 from utils.api import serializers
-from .models import CodeReview, Review
+from .models import CodeReview, Review, Code
 
 class CodeReviewListSerializer(serializers.ModelSerializer):
     """
@@ -19,8 +19,7 @@ class CodeReviewCreateSerializer(serializers.Serializer):
     """
     title = serializers.CharField()
     content = serializers.CharField()
-    problemtype = serializers.CharField(allow_blank=True)
-    problemid = serializers.CharField(allow_blank=True)
+    code = serializers.CharField()
 
 class CodeReviewSerializer(serializers.ModelSerializer):
     """
@@ -50,3 +49,11 @@ class Test_serializers(serializers.ModelSerializer):
     class Meta:
         model = CodeReview
         fields = "__all__"
+        
+class CodeCheckerSerializer(serializers.Serializer):
+    code = serializers.CharField()
+    
+class CodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Code
+        fields = '__all__'

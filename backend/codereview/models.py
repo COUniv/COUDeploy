@@ -2,13 +2,14 @@ from django.db import models
 from account.models import User
 from problem.models import Problem
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField  
 
 class Code(models.Model):
     '''
     코드 관리를 위한 1:1 테이블 객체
     '''
-    code = models.TextField(null=True)
-    
+    origin = models.TextField(null=True)
+    code = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     # 추가?
 
 class CodeReview(models.Model):

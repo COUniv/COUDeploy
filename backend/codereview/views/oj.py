@@ -1,9 +1,15 @@
 from datetime import timezone
 from ..models import CodeReview, Code, Review, User
 from utils.api import APIView, validate_serializer
-from ..serializers import Test_serializers, CodeReviewListSerializer, CodeReviewCreateSerializer, CodeReviewSerializer, CodeReviewModifySerializer, ReviewListSerializer
+from ..serializers import Test_serializers, CodeReviewListSerializer, CodeReviewCreateSerializer, CodeReviewSerializer, CodeReviewModifySerializer, ReviewListSerializer, CodeSerializer
 from account.decorators import login_required
 from django.db.models import Q
+from django.shortcuts import render
+
+
+def code_split(code:str) -> list:
+    result = code.split('\n')
+    return result
 
 class CodeReviewListAPI(APIView):
     """
@@ -51,19 +57,25 @@ class CodeReviewCreateAPI(APIView):
     코드 리뷰 게시글 생성 함수
     """
     @login_required
-    #@validate_serializer(CodeReviewCreateSerializer)
-    def get(self, request):
+    @validate_serializer(CodeReviewCreateSerializer)
+    def post(self, request):
         data = request.data
         title = data["title"]
         content = data["content"]
         username = request.user.username
-        code_text = request.GET.get("code", "Error")
-        code_objects = Code.objects.create(code = code_text)
+        code_text = request.POST.get("code")
+        if(code_text is None):
+            return self.error('err')
 
         # if CodeReview.objects.exists(): # 게시글이 존재하는 경우
         #     latest_id = CodeReview.objects.order_by('-id')[0].id + 1 # 생성 게시글 ID = 현재 존재하는 가장 높은 ID + 1
         # else: # 아무 게시글도 없는 경우
         #     latest_id = 1 # 생성 게시글 ID = 1
+        
+        code_objects = Code.objects.create()
+        code_objects.origin = code_text
+        code_objects.code = code_split(code_text)
+        code_objects.save()
         
         CodeReview.objects.create(
             writer = request.user,
@@ -88,7 +100,7 @@ class CodeReviewAPI(APIView):
             article_data["is_writer"] = (request.user.username == article.username)
 
             try: # 해당 ID를 가진 게시글에 달린 댓글 데이터
-                comments = Review.objects.filter(id=article_id).order_by('id') # 댓글을 가져옴
+                comments = Review.objects.filter(target=article_id).order_by('id') # 댓글을 가져옴
                 for comment in comments:
                     comment.is_comment_writer = (request.user.username == comment.username) # 현재 접속한 유저가 해당 게시글에 달린 댓글의 작성자인지 확인하기 위한 데이터
                     try:
@@ -103,7 +115,7 @@ class CodeReviewAPI(APIView):
             
         else:
             return self.error("게시글이 존재하지 않습니다")
-        
+
 class CodeReviewDeleteAPI(APIView):
     """
     코드 리뷰 게시글 삭제 함수
@@ -143,12 +155,19 @@ class CodeReviewModifyAPI(APIView):
         else:
             return self.error("게시글이 존재하지 않습니다")
 
+class GetCode(APIView):
+    def get(self, rq):
+        code_id = rq.GET.get('id', None)
+        if(code_id is None):
+            return self.error("err")
+        code = Code.objects.get(id=code_id)
+        result = CodeSerializer(code)
+        return self.success(result.data)
+        
 class Test(APIView):
     @login_required
     def get(self, request):
-        data = CodeReview.objects.all()
-        result = Test_serializers(data, many=True)
-        return self.success(result.data)
+        return render(request, 'createriview.html')
         
         
 class Create_review_Test(APIView):
