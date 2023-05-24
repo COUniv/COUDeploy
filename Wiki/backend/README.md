@@ -260,17 +260,247 @@ c37ac7670c83   postgres:10        "docker-entrypoint.s…"   4 minutes ago   Up 
 
 ### 전체 반영(Docker) 테스트   
 
-back 안에서 개발을 완료했을 경우 해당 사항을 바로 반영해보고 싶다면, 앞서 했던 것 처럼 docker에 반영하고자 하는 폴더를 copy하면 됩니다.   
+backend 안에서 개발을 완료했을 경우 해당 사항을 바로 반영해보고 싶다면, 앞서 했던 것 처럼 docker에 반영하고자 하는 폴더를 copy하면 됩니다.   
 예로들어 announcement 폴더 내용을 반영시키고 싶다면 다음과 같이 docker에 반영시킵니다.    
 
 ``` ruby
 > docker cp announcement cou-coding-platform-dev:/app
 ```   
-<br />   
+
+<br />  
+<br /> 
+ 
 
 이 때 docker를 재시작 해야 할 수 있다.
 
+<br/>     
+<br />   
+<br />
+<br/>     
+<br />   
 
+
+### 원격 서버 반영(Docker)
+
+개발 완료 후 새 버전을 릴리즈하여 원격서버에 반영하고자 하는 경우 다음과 같은 과정을 거쳐야 합니다. 여기서 예시로는 0.2.20 버전으로 릴리즈한다고 가정하겠습니다.
+
+> #### STEP 1. 먼저 개발 완료한 상태의 이미지를 빌드해야 합니다. 이 때, frontend는 backend의 서브 디렉토리로 종속성을 갖고 있기 때문에 frontend부터 build과정을 거쳐야 합니다.
+
+<br /> 
+
+> #### STEP 1-1. (frontend 빌드하기)
+frontend 빌드의 경우 개발 환경 구축과 매우 유사합니다.
+(윈도우의 경우 export 대신 set 을 사용하세요.)
+``` ruby
+# COUDeploy/frontend
+> npm install
+> export NODE_ENV=development
+> npm run build:dll
+> export TARGET=http://localhost
+> npm run build
+```   
+
+<br /> 
+
+> #### STEP 1-2. backend로 빌드 된 frontend 내용 주입
+위 과정을 거칠경우 frontend/ 디렉토리에 dist라는 폴더가 생깁니다.
+우리 프로젝트에서는 도커로 빌드시 frontend 내용은 dist.zip 의 압축파일을 풀어 화면을 뿌려주도록 설정되어있습니다.
+그리하여, 빌드 된 dist를 압축하고 압축으로 생긴 zip 파일을 backend 디렉토리에 삽입해야합니다.
+
+``` ruby
+# COUDeploy/frontend
+# 하위 내용들을 모두 순회하여 압축해야합니다. 해당 명령어가 없을시 zip 패키지를 다운받아 실행해야 합니다.
+> zip dist.zip -r dist/*
+```
+
+
+위 명령어를 사용하면 frontend 디렉토리에 zip 파일이 하나 생깁니다. 해당 zip 파일을 ***backend 디렉토리***에 옮겨주세요.
+
+<br />
+<br /> 
+
+
+> #### STEP 2. 옮기기 까지 완료가 되었다면, 이제 backend 디렉토리를 기준으로 Docker 이미지로 빌드하고 Docker hub에 업로드해야 합니다.
+
+> #### STEP 2-1. (Docker 이미지 빌드하기)
+
+우리 프로젝트는 크게 두 가지 버전을 빌드하게 됩니다. 최신버전인 latest 와 0.x.x 버전입니다. 이렇게 하는 이유는 사용자가 이미지를 pull받을 때, 특정 버전을 받을 수도 있고, 최신 버전을 받을 수도 있게 하기 위함입니다.
+
+```ruby
+# COUDeploy/backend
+> docker build --tag kdonggyun97/cou-coding-platform-dev:latest --tag kdonggyun97/cou-coding-platform-dev:v.0.2.20 .
+```
+
+위 명령어를 사용하면 두 개의 이미지(latest, 0.2.20)가 빌드 됩니다.
+
+<br /> 
+<br /> 
+
+
+> #### STEP 2-2. (Docker 이미지를 Docker hub로 업로드 하기)
+
+이제 원격 서버에서도 로컬에서 빌드 된 docker 이미지를 pull 받을 수 있도록 docker hub에 업로드 합니다. 이 때도 마찬가지로 위 두 버전 모두 업로드 해야합니다.
+
+```ruby
+# COUDeploy/backend
+# latest 버전 업로드
+> docker push kdonggyun97/cou-coding-platform-dev:latest
+# 특정 버전 업로드
+> docker push kdonggyun97/cou-coding-platform-dev:v.0.2.20
+```
+
+위 과정을 거치면 이제 원격지에서도 이미지를 pull 받을 수 있게 됩니다.
+
+<br />   
+<br />   
+<br />   
+
+> #### STEP 3. 원격 서버에서 이제 Docker hub에 업데이트 된 이미지를 받아서 최신 상태로 업데이트 해야합니다.
+
+> #### STEP 3-1. (원격 서버에 접속하기)
+
+각 서비스 운용자마다 원격 서버에 접속 방법이 있을 겁니다. 여기에서는 일단 SSH 접속을 예시로 합니다.
+
+```ruby
+# ssh 22 접속
+> ssh [USER]@[HOSTNAME]
+
+# 만약 특정 포트로 접속해야하는 경우 다음과 같이 합니다.
+> ssh [USER]@[HOSTNAME] -p [PORT]
+```
+
+접속을 한 뒤, 비밀번호를 입력하면 접속이 됩니다.
+
+<br />   
+<br />   
+
+> #### STEP 3-2. (컨테이너 중단 및 삭제)
+
+그리고 COUDeploy가 있는 프로젝트 위치에서 서비스를 최신화를 위해서는 먼저 구동중인 컨테이너를 중단해야합니다.
+
+```ruby
+> docker-compose stop
+```
+
+<br />    
+
+컨테이너 중단이 완료되면 이제 업데이트 할 cou-coding-platform-dev 컨테이너를 삭제해야 합니다.
+
+
+```ruby
+# 컨테이너 조회 명렁어
+> docker ps -a
+
+```
+
+위 명령어를 실행하면 다음과 같이 결과가 나옵니다.
+
+```
+CONTAINER ID   IMAGE                                                        COMMAND      ...    
+12345abcdefg   kdonggyun97/cou-coding-platform-dev:latest                   "----"       ...
+987654321abc   imagee1                                                      "----"       ...
+123456789abc   imagee2                                                      "----"       ...
+abc987654321   imagee2                                                      "----"       ...
+...
+```
+
+여기서 kdonggyun97/cou-coding-platform-dev:latest 이미지를 구동 중인 컨테이너를 삭제해야 합니다. 즉, CONTAINER ID를 통해 특정 컨테이너를 삭제합니다.
+
+
+```ruby
+# 컨테이너 삭제 명렁어
+# docker rm [CONTAINER ID]
+> docker rm 12345abcdefg
+
+```
+
+컨테이너 삭제가 완료되었는지 docker ps -a 명령어를 통해 확인하실 수 있습니다.
+
+
+
+<br />   
+<br />   
+
+> #### STEP 3-3. (이미지 업데이트 및 구동)
+
+
+이제 Docker image를 Docker hub에 업로드 했던 최신 버전으로 업데이트를 해주어야 합니다. 방법은 크게 두 가지가 있습니다.   
+
+docker image를 pull을 받아 최신 버전을 받아오는 방법과 기존 이미지를 삭제하고 docker-compose up 명령어를 통해 자동으로 최신 버전을 다운받는 방법입니다.   
+
+먼저 image를 pull 받아 업데이트 하는 방법부터 알아보도록 하겠습니다.
+
+#### 방법 1.
+
+```ruby
+# 이미지 pull 명렁어
+# docker pull [IMAGE NAME]:[TAG]
+> docker pull kdonggyun97/cou-coding-platform-dev:latest
+
+```
+
+위와 같이 이미지를 업데이트 할 수 있습니다. 
+
+그런 다음 업데이트 된 이미지를 container로 구동시킵니다.   
+
+```ruby
+> docker-compose up -d
+
+```
+
+위 과정을 통해 업데이트가 완료됩니다.
+
+<br />   
+<br />   
+
+
+#### 방법 2.
+
+기존 이미지를 삭제하여 실행할 수도 있습니다. 이 방식의 경우 최신 이미지를 받아올 때, 레거시 이미지가 쌓이지가 않아 용량을 확보하는데 도움이 될 수 있습니다.
+
+먼저 컨테이너 삭제와 마찬가지로 이미지를 조회하고 삭제해야 합니다.
+
+
+```ruby
+# 이미지 조회 명렁어
+> docker images -a
+```
+
+위 명령어를 수행하면 다음과 같이 이미지를 확인할 수 있습니다.
+
+```
+REPOSITORY                                                   TAG          IMAGE ID       CREATED         SIZE
+kdonggyun97/cou-coding-platform-dev                          latest       0123456abcde   9 days ago      677MB
+image1                                                       latest       2423456absse   2 months ago    79.1MB
+image2                                                       latest       fasefsf12343   16 months ago   1.61GB
+...
+```
+
+그런 다음 kdonggyun97/cou-coding-platform-dev 이미지를 삭제합니다.
+
+```ruby
+# image 삭제 명령어
+# docker rmi [IMAGE ID]
+> docker rmi 0123456abcde
+
+```
+
+명령어 수행이 끝났다면 이제 docker-compose 명령어를 통해 컨테이너를 구성하면 끝입니다. docker-compose up 명령어의 경우 기존 로컬에 만약 이미지가 없다면 hub에 등록 된 이미지를 조회하여 받아오게 됩니다.
+
+
+```ruby
+> docker-compose up -d
+
+```
+
+위 과정을 통해 업데이트가 완료됩니다.
+
+<br />   
+<br />  
+
+
+
+<br />   
 <br />   
 <br />   
 
@@ -278,7 +508,7 @@ back 안에서 개발을 완료했을 경우 해당 사항을 바로 반영해�
 백엔드 계층    
 
 ```python
- back
+ backend
  │── account # 사용자 계정 관리
  │── announcement # 공지사항
  │── article # 게시판 / 게시글 관리
