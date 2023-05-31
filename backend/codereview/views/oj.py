@@ -59,12 +59,11 @@ class CodeReviewCreateAPI(APIView):
     @login_required
     @validate_serializer(CodeReviewCreateSerializer)
     def post(self, request):
-        data = request.data
-        title = data["title"]
-        content = data["content"]
+        title = request.POST.get("title")
+        content = request.POST.get("content")
         username = request.user.username
         code_text = request.POST.get("code")
-        if(code_text is None):
+        if(title is None or content is None or username is None or code_text is None):
             return self.error('err')
 
         # if CodeReview.objects.exists(): # 게시글이 존재하는 경우
@@ -82,7 +81,8 @@ class CodeReviewCreateAPI(APIView):
             username = username,
             title = title,
             content = content,
-            code = code_objects)
+            code = code_objects
+        )
         
         return self.success()
     
@@ -122,6 +122,7 @@ class CodeReviewDeleteAPI(APIView):
     """
     def get(self, request):
         article_id = request.GET.get("id") #article_id
+        
         if article_id:
             article = CodeReview.objects.get(id=article_id) # 전송된 ID를 통해 게시글을 가져옴
             if request.user.username == article.username: # 해당 게시글 작성자와 현재 접속한 작성자가 같은 경우
@@ -139,12 +140,11 @@ class CodeReviewModifyAPI(APIView):
     코드 리뷰 게시글 수정 함수
     """
     @login_required
-    #@validate_serializer(CodeReviewModifySerializer)
+    @validate_serializer(CodeReviewModifySerializer)
     def get(self, request):
-        data = request.data
-        title = data["title"]
-        content = data["content"]
-        codereview_id = int(data["id"]) # 수정과 달리 이미 존재하는 게시글의 ID를 전송 받음
+        title = request.GET.get("title")
+        content = request.GET.get("content")
+        codereview_id = request.GET.get("id") # 수정과 달리 이미 존재하는 게시글의 ID를 전송 받음
         
         if codereview_id:
             codereview = CodeReview.objects.get(id=codereview_id) # 전송받은 ID를 가진 게시글을 수정함 / 신규 생성 X
