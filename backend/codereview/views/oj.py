@@ -1,7 +1,7 @@
 from datetime import timezone
-from ..models import CodeReview, Code, Review, User
+from ..models import CodeReview, Code, Review, User, CodeReviewNotificationType, CodeReviewNotification
 from utils.api import APIView, validate_serializer
-from ..serializers import Test_serializers, CodeReviewListSerializer, CodeReviewCreateSerializer, CodeReviewSerializer, CodeReviewModifySerializer, ReviewListSerializer, CodeSerializer
+from ..serializers import Test_serializers, CodeReviewListSerializer, CodeReviewCreateSerializer, CodeReviewSerializer, CodeReviewModifySerializer, ReviewListSerializer, CodeSerializer, CodeReviewCommentCreateSerializer, CodeReviewCommentModifySerializer, CodeReviewNotificationListSerializer
 from account.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render
@@ -58,13 +58,12 @@ class CodeReviewCreateAPI(APIView):
     """
     @login_required
     @validate_serializer(CodeReviewCreateSerializer)
-    def post(self, request):
-        data = request.data
-        title = data["title"]
-        content = data["content"]
+    def get(self, request): # 디버깅 편의로 GET, 추후 POST로 변경해야 함
+        title = request.GET.get("title")
+        content = request.GET.get("content")
         username = request.user.username
-        code_text = request.POST.get("code")
-        if(code_text is None):
+        code_text = request.GET.get("code")
+        if(title is None or content is None or username is None or code_text is None):
             return self.error('err')
 
         # if CodeReview.objects.exists(): # 게시글이 존재하는 경우
@@ -82,7 +81,8 @@ class CodeReviewCreateAPI(APIView):
             username = username,
             title = title,
             content = content,
-            code = code_objects)
+            code = code_objects
+        )
         
         return self.success()
     
@@ -110,7 +110,7 @@ class CodeReviewAPI(APIView):
                       comment.username = 'UnknownUser' #가입할 수 없는 아이디로 해당 아이디로 반환하여 특정함
                 article_data["comments"] = ReviewListSerializer(comments, many=True).data
             except Review.DoesNotExist: # 해당 ID를 가진 댓글이 하나도 없는 경우
-                article_data["comments"] = []
+               article_data["comments"] = []
             return self.success(article_data) # username, title, content, create_time, is_writer, comments 데이터 전송
             
         else:
@@ -122,6 +122,7 @@ class CodeReviewDeleteAPI(APIView):
     """
     def get(self, request):
         article_id = request.GET.get("id") #article_id
+
         if article_id:
             article = CodeReview.objects.get(id=article_id) # 전송된 ID를 통해 게시글을 가져옴
             if request.user.username == article.username: # 해당 게시글 작성자와 현재 접속한 작성자가 같은 경우
@@ -139,21 +140,107 @@ class CodeReviewModifyAPI(APIView):
     코드 리뷰 게시글 수정 함수
     """
     @login_required
-    #@validate_serializer(CodeReviewModifySerializer)
+    @validate_serializer(CodeReviewModifySerializer)
     def get(self, request):
-        data = request.data
-        title = data["title"]
-        content = data["content"]
-        codereview_id = int(data["id"]) # 수정과 달리 이미 존재하는 게시글의 ID를 전송 받음
+        title = request.GET.get("title")
+        content = request.GET.get("content")
+        code = request.GET.get("code")
+        codereview_id = request.GET.get("id") # 수정과 달리 이미 존재하는 게시글의 ID를 전송 받음
         
         if codereview_id:
             codereview = CodeReview.objects.get(id=codereview_id) # 전송받은 ID를 가진 게시글을 수정함 / 신규 생성 X
             codereview.title = title
             codereview.content = content
+            codereview.code = code
             codereview.save()
             return self.success()
         else:
             return self.error("게시글이 존재하지 않습니다")
+        
+class CodeReviewCommentCreateAPI(APIView):
+    """
+    댓글 작성 함수
+    """
+    @login_required
+    @validate_serializer(CodeReviewCommentCreateSerializer)
+    def get(self, request): # 디버깅 편의로 GET, 추후 POST로 변경해야 함
+        data = request.data
+        content = data["content"] # 작성할 댓글 내용
+        articleid = data["articleid"] # 댓글을 작성할 게시글 ID
+        if content:
+            article = CodeReview.objects.get(id=articleid)
+            article.comment_count += 1 # 댓글을 작성할 게시글의 댓글 수 1 증가
+            article.save() # 저장
+            user = User.objects.get(username=request.user.username)
+            avatar = user.userprofile.avatar
+            Review.objects.create(articleid=articleid,
+                                   avatar=avatar,
+                                   username=request.user.username,
+                                   content=content)
+            
+            url = "/codereview_article/" + str(articleid)
+            short_content = "[" + article.title + "]글에 댓글이 달렸습니다."
+            if article.username != request.user.username:
+                CodeReviewNotification.objects.create(target_username=article.username,
+                                    action_username=request.user.username,
+                                    notificationtype=CodeReviewNotificationType.COMMENT,
+                                    content=short_content,
+                                    comment_content = content,
+                                    url=url)
+            return self.success()
+            
+        else:
+            return self.error("내용이 비어있습니다")
+        
+class CodeReviewCommentDeleteAPI(APIView):
+    """
+    댓글 삭제 함수
+    """
+    def get(self, request):
+        comment_id = request.GET.get("id") # 삭제할 댓글의 ID
+        if comment_id:
+            comment = Review.objects.get(id=comment_id) # 전송된 ID를 통해 댓글을 가져옴
+            article = CodeReview.objects.get(id=comment.articleid) # 해당 댓글이 작성된 게시글을 가져옴
+            article.comment_count -= 1 # 게시글의 댓글 수 1 감소
+            article.save() # 저장
+            comment.delete() # 댓글 삭제
+            return self.success()
+        else:
+            return self.error("해당 댓글이 존재하지 않습니다")
+
+class CodeReviewCommentModifyAPI(APIView):
+    """
+    댓글 수정 함수
+    """
+    @login_required
+    @validate_serializer(CodeReviewCommentModifySerializer)
+    def post(self, request):
+        data = request.data
+        id = data["id"] # 수정할 댓글의 ID
+        content = data["content"] # 수정할 댓글의 내용
+        if id:
+            comment = Review.objects.get(id=id)
+            comment.content = content # 댓글 내용 수정
+            comment.save() # 저장
+            return self.success()
+        else:
+            return self.error("해당 댓글이 존재하지 않습니다")
+        
+class CodeReviewCommentArticleListAPI(APIView):
+    def get(self, request):
+        username = request.user.username
+        
+        comments = Review.objects.filter(username = username)
+
+        comment_ids  = []
+
+        for comment in comments:
+            comment_ids.append(comment.articleid)
+
+        articles = CodeReview.objects.filter(id__in = comment_ids)
+        data = self.paginate_data(request, articles) # 페이징
+        data["results"] = CodeReviewListSerializer(data["results"], many=True, user=request.user).data
+        return self.success(data)
 
 class GetCode(APIView):
     def get(self, rq):
