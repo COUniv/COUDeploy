@@ -37,7 +37,7 @@ class CodeReviewModifySerializer(serializers.Serializer):
     content = serializers.CharField()
     id = serializers.IntegerField()
 
-class ReviewListSerializer(serializers.Serializer):
+class ReviewListSerializer(serializers.ModelSerializer):
     """
     댓글 출력용
     """
@@ -48,6 +48,7 @@ class ReviewListSerializer(serializers.Serializer):
 class CodeReviewCommentCreateSerializer(serializers.Serializer):
     content = serializers.CharField()
     articleid = serializers.IntegerField()
+    line = serializers.IntegerField()
 
 class CodeReviewCommentModifySerializer(serializers.Serializer):
     content = serializers.CharField()

@@ -16,7 +16,6 @@ class CodeReview(models.Model):
     """
     코드 리뷰 갤러리 객체
     """
-    id = models.IntegerField(primary_key=True, db_index=True)
     writer = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     username = models.TextField(null=False)
     
@@ -39,15 +38,13 @@ class Review(models.Model):
     """
     리뷰 테이블 객체
     """
-    articleid = models.IntegerField()
+    writer = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     username = models.TextField(null=False)
     create_time = models.DateTimeField(auto_now_add=True)
     
     target = models.ForeignKey(CodeReview, on_delete=models.CASCADE)
     content = models.TextField(null=False)
-
-    line_num = models.PositiveIntegerField(default = -1, null=True) #타겟 라인 넘버
-    is_comment_writer = models.NullBooleanField()
+    line_num = models.IntegerField(default = -1, null=True) #타겟 라인 넘버
     avatar = models.TextField(default=f"{settings.AVATAR_URI_PREFIX}/default.png")
 
 class CodeReviewNotificationType(object):
