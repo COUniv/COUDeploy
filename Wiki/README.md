@@ -51,6 +51,7 @@ Chrome 기준 특정 버전 이상부터는 크롬 정책으로 인해 ```http:/
 
 [backend](/Wiki/backend)    
 [frontend](/Wiki/frontend)   
+[general](/Wiki/general)
 <!-- [docker](/Wiki/dockerwiki)    -->
 
 <br />   

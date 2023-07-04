@@ -1,0 +1,9 @@
+<div>
+    <form action="{% url 'create_codereview' %}" method="post">
+        {% csrf_token %}
+        <input type='text' name="title" placeholder="제목"><br>
+        <input type='text' name="content" placeholder="내용"><br>
+        <textarea name="code" placeholder="코드"></textarea><br>
+        <input type="submit" value="확인">
+    </form>
+</div>
