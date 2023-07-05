@@ -204,17 +204,23 @@ class CodeReviewCommentCreateAPI(APIView):
 class CodeReviewCommentDeleteAPI(APIView):
     """
     댓글 삭제 함수
+    이상함 고쳐야함
     """
+    @login_required
     def get(self, request):
         comment_id = request.GET.get("id") # 삭제할 댓글의 ID
-        if comment_id:
+
+        try:
             comment = Review.objects.get(id=comment_id) # 전송된 ID를 통해 댓글을 가져옴
+            
+            if comment.writer!=request.user:
+                return self.error()
             comment.target.comment_count -= 1 # 게시글의 댓글 수 1 감소
             comment.target.save() # 저장
             comment.delete() # 댓글 삭제
             return self.success()
-        else:
-            return self.error("해당 댓글이 존재하지 않습니다")
+        except:
+            return self.error()
 
 class CodeReviewCommentModifyAPI(APIView):
     """
