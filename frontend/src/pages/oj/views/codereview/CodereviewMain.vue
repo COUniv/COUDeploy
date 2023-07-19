@@ -12,7 +12,7 @@
             <p>Username: {{ item.username }}</p>
             <p>Create Time: {{ item.create_time }}</p>
             <p>Comment Count: {{ item.comment_count }}</p>
-            <p>Code: {{ item.code }}</p>
+            <!--<p>Code: {{ item.code }}</p>-->
           </li>
         </ul>
         <p v-else>Loading...</p>
