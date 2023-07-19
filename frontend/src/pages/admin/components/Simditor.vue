@@ -1,5 +1,7 @@
 <template>
-  <textarea ref="editor"></textarea>
+  <div class="editor-container">
+    <textarea ref="editor"></textarea>
+  </div>
 </template>
 
 <script>
@@ -131,6 +133,10 @@
 <style lang="less" scoped>
 </style>
 <style>
+.editor-container {
+  height : 300px;
+  overflow-y: auto;
+}
 [class ~= simditor-body] img {
   max-width: 100% !important;
   max-height: 100% !important;
