@@ -2,11 +2,11 @@
   <div class="editor">
     <div class="line" v-for="(line, index) in lines" :key="index">
       <span class="line-number">{{ index + 1 }}</span>
-      <div class="line-content" 
-           contenteditable="true" 
-           @input="updateLine($event.target.innerText, index)" 
-           @keydown.enter.prevent="addLine(index)" 
-           @focus="selectedLine = index" 
+      <div class="line-content"
+           contenteditable="true"
+           @input="updateLine($event.target.innerText, index)"
+           @keydown.enter.prevent="addLine(index)"
+           @focus="selectedLine = index"
            @blur="selectedLine = null"
            :class="{ 'line-selected': index === selectedLine }"></div>
     </div>
@@ -16,21 +16,21 @@
 <script>
 export default {
   props: ['initCode'],
-  data() {
+  data () {
     return {
       lines: this.initCode.split('\n') || [''],
       selectedLine: null
-    };
+    }
   },
   methods: {
-    addLine(index) {
-      this.lines.splice(index + 1, 0, '');
+    addLine (index) {
+      this.lines.splice(index + 1, 0, '')
       this.$nextTick(() => {
-        this.$el.querySelectorAll('.line-content')[index + 1].focus();
-      });
+        this.$el.querySelectorAll('.line-content')[index + 1].focus()
+      })
     },
-    updateLine(text, index) {
-      this.lines.splice(index, 1, text);
+    updateLine (text, index) {
+      this.lines.splice(index, 1, text)
     }
   }
 }
