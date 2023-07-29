@@ -10,7 +10,6 @@
            @blur="selectedLine = null"
            :class="{ 'line-selected': index === selectedLine }"></div>
     </div>
-    <button @click="submitCode">코드 제출</button>
   </div>
 </template>
 
@@ -20,7 +19,6 @@ export default {
   data() {
     return {
       lines: this.initCode.split('\n') || [''],
-      submittedCode: '',
       selectedLine: null
     };
   },
@@ -33,10 +31,6 @@ export default {
     },
     updateLine(text, index) {
       this.lines.splice(index, 1, text);
-    },
-    submitCode() {
-      this.submittedCode = this.lines.join('\n');
-      this.$emit('submit', this.submittedCode);
     }
   }
 }
@@ -77,5 +71,3 @@ export default {
   background-color: #444;
 }
 </style>
-
-
