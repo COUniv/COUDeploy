@@ -66,7 +66,10 @@
         <div class="code_form">
           <p class="caTitle">코드 작성</p>
           <el-form-item prop="code" required>
-            <CodeInput :initCode="formCodeReview.code" @submit="updateCode" />
+            <CodeInput
+              :initCode="formCodeReview.code.join('\n')"
+              @input="updateCode"
+            />
           </el-form-item>
         </div>
 
@@ -163,12 +166,12 @@ export default {
   },
   methods: {
     updateCode(code) {
-      this.formCodeReview.code = code;
+      this.formCodeReview.code = code.split('\n');
     },
     submit() {
       const data = {
         ...this.formCodeReview,
-        code: this.processedCode,
+        code: this.formCodeReview.code,
       };
       api.CreateReviewCode(data).then((res) => {
         this.$success("success!!");
