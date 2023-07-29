@@ -66,7 +66,7 @@
         <div class="code_form">
           <p class="caTitle">코드 작성</p>
           <el-form-item prop="code" required>
-            <CodeInput v-model="formCodeReview.code" />
+            <CodeInput :initCode="formCodeReview.code" @submit="updateCode" />
           </el-form-item>
         </div>
 
@@ -92,7 +92,7 @@ export default {
   name: "CreateReviewCode",
   components: {
     Simditor,
-    CodeInput
+    CodeInput,
   },
 
   data() {
@@ -162,6 +162,9 @@ export default {
     },
   },
   methods: {
+    updateCode(code) {
+      this.formCodeReview.code = code;
+    },
     submit() {
       const data = {
         ...this.formCodeReview,
