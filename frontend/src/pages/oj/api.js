@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import store from '@/store'
 import axios from 'axios'
 
 Vue.prototype.$http = axios
@@ -509,6 +508,14 @@ export default {
   updateACInfoCheckedStatus (data) {
     return ajax('admin/contest/acm_helper', 'put', {
       data
+    })
+  },
+  codeReviewMain () {
+    return ajax('codereview_list', 'get', {})
+  },
+  createCodeReview (params) { // 게시글 생성
+    return ajax('create_codereview', 'post', {
+      params
     })
   }
 }

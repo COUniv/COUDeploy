@@ -23,7 +23,10 @@ import {
   CategoryList,
   ProblemSubmission,
   FindUserID,
-  GeneralChart
+  GeneralChart,
+  CodereviewMain,
+  CodereviewDetails,
+  CreateCodereview
 } from '../views'
 import Logout from '../views/user/Logout.vue'
 import StartLogin from '../views/preHome/Start_Login.vue'
@@ -285,5 +288,25 @@ export default [
     path: '*',
     meta: {title: '404'},
     component: NotFound
+  },
+  {
+    path: '/codereviewmain',
+    name: 'codereviewmain',
+    component: CodereviewMain
+  },
+  {
+    path: '/createcodereview',
+    name: 'createcodereview',
+    component: CreateCodereview
+  },
+  {
+    path: '/codereviewdetail',
+    name: 'codereviewdetail',
+    component: CodereviewDetails
   }
+  // {
+  //   path: '/codereview-details',
+  //   name: 'codereview-details',
+  //   component: CodereviewDetails
+  // }
 ]

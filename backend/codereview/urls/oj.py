@@ -16,7 +16,7 @@ urlpatterns = [
     
     url(r"^get_code_text/?$", GetCode.as_view(), name="get_code"),
     
-    url(r"^codereview_test/?$", Test.as_view(), name="codereview_test"),
+    url(r"^codereview_test/?$", Test.as_view(), name="codereview_test"), #코드리뷰 게시글 작성 핫링크
     url(r"^deletecodereview_test/?$", DeleteTest.as_view(), name="deletecodereview_test"),
     url(r"^createcomment_test/?$", CreateComment.as_view(), name="createcomment_test"),
     # url(r"^deletecomment_test/?$", DeleteTest.as_view(), name="deletecomment_test"),
