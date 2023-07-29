@@ -81,6 +81,18 @@
           {
             value: '5',
             label: 'Java'
+          },
+          {
+            value: '6',
+            label: 'Javascript'
+          },
+          {
+            value: '7',
+            label: 'Typescript'
+          },
+          {
+            value: '8',
+            label: 'Swift'
           }
         ],
         rules: {
@@ -123,10 +135,12 @@
     height : 100%;
     margin : 0; 
     padding : 0;
+    overflow-x: auto; 
   }
 
   .upload-contents {
     width : 100%;
+    min-width: 800px; 
     height : 100%;
     display : flex;
     flex-direction: column;

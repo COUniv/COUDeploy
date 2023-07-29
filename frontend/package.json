@@ -33,6 +33,7 @@
     "screenfull": "^3.3.2",
     "tar-simditor": "^3.0.5",
     "tar-simditor-markdown": "^1.2.3",
+    "update": "^0.7.4",
     "v-click-outside": "^3.2.0",
     "vue": "^2.7.0",
     "vue-analytics": "^5.10.4",
