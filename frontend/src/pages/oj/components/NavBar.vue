@@ -32,6 +32,9 @@
         <!-- <Icon type="ios-pulse-strong"></Icon> -->
        <router-link to="/status">{{$t('m.NavStatus')}}</router-link>
       </Menu-item>
+      <Menu-item class="bar_list" name="/codereviewmain">
+        <router-link to="/codereviewmain">코드리뷰</router-link>
+      </Menu-item>
       <template v-if="!isAuthenticated">
         <div class="login_menu">
           <Button type="text"
@@ -191,6 +194,7 @@
   import api from '@oj/api'
   import time from '@/utils/time'
   import vClickOutside from 'v-click-outside'
+  import { RouterLink, RouterView } from 'vue-router'
   export default {
     directives: {
       clickOutside: vClickOutside.directive

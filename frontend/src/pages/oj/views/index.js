@@ -31,6 +31,9 @@ const Notification = () => import('@oj/views/article/Notification.vue')
 const Join = () => import('@oj/views/preHome/Join.vue')
 const Languages = () => import('@oj/views/help/Languages.vue')
 const CategoryList = () => import('@oj/views/problem/CategoryList.vue')
+const CodereviewMain = () => import('@oj/views/codereview/CodereviewMain.vue')
+const CreateCodereview = () => import('@oj/views/codereview/CreateCodereview.vue')
+const CodereviewDetails = () => import('@oj/views/codereview/CodereviewDetails.vue')
 
 export {
   Join, Home, NotFound, Announcements, GuardMessage,
@@ -41,5 +44,6 @@ export {
   ApplyResetPassword, ResetPassword,
   ArticleList, CreateArticle, Article, Notification, AnnouncementList, CategoryList,
   Grass,
-  ProblemSubmission, FindUserID, GeneralChart
+  ProblemSubmission, FindUserID, GeneralChart,
+  CodereviewMain, CreateCodereview, CodereviewDetails
 }
