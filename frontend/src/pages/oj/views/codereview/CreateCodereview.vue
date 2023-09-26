@@ -94,7 +94,7 @@ export default {
   name: "CreateReviewCode",
   components: {
     Simditor,
-    CodeInput
+    CodeInput,
   },
   data() {
     return {
@@ -130,7 +130,7 @@ export default {
         {
           value: "8",
           label: "Swift"
-        }
+        } 
       ],
       rules: {
         title: [
