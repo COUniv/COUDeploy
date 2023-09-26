@@ -513,9 +513,9 @@ export default {
   codeReviewMain () {
     return ajax('codereview_list', 'get', {})
   },
-  createCodeReview (params) { // 게시글 생성
-    return ajax('create_codereview', 'post', {
-      params
+  createReviewCode (data)  {
+    return ajax('/api/create_codereview', 'post', {
+      data
     })
   }
 }
