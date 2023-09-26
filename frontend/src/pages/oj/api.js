@@ -513,7 +513,7 @@ export default {
   codeReviewMain () {
     return ajax('codereview_list', 'get', {})
   },
-  createReviewCode (data)  {
+  createReviewCode (data) {
     return ajax('/api/create_codereview', 'post', {
       data
     })

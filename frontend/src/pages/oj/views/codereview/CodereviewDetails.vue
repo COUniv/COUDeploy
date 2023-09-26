@@ -6,19 +6,20 @@
     <p><strong>작성자 아이디:</strong> {{ item.username }}</p>
     <p><strong>생성 시간:</strong> {{ item.create_time }}</p>
     <p><strong>댓글 수:</strong> {{ item.comment_count }}</p>
-    
+
     <button @click="deleteCodeReview">삭제하기</button>
-    
+
     <div class="comments-section">
-    <h3>댓글</h3>
-    <div v-for="comment in comments" :key="comment.id">
-      {{ comment.content }} - {{ comment.username }}
-      <button @click="modifyComment(comment)">수정</button>
-      <button @click="deleteComment(comment.id)">삭제</button>
+      <h3>댓글</h3>
+      <div v-for="comment in comments" :key="comment.id">
+        {{ comment.content }} - {{ comment.username }}
+        <button @click="modifyComment(comment)">수정</button>
+        <button @click="deleteComment(comment.id)">삭제</button>
+      </div>
+
+      <input v-model="newComment" placeholder="댓글 작성" />
+      <button @click="createComment">댓글 추가</button>
     </div>
-      
-    <input v-model="newComment" placeholder="댓글 작성" />
-    <button @click="createComment">댓글 추가</button>
   </div>
 </template>
 
@@ -28,100 +29,100 @@ export default {
     return {
       item: {},
       comments: [],
-      newComment: "",
-      codeContent: ""  // 코드 내용을 저장할 변수 추가
-    };
-  },
-  created () {
-    if (this.$route.params.data) {
-      this.item = this.$route.params.data;
-      this.fetchComments();
+      newComment: '',
+      codeContent: ''  // 코드 내용을 저장할 변수 추가
     }
   },
   created () {
     if (this.$route.params.data) {
-      this.item = this.$route.params.data;
-      this.fetchComments();
-      this.fetchCode();  // 코드를 가져오는 함수 호출
+      this.item = this.$route.params.data
+      this.fetchComments()
+    }
+  },
+  iscreated () {
+    if (this.$route.params.data) {
+      this.item = this.$route.params.data
+      this.fetchComments()
+      this.fetchCode()  // 코드를 가져오는 함수 호출
     }
   },
   methods: {
-    async fetchCode() {
+    async fetchCode () {
       try {
         const response = await this.$axios.get('/api/get_code_text', {
           params: {
             id: this.item.id
           }
-        });
+        })
 
         if (response.data && response.data.success) {
-          this.codeContent = response.data.content;  // 가져온 코드 내용 저장
+          this.codeContent = response.data.content  // 가져온 코드 내용 저장
         } else {
-          console.error('코드 가져오기 에러:', response.data.error);
+          console.error('코드 가져오기 에러:', response.data.error)
         }
       } catch (error) {
-        console.error('API 호출 중 에러 발생:', error);
+        console.error('API 호출 중 에러 발생:', error)
       }
     },
-    async createComment() {
+    async createComment () {
       try {
         const response = await this.$axios.post('/api/create_codereview_comment', {
           articleid: this.item.id,
           content: this.newComment,
-          line: 0  //해당
-        });
+          line: 0
+        })
 
         if (response.data && response.data.success) {
           this.comments.push({
             id: response.data.commentId,
             content: this.newComment,
-            username: "current_user"
-          });
-          this.newComment = "";
+            username: 'current_user'
+          })
+          this.newComment = ''
         } else {
-          console.error('댓글 생성 중 에러:', response.data.error);
+          console.error('댓글 생성 중 에러:', response.data.error)
         }
       } catch (error) {
-        console.error('API 호출 중 에러 발생:', error);
+        console.error('API 호출 중 에러 발생:', error)
       }
     },
 
-    async deleteComment(commentId) {
+    async deleteComment (commentId) {
       try {
-        const response = await this.$axios.get(`/api/delete_codereview_comment?id=${commentId}`);
+        const response = await this.$axios.get(`/api/delete_codereview_comment?id=${commentId}`)
 
         if (response.data && response.data.success) {
-          this.comments = this.comments.filter(comment => comment.id !== commentId);
+          this.comments = this.comments.filter(comment => comment.id !== commentId)
         } else {
-          console.error('댓글 삭제 중 에러:', response.data.error);
+          console.error('댓글 삭제 중 에러:', response.data.error)
         }
       } catch (error) {
-        console.error('API 호출 중 에러 발생:', error);
+        console.error('API 호출 중 에러 발생:', error)
       }
     },
 
-    async modifyComment(comment) {
-      const newContent = window.prompt("댓글 내용을 수정하세요:", comment.content);
+    async modifyComment (comment) {
+      const newContent = window.prompt('댓글 내용을 수정하세요:', comment.content)
 
       if (newContent) {
         try {
           const response = await this.$axios.post('/api/modify_codereview_comment', {
             id: comment.id,
             content: newContent
-          });
+          })
 
           if (response.data && response.data.success) {
-            comment.content = newContent;
+            comment.content = newContent
           } else {
-            console.error('댓글 수정 중 에러:', response.data.error);
+            console.error('댓글 수정 중 에러:', response.data.error)
           }
         } catch (error) {
-          console.error('API 호출 중 에러 발생:', error);
+          console.error('API 호출 중 에러 발생:', error)
         }
       }
     }
   }
-};
+}
 </script>
 
 <style scoped lang="less">
@@ -196,7 +197,8 @@ button {
   background-color: #0064FF;
   color: white;
   cursor: pointer;
-  margin-top: 20px;  /* 버튼과 다른 요소 간 간격을 추가했습니다. */
+  margin-top: 20px;
+  /* 버튼과 다른 요소 간 간격을 추가했습니다. */
 }
 
 button:hover {

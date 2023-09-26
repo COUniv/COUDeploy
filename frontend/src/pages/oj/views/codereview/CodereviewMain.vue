@@ -37,7 +37,7 @@
 
 <script>
 import Pagination from '@/pages/oj/components/Pagination'
-import api from '@oj/api';
+import api from '@oj/api'
 
 export default {
   components: {
@@ -47,30 +47,28 @@ export default {
     return {
       mainTitle: '코드리뷰',
       mainItem: [] // 초기 데이터는 빈 배열로 설정
-    };
+    }
   },
   created () {
-    this.fetchCodeReviews();
+    this.fetchCodeReviews()
   },
   methods: {
     async fetchCodeReviews () {
       try {
-        const response = await api.codeReviewMain();
-        this.mainItem = response.data; // API 응답으로 받은 데이터를 mainItem에 할당
+        const response = await api.codeReviewMain()
+        this.mainItem = response.data // API 응답으로 받은 데이터를 mainItem에 할당
       } catch (error) {
-        console.error('API 호출 중 에러 발생:', error);
+        console.error('API 호출 중 에러 발생:', error)
       }
     },
     Create () {
-      this.$router.push({ name: 'createcodereview' }).catch(() => {});
+      this.$router.push({ name: 'createcodereview' }).catch(() => {})
     },
     gotoDetail () {
-      this.$router.push({ name: 'codereviewdetail' }).catch(() => {});
+      this.$router.push({ name: 'codereviewdetail' }).catch(() => {})
     }
   }
-};
-
-
+}
 </script>
 
 <style scoped lang="less">
